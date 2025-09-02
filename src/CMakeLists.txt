@@ -41,13 +41,41 @@ target_include_directories(QtLucide
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-# Add resources
-qt6_add_resources(QtLucide "qtlucide_icons"
-    FILES
-        ../resources/icons/lucide_icons.qrc
+# Auto-generate resources before building
+set(RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../resources/icons")
+set(SVG_DIR "${RESOURCES_DIR}/svg")
+set(QRC_FILE "${RESOURCES_DIR}/lucide_icons.qrc")
+set(METADATA_DIR "${RESOURCES_DIR}/metadata")
+set(BUILD_RESOURCES_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/../tools/build_resources.py")
+
+# Find all SVG files to use as dependencies
+file(GLOB SVG_FILES "${SVG_DIR}/*.svg")
+
+# Custom command to generate resources when SVG files change
+add_custom_command(
+    OUTPUT ${QRC_FILE}
+           ${METADATA_DIR}/icons.json
+           ${CMAKE_CURRENT_SOURCE_DIR}/../include/QtLucide/QtLucideEnums.h
+           ${CMAKE_CURRENT_SOURCE_DIR}/../include/QtLucide/QtLucideStrings.h
+    COMMAND ${Python3_EXECUTABLE} ${BUILD_RESOURCES_SCRIPT} ${CMAKE_CURRENT_SOURCE_DIR}/..
+    DEPENDS ${SVG_FILES} ${BUILD_RESOURCES_SCRIPT}
+    COMMENT "Generating QtLucide resources from SVG files"
+    VERBATIM
 )
 
-# Make sure resource target is part of the export
-set_target_properties(QtLucide_resources_1 PROPERTIES
-    EXPORT_NAME QtLucide_resources_1
+# Create a custom target for resource generation
+add_custom_target(generate_qtlucide_resources
+    DEPENDS ${QRC_FILE}
+            ${METADATA_DIR}/icons.json
+            ${CMAKE_CURRENT_SOURCE_DIR}/../include/QtLucide/QtLucideEnums.h
+            ${CMAKE_CURRENT_SOURCE_DIR}/../include/QtLucide/QtLucideStrings.h
 )
+
+# Add resources - use the auto-generated QRC file with all Lucide icons
+qt6_add_resources(QtLucide "qtlucide_icons"
+    BASE "../resources/icons"
+    FILES ${QRC_FILE}
+)
+
+# Make sure resources are generated before building the library
+add_dependencies(QtLucide generate_qtlucide_resources)

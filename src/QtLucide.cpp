@@ -140,14 +140,14 @@ QByteArray QtLucide::svgData(Icons iconId) const
 
 QByteArray QtLucide::svgData(const QString& name) const
 {
-    QString resourcePath = QString(":/lucide/%1").arg(name);
+    QString resourcePath = QString(":/lucide/%1.svg").arg(name);
     QFile file(resourcePath);
-    
+
     if (!file.open(QIODevice::ReadOnly)) {
         qWarning() << "Failed to load SVG data for icon:" << name;
         return QByteArray();
     }
-    
+
     return file.readAll();
 }
 

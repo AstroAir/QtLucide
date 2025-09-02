@@ -2,7 +2,7 @@
  * QtLucide Icon Loading Tests
  */
 
-#include <QtTest/QtTest>
+#include "test_icon_loading.h"
 #include <QApplication>
 #include <QIcon>
 #include <QPixmap>
@@ -10,24 +10,7 @@
 
 #include <QtLucide/QtLucide.h>
 
-class TestIconLoading : public QObject
-{
-    Q_OBJECT
 
-private slots:
-    void initTestCase();
-    void cleanupTestCase();
-    
-    void testSvgDataLoading();
-    void testSvgDataValidity();
-    void testIconPixmapGeneration();
-    void testIconScaling();
-    void testIconModes();
-    void testResourceAccess();
-
-private:
-    lucide::QtLucide* m_lucide;
-};
 
 void TestIconLoading::initTestCase()
 {
@@ -150,4 +133,4 @@ void TestIconLoading::testResourceAccess()
     }
 }
 
-#include "test_icon_loading.moc"
+

@@ -5,10 +5,20 @@ find_package(Qt6 REQUIRED COMPONENTS Test)
 # Test sources
 set(TEST_SOURCES
     main.cpp
+    test_qtlucide.cpp
+    test_icon_loading.cpp
+    test_svg_rendering.cpp
+)
+
+# Test headers (needed for MOC processing)
+set(TEST_HEADERS
+    test_qtlucide.h
+    test_icon_loading.h
+    test_svg_rendering.h
 )
 
 # Create test executable
-add_executable(QtLucideTests ${TEST_SOURCES})
+add_executable(QtLucideTests ${TEST_SOURCES} ${TEST_HEADERS})
 
 target_link_libraries(QtLucideTests
     PRIVATE

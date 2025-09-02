@@ -8,6 +8,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Find Qt6 components
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Svg)
 
+# Find Python3 for resource generation scripts
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+
 # Enable Qt6 features
 qt6_standard_project_setup()
 
@@ -34,49 +37,8 @@ endif()
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-# Export targets
-install(TARGETS QtLucide
-    EXPORT QtLucideTargets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
-
-# Export resource targets if they exist
-if(TARGET QtLucide_resources_1)
-    install(TARGETS QtLucide_resources_1
-        EXPORT QtLucideTargets
-    )
-endif()
-
 # Install headers
 install(DIRECTORY include/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     FILES_MATCHING PATTERN "*.h"
-)
-
-# Create and install package config files
-configure_package_config_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/QtLucideConfig.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/QtLucideConfig.cmake"
-    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/QtLucide
-)
-
-write_basic_package_version_file(
-    "${CMAKE_CURRENT_BINARY_DIR}/QtLucideConfigVersion.cmake"
-    VERSION ${PROJECT_VERSION}
-    COMPATIBILITY SameMajorVersion
-)
-
-install(FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/QtLucideConfig.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/QtLucideConfigVersion.cmake"
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/QtLucide
-)
-
-install(EXPORT QtLucideTargets
-    FILE QtLucideTargets.cmake
-    NAMESPACE QtLucide::
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/QtLucide
 )

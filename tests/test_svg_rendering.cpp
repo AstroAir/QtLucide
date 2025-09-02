@@ -2,7 +2,7 @@
  * QtLucide SVG Rendering Tests
  */
 
-#include <QtTest/QtTest>
+#include "test_svg_rendering.h"
 #include <QApplication>
 #include <QIcon>
 #include <QPixmap>
@@ -12,23 +12,7 @@
 #include <QtLucide/QtLucide.h>
 #include <QtLucide/QtLucideIconPainter.h>
 
-class TestSvgRendering : public QObject
-{
-    Q_OBJECT
 
-private slots:
-    void initTestCase();
-    void cleanupTestCase();
-    
-    void testColorCustomization();
-    void testScaleFactorRendering();
-    void testIconStateRendering();
-    void testCustomPainter();
-    void testRenderingPerformance();
-
-private:
-    lucide::QtLucide* m_lucide;
-};
 
 void TestSvgRendering::initTestCase()
 {
@@ -159,7 +143,7 @@ void TestSvgRendering::testCustomPainter()
 void TestSvgRendering::testRenderingPerformance()
 {
     // Test rendering performance
-    QStringList testIcons = {"activity", "alert-circle", "home", "settings", "user"};
+    QStringList testIcons = {"activity", "circle-alert", "house", "settings", "user"};
     
     QElapsedTimer timer;
     timer.start();
@@ -182,4 +166,4 @@ void TestSvgRendering::testRenderingPerformance()
     qDebug() << "Average time per icon:" << (double(elapsed) / (testIcons.size() * 100)) << "ms";
 }
 
-#include "test_svg_rendering.moc"
+

@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
         return;
     }
     
-    // Setup sample icons to display
+    // Setup sample icons to display - use a larger subset for better demonstration
     m_sampleIcons << "activity" << "alert-circle" << "archive" << "arrow-right"
                   << "bell" << "bookmark" << "calendar" << "camera" << "check"
                   << "clock" << "cloud" << "code" << "coffee" << "copy"
@@ -30,7 +30,17 @@ MainWindow::MainWindow(QWidget *parent)
                   << "heart" << "home" << "info" << "lock" << "mail"
                   << "map-pin" << "menu" << "message-circle" << "phone" << "play"
                   << "plus" << "refresh-cw" << "save" << "search" << "settings"
-                  << "share" << "star" << "trash" << "user" << "x";
+                  << "share" << "star" << "trash" << "user" << "x"
+                  // Add more icons to demonstrate the fix
+                  << "shield" << "sun" << "moon" << "battery" << "wifi" << "bluetooth"
+                  << "volume-2" << "mic" << "headphones" << "camera-off" << "video"
+                  << "image" << "music" << "film" << "book" << "bookmark-plus"
+                  << "tag" << "flag" << "map" << "compass" << "navigation"
+                  << "target" << "award" << "gift" << "shopping-cart" << "credit-card"
+                  << "dollar-sign" << "trending-up" << "bar-chart" << "pie-chart" << "activity"
+                  << "zap" << "cpu" << "hard-drive" << "smartphone" << "tablet"
+                  << "laptop" << "monitor" << "server" << "database" << "cloud-upload"
+                  << "cloud-download" << "upload" << "download-cloud" << "inbox" << "send";
     
     setupUI();
     createIconGrid();
@@ -141,41 +151,52 @@ void MainWindow::createIconGrid()
         delete item->widget();
         delete item;
     }
-    
+
     // Create new icon grid
     int columns = 8;
     int row = 0, col = 0;
-    
+    int loadedCount = 0;
+    int failedCount = 0;
+
     for (const QString& iconName : m_sampleIcons) {
         // Create button with icon
         QPushButton* button = new QPushButton(this);
         QIcon icon = m_lucide->icon(iconName);
-        
+
         if (!icon.isNull()) {
             button->setIcon(icon);
             button->setIconSize(QSize(m_iconSize, m_iconSize));
             button->setFixedSize(m_iconSize + 20, m_iconSize + 20);
             button->setToolTip(iconName);
-            
+
             // Add click handler to show icon info
             connect(button, &QPushButton::clicked, this, [this, iconName]() {
-                QMessageBox::information(this, "Icon Info", 
+                QMessageBox::information(this, "Icon Info",
                     QString("Icon: %1\nSize: %2x%2 px\nColor: %3\nScale: %4%")
                     .arg(iconName)
                     .arg(m_iconSize)
                     .arg(m_currentColor.name())
                     .arg(static_cast<int>(m_scaleFactor * 100)));
             });
-            
+
             m_iconLayout->addWidget(button, row, col);
-            
+            loadedCount++;
+
             col++;
             if (col >= columns) {
                 col = 0;
                 row++;
             }
+        } else {
+            qWarning() << "Failed to load icon:" << iconName;
+            failedCount++;
         }
     }
+
+    // Update window title with loading statistics
+    setWindowTitle(QString("QtLucide Example - Loaded: %1/%2 icons")
+                   .arg(loadedCount)
+                   .arg(m_sampleIcons.size()));
     
     // Add stretch to fill remaining space
     m_iconLayout->setRowStretch(row + 1, 1);

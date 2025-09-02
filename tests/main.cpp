@@ -5,10 +5,10 @@
 #include <QtTest/QtTest>
 #include <QApplication>
 
-// Include test classes
-#include "test_qtlucide.cpp"
-#include "test_icon_loading.cpp"
-#include "test_svg_rendering.cpp"
+// Include test class headers
+#include "test_qtlucide.h"
+#include "test_icon_loading.h"
+#include "test_svg_rendering.h"
 
 int main(int argc, char *argv[])
 {

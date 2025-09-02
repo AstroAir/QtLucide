@@ -2,33 +2,14 @@
  * QtLucide Core Functionality Tests
  */
 
-#include <QtTest/QtTest>
+#include "test_qtlucide.h"
 #include <QApplication>
 #include <QIcon>
 #include <QPixmap>
 
 #include <QtLucide/QtLucide.h>
 
-class TestQtLucide : public QObject
-{
-    Q_OBJECT
 
-private slots:
-    void initTestCase();
-    void cleanupTestCase();
-    
-    void testInitialization();
-    void testIconCreation();
-    void testIconByName();
-    void testIconByEnum();
-    void testDefaultOptions();
-    void testCustomOptions();
-    void testAvailableIcons();
-    void testInvalidIcon();
-
-private:
-    lucide::QtLucide* m_lucide;
-};
 
 void TestQtLucide::initTestCase()
 {
@@ -50,17 +31,57 @@ void TestQtLucide::testInitialization()
     QStringList icons = m_lucide->availableIcons();
     QVERIFY(icons.size() > 1000);  // Should have 1634 icons
     QVERIFY(icons.contains("activity"));
-    QVERIFY(icons.contains("alert-circle"));
+    QVERIFY(icons.contains("circle-alert"));
 }
 
 void TestQtLucide::testIconCreation()
 {
     QVERIFY(m_lucide->initLucide());
-    
+
+    // Debug: Check if resource exists
+    QFile resourceFile(":/lucide/activity");
+    qDebug() << "Resource exists:" << resourceFile.exists();
+
+    // Try with .svg extension
+    QFile resourceFileSvg(":/lucide/activity.svg");
+    qDebug() << "Resource with .svg exists:" << resourceFileSvg.exists();
+
+    // List all resources in /lucide
+    QDir resourceDir(":/lucide");
+    if (resourceDir.exists()) {
+        qDebug() << "Resource directory exists, entries:" << resourceDir.entryList();
+
+        // Check resources subdirectory
+        QDir resourcesSubDir(":/lucide/resources");
+        if (resourcesSubDir.exists()) {
+            qDebug() << "Resources subdirectory exists, entries:" << resourcesSubDir.entryList();
+
+            // Check icons subdirectory
+            QDir iconsSubDir(":/lucide/resources/icons");
+            if (iconsSubDir.exists()) {
+                qDebug() << "Icons subdirectory exists, entries:" << iconsSubDir.entryList();
+
+                // Check svg subdirectory
+                QDir svgSubDir(":/lucide/resources/icons/svg");
+                if (svgSubDir.exists()) {
+                    qDebug() << "SVG subdirectory exists, first 10 entries:" << svgSubDir.entryList().mid(0, 10);
+                }
+            }
+        }
+    } else {
+        qDebug() << "Resource directory does not exist";
+    }
+
+    if (resourceFile.exists()) {
+        qDebug() << "Resource size:" << resourceFile.size();
+    } else if (resourceFileSvg.exists()) {
+        qDebug() << "SVG Resource size:" << resourceFileSvg.size();
+    }
+
     // Test creating icon by enum
     QIcon icon = m_lucide->icon(lucide::Icons::activity);
     QVERIFY(!icon.isNull());
-    
+
     // Test that icon has proper sizes
     QPixmap pixmap = icon.pixmap(QSize(32, 32));
     QVERIFY(!pixmap.isNull());
@@ -76,7 +97,7 @@ void TestQtLucide::testIconByName()
     QVERIFY(!icon.isNull());
     
     // Test with hyphenated name
-    QIcon icon2 = m_lucide->icon("alert-circle");
+    QIcon icon2 = m_lucide->icon("circle-alert");
     QVERIFY(!icon2.isNull());
 }
 
@@ -130,7 +151,7 @@ void TestQtLucide::testAvailableIcons()
     QStringList icons = m_lucide->availableIcons();
     QVERIFY(!icons.isEmpty());
     QVERIFY(icons.contains("activity"));
-    QVERIFY(icons.contains("home"));
+    QVERIFY(icons.contains("house"));
     QVERIFY(icons.contains("settings"));
     
     // Test that icons are sorted
@@ -152,4 +173,4 @@ void TestQtLucide::testInvalidIcon()
     QVERIFY(svgData.isEmpty());
 }
 
-#include "test_qtlucide.moc"
+
