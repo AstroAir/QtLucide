@@ -25,6 +25,8 @@ target_link_libraries(your_target PRIVATE QtLucide::QtLucide)
 
 #### Building from Source
 
+##### Using CMake (Traditional)
+
 ```bash
 git clone https://github.com/AstroAir/QtLucide.git
 cd QtLucide
@@ -33,15 +35,31 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j4
 ```
 
+##### Using XMake (Modern Alternative)
+
+```bash
+git clone https://github.com/AstroAir/QtLucide.git
+cd QtLucide
+xmake
+```
+
 #### System Installation
 
-To install QtLucide system-wide:
+##### CMake Installation
 
 ```bash
 sudo make install
 ```
 
+##### XMake Installation
+
+```bash
+sudo xmake install
+```
+
 #### Using in Your Project
+
+##### CMake Projects
 
 After installation, add QtLucide to your CMake project:
 
@@ -49,6 +67,20 @@ After installation, add QtLucide to your CMake project:
 find_package(QtLucide REQUIRED)
 target_link_libraries(your_target PRIVATE QtLucide::QtLucide)
 ```
+
+##### XMake Projects
+
+Add QtLucide to your XMake project:
+
+```lua
+add_requires("qtlucide")
+
+target("your_target")
+    add_packages("qtlucide")
+target_end()
+```
+
+For more details on XMake build system, see [XMAKE_BUILD.md](XMAKE_BUILD.md).
 
 ### Basic Usage
 

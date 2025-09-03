@@ -186,3 +186,4 @@ local.pri
 .qmake.stash
 
 .cache/
+.xmake/

@@ -1,0 +1,187 @@
+name: XMake Build
+
+on:
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        mode: [release, debug]
+        
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+        
+    - name: Install Qt6 (Ubuntu)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qt6-base-dev qt6-svg-dev libgl1-mesa-dev
+        
+    - name: Install Qt6 (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        brew install qt6
+        echo "Qt6_DIR=$(brew --prefix qt6)/lib/cmake/Qt6" >> $GITHUB_ENV
+        
+    - name: Install Qt6 (Windows)
+      if: runner.os == 'Windows'
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.5.0'
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_msvc2019_64'
+        
+    - name: Install XMake
+      uses: xmake-io/github-action-setup-xmake@v1
+      with:
+        xmake-version: latest
+        
+    - name: Configure XMake
+      run: |
+        xmake config --mode=${{ matrix.mode }} --examples=true --tests=true
+        
+    - name: Generate Resources
+      run: |
+        xmake generate-resources
+        
+    - name: Build QtLucide Library
+      run: |
+        xmake build QtLucide
+        
+    - name: Build Examples
+      run: |
+        xmake build QtLucideExample
+        xmake build QtLucideGallery
+        
+    - name: Build Tests
+      run: |
+        xmake build QtLucideTests
+        
+    - name: Run Tests
+      run: |
+        xmake run QtLucideTests
+        
+    - name: Package (Release only)
+      if: matrix.mode == 'release'
+      run: |
+        xmake package
+        
+    - name: Upload Artifacts (Release only)
+      if: matrix.mode == 'release'
+      uses: actions/upload-artifact@v3
+      with:
+        name: qtlucide-${{ matrix.os }}-${{ matrix.mode }}
+        path: |
+          build/
+          !build/**/*.o
+          !build/**/*.obj
+          !build/**/CMakeFiles/
+          
+  install-test:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+        
+    - name: Install Qt6
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qt6-base-dev qt6-svg-dev libgl1-mesa-dev
+        
+    - name: Install XMake
+      uses: xmake-io/github-action-setup-xmake@v1
+      with:
+        xmake-version: latest
+        
+    - name: Test Installation
+      run: |
+        xmake config --mode=release
+        xmake generate-resources
+        xmake build
+        sudo xmake install --installdir=/tmp/qtlucide-test
+        
+    - name: Verify Installation
+      run: |
+        ls -la /tmp/qtlucide-test/
+        ls -la /tmp/qtlucide-test/include/
+        ls -la /tmp/qtlucide-test/lib/
+        
+  comparison-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+        
+    - name: Install Qt6
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qt6-base-dev qt6-svg-dev libgl1-mesa-dev cmake
+        
+    - name: Install XMake
+      uses: xmake-io/github-action-setup-xmake@v1
+      with:
+        xmake-version: latest
+        
+    - name: Build with CMake
+      run: |
+        mkdir cmake-build
+        cd cmake-build
+        cmake .. -DCMAKE_BUILD_TYPE=Release
+        make -j$(nproc)
+        cd ..
+        
+    - name: Build with XMake
+      run: |
+        xmake config --mode=release
+        xmake generate-resources
+        xmake build
+        
+    - name: Compare Build Results
+      run: |
+        echo "CMake build results:"
+        find cmake-build -name "*QtLucide*" -type f
+        echo "XMake build results:"
+        find build -name "*QtLucide*" -type f
+        
+        # Basic comparison - both should produce library files
+        cmake_libs=$(find cmake-build -name "*QtLucide*" -type f | wc -l)
+        xmake_libs=$(find build -name "*QtLucide*" -type f | wc -l)
+        
+        echo "CMake produced $cmake_libs files"
+        echo "XMake produced $xmake_libs files"
+        
+        if [ $cmake_libs -eq 0 ] || [ $xmake_libs -eq 0 ]; then
+          echo "ERROR: One of the build systems failed to produce output files"
+          exit 1
+        fi
+        
+        echo "Both build systems successfully produced library files"
