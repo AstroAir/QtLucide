@@ -1634,5 +1634,8 @@
         <file alias="zap-off">svg/zap-off.svg</file>
         <file alias="zoom-in">svg/zoom-in.svg</file>
         <file alias="zoom-out">svg/zoom-out.svg</file>
+        <file alias="metadata/icons.json">metadata/icons.json</file>
+        <file alias="metadata/categories.json">metadata/categories.json</file>
+        <file alias="metadata/tags.json">metadata/tags.json</file>
     </qresource>
 </RCC>

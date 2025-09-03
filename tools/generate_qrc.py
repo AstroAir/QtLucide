@@ -13,32 +13,50 @@ class QrcGenerator:
         self.svg_dir = Path(svg_dir)
         self.output_file = Path(output_file)
         self.icons_data = {}
-        
+
     def load_metadata(self):
         """Load icon metadata"""
         icons_file = self.metadata_dir / "icons.json"
         with open(icons_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
             self.icons_data = data['icons']
-    
+
     def generate_qrc(self):
         """Generate the .qrc file"""
         self.output_file.parent.mkdir(parents=True, exist_ok=True)
-        
+
         qrc_content = self._get_qrc_template()
-        
+
         # Generate file entries
         file_entries = []
+
+        # Add SVG icon files
         for icon_name in sorted(self.icons_data.keys()):
             svg_file = f"svg/{icon_name}.svg"
             file_entries.append(f'        <file alias="{icon_name}">{svg_file}</file>')
-        
+
+        # Add metadata files
+        metadata_files = [
+            ("metadata/icons.json", "metadata/icons.json"),
+            ("metadata/categories.json", "metadata/categories.json"),
+            ("metadata/tags.json", "metadata/tags.json")
+        ]
+
+        print(f"Adding {len(metadata_files)} metadata files...")
+        for alias, file_path in metadata_files:
+            full_path = self.metadata_dir.parent / file_path
+            if full_path.exists():
+                file_entries.append(f'        <file alias="{alias}">{file_path}</file>')
+                print(f"  Added: {alias} -> {file_path}")
+            else:
+                print(f"  Warning: File not found: {full_path}")
+
         files_content = "\n".join(file_entries)
         qrc_content = qrc_content.replace("{{FILE_ENTRIES}}", files_content)
-        
+
         self.output_file.write_text(qrc_content, encoding='utf-8')
-        print(f"Generated {self.output_file} with {len(self.icons_data)} icon files")
-    
+        print(f"Generated {self.output_file} with {len(self.icons_data)} icon files and metadata")
+
     def _get_qrc_template(self) -> str:
         return '''<RCC>
     <qresource prefix="/lucide">
@@ -48,15 +66,15 @@ class QrcGenerator:
 
 def main():
     import sys
-    
+
     if len(sys.argv) != 4:
         print("Usage: python generate_qrc.py <metadata_dir> <svg_dir> <output_qrc>")
         sys.exit(1)
-    
+
     metadata_dir = sys.argv[1]
     svg_dir = sys.argv[2]
     output_file = sys.argv[3]
-    
+
     generator = QrcGenerator(metadata_dir, svg_dir, output_file)
     generator.load_metadata()
     generator.generate_qrc()

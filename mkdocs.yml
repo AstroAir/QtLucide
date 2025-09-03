@@ -1,0 +1,162 @@
+site_name: QtLucide Documentation
+site_description: Lucide Icons for Qt Applications - Complete Documentation
+site_author: Max Qian
+site_url: https://astroair.github.io/QtLucide/
+
+repo_name: AstroAir/QtLucide
+repo_url: https://github.com/AstroAir/QtLucide
+edit_uri: edit/master/docs/
+
+theme:
+  name: material
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.indexes
+    - toc.follow
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.select
+    - content.code.annotate
+    - content.tabs.link
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+    view: material/eye
+
+plugins:
+  - search:
+      lang: en
+  - mkdocstrings:
+      handlers:
+        cpp:
+          paths: [include]
+  - git-revision-date-localized:
+      enable_creation_date: true
+  - minify:
+      minify_html: true
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:materialx.emoji.twemoji
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: AstroAir
+      repo: QtLucide
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - getting-started/index.md
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quick-start.md
+    - First Steps: getting-started/first-steps.md
+  - User Guide:
+    - user-guide/index.md
+    - Basic Usage: user-guide/basic-usage.md
+    - Icon Customization: user-guide/customization.md
+    - Advanced Features: user-guide/advanced-features.md
+    - Performance Tips: user-guide/performance.md
+  - API Reference:
+    - api/index.md
+    - QtLucide Class: api/qtlucide.md
+    - Icon Engine: api/icon-engine.md
+    - Icon Painter: api/icon-painter.md
+    - Enums & Constants: api/enums.md
+  - Examples:
+    - examples/index.md
+    - Basic Usage: examples/basic-usage.md
+    - Icon Gallery: examples/gallery.md
+    - Custom Painters: examples/custom-painters.md
+    - Integration Examples: examples/integration.md
+  - Migration:
+    - migration/index.md
+    - From QtAwesome: migration/from-qtawesome.md
+    - Version Upgrades: migration/version-upgrades.md
+  - Development:
+    - development/index.md
+    - Building from Source: development/building.md
+    - Contributing: development/contributing.md
+    - Testing: development/testing.md
+    - Tools & Scripts: development/tools.md
+  - FAQ & Troubleshooting:
+    - faq/index.md
+    - Common Issues: faq/common-issues.md
+    - Performance: faq/performance.md
+    - Platform Specific: faq/platform-specific.md
+
+extra:
+  version:
+    provider: mike
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/AstroAir/QtLucide
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/AstroAir
+  analytics:
+    provider: google
+    property: !ENV GOOGLE_ANALYTICS_KEY
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+copyright: Copyright &copy; 2025 Max Qian. All rights reserved.

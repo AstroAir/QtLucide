@@ -1,0 +1,290 @@
+/* Custom styles for QtLucide documentation */
+
+/* Grid cards styling */
+.grid.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.grid.cards > * {
+    border: 1px solid var(--md-default-fg-color--lightest);
+    border-radius: 0.2rem;
+    padding: 1rem;
+    transition: box-shadow 0.2s;
+}
+
+.grid.cards > *:hover {
+    box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+/* Code block enhancements */
+.highlight {
+    margin: 1em 0;
+}
+
+/* Admonition styling */
+.admonition {
+    margin: 1.5625em 0;
+    padding: 0 1.2rem;
+    border-left: 0.2rem solid;
+    border-radius: 0.1rem;
+    font-size: 0.8rem;
+}
+
+/* Custom icon styling for headers */
+h1::before, h2::before, h3::before {
+    content: "";
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin-right: 0.5em;
+    vertical-align: middle;
+}
+
+/* API reference styling */
+.api-signature {
+    background-color: var(--md-code-bg-color);
+    border: 1px solid var(--md-default-fg-color--lightest);
+    border-radius: 0.2rem;
+    padding: 1rem;
+    margin: 1rem 0;
+    font-family: var(--md-code-font);
+    font-size: 0.85em;
+}
+
+/* Parameter tables */
+table.params {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+table.params th,
+table.params td {
+    border: 1px solid var(--md-default-fg-color--lightest);
+    padding: 0.5rem;
+    text-align: left;
+}
+
+table.params th {
+    background-color: var(--md-default-fg-color--lightest);
+    font-weight: bold;
+}
+
+/* Example code blocks */
+.example {
+    border: 1px solid var(--md-primary-fg-color);
+    border-radius: 0.2rem;
+    margin: 1rem 0;
+}
+
+.example-title {
+    background-color: var(--md-primary-fg-color);
+    color: var(--md-primary-bg-color);
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.example-content {
+    padding: 1rem;
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.2rem;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 0 0.2rem;
+}
+
+.status-stable {
+    background-color: #4caf50;
+    color: white;
+}
+
+.status-beta {
+    background-color: #ff9800;
+    color: white;
+}
+
+.status-experimental {
+    background-color: #f44336;
+    color: white;
+}
+
+/* Version compatibility table */
+.version-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+.version-table th,
+.version-table td {
+    border: 1px solid var(--md-default-fg-color--lightest);
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.version-table th {
+    background-color: var(--md-default-fg-color--lightest);
+}
+
+.version-supported {
+    background-color: #e8f5e8;
+    color: #2e7d32;
+}
+
+.version-not-supported {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+/* Performance metrics */
+.perf-metric {
+    display: inline-block;
+    background-color: var(--md-accent-fg-color);
+    color: var(--md-accent-bg-color);
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.2rem;
+    font-family: var(--md-code-font);
+    font-size: 0.8rem;
+    margin: 0.2rem;
+}
+
+/* Migration comparison tables */
+.migration-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+.migration-table th,
+.migration-table td {
+    border: 1px solid var(--md-default-fg-color--lightest);
+    padding: 0.5rem;
+    vertical-align: top;
+}
+
+.migration-table th {
+    background-color: var(--md-default-fg-color--lightest);
+    text-align: center;
+}
+
+.migration-before {
+    background-color: #fff3e0;
+}
+
+.migration-after {
+    background-color: #e8f5e8;
+}
+
+/* Icon showcase */
+.icon-showcase {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.icon-item {
+    text-align: center;
+    padding: 1rem;
+    border: 1px solid var(--md-default-fg-color--lightest);
+    border-radius: 0.2rem;
+    transition: background-color 0.2s;
+}
+
+.icon-item:hover {
+    background-color: var(--md-default-fg-color--lightest);
+}
+
+.icon-preview {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-name {
+    font-family: var(--md-code-font);
+    font-size: 0.8rem;
+    color: var(--md-default-fg-color--light);
+}
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+    .grid.cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .icon-showcase {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+}
+
+/* Dark mode adjustments */
+[data-md-color-scheme="slate"] {
+    --md-code-bg-color: #2d3748;
+}
+
+[data-md-color-scheme="slate"] .migration-before {
+    background-color: #744210;
+}
+
+[data-md-color-scheme="slate"] .migration-after {
+    background-color: #22543d;
+}
+
+[data-md-color-scheme="slate"] .version-supported {
+    background-color: #22543d;
+    color: #68d391;
+}
+
+[data-md-color-scheme="slate"] .version-not-supported {
+    background-color: #742a2a;
+    color: #fc8181;
+}
+
+/* Print styles */
+@media print {
+    .grid.cards {
+        display: block;
+    }
+    
+    .grid.cards > * {
+        break-inside: avoid;
+        margin-bottom: 1rem;
+    }
+    
+    .icon-showcase {
+        display: none;
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    .grid.cards > *,
+    .icon-item {
+        transition: none;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .grid.cards > * {
+        border-width: 2px;
+    }
+    
+    .status-badge {
+        border: 2px solid currentColor;
+    }
+}

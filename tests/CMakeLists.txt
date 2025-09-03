@@ -8,6 +8,9 @@ set(TEST_SOURCES
     test_qtlucide.cpp
     test_icon_loading.cpp
     test_svg_rendering.cpp
+    test_gallery_icon_loading.cpp
+    ../examples/gallery/IconMetadataManager.cpp
+    ../examples/gallery/IconItem.cpp
 )
 
 # Test headers (needed for MOC processing)
@@ -15,6 +18,9 @@ set(TEST_HEADERS
     test_qtlucide.h
     test_icon_loading.h
     test_svg_rendering.h
+    test_gallery_icon_loading.h
+    ../examples/gallery/IconMetadataManager.h
+    ../examples/gallery/IconItem.h
 )
 
 # Create test executable
