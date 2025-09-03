@@ -72,10 +72,19 @@ add_custom_target(generate_qtlucide_resources
 )
 
 # Add resources - use the auto-generated QRC file with all Lucide icons
-qt6_add_resources(QtLucide "qtlucide_icons"
-    BASE "../resources/icons"
-    FILES ${QRC_FILE}
-)
+qt6_add_resources(QTLUCIDE_RESOURCES ${QRC_FILE})
+
+# Add the resource files to the library
+target_sources(QtLucide PRIVATE ${QTLUCIDE_RESOURCES})
 
 # Make sure resources are generated before building the library
 add_dependencies(QtLucide generate_qtlucide_resources)
+
+# Install the library
+install(TARGETS QtLucide
+    EXPORT QtLucideTargets
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)

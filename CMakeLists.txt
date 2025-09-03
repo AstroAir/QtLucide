@@ -42,3 +42,35 @@ install(DIRECTORY include/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     FILES_MATCHING PATTERN "*.h"
 )
+
+# Create and install package config files
+set(QTLUCIDE_CMAKE_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/QtLucide)
+
+# Generate package config file
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/QtLucideConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/QtLucideConfig.cmake"
+    INSTALL_DESTINATION ${QTLUCIDE_CMAKE_DIR}
+    PATH_VARS CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_LIBDIR
+)
+
+# Generate package version file
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/QtLucideConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+)
+
+# Install package config files
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/QtLucideConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/QtLucideConfigVersion.cmake"
+    DESTINATION ${QTLUCIDE_CMAKE_DIR}
+)
+
+# Export targets
+install(EXPORT QtLucideTargets
+    FILE QtLucideTargets.cmake
+    NAMESPACE QtLucide::
+    DESTINATION ${QTLUCIDE_CMAKE_DIR}
+)

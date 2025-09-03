@@ -46,7 +46,7 @@ void QtLucideSvgIconPainter::paint(QtLucide* lucide, QPainter* painter, const QR
     }
 
     Icons iconId = static_cast<Icons>(iconIdInt);
-    
+
     // Get SVG data
     QByteArray svgData = lucide->svgData(iconId);
     if (svgData.isEmpty()) {
@@ -57,7 +57,7 @@ void QtLucideSvgIconPainter::paint(QtLucide* lucide, QPainter* painter, const QR
     // Get color for current mode and state
     QVariant colorVariant = optionValueForModeAndState("color", mode, state, options);
     QColor color = colorVariant.value<QColor>();
-    
+
     if (color.isValid()) {
         // Process SVG to apply color
         svgData = processColorizedSvg(svgData, color);
@@ -75,14 +75,14 @@ void QtLucideSvgIconPainter::paint(QtLucide* lucide, QPainter* painter, const QR
     if (scaleFactor > 0.0 && scaleFactor != 1.0) {
         int scaledWidth = static_cast<int>(rect.width() * scaleFactor);
         int scaledHeight = static_cast<int>(rect.height() * scaleFactor);
-        
+
         QRect scaledRect(
             rect.x() + (rect.width() - scaledWidth) / 2,
             rect.y() + (rect.height() - scaledHeight) / 2,
             scaledWidth,
             scaledHeight
         );
-        
+
         renderer.render(painter, scaledRect);
     } else {
         renderer.render(painter, rect);
@@ -123,7 +123,7 @@ QStringList QtLucideSvgIconPainter::optionKeysForModeAndState(const QString& key
         result.push_back(key + statePostfix);
     }
     result.push_back(key);
-    
+
     return result;
 }
 
@@ -131,7 +131,7 @@ QVariant QtLucideSvgIconPainter::optionValueForModeAndState(const QString& baseK
                                                            const QVariantMap& options)
 {
     QStringList keys = optionKeysForModeAndState(baseKey, mode, state);
-    
+
     for (const QString& key : keys) {
         if (options.contains(key)) {
             QVariant value = options.value(key);
@@ -140,26 +140,26 @@ QVariant QtLucideSvgIconPainter::optionValueForModeAndState(const QString& baseK
             }
         }
     }
-    
+
     return QVariant();
 }
 
 QByteArray QtLucideSvgIconPainter::processColorizedSvg(const QByteArray& svgData, const QColor& color)
 {
     QString svgString = QString::fromUtf8(svgData);
-    
+
     // Replace stroke="currentColor" with the actual color
     QString colorString = color.name();
     svgString.replace("stroke=\"currentColor\"", QString("stroke=\"%1\"").arg(colorString));
     svgString.replace("fill=\"currentColor\"", QString("fill=\"%1\"").arg(colorString));
-    
+
     // Handle stroke and fill attributes that might use currentColor
     QRegularExpression strokeRegex("stroke\\s*=\\s*[\"']currentColor[\"']");
     svgString.replace(strokeRegex, QString("stroke=\"%1\"").arg(colorString));
-    
+
     QRegularExpression fillRegex("fill\\s*=\\s*[\"']currentColor[\"']");
     svgString.replace(fillRegex, QString("fill=\"%1\"").arg(colorString));
-    
+
     return svgString.toUtf8();
 }
 

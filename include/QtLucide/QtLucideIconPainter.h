@@ -20,7 +20,7 @@ class QtLucide;
 
 /**
  * @brief Abstract base class for custom icon painters
- * 
+ *
  * This class allows you to implement custom icon rendering logic.
  * Similar to QtAwesome's QtAwesomeIconPainter but designed for SVG-based icons.
  */
@@ -45,7 +45,7 @@ public:
 
 /**
  * @brief SVG-based icon painter
- * 
+ *
  * This painter renders icons from SVG data with color and style customization.
  */
 class QtLucideSvgIconPainter : public QtLucideIconPainter

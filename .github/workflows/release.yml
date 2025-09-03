@@ -1,0 +1,155 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: QtLucide ${{ github.ref }}
+        draft: false
+        prerelease: false
+        body: |
+          ## Changes
+          
+          See [CHANGELOG.md](CHANGELOG.md) for detailed changes.
+          
+          ## Installation
+          
+          ### Using CMake
+          ```cmake
+          find_package(QtLucide REQUIRED)
+          target_link_libraries(your_target PRIVATE QtLucide::QtLucide)
+          ```
+          
+          ### Building from Source
+          ```bash
+          git clone https://github.com/AstroAir/QtLucide.git
+          cd QtLucide
+          mkdir build && cd build
+          cmake ..
+          make -j4
+          ```
+
+  build-release:
+    needs: create-release
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        qt-version: ['6.5.0', '6.6.0']
+        
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: ${{ matrix.qt-version }}
+        modules: 'qtsvg'
+        cache: true
+        
+    - name: Install Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+        
+    - name: Install dependencies (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake ninja-build
+        
+    - name: Install dependencies (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew install cmake ninja
+        
+    - name: Install dependencies (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        choco install cmake ninja
+        
+    - name: Configure CMake
+      run: |
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DQTLUCIDE_BUILD_EXAMPLES=ON \
+          -DQTLUCIDE_BUILD_TESTS=OFF \
+          -DCMAKE_INSTALL_PREFIX=install
+          
+    - name: Build
+      run: cmake --build build --config Release
+      
+    - name: Install
+      run: cmake --install build
+      
+    - name: Package (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        cd install
+        tar -czf ../QtLucide-${{ github.ref_name }}-linux-qt${{ matrix.qt-version }}.tar.gz *
+        
+    - name: Package (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        cd install
+        tar -czf ../QtLucide-${{ github.ref_name }}-macos-qt${{ matrix.qt-version }}.tar.gz *
+        
+    - name: Package (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        cd install
+        7z a ../QtLucide-${{ github.ref_name }}-windows-qt${{ matrix.qt-version }}.zip *
+        
+    - name: Upload Release Asset (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: ./QtLucide-${{ github.ref_name }}-linux-qt${{ matrix.qt-version }}.tar.gz
+        asset_name: QtLucide-${{ github.ref_name }}-linux-qt${{ matrix.qt-version }}.tar.gz
+        asset_content_type: application/gzip
+        
+    - name: Upload Release Asset (macOS)
+      if: matrix.os == 'macos-latest'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: ./QtLucide-${{ github.ref_name }}-macos-qt${{ matrix.qt-version }}.tar.gz
+        asset_name: QtLucide-${{ github.ref_name }}-macos-qt${{ matrix.qt-version }}.tar.gz
+        asset_content_type: application/gzip
+        
+    - name: Upload Release Asset (Windows)
+      if: matrix.os == 'windows-latest'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: ./QtLucide-${{ github.ref_name }}-windows-qt${{ matrix.qt-version }}.zip
+        asset_name: QtLucide-${{ github.ref_name }}-windows-qt${{ matrix.qt-version }}.zip
+        asset_content_type: application/zip

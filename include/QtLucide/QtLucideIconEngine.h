@@ -21,7 +21,7 @@ class QtLucideIconPainter;
 
 /**
  * @brief Custom QIconEngine for rendering Lucide SVG icons
- * 
+ *
  * This engine handles the rendering of SVG-based icons with caching
  * and customization support.
  */

@@ -50,12 +50,12 @@ QPixmap QtLucideIconEngine::pixmap(const QSize& size, QIcon::Mode mode, QIcon::S
 
     // Render new pixmap
     QPixmap pixmap = renderPixmap(size, mode, state);
-    
+
     // Cache the result (with reasonable cache size limit)
     if (m_pixmapCache.size() < 100) {  // Limit cache size
         m_pixmapCache[key] = pixmap;
     }
-    
+
     return pixmap;
 }
 
@@ -74,7 +74,7 @@ QString QtLucideIconEngine::cacheKey(const QSize& size, QIcon::Mode mode, QIcon:
     // Create a unique key for caching
     QString iconKey = m_options.value("iconId", "unknown").toString();
     QString colorKey = m_options.value("color", "default").toString();
-    
+
     return QString("%1_%2x%3_%4_%5_%6")
            .arg(iconKey)
            .arg(size.width())
@@ -92,7 +92,7 @@ QPixmap QtLucideIconEngine::renderPixmap(const QSize& size, QIcon::Mode mode, QI
 
     // Create pixmap with device pixel ratio support
     qreal devicePixelRatio = 1.0;
-    
+
     // Try to get device pixel ratio from current screen
     if (QGuiApplication::primaryScreen()) {
         devicePixelRatio = QGuiApplication::primaryScreen()->devicePixelRatio();

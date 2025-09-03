@@ -1,0 +1,33 @@
+version: 2
+updates:
+  # GitHub Actions dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "AstroAir"
+    assignees:
+      - "AstroAir"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+
+  # Python dependencies (for build tools)
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "AstroAir"
+    assignees:
+      - "AstroAir"
+    commit-message:
+      prefix: "deps"
+      include: "scope"

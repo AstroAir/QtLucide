@@ -1,0 +1,120 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, main, develop ]
+  pull_request:
+    branches: [ master, main, develop ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        qt-version: ['6.5.0', '6.6.0']
+        build-type: [Release, Debug]
+        
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: ${{ matrix.qt-version }}
+        modules: 'qtsvg'
+        cache: true
+        
+    - name: Install Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+        
+    - name: Install dependencies (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake ninja-build
+        
+    - name: Install dependencies (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew install cmake ninja
+        
+    - name: Install dependencies (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        choco install cmake ninja
+        
+    - name: Configure CMake
+      run: |
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+          -DQTLUCIDE_BUILD_EXAMPLES=ON \
+          -DQTLUCIDE_BUILD_TESTS=ON
+          
+    - name: Build
+      run: cmake --build build --config ${{ matrix.build-type }}
+      
+    - name: Test
+      working-directory: build
+      run: ctest --output-on-failure --build-config ${{ matrix.build-type }}
+      
+    - name: Upload build artifacts
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-logs-${{ matrix.os }}-qt${{ matrix.qt-version }}-${{ matrix.build-type }}
+        path: |
+          build/CMakeFiles/CMakeOutput.log
+          build/CMakeFiles/CMakeError.log
+          build/Testing/Temporary/LastTest.log
+
+  code-quality:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install clang-format
+      run: sudo apt-get install -y clang-format
+      
+    - name: Check code formatting
+      run: |
+        find src include tests examples -name "*.cpp" -o -name "*.h" | xargs clang-format --dry-run --Werror
+        
+    - name: Install cppcheck
+      run: sudo apt-get install -y cppcheck
+      
+    - name: Run static analysis
+      run: |
+        cppcheck --enable=all --error-exitcode=1 --suppress=missingIncludeSystem \
+          --suppress=unusedFunction --suppress=unmatchedSuppression \
+          src/ include/ tests/ examples/
+
+  documentation:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install Doxygen
+      run: sudo apt-get install -y doxygen graphviz
+      
+    - name: Generate documentation
+      run: |
+        doxygen Doxyfile || echo "No Doxyfile found, skipping documentation generation"
+        
+    - name: Deploy to GitHub Pages
+      if: success()
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./doc/html

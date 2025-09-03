@@ -1,0 +1,73 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# All files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# C++ source files
+[*.{cpp,cxx,cc,c++}]
+indent_style = space
+indent_size = 4
+max_line_length = 100
+
+# C++ header files
+[*.{h,hpp,hxx,h++}]
+indent_style = space
+indent_size = 4
+max_line_length = 100
+
+# CMake files
+[{CMakeLists.txt,*.cmake}]
+indent_style = space
+indent_size = 4
+
+# Python files (for build scripts)
+[*.py]
+indent_style = space
+indent_size = 4
+max_line_length = 88
+
+# Qt project files
+[*.{pro,pri}]
+indent_style = space
+indent_size = 4
+
+# JSON files
+[*.json]
+indent_style = space
+indent_size = 2
+
+# YAML files (GitHub Actions, etc.)
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# XML files (Qt resource files, etc.)
+[*.{xml,qrc,ui}]
+indent_style = space
+indent_size = 2
+
+# Markdown files
+[*.md]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = false
+
+# Batch files (Windows)
+[*.{bat,cmd}]
+end_of_line = crlf
+
+# Shell scripts (Unix)
+[*.sh]
+end_of_line = lf
+
+# Configuration files
+[*.{ini,cfg,conf}]
+indent_style = space
+indent_size = 4

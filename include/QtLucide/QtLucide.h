@@ -24,7 +24,7 @@ class QtLucideIconEngine;
 
 /**
  * @brief The main class for managing Lucide icons
- * 
+ *
  * This class provides a QtAwesome-compatible API for using Lucide icons
  * in Qt applications. Icons are rendered from embedded SVG data with
  * support for color customization and styling.

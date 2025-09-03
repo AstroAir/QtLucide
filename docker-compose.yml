@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  # Development environment
+  qtlucide-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: qtlucide-dev
+    volumes:
+      - .:/app
+      - qtlucide-build:/app/build
+    working_dir: /app
+    environment:
+      - DISPLAY=${DISPLAY:-:0}
+      - QT_X11_NO_MITSHM=1
+    networks:
+      - qtlucide-network
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+
+  # Build and test environment
+  qtlucide-build:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    container_name: qtlucide-build
+    volumes:
+      - .:/app
+      - qtlucide-build:/app/build
+    working_dir: /app
+    command: >
+      bash -c "
+        cd build &&
+        cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release -DQTLUCIDE_BUILD_EXAMPLES=ON -DQTLUCIDE_BUILD_TESTS=ON &&
+        ninja &&
+        ctest --output-on-failure
+      "
+    networks:
+      - qtlucide-network
+
+  # Runtime environment for examples
+  qtlucide-runtime:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: qtlucide-runtime
+    environment:
+      - DISPLAY=${DISPLAY:-:0}
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    networks:
+      - qtlucide-network
+    depends_on:
+      - qtlucide-build
+
+  # Documentation generation
+  qtlucide-docs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: qtlucide-docs
+    volumes:
+      - .:/app
+      - qtlucide-docs:/app/doc
+    working_dir: /app
+    command: >
+      bash -c "
+        if [ -f Doxyfile ]; then
+          doxygen Doxyfile
+        else
+          echo 'No Doxyfile found. Skipping documentation generation.'
+        fi
+      "
+    networks:
+      - qtlucide-network
+
+volumes:
+  qtlucide-build:
+    driver: local
+  qtlucide-docs:
+    driver: local
+
+networks:
+  qtlucide-network:
+    driver: bridge

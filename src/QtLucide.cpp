@@ -16,6 +16,10 @@
 #include <QFile>
 #include <QDir>
 
+// Forward declare resource initialization functions
+extern int qInitResources_lucide_icons();
+extern int qCleanupResources_lucide_icons();
+
 namespace lucide {
 
 QtLucide::QtLucide(QObject* parent)
@@ -23,6 +27,9 @@ QtLucide::QtLucide(QObject* parent)
     , m_svgIconPainter(nullptr)
     , m_initialized(false)
 {
+    // Initialize resources
+    qInitResources_lucide_icons();
+
     // Initialize default options
     resetDefaultOptions();
 }
@@ -30,11 +37,14 @@ QtLucide::QtLucide(QObject* parent)
 QtLucide::~QtLucide()
 {
     delete m_svgIconPainter;
-    
+
     // Clean up custom painters
     for (auto painter : m_customPainters) {
         delete painter;
     }
+
+    // Cleanup resources
+    qCleanupResources_lucide_icons();
 }
 
 bool QtLucide::initLucide()
@@ -45,12 +55,12 @@ bool QtLucide::initLucide()
 
     // Initialize icon mappings
     initializeIconMap();
-    
+
     // Create the SVG icon painter
     m_svgIconPainter = new QtLucideSvgIconPainter();
-    
+
     m_initialized = true;
-    
+
     qDebug() << "QtLucide initialized with" << ICON_COUNT << "icons";
     return true;
 }
@@ -134,13 +144,13 @@ QByteArray QtLucide::svgData(Icons iconId) const
     if (iconName.isEmpty()) {
         return QByteArray();
     }
-    
+
     return svgData(iconName);
 }
 
 QByteArray QtLucide::svgData(const QString& name) const
 {
-    QString resourcePath = QString(":/lucide/%1.svg").arg(name);
+    QString resourcePath = QString(":/lucide/%1").arg(name);
     QFile file(resourcePath);
 
     if (!file.open(QIODevice::ReadOnly)) {
@@ -153,23 +163,25 @@ QByteArray QtLucide::svgData(const QString& name) const
 
 QStringList QtLucide::availableIcons() const
 {
-    return m_nameToIconMap.keys();
+    QStringList icons = m_nameToIconMap.keys();
+    icons.sort();
+    return icons;
 }
 
 void QtLucide::resetDefaultOptions()
 {
     m_defaultOptions.clear();
-    
+
     // Set default colors based on application palette
     QPalette palette = QApplication::palette();
-    
+
     m_defaultOptions["color"] = palette.color(QPalette::Normal, QPalette::Text);
     m_defaultOptions["color-disabled"] = palette.color(QPalette::Disabled, QPalette::Text);
     m_defaultOptions["color-active"] = palette.color(QPalette::Active, QPalette::Text);
     m_defaultOptions["color-selected"] = palette.color(QPalette::Active, QPalette::Text);
-    
+
     m_defaultOptions["scale-factor"] = 0.9;
-    
+
     emit defaultOptionsReset();
 }
 
