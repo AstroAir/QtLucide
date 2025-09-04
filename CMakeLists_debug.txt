@@ -1,0 +1,32 @@
+cmake_minimum_required(VERSION 3.16)
+project(QtLucideGalleryDebug)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets Svg)
+
+# Include QtLucide headers
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/examples/gallery)
+
+# Add QtLucide library
+add_subdirectory(src)
+
+# Create debug executable
+add_executable(QtLucideGalleryDebug 
+    debug_gallery.cpp
+    examples/gallery/IconMetadataManager.cpp
+)
+
+target_link_libraries(QtLucideGalleryDebug 
+    Qt6::Core 
+    Qt6::Widgets 
+    Qt6::Svg
+    QtLucide
+)
+
+# Copy to build directory for easier execution
+set_target_properties(QtLucideGalleryDebug PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+)

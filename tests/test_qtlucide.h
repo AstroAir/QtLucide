@@ -5,21 +5,20 @@
 #ifndef TEST_QTLUCIDE_H
 #define TEST_QTLUCIDE_H
 
-#include <QtTest/QtTest>
 #include <QObject>
+#include <QtTest/QtTest>
 
 namespace lucide {
 class QtLucide;
 }
 
-class TestQtLucide : public QObject
-{
+class TestQtLucide : public QObject {
     Q_OBJECT
 
 private slots:
     void initTestCase();
     void cleanupTestCase();
-    
+
     void testInitialization();
     void testIconCreation();
     void testIconByName();

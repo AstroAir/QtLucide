@@ -33,22 +33,22 @@ GalleryMainWindow::GalleryMainWindow(QWidget *parent)
 {
     setWindowTitle("QtLucide Gallery - Icon Browser");
     setMinimumSize(1000, 700);
-    
+
     // Initialize core components
     initializeIconSystem();
-    
+
     // Setup UI
     setupUI();
     setupConnections();
-    
+
     // Load settings and restore state
     loadSettings();
-    
+
     // Setup status update timer
     m_statusUpdateTimer->setSingleShot(true);
     m_statusUpdateTimer->setInterval(500);
     connect(m_statusUpdateTimer, &QTimer::timeout, this, &GalleryMainWindow::updateStatusBar);
-    
+
     // Set application icon
     setupApplicationIcon();
 }
@@ -63,27 +63,27 @@ void GalleryMainWindow::initializeIconSystem()
     // Create QtLucide instance
     m_lucide = new lucide::QtLucide(this);
     if (!m_lucide->initLucide()) {
-        QMessageBox::critical(this, "Initialization Error", 
+        QMessageBox::critical(this, "Initialization Error",
                             "Failed to initialize QtLucide icon system.");
         return;
     }
-    
+
     // Create metadata manager
     m_metadataManager = new IconMetadataManager(this);
-    
+
     // Connect metadata manager signals
     connect(m_metadataManager, &IconMetadataManager::metadataLoaded,
             this, &GalleryMainWindow::onIconsLoaded);
     connect(m_metadataManager, &IconMetadataManager::metadataLoadFailed,
             this, [this](const QString& error) {
-                QMessageBox::warning(this, "Loading Error", 
+                QMessageBox::warning(this, "Loading Error",
                                     QString("Failed to load icon metadata: %1").arg(error));
             });
     connect(m_metadataManager, &IconMetadataManager::filteredIconsChanged,
             this, [this](const QStringList& iconNames) {
                 onFilteredIconsChanged(iconNames.size(), m_metadataManager->getTotalIconCount());
             });
-    
+
     // Start loading metadata
     m_metadataManager->loadMetadata();
 }
@@ -102,87 +102,87 @@ void GalleryMainWindow::createActions()
     // File menu actions
     m_aboutAction = new QAction("&About QtLucide Gallery", this);
     m_aboutAction->setStatusTip("Show information about QtLucide Gallery");
-    
+
     m_aboutQtAction = new QAction("About &Qt", this);
     m_aboutQtAction->setStatusTip("Show information about Qt");
-    
+
     m_preferencesAction = new QAction("&Preferences...", this);
     m_preferencesAction->setShortcut(QKeySequence::Preferences);
     m_preferencesAction->setStatusTip("Open application preferences");
-    
+
     m_exitAction = new QAction("E&xit", this);
     m_exitAction->setShortcut(QKeySequence::Quit);
     m_exitAction->setStatusTip("Exit the application");
-    
+
     // View menu actions
     m_fullscreenAction = new QAction("&Fullscreen", this);
     m_fullscreenAction->setShortcut(QKeySequence::FullScreen);
     m_fullscreenAction->setCheckable(true);
     m_fullscreenAction->setStatusTip("Toggle fullscreen mode");
-    
+
     m_toggleSidebarAction = new QAction("Show &Sidebar", this);
     m_toggleSidebarAction->setShortcut(QKeySequence("Ctrl+Shift+S"));
     m_toggleSidebarAction->setCheckable(true);
     m_toggleSidebarAction->setChecked(true);
     m_toggleSidebarAction->setStatusTip("Toggle category filter sidebar");
-    
+
     m_toggleDetailsPanelAction = new QAction("Show &Details Panel", this);
     m_toggleDetailsPanelAction->setShortcut(QKeySequence("Ctrl+Shift+D"));
     m_toggleDetailsPanelAction->setCheckable(true);
     m_toggleDetailsPanelAction->setChecked(true);
     m_toggleDetailsPanelAction->setStatusTip("Toggle icon details panel");
-    
+
     m_toggleStatusBarAction = new QAction("Show Status &Bar", this);
     m_toggleStatusBarAction->setCheckable(true);
     m_toggleStatusBarAction->setChecked(true);
     m_toggleStatusBarAction->setStatusTip("Toggle status bar");
-    
+
     // Grid size actions
     m_gridSizeActionGroup = new QActionGroup(this);
     QAction* smallGridAction = new QAction("&Small Icons", m_gridSizeActionGroup);
     QAction* mediumGridAction = new QAction("&Medium Icons", m_gridSizeActionGroup);
     QAction* largeGridAction = new QAction("&Large Icons", m_gridSizeActionGroup);
-    
+
     smallGridAction->setCheckable(true);
     mediumGridAction->setCheckable(true);
     largeGridAction->setCheckable(true);
     mediumGridAction->setChecked(true);
-    
+
     smallGridAction->setData(32);
     mediumGridAction->setData(64);
     largeGridAction->setData(96);
-    
+
     // Export/Import actions
     m_exportAction = new QAction("&Export Icons...", this);
     m_exportAction->setStatusTip("Export selected icons");
-    
+
     m_importFavoritesAction = new QAction("&Import Favorites...", this);
     m_importFavoritesAction->setStatusTip("Import favorites from file");
-    
+
     m_exportFavoritesAction = new QAction("Export &Favorites...", this);
     m_exportFavoritesAction->setStatusTip("Export favorites to file");
-    
+
     // Icon actions
     m_copyNameAction = new QAction("Copy &Name", this);
     m_copyNameAction->setShortcut(QKeySequence("Ctrl+C"));
     m_copyNameAction->setStatusTip("Copy icon name to clipboard");
     m_copyNameAction->setEnabled(false);
-    
+
     m_copyCodeAction = new QAction("Copy &Code", this);
     m_copyCodeAction->setShortcut(QKeySequence("Ctrl+Shift+C"));
     m_copyCodeAction->setStatusTip("Copy icon code to clipboard");
     m_copyCodeAction->setEnabled(false);
-    
+
     m_copySvgAction = new QAction("Copy &SVG", this);
     m_copySvgAction->setShortcut(QKeySequence("Ctrl+Alt+C"));
     m_copySvgAction->setStatusTip("Copy icon SVG to clipboard");
     m_copySvgAction->setEnabled(false);
-    
+
     m_toggleFavoriteAction = new QAction("Add to &Favorites", this);
     m_toggleFavoriteAction->setShortcut(QKeySequence("Ctrl+F"));
     m_toggleFavoriteAction->setStatusTip("Toggle favorite status");
     m_toggleFavoriteAction->setEnabled(false);
-    
+
     m_clearFiltersAction = new QAction("&Clear All Filters", this);
     m_clearFiltersAction->setShortcut(QKeySequence("Ctrl+Shift+X"));
     m_clearFiltersAction->setStatusTip("Clear all search filters");
@@ -200,7 +200,7 @@ void GalleryMainWindow::setupMenuBar()
     fileMenu->addAction(m_preferencesAction);
     fileMenu->addSeparator();
     fileMenu->addAction(m_exitAction);
-    
+
     // Edit menu
     QMenu* editMenu = menuBar()->addMenu("&Edit");
     editMenu->addAction(m_copyNameAction);
@@ -210,7 +210,7 @@ void GalleryMainWindow::setupMenuBar()
     editMenu->addAction(m_toggleFavoriteAction);
     editMenu->addSeparator();
     editMenu->addAction(m_clearFiltersAction);
-    
+
     // View menu
     QMenu* viewMenu = menuBar()->addMenu("&View");
     viewMenu->addAction(m_toggleSidebarAction);
@@ -219,12 +219,12 @@ void GalleryMainWindow::setupMenuBar()
     viewMenu->addSeparator();
     viewMenu->addAction(m_fullscreenAction);
     viewMenu->addSeparator();
-    
+
     QMenu* gridSizeMenu = viewMenu->addMenu("Icon &Size");
     for (QAction* action : m_gridSizeActionGroup->actions()) {
         gridSizeMenu->addAction(action);
     }
-    
+
     // Help menu
     QMenu* helpMenu = menuBar()->addMenu("&Help");
     helpMenu->addAction(m_aboutAction);
@@ -236,7 +236,7 @@ void GalleryMainWindow::setupToolBar()
     m_mainToolBar = addToolBar("Main");
     m_mainToolBar->setObjectName("MainToolBar");
     m_mainToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    
+
     // Add main actions to toolbar
     m_mainToolBar->addAction(m_copyNameAction);
     m_mainToolBar->addAction(m_copyCodeAction);
@@ -245,14 +245,14 @@ void GalleryMainWindow::setupToolBar()
     m_mainToolBar->addAction(m_toggleFavoriteAction);
     m_mainToolBar->addSeparator();
     m_mainToolBar->addAction(m_clearFiltersAction);
-    
+
     // View toolbar
     m_viewToolBar = addToolBar("View");
     m_viewToolBar->setObjectName("ViewToolBar");
     m_viewToolBar->addAction(m_toggleSidebarAction);
     m_viewToolBar->addAction(m_toggleDetailsPanelAction);
     m_viewToolBar->addSeparator();
-    
+
     // Add grid size controls
     for (QAction* action : m_gridSizeActionGroup->actions()) {
         m_viewToolBar->addAction(action);
@@ -266,11 +266,11 @@ void GalleryMainWindow::setupStatusBar()
     m_progressBar = new QProgressBar(this);
     m_progressBar->setVisible(false);
     m_progressBar->setMaximumWidth(200);
-    
+
     statusBar()->addWidget(m_statusLabel, 1);
     statusBar()->addPermanentWidget(m_progressBar);
     statusBar()->addPermanentWidget(m_iconCountLabel);
-    
+
     updateStatusBar();
 }
 
@@ -278,52 +278,52 @@ void GalleryMainWindow::setupCentralWidget()
 {
     m_centralWidget = new QWidget(this);
     setCentralWidget(m_centralWidget);
-    
+
     // Create main horizontal splitter
     m_mainSplitter = new QSplitter(Qt::Horizontal, this);
-    
+
     // Create search widget
     m_searchWidget = new SearchWidget(m_metadataManager, this);
-    
+
     // Create category filter
     m_categoryFilter = new CategoryFilterWidget(m_metadataManager, this);
-    
+
     // Create icon grid
     m_iconGrid = new IconGridWidget(m_lucide, m_metadataManager, this);
-    
+
     // Create details panel
     m_detailsPanel = new IconDetailsPanel(m_lucide, m_metadataManager, this);
-    
+
     // Create right splitter for grid and details
     m_rightSplitter = new QSplitter(Qt::Vertical, this);
-    
+
     // Setup layout
     QVBoxLayout* leftLayout = new QVBoxLayout();
     leftLayout->addWidget(m_searchWidget);
     leftLayout->addWidget(m_categoryFilter, 1);
-    
+
     QWidget* leftWidget = new QWidget();
     leftWidget->setLayout(leftLayout);
     leftWidget->setMaximumWidth(300);
     leftWidget->setMinimumWidth(250);
-    
+
     QVBoxLayout* centerLayout = new QVBoxLayout();
     centerLayout->setContentsMargins(0, 0, 0, 0);
     centerLayout->addWidget(m_iconGrid, 1);
-    
+
     QWidget* centerWidget = new QWidget();
     centerWidget->setLayout(centerLayout);
-    
+
     m_rightSplitter->addWidget(centerWidget);
     m_rightSplitter->addWidget(m_detailsPanel);
     m_rightSplitter->setStretchFactor(0, 1);
     m_rightSplitter->setStretchFactor(1, 0);
-    
+
     m_mainSplitter->addWidget(leftWidget);
     m_mainSplitter->addWidget(m_rightSplitter);
     m_mainSplitter->setStretchFactor(0, 0);
     m_mainSplitter->setStretchFactor(1, 1);
-    
+
     QVBoxLayout* mainLayout = new QVBoxLayout(m_centralWidget);
     mainLayout->setContentsMargins(4, 4, 4, 4);
     mainLayout->addWidget(m_mainSplitter);

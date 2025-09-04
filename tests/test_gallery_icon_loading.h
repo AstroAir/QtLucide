@@ -5,8 +5,8 @@
 #ifndef TEST_GALLERY_ICON_LOADING_H
 #define TEST_GALLERY_ICON_LOADING_H
 
-#include <QtTest/QtTest>
 #include <QObject>
+#include <QtTest/QtTest>
 
 namespace lucide {
 class QtLucide;
@@ -14,14 +14,13 @@ class QtLucide;
 
 class IconMetadataManager;
 
-class TestGalleryIconLoading : public QObject
-{
+class TestGalleryIconLoading : public QObject {
     Q_OBJECT
 
 private slots:
     void initTestCase();
     void cleanupTestCase();
-    
+
     void testMetadataManagerInitialization();
     void testMetadataLoading();
     void testIconItemCreation();

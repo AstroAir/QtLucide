@@ -1,13 +1,19 @@
 # QtLucide .gitignore
 
-# Build directories
+# =============================================================================
+# Build directories and artifacts
+# =============================================================================
 build/
 build-*/
 *-build/
 debug/
 release/
+dist/
+out/
 
+# =============================================================================
 # CMake generated files
+# =============================================================================
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
@@ -15,8 +21,19 @@ Makefile
 *.cmake
 !CMakeLists.txt
 !cmake/*.cmake.in
+install_manifest.txt
+compile_commands.json
 
+# =============================================================================
+# xmake build system
+# =============================================================================
+.xmake/
+build/
+.build/
+
+# =============================================================================
 # Qt generated files
+# =============================================================================
 *.pro.user
 *.pro.user.*
 *.qbs.user
@@ -28,13 +45,19 @@ qrc_*.cpp
 ui_*.h
 *.qm
 *.prl
+*.rcc
 
+# =============================================================================
 # Qt Creator
+# =============================================================================
 *.autosave
 *.user
 *.user.*
+CMakeLists.txt.user*
 
+# =============================================================================
 # Visual Studio / VS Code
+# =============================================================================
 .vs/
 .vscode/
 *.vcxproj
@@ -45,7 +68,23 @@ ui_*.h
 *.user
 *.userosscache
 *.sln.docstates
+*.VC.db
+*.VC.VC.opendb
 
+# =============================================================================
+# Other IDEs
+# =============================================================================
+.idea/
+*.iml
+*.ipr
+*.iws
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# =============================================================================
+# Compiled files
+# =============================================================================
 # Prerequisites
 *.d
 
@@ -70,6 +109,7 @@ ui_*.h
 
 # Compiled Dynamic libraries
 *.so
+*.so.*
 *.dylib
 *.dll
 
@@ -96,15 +136,9 @@ ui_*.h
 *.dSYM/
 *.su
 
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
-
+# =============================================================================
+# System and temporary files
+# =============================================================================
 # Temporary files
 *~
 *.tmp
@@ -114,28 +148,6 @@ dkms.conf
 *.bak
 *.orig
 *.rej
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# Python cache (for build tools)
-__pycache__/
-*.py[cod]
-*$py.class
-.Python
-env/
-venv/
-.venv/
-pip-log.txt
-pip-delete-this-directory.txt
-
-# IDE files
-*.sublime-project
-*.sublime-workspace
-.idea/
-*.iml
-*.ipr
-*.iws
 
 # OS generated files
 .DS_Store
@@ -144,11 +156,132 @@ pip-delete-this-directory.txt
 .Spotlight-V100
 .Trashes
 ehthumbs.db
+Thumbs.db
+desktop.ini
 
-# Logs
+# Core dumps
+core
+core.*
+*.core
+*.stackdump
+
+# =============================================================================
+# Python (for build tools and scripts)
+# =============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.pyc
+*.pyo
+*.pyd
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+env/
+venv/
+.venv/
+.env
+ENV/
+env.bak/
+venv.bak/
+
+# Python tools
+pip-log.txt
+pip-delete-this-directory.txt
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# =============================================================================
+# Node.js (for documentation tools)
+# =============================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+package-lock.json
+yarn.lock
+
+# =============================================================================
+# Documentation
+# =============================================================================
+# Generated documentation
+doc/html/
+doc/latex/
+docs/site/
+site/
+*.qhc
+*.qch
+
+# MkDocs
+/site
+
+# Doxygen
+html/
+latex/
+
+# =============================================================================
+# Testing and profiling
+# =============================================================================
+# Test results
+Testing/
+test_results/
+*.xml
+*.junit
+.pytest_cache/
+
+# Coverage reports
+*.gcov
+*.gcda
+*.gcno
+lcov.info
+coverage/
+
+# Profiling data
+*.prof
+gmon.out
+callgrind.out.*
+*.trace
+
+# =============================================================================
+# Logs and debugging
+# =============================================================================
 *.log
+*.log.*
+debug_*.py
+debug_*.cpp
+debug_*.h
 
-# Package files
+# =============================================================================
+# Archives and packages
+# =============================================================================
 *.7z
 *.dmg
 *.gz
@@ -157,33 +290,39 @@ ehthumbs.db
 *.rar
 *.tar
 *.zip
+*.bz2
+*.xz
 
-# Generated documentation
-doc/html/
-doc/latex/
-*.qhc
-*.qch
-
-# Test results
-Testing/
-test_results/
-*.xml
-
-# Temporary cloned repositories (used during build)
+# =============================================================================
+# Caches and temporary directories
+# =============================================================================
+.cache/
+.augment/
 temp_*/
+tmp/
+.tmp/
 
-# Debug scripts
-debug_*.py
-debug_*.cpp
-debug_*.h
-
-# Backup files
-*.backup
-
+# =============================================================================
+# Configuration and local files
+# =============================================================================
 # Local configuration
 local.pri
 .qmake.cache
 .qmake.stash
+*.backup
 
-.cache/
-.xmake/
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# =============================================================================
+# Kernel Module Compile Results
+# =============================================================================
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf

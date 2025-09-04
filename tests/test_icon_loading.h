@@ -5,21 +5,20 @@
 #ifndef TEST_ICON_LOADING_H
 #define TEST_ICON_LOADING_H
 
-#include <QtTest/QtTest>
 #include <QObject>
+#include <QtTest/QtTest>
 
 namespace lucide {
 class QtLucide;
 }
 
-class TestIconLoading : public QObject
-{
+class TestIconLoading : public QObject {
     Q_OBJECT
 
 private slots:
     void initTestCase();
     void cleanupTestCase();
-    
+
     void testSvgDataLoading();
     void testSvgDataValidity();
     void testIconPixmapGeneration();

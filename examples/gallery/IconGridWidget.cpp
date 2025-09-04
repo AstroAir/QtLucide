@@ -29,9 +29,9 @@ QVariant IconGridModel::data(const QModelIndex &index, int role) const
     if (!index.isValid() || index.row() >= m_iconNames.size()) {
         return QVariant();
     }
-    
+
     const QString iconName = m_iconNames.at(index.row());
-    
+
     switch (role) {
     case Qt::DisplayRole:
         return iconName;
@@ -48,7 +48,7 @@ QVariant IconGridModel::data(const QModelIndex &index, int role) const
         }
         break;
     }
-    
+
     return QVariant();
 }
 
@@ -90,6 +90,11 @@ QString IconGridModel::iconNameAt(int index) const
     return QString();
 }
 
+QStringList IconGridModel::iconNames() const
+{
+    return m_iconNames;
+}
+
 void IconGridModel::refreshData()
 {
     beginResetModel();
@@ -105,64 +110,64 @@ IconGridDelegate::IconGridDelegate(QObject *parent)
 {
 }
 
-void IconGridDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
+void IconGridDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                            const QModelIndex &index) const
 {
     if (!index.isValid()) {
         return;
     }
-    
+
     painter->save();
-    
+
     QRect rect = option.rect;
     QString iconName = index.data(IconGridModel::IconNameRole).toString();
     QIcon icon = index.data(Qt::DecorationRole).value<QIcon>();
     bool selected = option.state & QStyle::State_Selected;
     bool favorite = index.data(IconGridModel::IsFavoriteRole).toBool();
-    
+
     // Draw background
     if (selected) {
         painter->fillRect(rect, option.palette.highlight());
     } else if (option.state & QStyle::State_MouseOver) {
         painter->fillRect(rect, option.palette.alternateBase());
     }
-    
+
     // Draw icon
     QRect iconRect = getIconRect(rect);
     if (!icon.isNull()) {
         icon.paint(painter, iconRect);
     }
-    
+
     // Draw icon name
     if (m_showIconNames) {
         QRect nameRect = getNameRect(rect);
         painter->setPen(selected ? option.palette.highlightedText().color() : option.palette.text().color());
         painter->drawText(nameRect, Qt::AlignCenter | Qt::TextWordWrap, iconName);
     }
-    
+
     // Draw favorite indicator
     if (favorite) {
         QRect favRect = getFavoriteRect(rect);
         painter->setPen(Qt::yellow);
         painter->drawText(favRect, Qt::AlignCenter, "★");
     }
-    
+
     painter->restore();
 }
 
-QSize IconGridDelegate::sizeHint(const QStyleOptionViewItem &option, 
+QSize IconGridDelegate::sizeHint(const QStyleOptionViewItem &option,
                                const QModelIndex &index) const
 {
     Q_UNUSED(option)
     Q_UNUSED(index)
-    
+
     int width = m_iconSize + 2 * ITEM_MARGIN;
     int height = m_iconSize + 2 * ITEM_MARGIN;
-    
+
     if (m_showIconNames) {
         height += TEXT_HEIGHT;
     }
-    
+
     return QSize(width, height);
 }
 
@@ -191,7 +196,7 @@ QRect IconGridDelegate::getIconRect(const QRect &itemRect) const
 QRect IconGridDelegate::getNameRect(const QRect &itemRect) const
 {
     int y = itemRect.y() + ITEM_MARGIN + m_iconSize;
-    return QRect(itemRect.x() + ITEM_MARGIN, y, 
+    return QRect(itemRect.x() + ITEM_MARGIN, y,
                  itemRect.width() - 2 * ITEM_MARGIN, TEXT_HEIGHT);
 }
 
@@ -218,7 +223,7 @@ IconGridWidget::IconGridWidget(lucide::QtLucide* lucide,
     setupUI();
     setupModel();
     setupView();
-    
+
     m_updateTimer->setSingleShot(true);
     m_updateTimer->setInterval(UPDATE_DELAY);
     connect(m_updateTimer, &QTimer::timeout, this, &IconGridWidget::updateVisibleItems);
@@ -232,17 +237,17 @@ void IconGridWidget::setupUI()
 {
     m_layout = new QVBoxLayout(this);
     m_layout->setContentsMargins(0, 0, 0, 0);
-    
+
     m_listView = new QListView(this);
     m_listView->setViewMode(QListView::IconMode);
     m_listView->setResizeMode(QListView::Adjust);
     m_listView->setUniformItemSizes(true);
     m_listView->setSelectionMode(QAbstractItemView::SingleSelection);
-    
+
     m_emptyLabel = new QLabel("No icons to display", this);
     m_emptyLabel->setAlignment(Qt::AlignCenter);
     m_emptyLabel->setVisible(false);
-    
+
     m_layout->addWidget(m_listView);
     m_layout->addWidget(m_emptyLabel);
 }
@@ -260,10 +265,10 @@ void IconGridWidget::setupView()
     m_delegate = new IconGridDelegate(this);
     m_delegate->setIconSize(m_iconSize);
     m_delegate->setShowIconNames(m_showIconNames);
-    
+
     m_listView->setModel(m_model);
     m_listView->setItemDelegate(m_delegate);
-    
+
     connect(m_listView->selectionModel(), &QItemSelectionModel::currentChanged,
             this, &IconGridWidget::onSelectionChanged);
     connect(m_listView, &QListView::doubleClicked,
@@ -280,7 +285,7 @@ void IconGridWidget::setIconNames(const QStringList& iconNames)
     m_model->setIconNames(iconNames);
     m_emptyLabel->setVisible(iconNames.isEmpty());
     m_listView->setVisible(!iconNames.isEmpty());
-    
+
     if (!iconNames.isEmpty()) {
         m_listView->scrollToTop();
     }
@@ -288,7 +293,7 @@ void IconGridWidget::setIconNames(const QStringList& iconNames)
 
 QStringList IconGridWidget::iconNames() const
 {
-    return m_model->property("iconNames").toStringList();
+    return m_model->iconNames();
 }
 
 void IconGridWidget::setIconSize(int size)

@@ -9,6 +9,10 @@ set(TEST_SOURCES
     test_icon_loading.cpp
     test_svg_rendering.cpp
     test_gallery_icon_loading.cpp
+    test_error_handling.cpp
+    test_thread_safety.cpp
+    test_boundary_conditions.cpp
+    test_memory_management.cpp
     ../examples/gallery/IconMetadataManager.cpp
     ../examples/gallery/IconItem.cpp
 )
@@ -19,6 +23,10 @@ set(TEST_HEADERS
     test_icon_loading.h
     test_svg_rendering.h
     test_gallery_icon_loading.h
+    test_error_handling.h
+    test_thread_safety.h
+    test_boundary_conditions.h
+    test_memory_management.h
     ../examples/gallery/IconMetadataManager.h
     ../examples/gallery/IconItem.h
 )

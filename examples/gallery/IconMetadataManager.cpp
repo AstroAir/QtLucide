@@ -69,38 +69,38 @@ bool IconMetadataManager::loadIconsMetadata()
 
     QJsonObject root = doc.object();
     QJsonObject icons = root["icons"].toObject();
-    
+
     m_iconMetadata.clear();
     m_iconMetadata.reserve(icons.size());
-    
+
     for (auto it = icons.begin(); it != icons.end(); ++it) {
         const QString iconName = it.key();
         const QJsonObject iconData = it.value().toObject();
-        
+
         IconMetadata metadata(iconName);
         metadata.svgFile = iconData["svg_file"].toString();
-        
+
         // Load tags
         QJsonArray tagsArray = iconData["tags"].toArray();
         for (const QJsonValue& tag : tagsArray) {
             metadata.tags.append(tag.toString());
         }
-        
+
         // Load categories
         QJsonArray categoriesArray = iconData["categories"].toArray();
         for (const QJsonValue& category : categoriesArray) {
             metadata.categories.append(category.toString());
         }
-        
+
         // Load contributors
         QJsonArray contributorsArray = iconData["contributors"].toArray();
         for (const QJsonValue& contributor : contributorsArray) {
             metadata.contributors.append(contributor.toString());
         }
-        
+
         m_iconMetadata[iconName] = metadata;
     }
-    
+
     qDebug() << "Loaded metadata for" << m_iconMetadata.size() << "icons";
     return true;
 }
@@ -116,20 +116,20 @@ bool IconMetadataManager::loadCategoriesMetadata()
     QJsonObject root = doc.object();
     m_categories.clear();
     m_allCategories.clear();
-    
+
     for (auto it = root.begin(); it != root.end(); ++it) {
         const QString category = it.key();
         const QJsonArray iconsArray = it.value().toArray();
-        
+
         QStringList iconNames;
         for (const QJsonValue& iconValue : iconsArray) {
             iconNames.append(iconValue.toString());
         }
-        
+
         m_categories[category] = iconNames;
         m_allCategories.append(category);
     }
-    
+
     m_allCategories.sort();
     qDebug() << "Loaded" << m_categories.size() << "categories";
     return true;
@@ -146,20 +146,20 @@ bool IconMetadataManager::loadTagsMetadata()
     QJsonObject root = doc.object();
     m_tagToIcons.clear();
     m_allTags.clear();
-    
+
     for (auto it = root.begin(); it != root.end(); ++it) {
         const QString tag = it.key();
         const QJsonArray iconsArray = it.value().toArray();
-        
+
         QStringList iconNames;
         for (const QJsonValue& iconValue : iconsArray) {
             iconNames.append(iconValue.toString());
         }
-        
+
         m_tagToIcons[tag] = iconNames;
         m_allTags.append(tag);
     }
-    
+
     m_allTags.sort();
     qDebug() << "Loaded" << m_tagToIcons.size() << "tags";
     return true;
@@ -190,17 +190,17 @@ QString IconMetadataManager::createSearchText(const IconMetadata& metadata) cons
     searchTerms << metadata.displayName;
     searchTerms << metadata.tags;
     searchTerms << metadata.categories;
-    
+
     return searchTerms.join(" ").toLower();
 }
 
 QString IconMetadataManager::createDisplayName(const QString& iconName) const
 {
     QString displayName = iconName;
-    
+
     // Replace hyphens and underscores with spaces
     displayName.replace(QRegularExpression("[-_]"), " ");
-    
+
     // Capitalize first letter of each word
     QStringList words = displayName.split(" ", Qt::SkipEmptyParts);
     for (QString& word : words) {
@@ -208,7 +208,7 @@ QString IconMetadataManager::createDisplayName(const QString& iconName) const
             word[0] = word[0].toUpper();
         }
     }
-    
+
     return words.join(" ");
 }
 
@@ -219,22 +219,22 @@ QJsonDocument IconMetadataManager::loadJsonFile(const QString& resourcePath) con
         qWarning() << "Failed to open" << resourcePath;
         return QJsonDocument();
     }
-    
+
     QJsonParseError error;
     QJsonDocument doc = QJsonDocument::fromJson(file.readAll(), &error);
-    
+
     if (error.error != QJsonParseError::NoError) {
         qWarning() << "JSON parse error in" << resourcePath << ":" << error.errorString();
         return QJsonDocument();
     }
-    
+
     return doc;
 }
 
 void IconMetadataManager::onMetadataLoadFinished()
 {
     bool success = m_loadWatcher->result();
-    
+
     if (success) {
         m_isLoaded = true;
         emit metadataLoaded(m_iconMetadata.size());
@@ -272,20 +272,20 @@ IconMetadata IconMetadataManager::getIconMetadata(const QString& iconName) const
 QStringList IconMetadataManager::searchIcons(const IconFilterCriteria& criteria) const
 {
     QMutexLocker locker(&m_dataMutex);
-    
+
     QStringList results;
-    
+
     for (auto it = m_iconMetadata.begin(); it != m_iconMetadata.end(); ++it) {
         const QString& iconName = it.key();
         const IconMetadata& metadata = it.value();
-        
+
         // Apply search text filter
         if (!criteria.searchText.isEmpty()) {
             if (!metadata.matchesSearch(criteria.searchText)) {
                 continue;
             }
         }
-        
+
         // Apply category filter
         if (!criteria.categories.isEmpty()) {
             bool hasMatchingCategory = false;
@@ -299,7 +299,7 @@ QStringList IconMetadataManager::searchIcons(const IconFilterCriteria& criteria)
                 continue;
             }
         }
-        
+
         // Apply tag filter
         if (!criteria.tags.isEmpty()) {
             bool hasMatchingTag = false;
@@ -313,20 +313,20 @@ QStringList IconMetadataManager::searchIcons(const IconFilterCriteria& criteria)
                 continue;
             }
         }
-        
+
         // Apply favorites filter
         if (criteria.favoritesOnly && !metadata.isFavorite) {
             continue;
         }
-        
+
         // Apply recently used filter
         if (criteria.recentlyUsedOnly && !m_recentlyUsed.contains(iconName)) {
             continue;
         }
-        
+
         results.append(iconName);
     }
-    
+
     // Sort results
     results = sortIcons(results, criteria.sortOrder, criteria.sortAscending);
 

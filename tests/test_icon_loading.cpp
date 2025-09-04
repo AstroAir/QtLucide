@@ -10,22 +10,17 @@
 
 #include <QtLucide/QtLucide.h>
 
-
-
-void TestIconLoading::initTestCase()
-{
+void TestIconLoading::initTestCase() {
     m_lucide = new lucide::QtLucide(this);
     QVERIFY(m_lucide->initLucide());
 }
 
-void TestIconLoading::cleanupTestCase()
-{
+void TestIconLoading::cleanupTestCase() {
     delete m_lucide;
     m_lucide = nullptr;
 }
 
-void TestIconLoading::testSvgDataLoading()
-{
+void TestIconLoading::testSvgDataLoading() {
     // Test loading SVG data by name
     QByteArray svgData = m_lucide->svgData("activity");
     QVERIFY(!svgData.isEmpty());
@@ -38,8 +33,7 @@ void TestIconLoading::testSvgDataLoading()
     QCOMPARE(svgData, svgData2);
 }
 
-void TestIconLoading::testSvgDataValidity()
-{
+void TestIconLoading::testSvgDataValidity() {
     QStringList testIcons = {"activity", "circle-alert", "house", "settings"};
 
     for (const QString& iconName : testIcons) {
@@ -57,8 +51,7 @@ void TestIconLoading::testSvgDataValidity()
     }
 }
 
-void TestIconLoading::testIconPixmapGeneration()
-{
+void TestIconLoading::testIconPixmapGeneration() {
     QIcon icon = m_lucide->icon("activity");
     QVERIFY(!icon.isNull());
 
@@ -86,8 +79,7 @@ void TestIconLoading::testIconPixmapGeneration()
     }
 }
 
-void TestIconLoading::testIconScaling()
-{
+void TestIconLoading::testIconScaling() {
     // Test with different scale factors
     QVariantMap options;
     options["scale-factor"] = 0.5;
@@ -102,8 +94,7 @@ void TestIconLoading::testIconScaling()
     QVERIFY(pixmap.height() >= 64 && pixmap.height() <= 192);
 }
 
-void TestIconLoading::testIconModes()
-{
+void TestIconLoading::testIconModes() {
     QIcon icon = m_lucide->icon("activity");
     QVERIFY(!icon.isNull());
 
@@ -119,8 +110,7 @@ void TestIconLoading::testIconModes()
     QVERIFY(!selectedPixmap.isNull());
 }
 
-void TestIconLoading::testResourceAccess()
-{
+void TestIconLoading::testResourceAccess() {
     // Test that we can access resources directly
     QStringList availableIcons = m_lucide->availableIcons();
     QVERIFY(availableIcons.size() > 100);
@@ -136,5 +126,3 @@ void TestIconLoading::testResourceAccess()
         QVERIFY2(!icon.isNull(), qPrintable(QString("Failed to create icon: %1").arg(iconName)));
     }
 }
-
-

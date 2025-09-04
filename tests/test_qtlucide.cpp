@@ -9,33 +9,27 @@
 
 #include <QtLucide/QtLucide.h>
 
-
-
-void TestQtLucide::initTestCase()
-{
+void TestQtLucide::initTestCase() {
     m_lucide = new lucide::QtLucide(this);
 }
 
-void TestQtLucide::cleanupTestCase()
-{
+void TestQtLucide::cleanupTestCase() {
     delete m_lucide;
     m_lucide = nullptr;
 }
 
-void TestQtLucide::testInitialization()
-{
+void TestQtLucide::testInitialization() {
     QVERIFY(m_lucide != nullptr);
     QVERIFY(m_lucide->initLucide());
 
     // Test that we have the expected number of icons
     QStringList icons = m_lucide->availableIcons();
-    QVERIFY(icons.size() > 1000);  // Should have 1634 icons
+    QVERIFY(icons.size() > 1000); // Should have 1634 icons
     QVERIFY(icons.contains("activity"));
     QVERIFY(icons.contains("circle-alert"));
 }
 
-void TestQtLucide::testIconCreation()
-{
+void TestQtLucide::testIconCreation() {
     QVERIFY(m_lucide->initLucide());
 
     // Debug: Check if resource exists
@@ -64,7 +58,8 @@ void TestQtLucide::testIconCreation()
                 // Check svg subdirectory
                 QDir svgSubDir(":/lucide/resources/icons/svg");
                 if (svgSubDir.exists()) {
-                    qDebug() << "SVG subdirectory exists, first 10 entries:" << svgSubDir.entryList().mid(0, 10);
+                    qDebug() << "SVG subdirectory exists, first 10 entries:"
+                             << svgSubDir.entryList().mid(0, 10);
                 }
             }
         }
@@ -90,8 +85,7 @@ void TestQtLucide::testIconCreation()
     QVERIFY(pixmap.height() >= 32 && pixmap.height() <= 128);
 }
 
-void TestQtLucide::testIconByName()
-{
+void TestQtLucide::testIconByName() {
     QVERIFY(m_lucide->initLucide());
 
     // Test creating icon by string name
@@ -103,8 +97,7 @@ void TestQtLucide::testIconByName()
     QVERIFY(!icon2.isNull());
 }
 
-void TestQtLucide::testIconByEnum()
-{
+void TestQtLucide::testIconByEnum() {
     QVERIFY(m_lucide->initLucide());
 
     // Test creating icon by enum
@@ -115,8 +108,7 @@ void TestQtLucide::testIconByEnum()
     QVERIFY(!icon2.isNull());
 }
 
-void TestQtLucide::testDefaultOptions()
-{
+void TestQtLucide::testDefaultOptions() {
     QVERIFY(m_lucide->initLucide());
 
     // Test default options
@@ -128,8 +120,7 @@ void TestQtLucide::testDefaultOptions()
     QCOMPARE(scaleOption.toDouble(), 0.9);
 }
 
-void TestQtLucide::testCustomOptions()
-{
+void TestQtLucide::testCustomOptions() {
     QVERIFY(m_lucide->initLucide());
 
     // Test setting custom options
@@ -146,8 +137,7 @@ void TestQtLucide::testCustomOptions()
     QVERIFY(!icon.isNull());
 }
 
-void TestQtLucide::testAvailableIcons()
-{
+void TestQtLucide::testAvailableIcons() {
     QVERIFY(m_lucide->initLucide());
 
     QStringList icons = m_lucide->availableIcons();
@@ -162,8 +152,7 @@ void TestQtLucide::testAvailableIcons()
     QCOMPARE(icons, sortedIcons);
 }
 
-void TestQtLucide::testInvalidIcon()
-{
+void TestQtLucide::testInvalidIcon() {
     QVERIFY(m_lucide->initLucide());
 
     // Test with invalid icon name
@@ -174,5 +163,3 @@ void TestQtLucide::testInvalidIcon()
     QByteArray svgData = m_lucide->svgData("non-existent-icon");
     QVERIFY(svgData.isEmpty());
 }
-
-

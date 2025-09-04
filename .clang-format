@@ -116,7 +116,6 @@ ForEachMacros:
   - Q_FOREACH
   - BOOST_FOREACH
 IncludeBlocks: Preserve
-IndentCaseLabels: true
 IndentGotoLabels: true
 KeepEmptyLinesAtTheStartOfBlocks: false
 MacroBlockBegin: ''
@@ -125,5 +124,3 @@ MaxEmptyLinesToKeep: 1
 NamespaceIndentation: None
 PointerAlignment: Left
 ReflowComments: true
-SpaceAfterCStyleCast: false
-SpaceBeforeAssignmentOperators: true
