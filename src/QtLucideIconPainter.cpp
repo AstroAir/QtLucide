@@ -9,30 +9,24 @@
 #include "QtLucide/QtLucideIconPainter.h"
 #include "QtLucide/QtLucide.h"
 
-#include <QSvgRenderer>
-#include <QPainter>
 #include <QDebug>
+#include <QPainter>
 #include <QRegularExpression>
+#include <QSvgRenderer>
 
 namespace lucide {
 
-QtLucideIconPainter::~QtLucideIconPainter()
-{
-}
+QtLucideIconPainter::~QtLucideIconPainter() {}
 
 // QtLucideSvgIconPainter implementation
 
-QtLucideSvgIconPainter::QtLucideSvgIconPainter()
-{
-}
+QtLucideSvgIconPainter::QtLucideSvgIconPainter() {}
 
-QtLucideSvgIconPainter::~QtLucideSvgIconPainter()
-{
-}
+QtLucideSvgIconPainter::~QtLucideSvgIconPainter() {}
 
 void QtLucideSvgIconPainter::paint(QtLucide* lucide, QPainter* painter, const QRect& rect,
-                                  QIcon::Mode mode, QIcon::State state, const QVariantMap& options)
-{
+                                   QIcon::Mode mode, QIcon::State state,
+                                   const QVariantMap& options) {
     if (!lucide || !painter) {
         return;
     }
@@ -76,12 +70,8 @@ void QtLucideSvgIconPainter::paint(QtLucide* lucide, QPainter* painter, const QR
         int scaledWidth = static_cast<int>(rect.width() * scaleFactor);
         int scaledHeight = static_cast<int>(rect.height() * scaleFactor);
 
-        QRect scaledRect(
-            rect.x() + (rect.width() - scaledWidth) / 2,
-            rect.y() + (rect.height() - scaledHeight) / 2,
-            scaledWidth,
-            scaledHeight
-        );
+        QRect scaledRect(rect.x() + (rect.width() - scaledWidth) / 2,
+                         rect.y() + (rect.height() - scaledHeight) / 2, scaledWidth, scaledHeight);
 
         renderer.render(painter, scaledRect);
     } else {
@@ -89,8 +79,8 @@ void QtLucideSvgIconPainter::paint(QtLucide* lucide, QPainter* painter, const QR
     }
 }
 
-QStringList QtLucideSvgIconPainter::optionKeysForModeAndState(const QString& key, QIcon::Mode mode, QIcon::State state)
-{
+QStringList QtLucideSvgIconPainter::optionKeysForModeAndState(const QString& key, QIcon::Mode mode,
+                                                              QIcon::State state) {
     QString modePostfix;
     switch (mode) {
         case QIcon::Disabled:
@@ -127,9 +117,9 @@ QStringList QtLucideSvgIconPainter::optionKeysForModeAndState(const QString& key
     return result;
 }
 
-QVariant QtLucideSvgIconPainter::optionValueForModeAndState(const QString& baseKey, QIcon::Mode mode, QIcon::State state,
-                                                           const QVariantMap& options)
-{
+QVariant QtLucideSvgIconPainter::optionValueForModeAndState(const QString& baseKey,
+                                                            QIcon::Mode mode, QIcon::State state,
+                                                            const QVariantMap& options) {
     QStringList keys = optionKeysForModeAndState(baseKey, mode, state);
 
     for (const QString& key : keys) {
@@ -144,8 +134,8 @@ QVariant QtLucideSvgIconPainter::optionValueForModeAndState(const QString& baseK
     return QVariant();
 }
 
-QByteArray QtLucideSvgIconPainter::processColorizedSvg(const QByteArray& svgData, const QColor& color)
-{
+QByteArray QtLucideSvgIconPainter::processColorizedSvg(const QByteArray& svgData,
+                                                       const QColor& color) {
     QString svgString = QString::fromUtf8(svgData);
 
     // Replace stroke="currentColor" with the actual color

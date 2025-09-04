@@ -14,14 +14,14 @@
 #ifndef QTLUCIDE_H
 #define QTLUCIDE_H
 
+#include <QHash>
 #include <QIcon>
 #include <QObject>
-#include <QVariantMap>
-#include <QHash>
 #include <QString>
+#include <QVariantMap>
 
-#include "QtLucideIconPainter.h"
 #include "QtLucideEnums.h"
+#include "QtLucideIconPainter.h"
 
 /**
  * @defgroup QtLucideAPI QtLucide API
@@ -73,8 +73,7 @@ class QtLucideIconEngine;
  * @see QtLucideIconEngine, QtLucideIconPainter
  * @ingroup QtLucideAPI
  */
-class QtLucide : public QObject
-{
+class QtLucide : public QObject {
     Q_OBJECT
 
 public:
@@ -442,12 +441,12 @@ private:
      */
     QString iconIdToString(Icons iconId) const;
 
-    QHash<QString, Icons> m_nameToIconMap;          ///< @brief Maps icon names to enum values
-    QHash<Icons, QString> m_iconToNameMap;          ///< @brief Maps enum values to icon names
+    QHash<QString, Icons> m_nameToIconMap; ///< @brief Maps icon names to enum values
+    QHash<Icons, QString> m_iconToNameMap; ///< @brief Maps enum values to icon names
     QHash<QString, QtLucideIconPainter*> m_customPainters; ///< @brief Custom registered painters
-    QVariantMap m_defaultOptions;                   ///< @brief Default rendering options
-    QtLucideIconPainter* m_svgIconPainter;         ///< @brief Default SVG icon painter
-    bool m_initialized;                             ///< @brief Whether initLucide() has been called
+    QVariantMap m_defaultOptions;                          ///< @brief Default rendering options
+    QtLucideIconPainter* m_svgIconPainter;                 ///< @brief Default SVG icon painter
+    bool m_initialized; ///< @brief Whether initLucide() has been called
 };
 
 } // namespace lucide

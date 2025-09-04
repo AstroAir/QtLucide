@@ -14,10 +14,10 @@
 #ifndef QTLUCIDEICONENGINE_H
 #define QTLUCIDEICONENGINE_H
 
-#include <QIconEngine>
-#include <QVariantMap>
-#include <QPixmap>
 #include <QHash>
+#include <QIconEngine>
+#include <QPixmap>
+#include <QVariantMap>
 
 /**
  * @defgroup QtLucideCore Core Classes
@@ -69,8 +69,7 @@ class QtLucideIconPainter;
  * @ingroup QtLucideCore
  * @since 1.0
  */
-class QtLucideIconEngine : public QIconEngine
-{
+class QtLucideIconEngine : public QIconEngine {
 public:
     /**
      * @brief Constructs a QtLucide icon engine
@@ -174,10 +173,10 @@ private:
      */
     QPixmap renderPixmap(const QSize& size, QIcon::Mode mode, QIcon::State state);
 
-    QtLucide* m_lucide;                             ///< @brief QtLucide instance (not owned)
-    QtLucideIconPainter* m_painter;                 ///< @brief Icon painter (owned)
-    QVariantMap m_options;                          ///< @brief Rendering options
-    mutable QHash<QString, QPixmap> m_pixmapCache;  ///< @brief Pixmap cache for performance
+    QtLucide* m_lucide;                            ///< @brief QtLucide instance (not owned)
+    QtLucideIconPainter* m_painter;                ///< @brief Icon painter (owned)
+    QVariantMap m_options;                         ///< @brief Rendering options
+    mutable QHash<QString, QPixmap> m_pixmapCache; ///< @brief Pixmap cache for performance
 };
 
 } // namespace lucide

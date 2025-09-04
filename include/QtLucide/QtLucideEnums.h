@@ -1,6 +1,6 @@
 /**
  * QtLucide - use Lucide icons in your Qt Application
- * 
+ *
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from Lucide icon metadata
  *

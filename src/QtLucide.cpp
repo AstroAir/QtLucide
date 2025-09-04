@@ -11,10 +11,10 @@
 #include "QtLucide/QtLucideStrings.h"
 
 #include <QApplication>
-#include <QPalette>
 #include <QDebug>
-#include <QFile>
 #include <QDir>
+#include <QFile>
+#include <QPalette>
 
 // Forward declare resource initialization functions
 extern int qInitResources_lucide_icons();
@@ -23,10 +23,7 @@ extern int qCleanupResources_lucide_icons();
 namespace lucide {
 
 QtLucide::QtLucide(QObject* parent)
-    : QObject(parent)
-    , m_svgIconPainter(nullptr)
-    , m_initialized(false)
-{
+    : QObject(parent), m_svgIconPainter(nullptr), m_initialized(false) {
     // Initialize resources
     qInitResources_lucide_icons();
 
@@ -34,8 +31,7 @@ QtLucide::QtLucide(QObject* parent)
     resetDefaultOptions();
 }
 
-QtLucide::~QtLucide()
-{
+QtLucide::~QtLucide() {
     delete m_svgIconPainter;
 
     // Clean up custom painters
@@ -47,8 +43,7 @@ QtLucide::~QtLucide()
     qCleanupResources_lucide_icons();
 }
 
-bool QtLucide::initLucide()
-{
+bool QtLucide::initLucide() {
     if (m_initialized) {
         return true;
     }
@@ -65,18 +60,15 @@ bool QtLucide::initLucide()
     return true;
 }
 
-void QtLucide::setDefaultOption(const QString& name, const QVariant& value)
-{
+void QtLucide::setDefaultOption(const QString& name, const QVariant& value) {
     m_defaultOptions[name] = value;
 }
 
-QVariant QtLucide::defaultOption(const QString& name) const
-{
+QVariant QtLucide::defaultOption(const QString& name) const {
     return m_defaultOptions.value(name);
 }
 
-QIcon QtLucide::icon(Icons iconId, const QVariantMap& options)
-{
+QIcon QtLucide::icon(Icons iconId, const QVariantMap& options) {
     if (!m_initialized) {
         qWarning() << "QtLucide not initialized. Call initLucide() first.";
         return QIcon();
@@ -94,8 +86,7 @@ QIcon QtLucide::icon(Icons iconId, const QVariantMap& options)
     return QIcon(new QtLucideIconEngine(this, m_svgIconPainter, mergedOptions));
 }
 
-QIcon QtLucide::icon(const QString& name, const QVariantMap& options)
-{
+QIcon QtLucide::icon(const QString& name, const QVariantMap& options) {
     // Check for custom painters first
     if (m_customPainters.contains(name)) {
         QVariantMap mergedOptions = m_defaultOptions;
@@ -115,8 +106,7 @@ QIcon QtLucide::icon(const QString& name, const QVariantMap& options)
     return icon(iconId, options);
 }
 
-QIcon QtLucide::icon(QtLucideIconPainter* painter, const QVariantMap& options)
-{
+QIcon QtLucide::icon(QtLucideIconPainter* painter, const QVariantMap& options) {
     if (!painter) {
         qWarning() << "Null painter provided to QtLucide::icon()";
         return QIcon();
@@ -130,16 +120,14 @@ QIcon QtLucide::icon(QtLucideIconPainter* painter, const QVariantMap& options)
     return QIcon(new QtLucideIconEngine(this, painter, mergedOptions));
 }
 
-void QtLucide::give(const QString& name, QtLucideIconPainter* painter)
-{
+void QtLucide::give(const QString& name, QtLucideIconPainter* painter) {
     if (m_customPainters.contains(name)) {
         delete m_customPainters[name];
     }
     m_customPainters[name] = painter;
 }
 
-QByteArray QtLucide::svgData(Icons iconId) const
-{
+QByteArray QtLucide::svgData(Icons iconId) const {
     QString iconName = iconIdToString(iconId);
     if (iconName.isEmpty()) {
         return QByteArray();
@@ -148,8 +136,7 @@ QByteArray QtLucide::svgData(Icons iconId) const
     return svgData(iconName);
 }
 
-QByteArray QtLucide::svgData(const QString& name) const
-{
+QByteArray QtLucide::svgData(const QString& name) const {
     QString resourcePath = QString(":/lucide/%1").arg(name);
     QFile file(resourcePath);
 
@@ -161,15 +148,13 @@ QByteArray QtLucide::svgData(const QString& name) const
     return file.readAll();
 }
 
-QStringList QtLucide::availableIcons() const
-{
+QStringList QtLucide::availableIcons() const {
     QStringList icons = m_nameToIconMap.keys();
     icons.sort();
     return icons;
 }
 
-void QtLucide::resetDefaultOptions()
-{
+void QtLucide::resetDefaultOptions() {
     m_defaultOptions.clear();
 
     // Set default colors based on application palette
@@ -185,19 +170,16 @@ void QtLucide::resetDefaultOptions()
     emit defaultOptionsReset();
 }
 
-void QtLucide::initializeIconMap()
-{
+void QtLucide::initializeIconMap() {
     m_nameToIconMap = STRING_TO_ICON_MAP;
     m_iconToNameMap = ICON_TO_STRING_MAP;
 }
 
-Icons QtLucide::stringToIconId(const QString& name) const
-{
+Icons QtLucide::stringToIconId(const QString& name) const {
     return m_nameToIconMap.value(name, static_cast<Icons>(-1));
 }
 
-QString QtLucide::iconIdToString(Icons iconId) const
-{
+QString QtLucide::iconIdToString(Icons iconId) const {
     return m_iconToNameMap.value(iconId, QString());
 }
 

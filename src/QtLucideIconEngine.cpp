@@ -7,31 +7,27 @@
  */
 
 #include "QtLucide/QtLucideIconEngine.h"
-#include "QtLucide/QtLucideIconPainter.h"
 #include "QtLucide/QtLucide.h"
+#include "QtLucide/QtLucideIconPainter.h"
 
-#include <QPainter>
-#include <QPixmap>
 #include <QDebug>
 #include <QGuiApplication>
+#include <QPainter>
+#include <QPixmap>
 #include <QScreen>
 
 namespace lucide {
 
-QtLucideIconEngine::QtLucideIconEngine(QtLucide* lucide, QtLucideIconPainter* painter, const QVariantMap& options)
-    : m_lucide(lucide)
-    , m_painter(painter)
-    , m_options(options)
-{
-}
+QtLucideIconEngine::QtLucideIconEngine(QtLucide* lucide, QtLucideIconPainter* painter,
+                                       const QVariantMap& options)
+    : m_lucide(lucide), m_painter(painter), m_options(options) {}
 
-QtLucideIconEngine::~QtLucideIconEngine()
-{
+QtLucideIconEngine::~QtLucideIconEngine() {
     // Note: We don't delete m_lucide or m_painter as they are owned by QtLucide
 }
 
-void QtLucideIconEngine::paint(QPainter* painter, const QRect& rect, QIcon::Mode mode, QIcon::State state)
-{
+void QtLucideIconEngine::paint(QPainter* painter, const QRect& rect, QIcon::Mode mode,
+                               QIcon::State state) {
     if (!m_painter || !m_lucide) {
         return;
     }
@@ -40,8 +36,7 @@ void QtLucideIconEngine::paint(QPainter* painter, const QRect& rect, QIcon::Mode
     m_painter->paint(m_lucide, painter, rect, mode, state, m_options);
 }
 
-QPixmap QtLucideIconEngine::pixmap(const QSize& size, QIcon::Mode mode, QIcon::State state)
-{
+QPixmap QtLucideIconEngine::pixmap(const QSize& size, QIcon::Mode mode, QIcon::State state) {
     // Check cache first
     QString key = cacheKey(size, mode, state);
     if (m_pixmapCache.contains(key)) {
@@ -52,40 +47,37 @@ QPixmap QtLucideIconEngine::pixmap(const QSize& size, QIcon::Mode mode, QIcon::S
     QPixmap pixmap = renderPixmap(size, mode, state);
 
     // Cache the result (with reasonable cache size limit)
-    if (m_pixmapCache.size() < 100) {  // Limit cache size
+    if (m_pixmapCache.size() < 100) { // Limit cache size
         m_pixmapCache[key] = pixmap;
     }
 
     return pixmap;
 }
 
-QIconEngine* QtLucideIconEngine::clone() const
-{
+QIconEngine* QtLucideIconEngine::clone() const {
     return new QtLucideIconEngine(m_lucide, m_painter, m_options);
 }
 
-QString QtLucideIconEngine::key() const
-{
+QString QtLucideIconEngine::key() const {
     return QStringLiteral("QtLucideIconEngine");
 }
 
-QString QtLucideIconEngine::cacheKey(const QSize& size, QIcon::Mode mode, QIcon::State state) const
-{
+QString QtLucideIconEngine::cacheKey(const QSize& size, QIcon::Mode mode,
+                                     QIcon::State state) const {
     // Create a unique key for caching
     QString iconKey = m_options.value("iconId", "unknown").toString();
     QString colorKey = m_options.value("color", "default").toString();
 
     return QString("%1_%2x%3_%4_%5_%6")
-           .arg(iconKey)
-           .arg(size.width())
-           .arg(size.height())
-           .arg(static_cast<int>(mode))
-           .arg(static_cast<int>(state))
-           .arg(colorKey);
+        .arg(iconKey)
+        .arg(size.width())
+        .arg(size.height())
+        .arg(static_cast<int>(mode))
+        .arg(static_cast<int>(state))
+        .arg(colorKey);
 }
 
-QPixmap QtLucideIconEngine::renderPixmap(const QSize& size, QIcon::Mode mode, QIcon::State state)
-{
+QPixmap QtLucideIconEngine::renderPixmap(const QSize& size, QIcon::Mode mode, QIcon::State state) {
     if (!m_painter || !m_lucide) {
         return QPixmap();
     }

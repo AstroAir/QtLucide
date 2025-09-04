@@ -61,8 +61,7 @@ class QtLucide;
  * @ingroup QtLucidePainters
  * @since 1.0
  */
-class QtLucideIconPainter
-{
+class QtLucideIconPainter {
 public:
     /**
      * @brief Virtual destructor for proper cleanup
@@ -121,9 +120,8 @@ public:
      * @see QtLucide, QtLucideSvgIconPainter
      * @since 1.0
      */
-    virtual void paint(QtLucide* lucide, QPainter* painter, const QRect& rect,
-                      QIcon::Mode mode, QIcon::State state,
-                      const QVariantMap& options) = 0;
+    virtual void paint(QtLucide* lucide, QPainter* painter, const QRect& rect, QIcon::Mode mode,
+                       QIcon::State state, const QVariantMap& options) = 0;
 };
 
 /**
@@ -156,8 +154,7 @@ public:
  * @ingroup QtLucidePainters
  * @since 1.0
  */
-class QtLucideSvgIconPainter : public QtLucideIconPainter
-{
+class QtLucideSvgIconPainter : public QtLucideIconPainter {
 public:
     /**
      * @brief Constructs an SVG icon painter
@@ -195,9 +192,8 @@ public:
      * @see QtLucideIconPainter::paint()
      * @since 1.0
      */
-    void paint(QtLucide* lucide, QPainter* painter, const QRect& rect,
-              QIcon::Mode mode, QIcon::State state,
-              const QVariantMap& options) override;
+    void paint(QtLucide* lucide, QPainter* painter, const QRect& rect, QIcon::Mode mode,
+               QIcon::State state, const QVariantMap& options) override;
 
 private:
     /**
@@ -217,8 +213,8 @@ private:
      * @param options Available options
      * @return Best matching option value, or invalid QVariant if not found
      */
-    QVariant optionValueForModeAndState(const QString& baseKey, QIcon::Mode mode, QIcon::State state,
-                                       const QVariantMap& options);
+    QVariant optionValueForModeAndState(const QString& baseKey, QIcon::Mode mode,
+                                        QIcon::State state, const QVariantMap& options);
 
     /**
      * @brief Process SVG data to replace colors
