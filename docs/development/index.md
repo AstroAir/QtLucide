@@ -8,37 +8,37 @@ This section covers everything you need to know about QtLucide development, from
 
 <div class="grid cards" markdown>
 
--   :material-hammer-wrench: **Building from Source**
+- :material-hammer-wrench: **Building from Source**
 
-    ---
+  ***
 
-    Complete instructions for building QtLucide on all supported platforms.
+  Complete instructions for building QtLucide on all supported platforms.
 
-    [:octicons-arrow-right-24: Building Guide](building.md)
+  [:octicons-arrow-right-24: Building Guide](building.md)
 
--   :material-account-group: **Contributing**
+- :material-account-group: **Contributing**
 
-    ---
+  ***
 
-    Guidelines for contributing code, documentation, and examples to QtLucide.
+  Guidelines for contributing code, documentation, and examples to QtLucide.
 
-    [:octicons-arrow-right-24: Contributing](contributing.md)
+  [:octicons-arrow-right-24: Contributing](contributing.md)
 
--   :material-test-tube: **Testing**
+- :material-test-tube: **Testing Framework**
 
-    ---
+  ***
 
-    Information about the test suite, running tests, and writing new tests.
+  Comprehensive testing framework with unit tests, performance benchmarks, and CI/CD integration.
 
-    [:octicons-arrow-right-24: Testing](testing.md)
+  [:octicons-arrow-right-24: Testing Guide](testing.md)
 
--   :material-tools: **Tools & Scripts**
+- :material-tools: **Tools & Scripts**
 
-    ---
+  ***
 
-    Development tools and scripts for icon processing and code generation.
+  Development tools and scripts for icon processing and code generation.
 
-    [:octicons-arrow-right-24: Tools](tools.md)
+  [:octicons-arrow-right-24: Tools](tools.md)
 
 </div>
 
@@ -126,14 +126,14 @@ graph TB
     A[QtLucide] --> B[QtLucideIconEngine]
     B --> C[QtLucideIconPainter]
     C --> D[QtLucideSvgIconPainter]
-    
+
     A --> E[Icon Cache]
     A --> F[Resource Manager]
     A --> G[Custom Painters]
-    
+
     H[Qt Application] --> A
     I[QIcon System] --> B
-    
+
     style A fill:#e1f5fe
     style B fill:#f3e5f5
     style C fill:#e8f5e8
@@ -215,7 +215,7 @@ class QtLucideIconEngine : public QIconEngine
 public:
     // Method names: camelCase
     explicit QtLucideIconEngine(QtLucide* lucide);
-    
+
     // Public methods documented with Doxygen
     /**
      * @brief Creates a pixmap for the given parameters
@@ -224,16 +224,16 @@ public:
      * @param state Icon state (Off, On)
      * @return Rendered pixmap
      */
-    QPixmap pixmap(const QSize& size, QIcon::Mode mode, 
+    QPixmap pixmap(const QSize& size, QIcon::Mode mode,
                    QIcon::State state) override;
 
 private:
     // Member variables: m_ prefix
     QtLucide* m_lucide;
     QVariantMap m_options;
-    
+
     // Private methods: camelCase
-    QString generateCacheKey(const QSize& size, QIcon::Mode mode, 
+    QString generateCacheKey(const QSize& size, QIcon::Mode mode,
                            QIcon::State state) const;
 };
 ```
@@ -269,17 +269,17 @@ from typing import List, Dict, Optional
 
 class IconProcessor:
     """Processes Lucide SVG icons for QtLucide."""
-    
+
     def __init__(self, source_dir: Path, output_dir: Path):
         """Initialize the processor.
-        
+
         Args:
             source_dir: Directory containing source SVG files
             output_dir: Directory for processed output
         """
         self.source_dir = source_dir
         self.output_dir = output_dir
-    
+
     def process_icons(self) -> List[str]:
         """Process all icons and return list of processed names."""
         # Implementation
@@ -319,10 +319,10 @@ void TestIntegration::testIconEngineIntegration()
 {
     lucide::QtLucide lucide;
     QVERIFY(lucide.initLucide());
-    
+
     QIcon icon = lucide.icon("heart");
     QVERIFY(!icon.isNull());
-    
+
     // Test that icon engine works correctly
     QPixmap pixmap = icon.pixmap(32, 32);
     QVERIFY(!pixmap.isNull());
@@ -339,18 +339,18 @@ void TestPerformance::testIconCreationSpeed()
 {
     lucide::QtLucide lucide;
     lucide.initLucide();
-    
+
     QElapsedTimer timer;
     timer.start();
-    
+
     // Create 1000 icons
     for (int i = 0; i < 1000; ++i) {
         QIcon icon = lucide.icon("heart");
     }
-    
+
     qint64 elapsed = timer.elapsed();
     qDebug() << "Created 1000 icons in" << elapsed << "ms";
-    
+
     // Should be fast due to caching
     QVERIFY(elapsed < 100);  // Less than 100ms
 }
@@ -369,21 +369,25 @@ QtLucide uses semantic versioning (SemVer):
 ### Release Checklist
 
 1. **Update version numbers**
+
    - CMakeLists.txt
    - Documentation
    - Package files
 
 2. **Update CHANGELOG.md**
+
    - New features
    - Bug fixes
    - Breaking changes
 
 3. **Run full test suite**
+
    - All platforms
    - All Qt versions
    - Performance tests
 
 4. **Update documentation**
+
    - API changes
    - New examples
    - Migration guides
@@ -398,6 +402,7 @@ QtLucide uses semantic versioning (SemVer):
 ### Common Issues
 
 **Icons not displaying**
+
 ```cpp
 // Check initialization
 if (!lucide.initLucide()) {
@@ -412,6 +417,7 @@ if (!available.contains("my-icon")) {
 ```
 
 **Performance problems**
+
 ```cpp
 // Enable debug output
 QLoggingCategory::setFilterRules("qtlucide.cache.debug=true");
@@ -424,11 +430,13 @@ qDebug() << "Cache hits:" << lucide.cacheHits();
 ### Development Tools
 
 **Qt Creator Integration**
+
 - Use Qt Creator's CMake support
 - Enable Clang Code Model for better IntelliSense
 - Configure custom build steps for resource generation
 
 **Debugging with GDB/LLDB**
+
 ```bash
 # Debug build with symbols
 cmake .. -DCMAKE_BUILD_TYPE=Debug
@@ -450,6 +458,7 @@ gdb ./QtLucideTests
 ### Recognition
 
 Contributors are recognized in:
+
 - CONTRIBUTORS.md file
 - Release notes
 - Documentation credits

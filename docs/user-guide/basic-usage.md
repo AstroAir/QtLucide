@@ -19,10 +19,7 @@ if (!lucide.initLucide()) {
 }
 ```
 
-!!! tip "Initialization Best Practices"
-    - Initialize QtLucide once at application startup
-    - Always check the return value of `initLucide()`
-    - Consider using a singleton pattern for application-wide access
+!!! tip "Initialization Best Practices" - Initialize QtLucide once at application startup - Always check the return value of `initLucide()` - Consider using a singleton pattern for application-wide access
 
 ### Creating Your First Icon
 
@@ -66,7 +63,7 @@ QIcon editIcon = lucide.icon(lucide::Icons::edit);
 ```
 
 !!! note "Enum Naming Convention"
-    Enum names use underscores instead of hyphens: `folder-open` becomes `folder_open`
+Enum names use underscores instead of hyphens: `folder-open` becomes `folder_open`
 
 ### 3. With Custom Options
 
@@ -90,17 +87,17 @@ Icons work seamlessly with Qt's action system:
 void MainWindow::setupMenus()
 {
     QMenu* fileMenu = menuBar()->addMenu("&File");
-    
+
     QAction* newAction = fileMenu->addAction(lucide.icon("file-plus"), "&New");
     newAction->setShortcut(QKeySequence::New);
     connect(newAction, &QAction::triggered, this, &MainWindow::newFile);
-    
+
     QAction* openAction = fileMenu->addAction(lucide.icon("folder-open"), "&Open");
     openAction->setShortcut(QKeySequence::Open);
     connect(openAction, &QAction::triggered, this, &MainWindow::openFile);
-    
+
     fileMenu->addSeparator();
-    
+
     QAction* saveAction = fileMenu->addAction(lucide.icon("save"), "&Save");
     saveAction->setShortcut(QKeySequence::Save);
     connect(saveAction, &QAction::triggered, this, &MainWindow::saveFile);
@@ -116,14 +113,14 @@ void MainWindow::setupToolbar()
 {
     QToolBar* mainToolbar = addToolBar("Main");
     mainToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    
+
     // Add actions with icons
     mainToolbar->addAction(lucide.icon("file-plus"), "New", this, &MainWindow::newFile);
     mainToolbar->addAction(lucide.icon("folder-open"), "Open", this, &MainWindow::openFile);
     mainToolbar->addAction(lucide.icon("save"), "Save", this, &MainWindow::saveFile);
-    
+
     mainToolbar->addSeparator();
-    
+
     mainToolbar->addAction(lucide.icon("copy"), "Copy", this, &MainWindow::copy);
     mainToolbar->addAction(lucide.icon("scissors"), "Cut", this, &MainWindow::cut);
     mainToolbar->addAction(lucide.icon("clipboard"), "Paste", this, &MainWindow::paste);
@@ -138,23 +135,23 @@ Enhance buttons with meaningful icons:
 void Dialog::setupButtons()
 {
     QHBoxLayout* buttonLayout = new QHBoxLayout();
-    
+
     // OK button with check icon
     QPushButton* okButton = new QPushButton("OK");
     okButton->setIcon(lucide.icon("check"));
     okButton->setDefault(true);
     connect(okButton, &QPushButton::clicked, this, &QDialog::accept);
-    
+
     // Cancel button with X icon
     QPushButton* cancelButton = new QPushButton("Cancel");
     cancelButton->setIcon(lucide.icon("x"));
     connect(cancelButton, &QPushButton::clicked, this, &QDialog::reject);
-    
+
     // Apply button with check-circle icon
     QPushButton* applyButton = new QPushButton("Apply");
     applyButton->setIcon(lucide.icon("check-circle"));
     connect(applyButton, &QPushButton::clicked, this, &Dialog::applyChanges);
-    
+
     buttonLayout->addWidget(okButton);
     buttonLayout->addWidget(cancelButton);
     buttonLayout->addWidget(applyButton);
@@ -182,6 +179,7 @@ if (availableIcons.contains("heart")) {
 Here are some commonly used icons organized by category:
 
 #### Navigation
+
 - `home` - Home/dashboard
 - `arrow-left`, `arrow-right` - Navigation arrows
 - `chevron-left`, `chevron-right` - Subtle navigation
@@ -189,6 +187,7 @@ Here are some commonly used icons organized by category:
 - `more-horizontal`, `more-vertical` - More options
 
 #### File Operations
+
 - `file`, `file-plus` - File operations
 - `folder`, `folder-open` - Folder operations
 - `save` - Save document
@@ -196,6 +195,7 @@ Here are some commonly used icons organized by category:
 - `trash-2` - Delete
 
 #### Editing
+
 - `edit`, `pencil` - Edit content
 - `copy` - Copy
 - `scissors` - Cut
@@ -203,6 +203,7 @@ Here are some commonly used icons organized by category:
 - `undo`, `redo` - Undo/redo operations
 
 #### Status & Feedback
+
 - `check`, `check-circle` - Success/completion
 - `x`, `x-circle` - Error/cancel
 - `alert-triangle` - Warning
@@ -210,6 +211,7 @@ Here are some commonly used icons organized by category:
 - `help-circle` - Help
 
 #### Media Controls
+
 - `play`, `pause` - Playback controls
 - `stop`, `square` - Stop playback
 - `skip-back`, `skip-forward` - Skip controls
@@ -227,7 +229,7 @@ bool createIconSafely(const QString& iconName, QPushButton* button)
         qWarning() << "QtLucide not initialized";
         return false;
     }
-    
+
     // Check if icon exists
     QStringList available = lucide.availableIcons();
     if (!available.contains(iconName)) {
@@ -236,14 +238,14 @@ bool createIconSafely(const QString& iconName, QPushButton* button)
         button->setIcon(lucide.icon("circle"));
         return false;
     }
-    
+
     // Create the icon
     QIcon icon = lucide.icon(iconName);
     if (icon.isNull()) {
         qWarning() << "Failed to create icon:" << iconName;
         return false;
     }
-    
+
     button->setIcon(icon);
     return true;
 }
@@ -264,15 +266,15 @@ public:
         static QHash<QString, QIcon> cache;
         static lucide::QtLucide lucide;
         static bool initialized = lucide.initLucide();
-        
+
         if (!initialized) {
             return QIcon();
         }
-        
+
         if (!cache.contains(name)) {
             cache[name] = lucide.icon(name);
         }
-        
+
         return cache[name];
     }
 };
@@ -291,7 +293,7 @@ void setupIconDefaults()
 {
     lucide.setDefaultOption("color", QColor(64, 64, 64));
     lucide.setDefaultOption("scale-factor", 1.1);
-    
+
     // All subsequent icons will use these defaults
     QIcon icon1 = lucide.icon("home");     // Uses gray color and 1.1 scale
     QIcon icon2 = lucide.icon("settings"); // Uses gray color and 1.1 scale

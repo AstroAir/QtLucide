@@ -8,37 +8,37 @@ This section provides practical, working examples that demonstrate how to use Qt
 
 <div class="grid cards" markdown>
 
--   :material-play-circle: **Basic Usage**
+- :material-play-circle: **Basic Usage**
 
-    ---
+  ***
 
-    Fundamental examples showing core QtLucide functionality and common patterns.
+  Fundamental examples showing core QtLucide functionality and common patterns.
 
-    [:octicons-arrow-right-24: Basic Usage](basic-usage.md)
+  [:octicons-arrow-right-24: Basic Usage](basic-usage.md)
 
--   :material-view-gallery: **Icon Gallery**
+- :material-view-gallery: **Icon Gallery**
 
-    ---
+  ***
 
-    Complete icon browser application showcasing all QtLucide features.
+  Complete icon browser application showcasing all QtLucide features.
 
-    [:octicons-arrow-right-24: Gallery App](gallery.md)
+  [:octicons-arrow-right-24: Gallery App](gallery-application.md)
 
--   :material-brush: **Custom Painters**
+- :material-brush: **Custom Painters**
 
-    ---
+  ***
 
-    Advanced examples showing how to create and use custom icon painters.
+  Advanced examples showing how to create and use custom icon painters.
 
-    [:octicons-arrow-right-24: Custom Painters](custom-painters.md)
+  [:octicons-arrow-right-24: Custom Painters](custom-painters.md)
 
--   :material-puzzle: **Integration Examples**
+- :material-puzzle: **Integration Examples**
 
-    ---
+  ***
 
-    Real-world integration patterns with Qt frameworks and common use cases.
+  Real-world integration patterns with Qt frameworks and common use cases.
 
-    [:octicons-arrow-right-24: Integration](integration.md)
+  [:octicons-arrow-right-24: Integration](integration.md)
 
 </div>
 
@@ -85,14 +85,14 @@ The simplest possible QtLucide application:
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    
+
     lucide::QtLucide lucide;
     lucide.initLucide();
-    
+
     QPushButton button("Hello QtLucide");
     button.setIcon(lucide.icon("heart"));
     button.show();
-    
+
     return app.exec();
 }
 ```
@@ -106,16 +106,16 @@ void MainWindow::setupToolbar()
 {
     lucide::QtLucide lucide;
     lucide.initLucide();
-    
+
     QToolBar* toolbar = addToolBar("Main");
-    
+
     // File operations
     toolbar->addAction(lucide.icon("file-plus"), "New", this, &MainWindow::newFile);
     toolbar->addAction(lucide.icon("folder-open"), "Open", this, &MainWindow::openFile);
     toolbar->addAction(lucide.icon("save"), "Save", this, &MainWindow::saveFile);
-    
+
     toolbar->addSeparator();
-    
+
     // Edit operations
     toolbar->addAction(lucide.icon("copy"), "Copy", this, &MainWindow::copy);
     toolbar->addAction(lucide.icon("scissors"), "Cut", this, &MainWindow::cut);
@@ -137,25 +137,25 @@ public:
     StatusWidget(QWidget* parent = nullptr) : QWidget(parent)
     {
         m_lucide.initLucide();
-        
+
         QHBoxLayout* layout = new QHBoxLayout(this);
         m_statusIcon = new QLabel();
         m_statusText = new QLabel("Ready");
-        
+
         layout->addWidget(m_statusIcon);
         layout->addWidget(m_statusText);
-        
+
         setStatus(Status::Ready);
     }
-    
+
     enum Status { Ready, Working, Error, Success };
-    
+
     void setStatus(Status status)
     {
         QVariantMap options;
         QString iconName;
         QString text;
-        
+
         switch (status) {
         case Ready:
             iconName = "circle";
@@ -178,7 +178,7 @@ public:
             text = "Success";
             break;
         }
-        
+
         m_statusIcon->setPixmap(m_lucide.icon(iconName, options).pixmap(16, 16));
         m_statusText->setText(text);
     }
@@ -197,12 +197,12 @@ private:
     bool m_isPlaying;
 
 public:
-    PlayButton(QWidget* parent = nullptr) 
+    PlayButton(QWidget* parent = nullptr)
         : QPushButton(parent), m_isPlaying(false)
     {
         m_lucide.initLucide();
         updateIcon();
-        
+
         connect(this, &QPushButton::clicked, this, &PlayButton::toggle);
     }
 
@@ -219,7 +219,7 @@ private:
     {
         QVariantMap options;
         options["color"] = QColor(m_isPlaying ? Qt::red : Qt::green);
-        
+
         QString iconName = m_isPlaying ? "pause" : "play";
         setIcon(m_lucide.icon(iconName, options));
         setText(m_isPlaying ? "Pause" : "Play");
@@ -278,11 +278,14 @@ Demonstrates fundamental QtLucide usage patterns:
 
 A complete icon browser application featuring:
 
-- Browse all 1,634+ Lucide icons
-- Search and filter functionality
-- Real-time customization preview
-- Export icons in various formats
-- Performance optimization techniques
+- Browse all 1,634 Lucide icons with responsive grid layout
+- Advanced search and category filtering
+- Real-time customization preview with color options
+- Icon details panel with SVG data and usage examples
+- Export icons in SVG and PNG formats
+- Copy functionality for icon names and code snippets
+- Theme support (dark/light modes)
+- Performance optimization techniques for large datasets
 
 ### 3. Text Editor (`examples/text_editor/`)
 

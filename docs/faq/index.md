@@ -8,29 +8,29 @@ This section provides answers to the most common questions about QtLucide and so
 
 <div class="grid cards" markdown>
 
--   :material-help-circle: **Common Issues**
+- :material-help-circle: **Common Issues**
 
-    ---
+  ***
 
-    Solutions to the most frequently encountered problems and error messages.
+  Solutions to the most frequently encountered problems and error messages.
 
-    [:octicons-arrow-right-24: Common Issues](common-issues.md)
+  [:octicons-arrow-right-24: Common Issues](common-issues.md)
 
--   :material-speedometer: **Performance**
+- :material-speedometer: **Performance**
 
-    ---
+  ***
 
-    Performance-related questions and optimization techniques.
+  Performance-related questions and optimization techniques.
 
-    [:octicons-arrow-right-24: Performance FAQ](performance.md)
+  [:octicons-arrow-right-24: Performance FAQ](performance.md)
 
--   :material-monitor: **Platform Specific**
+- :material-monitor: **Platform Specific**
 
-    ---
+  ***
 
-    Platform-specific issues and solutions for Windows, macOS, and Linux.
+  Platform-specific issues and solutions for Windows, macOS, and Linux.
 
-    [:octicons-arrow-right-24: Platform Issues](platform-specific.md)
+  [:octicons-arrow-right-24: Platform Issues](platform-specific.md)
 
 </div>
 
@@ -136,7 +136,7 @@ This section provides answers to the most common questions about QtLucide and so
 ??? error "Failed to initialize QtLucide"
 
     **Cause**: Resource loading failed or Qt SVG module not available.
-    
+
     **Solution**:
     ```cpp
     // Check Qt SVG availability
@@ -144,7 +144,7 @@ This section provides answers to the most common questions about QtLucide and so
     if (!QSvgRenderer::isSupported()) {
         qWarning() << "Qt SVG support not available";
     }
-    
+
     // Ensure proper linking
     // CMake: target_link_libraries(your_target Qt6::Svg)
     // qmake: QT += svg
@@ -153,7 +153,7 @@ This section provides answers to the most common questions about QtLucide and so
 ??? error "Unknown icon name: 'icon-name'"
 
     **Cause**: Icon name doesn't exist in the Lucide set.
-    
+
     **Solution**:
     ```cpp
     // Check available icons
@@ -169,7 +169,7 @@ This section provides answers to the most common questions about QtLucide and so
 ??? error "QIcon is null/empty"
 
     **Cause**: Icon creation failed due to invalid name or initialization failure.
-    
+
     **Solution**:
     ```cpp
     // Always check initialization
@@ -177,7 +177,7 @@ This section provides answers to the most common questions about QtLucide and so
         qWarning() << "QtLucide initialization failed";
         return;
     }
-    
+
     // Check icon validity
     QIcon icon = lucide.icon("heart");
     if (icon.isNull()) {
@@ -188,15 +188,15 @@ This section provides answers to the most common questions about QtLucide and so
 ??? error "CMake Error: Could not find QtLucide"
 
     **Cause**: QtLucide not installed or CMake can't find it.
-    
+
     **Solution**:
     ```bash
     # Install QtLucide first
     cmake --install . --prefix /usr/local
-    
+
     # Or specify path
     cmake .. -DCMAKE_PREFIX_PATH=/path/to/qtlucide
-    
+
     # Or use FetchContent
     include(FetchContent)
     FetchContent_Declare(QtLucide
@@ -298,7 +298,7 @@ void debugQtLucide(const lucide::QtLucide& lucide) {
     qDebug() << "QtLucide Debug Info:";
     qDebug() << "  Available icons:" << lucide.availableIcons().size();
     qDebug() << "  Total icon count:" << lucide::ICON_COUNT;
-    
+
     // Test basic functionality
     QIcon testIcon = lucide.icon("heart");
     qDebug() << "  Test icon valid:" << !testIcon.isNull();
@@ -307,4 +307,4 @@ void debugQtLucide(const lucide::QtLucide& lucide) {
 
 ---
 
-*Can't find what you're looking for? Check the specific FAQ sections or ask in our [GitHub Discussions](https://github.com/AstroAir/QtLucide/discussions).*
+_Can't find what you're looking for? Check the specific FAQ sections or ask in our [GitHub Discussions](https://github.com/AstroAir/QtLucide/discussions)._

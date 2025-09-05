@@ -8,37 +8,37 @@ This user guide is organized into focused sections that build upon each other:
 
 <div class="grid cards" markdown>
 
--   :material-play-circle-outline: **Basic Usage**
+- :material-play-circle-outline: **Basic Usage**
 
-    ---
+  ***
 
-    Learn the fundamentals of creating and using icons in your Qt applications.
+  Learn the fundamentals of creating and using icons in your Qt applications.
 
-    [:octicons-arrow-right-24: Basic Usage](basic-usage.md)
+  [:octicons-arrow-right-24: Basic Usage](basic-usage.md)
 
--   :material-palette-outline: **Icon Customization**
+- :material-palette-outline: **Icon Customization**
 
-    ---
+  ***
 
-    Master color customization, scaling, and visual effects for your icons.
+  Master color customization, scaling, and visual effects for your icons.
 
-    [:octicons-arrow-right-24: Customization](customization.md)
+  [:octicons-arrow-right-24: Customization](customization.md)
 
--   :material-rocket-launch-outline: **Advanced Features**
+- :material-rocket-launch-outline: **Advanced Features**
 
-    ---
+  ***
 
-    Explore custom painters, caching strategies, and performance optimization.
+  Explore custom painters, caching strategies, and performance optimization.
 
-    [:octicons-arrow-right-24: Advanced Features](advanced-features.md)
+  [:octicons-arrow-right-24: Advanced Features](advanced-features.md)
 
--   :material-speedometer: **Performance Tips**
+- :material-speedometer: **Performance Tips**
 
-    ---
+  ***
 
-    Best practices for optimal performance in icon-heavy applications.
+  Best practices for optimal performance in icon-heavy applications.
 
-    [:octicons-arrow-right-24: Performance](performance.md)
+  [:octicons-arrow-right-24: Performance](performance.md)
 
 </div>
 
@@ -82,7 +82,7 @@ graph LR
     B --> C[QtLucideIconPainter]
     C --> D[SVG Renderer]
     C --> E[Custom Painter]
-    
+
     style A fill:#e1f5fe
     style B fill:#f3e5f5
     style C fill:#e8f5e8
@@ -95,21 +95,25 @@ graph LR
 QtLucide includes 1,634+ icons organized into logical categories:
 
 ### Navigation & UI
+
 - **Navigation**: `home`, `arrow-left`, `arrow-right`, `menu`
 - **Actions**: `save`, `edit`, `delete`, `copy`, `paste`
 - **Status**: `check`, `x`, `alert-circle`, `info`
 
 ### Content & Media
+
 - **Files**: `file`, `folder`, `image`, `video`
 - **Media Controls**: `play`, `pause`, `stop`, `volume-2`
 - **Communication**: `mail`, `phone`, `message-circle`
 
 ### Business & Productivity
+
 - **Calendar**: `calendar`, `clock`, `timer`
 - **Finance**: `dollar-sign`, `credit-card`, `trending-up`
 - **Tools**: `settings`, `tool`, `wrench`
 
 ### Social & Sharing
+
 - **Social**: `heart`, `star`, `thumbs-up`, `share`
 - **Users**: `user`, `users`, `user-plus`
 - **Network**: `wifi`, `globe`, `link`

@@ -15,37 +15,37 @@ QtLucide provides a clean, modern API for integrating Lucide icons into Qt appli
 
 <div class="grid cards" markdown>
 
--   :material-class: **QtLucide**
+- :material-class: **QtLucide**
 
-    ---
+  ***
 
-    Main class for icon management and creation. Your primary interface to the QtLucide system.
+  Main class for icon management and creation. Your primary interface to the QtLucide system.
 
-    [:octicons-arrow-right-24: QtLucide Class](qtlucide.md)
+  [:octicons-arrow-right-24: QtLucide Class](qtlucide.md)
 
--   :material-engine-outline: **QtLucideIconEngine**
+- :material-engine-outline: **QtLucideIconEngine**
 
-    ---
+  ***
 
-    QIconEngine implementation providing efficient rendering and caching for Qt's icon system.
+  QIconEngine implementation providing efficient rendering and caching for Qt's icon system.
 
-    [:octicons-arrow-right-24: Icon Engine](icon-engine.md)
+  [:octicons-arrow-right-24: Icon Engine](icon-engine.md)
 
--   :material-brush-outline: **QtLucideIconPainter**
+- :material-brush-outline: **QtLucideIconPainter**
 
-    ---
+  ***
 
-    Abstract base class for custom icon rendering. Extend this for custom icon painters.
+  Abstract base class for custom icon rendering. Extend this for custom icon painters.
 
-    [:octicons-arrow-right-24: Icon Painter](icon-painter.md)
+  [:octicons-arrow-right-24: Icon Painter](icon-painter.md)
 
--   :material-format-list-numbered: **Enums & Constants**
+- :material-format-list-numbered: **Enums & Constants**
 
-    ---
+  ***
 
-    Icon enumerations, constants, and utility definitions used throughout QtLucide.
+  Icon enumerations, constants, and utility definitions used throughout QtLucide.
 
-    [:octicons-arrow-right-24: Enums & Constants](enums.md)
+  [:octicons-arrow-right-24: Enums & Constants](enums.md)
 
 </div>
 
@@ -78,14 +78,14 @@ int count = lucide::ICON_COUNT;
 
 ### Common Options
 
-| Option | Type | Description | Default |
-|--------|------|-------------|---------|
-| `color` | `QColor` | Primary icon color | `Qt::black` |
-| `color-disabled` | `QColor` | Color when disabled | Lighter primary |
-| `color-active` | `QColor` | Color when active | Primary color |
-| `color-selected` | `QColor` | Color when selected | Primary color |
-| `scale-factor` | `double` | Size multiplier (0.1-2.0) | `0.9` |
-| `opacity` | `double` | Icon opacity (0.0-1.0) | `1.0` |
+| Option           | Type     | Description               | Default         |
+| ---------------- | -------- | ------------------------- | --------------- |
+| `color`          | `QColor` | Primary icon color        | `Qt::black`     |
+| `color-disabled` | `QColor` | Color when disabled       | Lighter primary |
+| `color-active`   | `QColor` | Color when active         | Primary color   |
+| `color-selected` | `QColor` | Color when selected       | Primary color   |
+| `scale-factor`   | `double` | Size multiplier (0.1-2.0) | `0.9`           |
+| `opacity`        | `double` | Icon opacity (0.0-1.0)    | `1.0`           |
 
 ### Icon States
 
@@ -111,7 +111,7 @@ namespace lucide {
     class QtLucideIconEngine;
     class QtLucideIconPainter;
     class QtLucideSvgIconPainter;
-    
+
     enum class Icons {
         // 1634+ icon definitions
         home,
@@ -119,7 +119,7 @@ namespace lucide {
         settings,
         // ... more icons
     };
-    
+
     const int ICON_COUNT = 1634;
 }
 ```
@@ -190,16 +190,19 @@ lucide.give("custom", new MyPainter());
 ## Performance Characteristics
 
 ### Icon Creation
+
 - **First access**: ~1-5ms (SVG parsing and rendering)
 - **Cached access**: ~0.1ms (cache lookup)
 - **Memory usage**: ~2-10KB per unique icon/size/option combination
 
 ### Caching Strategy
+
 - Automatic caching based on icon name, size, and options
 - LRU eviction when cache size limits are reached
 - Cache keys include all rendering parameters
 
 ### Optimization Tips
+
 ```cpp
 // Pre-create frequently used icons
 QIcon homeIcon = lucide.icon("home");
@@ -224,11 +227,11 @@ for (int i = 0; i < 100; ++i) {
 
 ## Version Compatibility
 
-| QtLucide Version | Qt Version | C++ Standard | Features |
-|------------------|------------|--------------|----------|
-| 1.0.x | Qt 6.0+ | C++17 | Full feature set |
-| Future 1.1.x | Qt 6.2+ | C++17 | Enhanced performance |
-| Future 2.0.x | Qt 6.5+ | C++20 | New API features |
+| QtLucide Version | Qt Version | C++ Standard | Features             |
+| ---------------- | ---------- | ------------ | -------------------- |
+| 1.0.x            | Qt 6.0+    | C++17        | Full feature set     |
+| Future 1.1.x     | Qt 6.2+    | C++17        | Enhanced performance |
+| Future 2.0.x     | Qt 6.5+    | C++20        | New API features     |
 
 ## Migration Notes
 

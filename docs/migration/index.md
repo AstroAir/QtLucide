@@ -8,21 +8,21 @@ This section helps you migrate your existing Qt applications to use QtLucide, wh
 
 <div class="grid cards" markdown>
 
--   :material-swap-horizontal: **From QtAwesome**
+- :material-swap-horizontal: **From QtAwesome**
 
-    ---
+  ***
 
-    Step-by-step guide for migrating from QtAwesome to QtLucide with minimal code changes.
+  Step-by-step guide for migrating from QtAwesome to QtLucide with minimal code changes.
 
-    [:octicons-arrow-right-24: QtAwesome Migration](from-qtawesome.md)
+  [:octicons-arrow-right-24: QtAwesome Migration](from-qtawesome.md)
 
--   :material-update: **Version Upgrades**
+- :material-update: **Version Upgrades**
 
-    ---
+  ***
 
-    Upgrade guides for moving between QtLucide versions, including breaking changes.
+  Upgrade guides for moving between QtLucide versions, including breaking changes.
 
-    [:octicons-arrow-right-24: Version Upgrades](version-upgrades.md)
+  [:octicons-arrow-right-24: Version Upgrades](version-upgrades.md)
 
 </div>
 
@@ -117,7 +117,7 @@ public:
     IconManager() : m_useLucide(true) {
         m_awesome = new QtAwesome();
         m_awesome->initFontAwesome();
-        
+
         m_lucide = new lucide::QtLucide();
         m_lucide->initLucide();
     }
@@ -230,18 +230,18 @@ lucide->initLucide();
 
 Common icon name translations:
 
-| QtAwesome | QtLucide | Notes |
-|-----------|----------|-------|
-| `fa_home` | `"home"` | Direct equivalent |
-| `fa_heart` | `"heart"` | Direct equivalent |
-| `fa_user` | `"user"` | Direct equivalent |
-| `fa_cog` / `fa_gear` | `"settings"` | Lucide uses "settings" |
-| `fa_trash` | `"trash-2"` | Lucide has multiple trash icons |
-| `fa_edit` | `"edit"` or `"pencil"` | Multiple edit icons available |
-| `fa_save` | `"save"` | Direct equivalent |
-| `fa_folder_open` | `"folder-open"` | Direct equivalent |
-| `fa_file` | `"file"` or `"file-plus"` | Multiple file icons |
-| `fa_stop` | `"square"` | Lucide uses square for stop |
+| QtAwesome            | QtLucide                  | Notes                           |
+| -------------------- | ------------------------- | ------------------------------- |
+| `fa_home`            | `"home"`                  | Direct equivalent               |
+| `fa_heart`           | `"heart"`                 | Direct equivalent               |
+| `fa_user`            | `"user"`                  | Direct equivalent               |
+| `fa_cog` / `fa_gear` | `"settings"`              | Lucide uses "settings"          |
+| `fa_trash`           | `"trash-2"`               | Lucide has multiple trash icons |
+| `fa_edit`            | `"edit"` or `"pencil"`    | Multiple edit icons available   |
+| `fa_save`            | `"save"`                  | Direct equivalent               |
+| `fa_folder_open`     | `"folder-open"`           | Direct equivalent               |
+| `fa_file`            | `"file"` or `"file-plus"` | Multiple file icons             |
+| `fa_stop`            | `"square"`                | Lucide uses square for stop     |
 
 ## Build System Changes
 
@@ -310,20 +310,20 @@ void testIconMigration()
 {
     lucide::QtLucide lucide;
     QVERIFY(lucide.initLucide());
-    
+
     // Test basic icon creation
     QIcon homeIcon = lucide.icon("home");
     QVERIFY(!homeIcon.isNull());
-    
+
     // Test custom colors
     QVariantMap options;
     options["color"] = QColor(Qt::red);
     QIcon redIcon = lucide.icon("heart", options);
     QVERIFY(!redIcon.isNull());
-    
+
     // Test icon count
     QVERIFY(lucide.availableIcons().size() > 1000);
-    
+
     qDebug() << "Migration test passed!";
 }
 ```
@@ -375,4 +375,4 @@ Learn from others who have successfully migrated:
 - **Case Study 2**: Cross-platform mobile app update
 - **Case Study 3**: Plugin system modernization
 
-*Contact us to share your migration story!*
+_Contact us to share your migration story!_

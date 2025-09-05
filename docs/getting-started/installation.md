@@ -4,10 +4,10 @@ This guide covers all the ways to install QtLucide in your development environme
 
 ## System Requirements
 
-- **Qt**: Version 6.0 or later
-- **CMake**: Version 3.16 or later
+- **Qt**: Version 6.0 or later (Qt 6.5+ recommended)
+- **Build System**: CMake 3.16+, Meson 0.59+, or XMake 2.5+
 - **Compiler**: C++17 compatible (GCC 7+, Clang 5+, MSVC 2017+)
-- **Python**: 3.6+ (optional, for building from source)
+- **Python**: 3.6+ (required for resource generation during build)
 
 ## Installation Methods
 
@@ -28,13 +28,13 @@ This guide covers all the ways to install QtLucide in your development environme
 
     ```cmake
     include(FetchContent)
-    
+
     FetchContent_Declare(
         QtLucide
         GIT_REPOSITORY https://github.com/AstroAir/QtLucide.git
         GIT_TAG        v1.0.0  # or main for latest
     )
-    
+
     FetchContent_MakeAvailable(QtLucide)
     target_link_libraries(your_target PRIVATE QtLucide::QtLucide)
     ```
@@ -56,16 +56,16 @@ This guide covers all the ways to install QtLucide in your development environme
     # Clone the repository
     git clone https://github.com/AstroAir/QtLucide.git
     cd QtLucide
-    
+
     # Create build directory
     mkdir build && cd build
-    
+
     # Configure with CMake
     cmake .. -DCMAKE_BUILD_TYPE=Release
-    
+
     # Build
     cmake --build . --parallel
-    
+
     # Install (optional)
     sudo cmake --install .
     ```
@@ -88,6 +88,67 @@ This guide covers all the ways to install QtLucide in your development environme
     | `QTLUCIDE_BUILD_TESTS` | `ON` | Build test suite |
     | `CMAKE_INSTALL_PREFIX` | System default | Installation directory |
 
+=== "Meson (Modern)"
+
+    ### Using pkg-config
+
+    After system installation:
+
+    ```meson
+    # In your meson.build
+    qtlucide_dep = dependency('QtLucide')
+
+    executable('myapp', 'main.cpp',
+      dependencies: [qtlucide_dep]
+    )
+    ```
+
+    ### Using FetchContent equivalent
+
+    ```meson
+    # In your meson.build
+    qtlucide_proj = subproject('qtlucide')
+    qtlucide_dep = qtlucide_proj.get_variable('qtlucide_dep')
+
+    executable('myapp', 'main.cpp',
+      dependencies: [qtlucide_dep]
+    )
+    ```
+
+    ### Build from Source
+
+    ```bash
+    git clone https://github.com/AstroAir/QtLucide.git
+    cd QtLucide
+    meson setup builddir --buildtype=release
+    meson compile -C builddir
+    sudo meson install -C builddir
+    ```
+
+=== "XMake (Modern)"
+
+    ### Using Package
+
+    ```lua
+    -- In your xmake.lua
+    add_requires("qtlucide")
+
+    target("myapp")
+        set_kind("binary")
+        add_files("main.cpp")
+        add_packages("qtlucide")
+    target_end()
+    ```
+
+    ### Build from Source
+
+    ```bash
+    git clone https://github.com/AstroAir/QtLucide.git
+    cd QtLucide
+    xmake
+    sudo xmake install
+    ```
+
 === "qmake (Legacy)"
 
     ### Using QtLucide.pri
@@ -103,9 +164,9 @@ This guide covers all the ways to install QtLucide in your development environme
 
     ```pro
     QT += core gui widgets svg
-    
+
     INCLUDEPATH += path/to/QtLucide/include
-    
+
     CONFIG(debug, debug|release) {
         LIBS += -Lpath/to/QtLucide/lib -lQtLucided
     } else {
@@ -150,7 +211,7 @@ This guide covers all the ways to install QtLucide in your development environme
     ```bash
     # Install dependencies
     brew install qt6 cmake
-    
+
     # Clone and build
     git clone https://github.com/AstroAir/QtLucide.git
     cd QtLucide
@@ -168,7 +229,7 @@ This guide covers all the ways to install QtLucide in your development environme
     # Install dependencies
     sudo apt update
     sudo apt install qt6-base-dev qt6-svg-dev cmake build-essential
-    
+
     # Clone and build
     git clone https://github.com/AstroAir/QtLucide.git
     cd QtLucide
@@ -183,7 +244,7 @@ This guide covers all the ways to install QtLucide in your development environme
     ```bash
     # Install dependencies
     sudo dnf install qt6-qtbase-devel qt6-qtsvg-devel cmake gcc-c++
-    
+
     # Build process same as Ubuntu
     ```
 
@@ -192,7 +253,7 @@ This guide covers all the ways to install QtLucide in your development environme
     ```bash
     # Install dependencies
     sudo pacman -S qt6-base qt6-svg cmake gcc
-    
+
     # Build process same as Ubuntu
     ```
 
@@ -212,20 +273,20 @@ Create a simple test file `test_qtlucide.cpp`:
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    
+
     lucide::QtLucide lucide;
     if (!lucide.initLucide()) {
         qDebug() << "Failed to initialize QtLucide";
         return 1;
     }
-    
+
     QPushButton button("Test");
     button.setIcon(lucide.icon("heart"));
     button.show();
-    
+
     qDebug() << "QtLucide initialized successfully!";
     qDebug() << "Available icons:" << lucide.availableIcons().size();
-    
+
     return app.exec();
 }
 ```
@@ -245,9 +306,9 @@ find_package(QtLucide REQUIRED)
 qt6_standard_project_setup()
 
 qt6_add_executable(QtLucideTest test_qtlucide.cpp)
-target_link_libraries(QtLucideTest PRIVATE 
-    Qt6::Core 
-    Qt6::Widgets 
+target_link_libraries(QtLucideTest PRIVATE
+    Qt6::Core
+    Qt6::Widgets
     QtLucide::QtLucide
 )
 ```
@@ -266,18 +327,21 @@ cmake --build .
 ### Common Issues
 
 **Qt not found**
+
 ```bash
 # Specify Qt installation path
 cmake .. -DCMAKE_PREFIX_PATH=/path/to/qt6
 ```
 
 **CMake version too old**
+
 ```bash
 # Update CMake or use older syntax
 cmake .. -DCMAKE_CXX_STANDARD=17
 ```
 
 **Missing SVG support**
+
 ```bash
 # Install Qt SVG module
 sudo apt install qt6-svg-dev  # Ubuntu/Debian
@@ -285,6 +349,7 @@ brew install qt6             # macOS (includes SVG)
 ```
 
 **Permission denied during install**
+
 ```bash
 # Use sudo for system installation
 sudo cmake --install .

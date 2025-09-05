@@ -187,6 +187,7 @@ QIcon icon = lucide->icon("heart");  // or lucide->icon(lucide::Icons::heart)
 See the `examples/` directory for complete examples:
 
 - `basic_usage/` - Basic icon usage and customization
+- `gallery/` - Complete icon browser with advanced features
 
 ## Building and Testing
 
@@ -332,12 +333,15 @@ python --version
 ✅ **Complete and Fully Functional**
 
 - **1634 Lucide Icons**: All icons from Lucide v0.460.0 included
+- **Multiple Build Systems**: CMake, Meson, and XMake support
 - **High-DPI Support**: Automatic scaling for high-resolution displays
 - **Qt6 Integration**: Native Qt6 QIcon support with proper caching
 - **Customizable**: Color, scale factor, and custom painter support
 - **Performance Optimized**: Efficient SVG rendering with caching
-- **CMake Package**: Easy integration with `find_package(QtLucide)`
-- **Comprehensive Tests**: Full test suite with 100% pass rate
+- **Package Integration**: Easy integration with `find_package(QtLucide)`, pkg-config
+- **Comprehensive Tests**: Full test suite with unit, performance, and memory tests
+- **CI/CD Pipeline**: Automated testing with security scanning and performance monitoring
+- **Complete Documentation**: API reference, user guides, and examples
 - **Cross-Platform**: Works on Windows, Linux, and macOS
 
 ## License

@@ -69,14 +69,14 @@ target_link_libraries(QtLucideTextEditor PRIVATE
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    
+
     app.setApplicationName("QtLucide Text Editor");
     app.setApplicationVersion("1.0.0");
     app.setOrganizationName("QtLucide Tutorial");
-    
+
     MainWindow window;
     window.show();
-    
+
     return app.exec();
 }
 ```
@@ -163,11 +163,11 @@ MainWindow::MainWindow(QWidget *parent)
     // Initialize QtLucide first
     m_lucide = new lucide::QtLucide(this);
     if (!m_lucide->initLucide()) {
-        QMessageBox::critical(this, "Error", 
+        QMessageBox::critical(this, "Error",
             "Failed to initialize QtLucide!\n"
             "The application may not display icons correctly.");
     } else {
-        qDebug() << "QtLucide initialized with" 
+        qDebug() << "QtLucide initialized with"
                  << m_lucide->availableIcons().size() << "icons";
     }
 
@@ -219,7 +219,7 @@ void MainWindow::setupMenus()
 
     // File Menu
     QMenu* fileMenu = m_menuBar->addMenu("&File");
-    
+
     m_newAction = fileMenu->addAction(m_lucide->icon("file-plus"), "&New");
     m_newAction->setShortcut(QKeySequence::New);
     m_newAction->setStatusTip("Create a new document");
@@ -261,7 +261,7 @@ void MainWindow::setupMenus()
 
     // Help Menu
     QMenu* helpMenu = m_menuBar->addMenu("&Help");
-    
+
     QVariantMap aboutOptions;
     aboutOptions["color"] = QColor(Qt::blue);
     m_aboutAction = helpMenu->addAction(m_lucide->icon("info", aboutOptions), "&About");
@@ -353,9 +353,9 @@ void MainWindow::connectSignals()
     connect(m_aboutAction, &QAction::triggered, this, &MainWindow::about);
 
     // Text editor signals
-    connect(m_textEdit, &QTextEdit::cursorPositionChanged, 
+    connect(m_textEdit, &QTextEdit::cursorPositionChanged,
             this, &MainWindow::updateStatus);
-    connect(m_textEdit, &QTextEdit::textChanged, 
+    connect(m_textEdit, &QTextEdit::textChanged,
             this, &MainWindow::updateStatus);
 }
 
@@ -370,7 +370,7 @@ void MainWindow::openDocument()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
         "Open Document", "", "Text Files (*.txt);;All Files (*)");
-    
+
     if (!fileName.isEmpty()) {
         QFile file(fileName);
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -385,7 +385,7 @@ void MainWindow::saveDocument()
 {
     QString fileName = QFileDialog::getSaveFileName(this,
         "Save Document", "", "Text Files (*.txt);;All Files (*)");
-    
+
     if (!fileName.isEmpty()) {
         QFile file(fileName);
         if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -429,10 +429,10 @@ void MainWindow::updateStatus()
     QTextCursor cursor = m_textEdit->textCursor();
     int line = cursor.blockNumber() + 1;
     int column = cursor.columnNumber() + 1;
-    
+
     m_positionLabel->setText(QString("Line %1, Column %2").arg(line).arg(column));
-    
-    int wordCount = m_textEdit->toPlainText().split(QRegExp("\\s+"), 
+
+    int wordCount = m_textEdit->toPlainText().split(QRegExp("\\s+"),
                                                    Qt::SkipEmptyParts).size();
     m_statusLabel->setText(QString("Words: %1").arg(wordCount));
 }
@@ -452,20 +452,24 @@ cmake --build .
 This tutorial covered:
 
 ### ✅ QtLucide Initialization
+
 - Creating and initializing QtLucide instances
 - Error handling for initialization failures
 
 ### ✅ Icon Usage Patterns
+
 - Basic icon creation with `icon(name)`
 - Custom colors and options
 - Using icons in menus, toolbars, and status bars
 
 ### ✅ Icon Customization
+
 - Color customization with `QVariantMap`
 - Scale factors for different sizes
 - State-specific styling
 
 ### ✅ Integration Techniques
+
 - Combining icons with Qt's action system
 - Using icons in different UI contexts
 - Performance considerations

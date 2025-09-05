@@ -42,14 +42,16 @@ namespace lucide {
 
 ## Constructor & Destructor
 
-### QtLucide(QObject* parent = nullptr)
+### QtLucide(QObject\* parent = nullptr)
 
 Creates a new QtLucide instance.
 
 **Parameters:**
+
 - `parent` - Parent QObject for memory management
 
 **Example:**
+
 ```cpp
 // Stack allocation
 lucide::QtLucide lucide;
@@ -76,6 +78,7 @@ Initializes the QtLucide icon system. Must be called before creating icons.
 **Returns:** `true` if initialization succeeded, `false` otherwise
 
 **Example:**
+
 ```cpp
 lucide::QtLucide lucide;
 if (!lucide.initLucide()) {
@@ -94,12 +97,14 @@ qDebug() << "QtLucide ready with" << lucide::ICON_COUNT << "icons";
 Creates an icon by name with optional customization.
 
 **Parameters:**
+
 - `name` - Icon name (e.g., "heart", "home", "settings")
 - `options` - Customization options (color, scale-factor, etc.)
 
 **Returns:** QIcon instance, or null QIcon if name is invalid
 
 **Example:**
+
 ```cpp
 // Basic usage
 QIcon homeIcon = lucide.icon("home");
@@ -122,12 +127,14 @@ QIcon customIcon = lucide.icon("star", options);
 Creates an icon using the strongly-typed enum.
 
 **Parameters:**
+
 - `iconId` - Icon enum value (e.g., `Icons::heart`)
 - `options` - Customization options
 
 **Returns:** QIcon instance
 
 **Example:**
+
 ```cpp
 // Using enum (preferred for performance)
 QIcon homeIcon = lucide.icon(lucide::Icons::home);
@@ -139,17 +146,19 @@ options["color"] = QColor(Qt::green);
 QIcon greenCheck = lucide.icon(lucide::Icons::check_circle, options);
 ```
 
-### QIcon icon(QtLucideIconPainter* painter, const QVariantMap& options = {})
+### QIcon icon(QtLucideIconPainter\* painter, const QVariantMap& options = {})
 
 Creates an icon using a custom painter.
 
 **Parameters:**
+
 - `painter` - Custom painter instance (QtLucide takes ownership)
 - `options` - Options passed to the painter
 
 **Returns:** QIcon instance
 
 **Example:**
+
 ```cpp
 class MyCustomPainter : public QtLucideIconPainter {
 public:
@@ -173,10 +182,12 @@ QIcon customIcon = lucide.icon(new MyCustomPainter(), options);
 Sets a default option that applies to all subsequently created icons.
 
 **Parameters:**
+
 - `name` - Option name (e.g., "color", "scale-factor")
 - `value` - Option value
 
 **Example:**
+
 ```cpp
 // Set default color for all icons
 lucide.setDefaultOption("color", QColor(64, 64, 64));
@@ -197,11 +208,13 @@ QIcon redIcon = lucide.icon("heart", redOptions);  // Red, but still 1.1 scale
 Gets the current default value for an option.
 
 **Parameters:**
+
 - `name` - Option name
 
 **Returns:** Current default value, or invalid QVariant if not set
 
 **Example:**
+
 ```cpp
 lucide.setDefaultOption("color", QColor(Qt::blue));
 
@@ -213,15 +226,17 @@ if (defaultColor.isValid()) {
 
 ## Custom Painters
 
-### void give(const QString& name, QtLucideIconPainter* painter)
+### void give(const QString& name, QtLucideIconPainter\* painter)
 
 Registers a custom painter for a specific icon name.
 
 **Parameters:**
+
 - `name` - Custom icon name
 - `painter` - Custom painter (QtLucide takes ownership)
 
 **Example:**
+
 ```cpp
 class LogoPainter : public QtLucideIconPainter {
 public:
@@ -251,6 +266,7 @@ Returns a list of all available icon names.
 **Returns:** List of icon names that can be used with `icon(QString)`
 
 **Example:**
+
 ```cpp
 QStringList icons = lucide.availableIcons();
 qDebug() << "Available icons:" << icons.size();
@@ -270,11 +286,13 @@ iconCombo->addItems(icons);
 Gets the raw SVG data for an icon by enum.
 
 **Parameters:**
+
 - `iconId` - Icon enum value
 
 **Returns:** SVG data as QByteArray, or empty array if invalid
 
 **Example:**
+
 ```cpp
 QByteArray svgData = lucide.svgData(lucide::Icons::heart);
 if (!svgData.isEmpty()) {
@@ -291,6 +309,7 @@ if (!svgData.isEmpty()) {
 Gets the raw SVG data for an icon by name.
 
 **Parameters:**
+
 - `name` - Icon name
 
 **Returns:** SVG data as QByteArray, or empty array if invalid
@@ -302,11 +321,13 @@ Gets the raw SVG data for an icon by name.
 Converts an icon enum to its string name.
 
 **Parameters:**
+
 - `iconId` - Icon enum value
 
 **Returns:** Icon name string, or empty string if invalid
 
 **Example:**
+
 ```cpp
 QString name = lucide.iconIdToString(lucide::Icons::heart);
 qDebug() << "Icon name:" << name;  // Outputs: "heart"
@@ -317,11 +338,13 @@ qDebug() << "Icon name:" << name;  // Outputs: "heart"
 Converts an icon name to its enum value.
 
 **Parameters:**
+
 - `name` - Icon name string
 
 **Returns:** Icon enum value, or `static_cast<Icons>(-1)` if invalid
 
 **Example:**
+
 ```cpp
 lucide::Icons iconId = lucide.stringToIconId("heart");
 if (iconId != static_cast<lucide::Icons>(-1)) {
@@ -331,14 +354,14 @@ if (iconId != static_cast<lucide::Icons>(-1)) {
 
 ## Supported Options
 
-| Option | Type | Description | Default | Range |
-|--------|------|-------------|---------|-------|
-| `color` | `QColor` | Primary icon color | `Qt::black` | Any valid QColor |
-| `color-disabled` | `QColor` | Color for disabled state | Lighter primary | Any valid QColor |
-| `color-active` | `QColor` | Color for active/hover state | Primary color | Any valid QColor |
-| `color-selected` | `QColor` | Color for selected state | Primary color | Any valid QColor |
-| `scale-factor` | `double` | Size multiplier | `0.9` | `0.1` to `2.0` |
-| `opacity` | `double` | Icon opacity | `1.0` | `0.0` to `1.0` |
+| Option           | Type     | Description                  | Default         | Range            |
+| ---------------- | -------- | ---------------------------- | --------------- | ---------------- |
+| `color`          | `QColor` | Primary icon color           | `Qt::black`     | Any valid QColor |
+| `color-disabled` | `QColor` | Color for disabled state     | Lighter primary | Any valid QColor |
+| `color-active`   | `QColor` | Color for active/hover state | Primary color   | Any valid QColor |
+| `color-selected` | `QColor` | Color for selected state     | Primary color   | Any valid QColor |
+| `scale-factor`   | `double` | Size multiplier              | `0.9`           | `0.1` to `2.0`   |
+| `opacity`        | `double` | Icon opacity                 | `1.0`           | `0.0` to `1.0`   |
 
 ## Performance Notes
 

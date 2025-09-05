@@ -22,9 +22,9 @@ Get QtLucide working in your Qt application in under 5 minutes!
     qt6_standard_project_setup()
 
     qt6_add_executable(QtLucideQuickStart main.cpp)
-    target_link_libraries(QtLucideQuickStart PRIVATE 
-        Qt6::Core 
-        Qt6::Widgets 
+    target_link_libraries(QtLucideQuickStart PRIVATE
+        Qt6::Core
+        Qt6::Widgets
         QtLucide::QtLucide
     )
     ```
@@ -280,16 +280,19 @@ statusBar()->addWidget(statusIcon);
 ## Common Issues
 
 **Icons not showing?**
+
 - Make sure `initLucide()` returns `true`
 - Check that Qt SVG module is available
 - Verify QtLucide is properly linked
 
 **Wrong colors?**
+
 - Colors are applied to the SVG stroke and fill
 - Some icons may not respond to color changes as expected
 - Try different color values or check the original SVG
 
 **Performance concerns?**
+
 - QtLucide automatically caches rendered icons
 - First render may be slower, subsequent uses are fast
 - Consider setting default options to avoid repeated customization
