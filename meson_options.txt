@@ -1,0 +1,16 @@
+# QtLucide Meson Build Options
+
+option('examples', 
+       type: 'boolean', 
+       value: true, 
+       description: 'Build QtLucide examples')
+
+option('tests', 
+       type: 'boolean', 
+       value: true, 
+       description: 'Build QtLucide tests')
+
+option('debug_executables', 
+       type: 'boolean', 
+       value: false, 
+       description: 'Build debug/test executables')

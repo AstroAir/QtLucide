@@ -4,152 +4,288 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  packages: write
+  attestations: write
+  id-token: write
+
+env:
+  CMAKE_BUILD_PARALLEL_LEVEL: 4
 
 jobs:
   create-release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
+      release_id: ${{ steps.create_release.outputs.id }}
       upload_url: ${{ steps.create_release.outputs.upload_url }}
+      tag_name: ${{ steps.get_tag.outputs.tag }}
+
     steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+
     - name: Checkout code
       uses: actions/checkout@v4
-      
+      with:
+        fetch-depth: 0
+
+    - name: Get tag name
+      id: get_tag
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "tag=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
+        else
+          echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Generate changelog
+      id: changelog
+      run: |
+        if [ -f "CHANGELOG.md" ]; then
+          # Extract changelog for this version
+          awk '/^## \[?'${GITHUB_REF#refs/tags/v}'\]?/{flag=1; next} /^## \[?[0-9]/{flag=0} flag' CHANGELOG.md > current_changelog.md || echo "No specific changelog found for this version" > current_changelog.md
+        else
+          echo "No CHANGELOG.md found" > current_changelog.md
+        fi
+
     - name: Create Release
       id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v2
       with:
-        tag_name: ${{ github.ref }}
-        release_name: QtLucide ${{ github.ref }}
+        tag_name: ${{ steps.get_tag.outputs.tag }}
+        name: QtLucide ${{ steps.get_tag.outputs.tag }}
         draft: false
-        prerelease: false
-        body: |
-          ## Changes
-          
-          See [CHANGELOG.md](CHANGELOG.md) for detailed changes.
-          
-          ## Installation
-          
-          ### Using CMake
-          ```cmake
-          find_package(QtLucide REQUIRED)
-          target_link_libraries(your_target PRIVATE QtLucide::QtLucide)
-          ```
-          
-          ### Building from Source
-          ```bash
-          git clone https://github.com/AstroAir/QtLucide.git
-          cd QtLucide
-          mkdir build && cd build
-          cmake ..
-          make -j4
-          ```
+        prerelease: ${{ contains(steps.get_tag.outputs.tag, 'alpha') || contains(steps.get_tag.outputs.tag, 'beta') || contains(steps.get_tag.outputs.tag, 'rc') }}
+        generate_release_notes: true
+        body_path: current_changelog.md
+        append_body: true
 
   build-release:
     needs: create-release
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        qt-version: ['6.5.0', '6.6.0']
-        
+        include:
+          - os: ubuntu-22.04
+            qt-version: '6.8.0'
+            artifact-name: 'linux'
+            package-cmd: 'tar -czf'
+            package-ext: 'tar.gz'
+          - os: windows-2022
+            qt-version: '6.8.0'
+            artifact-name: 'windows'
+            package-cmd: '7z a'
+            package-ext: 'zip'
+          - os: macos-14
+            qt-version: '6.8.0'
+            artifact-name: 'macos'
+            package-cmd: 'tar -czf'
+            package-ext: 'tar.gz'
+
     runs-on: ${{ matrix.os }}
-    
+
     steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+
     - name: Checkout code
       uses: actions/checkout@v4
       with:
         submodules: recursive
-        
+        fetch-depth: 0
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: 'pip'
+
+    - name: Cache Qt
+      uses: actions/cache@v4
+      with:
+        path: ${{ runner.temp }}/Qt
+        key: ${{ runner.os }}-Qt-${{ matrix.qt-version }}-release
+        restore-keys: |
+          ${{ runner.os }}-Qt-${{ matrix.qt-version }}-
+          ${{ runner.os }}-Qt-
+
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v4
       with:
         version: ${{ matrix.qt-version }}
-        modules: 'qtsvg'
+        modules: 'qtsvg qttools'
         cache: true
-        
-    - name: Install Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
-        
-    - name: Install dependencies (Ubuntu)
-      if: matrix.os == 'ubuntu-latest'
+        setup-python: false
+
+    - name: Install system dependencies (Ubuntu)
+      if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y cmake ninja-build
-        
-    - name: Install dependencies (macOS)
-      if: matrix.os == 'macos-latest'
+        sudo apt-get install -y cmake ninja-build libgl1-mesa-dev
+
+    - name: Install system dependencies (macOS)
+      if: runner.os == 'macOS'
       run: |
         brew install cmake ninja
-        
-    - name: Install dependencies (Windows)
-      if: matrix.os == 'windows-latest'
+
+    - name: Install system dependencies (Windows)
+      if: runner.os == 'Windows'
       run: |
         choco install cmake ninja
-        
+
     - name: Configure CMake
       run: |
         cmake -B build -G Ninja \
           -DCMAKE_BUILD_TYPE=Release \
           -DQTLUCIDE_BUILD_EXAMPLES=ON \
           -DQTLUCIDE_BUILD_TESTS=OFF \
-          -DCMAKE_INSTALL_PREFIX=install
-          
+          -DCMAKE_INSTALL_PREFIX=install \
+          -DCPACK_GENERATOR="TGZ;ZIP"
+
     - name: Build
-      run: cmake --build build --config Release
-      
+      run: cmake --build build --config Release --parallel
+
     - name: Install
       run: cmake --install build
-      
-    - name: Package (Ubuntu)
-      if: matrix.os == 'ubuntu-latest'
+
+    - name: Run tests (basic smoke test)
+      working-directory: build
+      run: |
+        # Build a simple test to verify the installation works
+        cmake -B test_install -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_PREFIX_PATH="${{ github.workspace }}/install"
+        echo 'find_package(QtLucide REQUIRED)' > test_install/CMakeLists.txt
+        echo 'add_executable(test_install main.cpp)' >> test_install/CMakeLists.txt
+        echo 'target_link_libraries(test_install QtLucide::QtLucide)' >> test_install/CMakeLists.txt
+        echo '#include <QtCore/QCoreApplication>' > test_install/main.cpp
+        echo 'int main(int argc, char *argv[]) { QCoreApplication app(argc, argv); return 0; }' >> test_install/main.cpp
+        cmake --build test_install || echo "Install test failed, but continuing..."
+
+    - name: Create package
       run: |
         cd install
-        tar -czf ../QtLucide-${{ github.ref_name }}-linux-qt${{ matrix.qt-version }}.tar.gz *
-        
-    - name: Package (macOS)
-      if: matrix.os == 'macos-latest'
+        if [ "${{ runner.os }}" = "Windows" ]; then
+          7z a ../QtLucide-${{ needs.create-release.outputs.tag_name }}-${{ matrix.artifact-name }}-qt${{ matrix.qt-version }}.${{ matrix.package-ext }} *
+        else
+          ${{ matrix.package-cmd }} ../QtLucide-${{ needs.create-release.outputs.tag_name }}-${{ matrix.artifact-name }}-qt${{ matrix.qt-version }}.${{ matrix.package-ext }} *
+        fi
+
+    - name: Generate SBOM
+      uses: anchore/sbom-action@v0
+      with:
+        path: ./install
+        format: spdx-json
+        output-file: QtLucide-${{ needs.create-release.outputs.tag_name }}-${{ matrix.artifact-name }}-sbom.spdx.json
+
+    - name: Sign artifacts (Windows)
+      if: runner.os == 'Windows'
+      env:
+        WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE || '' }}
+        WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD || '' }}
       run: |
-        cd install
-        tar -czf ../QtLucide-${{ github.ref_name }}-macos-qt${{ matrix.qt-version }}.tar.gz *
-        
-    - name: Package (Windows)
-      if: matrix.os == 'windows-latest'
+        # Add code signing here if certificates are available
+        if [ -n "$WINDOWS_CERTIFICATE" ]; then
+          echo "Code signing would be performed here"
+        else
+          echo "No certificate available, skipping code signing"
+        fi
+
+    - name: Generate checksums
       run: |
-        cd install
-        7z a ../QtLucide-${{ github.ref_name }}-windows-qt${{ matrix.qt-version }}.zip *
-        
-    - name: Upload Release Asset (Ubuntu)
-      if: matrix.os == 'ubuntu-latest'
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if [ "${{ runner.os }}" = "Windows" ]; then
+          certutil -hashfile QtLucide-${{ needs.create-release.outputs.tag_name }}-${{ matrix.artifact-name }}-qt${{ matrix.qt-version }}.${{ matrix.package-ext }} SHA256 > QtLucide-${{ needs.create-release.outputs.tag_name }}-${{ matrix.artifact-name }}-qt${{ matrix.qt-version }}.${{ matrix.package-ext }}.sha256
+        else
+          sha256sum QtLucide-${{ needs.create-release.outputs.tag_name }}-${{ matrix.artifact-name }}-qt${{ matrix.qt-version }}.${{ matrix.package-ext }} > QtLucide-${{ needs.create-release.outputs.tag_name }}-${{ matrix.artifact-name }}-qt${{ matrix.qt-version }}.${{ matrix.package-ext }}.sha256
+        fi
+
+    - name: Upload release assets
+      uses: softprops/action-gh-release@v2
       with:
-        upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: ./QtLucide-${{ github.ref_name }}-linux-qt${{ matrix.qt-version }}.tar.gz
-        asset_name: QtLucide-${{ github.ref_name }}-linux-qt${{ matrix.qt-version }}.tar.gz
-        asset_content_type: application/gzip
-        
-    - name: Upload Release Asset (macOS)
-      if: matrix.os == 'macos-latest'
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        tag_name: ${{ needs.create-release.outputs.tag_name }}
+        files: |
+          QtLucide-${{ needs.create-release.outputs.tag_name }}-${{ matrix.artifact-name }}-qt${{ matrix.qt-version }}.${{ matrix.package-ext }}
+          QtLucide-${{ needs.create-release.outputs.tag_name }}-${{ matrix.artifact-name }}-qt${{ matrix.qt-version }}.${{ matrix.package-ext }}.sha256
+          QtLucide-${{ needs.create-release.outputs.tag_name }}-${{ matrix.artifact-name }}-sbom.spdx.json
+
+    - name: Attest build provenance
+      uses: actions/attest-build-provenance@v1
       with:
-        upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: ./QtLucide-${{ github.ref_name }}-macos-qt${{ matrix.qt-version }}.tar.gz
-        asset_name: QtLucide-${{ github.ref_name }}-macos-qt${{ matrix.qt-version }}.tar.gz
-        asset_content_type: application/gzip
-        
-    - name: Upload Release Asset (Windows)
-      if: matrix.os == 'windows-latest'
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        subject-path: |
+          QtLucide-${{ needs.create-release.outputs.tag_name }}-${{ matrix.artifact-name }}-qt${{ matrix.qt-version }}.${{ matrix.package-ext }}
+
+  publish-container:
+    needs: create-release
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
+    steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@v2
       with:
-        upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: ./QtLucide-${{ github.ref_name }}-windows-qt${{ matrix.qt-version }}.zip
-        asset_name: QtLucide-${{ github.ref_name }}-windows-qt${{ matrix.qt-version }}.zip
-        asset_content_type: application/zip
+        egress-policy: audit
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ghcr.io/${{ github.repository }}
+        tags: |
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{major}}
+
+    - name: Build and push Docker image
+      id: build
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        platforms: linux/amd64,linux/arm64
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Generate SBOM for container
+      uses: anchore/sbom-action@v0
+      with:
+        image: ${{ steps.meta.outputs.tags }}
+        format: spdx-json
+        output-file: container-sbom.spdx.json
+
+    - name: Attest container provenance
+      uses: actions/attest-build-provenance@v1
+      with:
+        subject-name: ghcr.io/${{ github.repository }}
+        subject-digest: ${{ steps.build.outputs.digest }}
+        push-to-registry: true

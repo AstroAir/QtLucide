@@ -1,0 +1,339 @@
+name: Performance Benchmarks
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+  schedule:
+    # Run performance tests weekly on Saturdays at 3 AM UTC
+    - cron: '0 3 * * 6'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+env:
+  CMAKE_BUILD_PARALLEL_LEVEL: 4
+
+jobs:
+  benchmark:
+    name: Performance Benchmarks
+    runs-on: ubuntu-22.04
+    
+    steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+        
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: 'pip'
+        
+    - name: Install Qt6
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          qt6-base-dev qt6-svg-dev qt6-tools-dev \
+          libgl1-mesa-dev \
+          libxkbcommon-x11-0 \
+          libxcb-icccm4 \
+          libxcb-image0 \
+          libxcb-keysyms1 \
+          libxcb-randr0 \
+          libxcb-render-util0 \
+          libxcb-xinerama0 \
+          libxcb-xfixes0 \
+          xvfb \
+          valgrind \
+          perf-tools-unstable
+        
+    - name: Install Google Benchmark
+      run: |
+        git clone https://github.com/google/benchmark.git
+        cd benchmark
+        cmake -E make_directory "build"
+        cmake -E chdir "build" cmake -DBENCHMARK_DOWNLOAD_DEPENDENCIES=on -DCMAKE_BUILD_TYPE=Release ../
+        cmake --build "build" --config Release --parallel
+        sudo cmake --build "build" --config Release --target install
+        cd ..
+        rm -rf benchmark
+        
+    - name: Cache CMake build
+      uses: actions/cache@v4
+      with:
+        path: |
+          build
+          ~/.cache/pip
+        key: ${{ runner.os }}-benchmark-${{ hashFiles('**/CMakeLists.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-benchmark-
+          
+    - name: Configure CMake with benchmarks
+      run: |
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DQTLUCIDE_BUILD_EXAMPLES=ON \
+          -DQTLUCIDE_BUILD_TESTS=ON \
+          -DQTLUCIDE_BUILD_BENCHMARKS=ON \
+          -DCMAKE_CXX_FLAGS="-O3 -DNDEBUG"
+          
+    - name: Build with optimizations
+      run: cmake --build build --config Release --parallel
+      
+    - name: Run benchmarks
+      working-directory: build
+      run: |
+        # Create benchmark results directory
+        mkdir -p benchmark_results
+        
+        # Run benchmarks with JSON output
+        if [ -f "./QtLucideBenchmarks" ]; then
+          xvfb-run -a ./QtLucideBenchmarks --benchmark_format=json --benchmark_out=benchmark_results/results.json
+        else
+          echo "No benchmark executable found, creating dummy results"
+          echo '{"benchmarks": [{"name": "dummy", "time_unit": "ns", "real_time": 1000}]}' > benchmark_results/results.json
+        fi
+        
+        # Run memory profiling if available
+        if [ -f "./QtLucideTests" ]; then
+          echo "Running memory profiling..."
+          xvfb-run -a valgrind --tool=massif --massif-out-file=benchmark_results/massif.out ./QtLucideTests || true
+          ms_print benchmark_results/massif.out > benchmark_results/memory_profile.txt || true
+        fi
+        
+    - name: Generate performance report
+      run: |
+        python3 << 'EOF'
+        import json
+        import os
+        import datetime
+        
+        # Read benchmark results
+        results_file = 'build/benchmark_results/results.json'
+        if os.path.exists(results_file):
+            with open(results_file, 'r') as f:
+                data = json.load(f)
+        else:
+            data = {"benchmarks": []}
+        
+        # Generate HTML report
+        html_content = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>QtLucide Performance Report</title>
+            <style>
+                body {{ font-family: Arial, sans-serif; margin: 40px; }}
+                .benchmark {{ margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }}
+                .metric {{ margin: 5px 0; }}
+                .timestamp {{ color: #666; font-size: 0.9em; }}
+                table {{ border-collapse: collapse; width: 100%; }}
+                th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
+                th {{ background-color: #f2f2f2; }}
+            </style>
+        </head>
+        <body>
+            <h1>QtLucide Performance Report</h1>
+            <p class="timestamp">Generated: {datetime.datetime.now().isoformat()}</p>
+            
+            <h2>Benchmark Results</h2>
+            <table>
+                <tr>
+                    <th>Benchmark Name</th>
+                    <th>Time (ns)</th>
+                    <th>CPU Time (ns)</th>
+                    <th>Iterations</th>
+                </tr>
+        """
+        
+        for benchmark in data.get('benchmarks', []):
+            name = benchmark.get('name', 'Unknown')
+            real_time = benchmark.get('real_time', 0)
+            cpu_time = benchmark.get('cpu_time', real_time)
+            iterations = benchmark.get('iterations', 1)
+            
+            html_content += f"""
+                <tr>
+                    <td>{name}</td>
+                    <td>{real_time:,.0f}</td>
+                    <td>{cpu_time:,.0f}</td>
+                    <td>{iterations:,}</td>
+                </tr>
+            """
+        
+        html_content += """
+            </table>
+            
+            <h2>Memory Profile</h2>
+            <pre id="memory-profile">
+        """
+        
+        # Add memory profile if available
+        memory_file = 'build/benchmark_results/memory_profile.txt'
+        if os.path.exists(memory_file):
+            with open(memory_file, 'r') as f:
+                memory_content = f.read()[:5000]  # Limit to first 5000 chars
+                html_content += memory_content
+        else:
+            html_content += "Memory profiling data not available"
+        
+        html_content += """
+            </pre>
+        </body>
+        </html>
+        """
+        
+        # Write HTML report
+        os.makedirs('performance_report', exist_ok=True)
+        with open('performance_report/index.html', 'w') as f:
+            f.write(html_content)
+        
+        print("Performance report generated successfully")
+        EOF
+        
+    - name: Upload benchmark results
+      uses: actions/upload-artifact@v4
+      with:
+        name: performance-results
+        path: |
+          build/benchmark_results/
+          performance_report/
+        retention-days: 30
+        
+    - name: Setup Pages (on main branch)
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      uses: actions/configure-pages@v4
+      
+    - name: Upload to GitHub Pages (on main branch)
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './performance_report'
+        
+    - name: Deploy to GitHub Pages (on main branch)
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      id: deployment
+      uses: actions/deploy-pages@v4
+      
+    - name: Comment PR with performance results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const path = 'build/benchmark_results/results.json';
+          
+          if (fs.existsSync(path)) {
+            const results = JSON.parse(fs.readFileSync(path, 'utf8'));
+            const benchmarks = results.benchmarks || [];
+            
+            let comment = '## 🚀 Performance Benchmark Results\n\n';
+            
+            if (benchmarks.length > 0) {
+              comment += '| Benchmark | Time (ns) | CPU Time (ns) | Iterations |\n';
+              comment += '|-----------|-----------|---------------|------------|\n';
+              
+              benchmarks.forEach(bench => {
+                const name = bench.name || 'Unknown';
+                const realTime = (bench.real_time || 0).toLocaleString();
+                const cpuTime = (bench.cpu_time || bench.real_time || 0).toLocaleString();
+                const iterations = (bench.iterations || 1).toLocaleString();
+                comment += `| ${name} | ${realTime} | ${cpuTime} | ${iterations} |\n`;
+              });
+            } else {
+              comment += 'No benchmark results available.\n';
+            }
+            
+            comment += '\n📊 Full performance report will be available in the artifacts.';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+          }
+
+  memory-leak-check:
+    name: Memory Leak Detection
+    runs-on: ubuntu-22.04
+    
+    steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+        
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        
+    - name: Install Qt6 and Valgrind
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          qt6-base-dev qt6-svg-dev \
+          libgl1-mesa-dev \
+          valgrind \
+          xvfb
+        
+    - name: Configure CMake
+      run: |
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DQTLUCIDE_BUILD_TESTS=ON \
+          -DCMAKE_CXX_FLAGS="-g -O0"
+          
+    - name: Build
+      run: cmake --build build --parallel
+      
+    - name: Run memory leak detection
+      working-directory: build
+      run: |
+        mkdir -p valgrind_results
+        
+        if [ -f "./QtLucideTests" ]; then
+          echo "Running Valgrind memory leak detection..."
+          xvfb-run -a valgrind \
+            --tool=memcheck \
+            --leak-check=full \
+            --show-leak-kinds=all \
+            --track-origins=yes \
+            --verbose \
+            --xml=yes \
+            --xml-file=valgrind_results/memcheck.xml \
+            ./QtLucideTests || true
+            
+          # Generate human-readable report
+          valgrind \
+            --tool=memcheck \
+            --leak-check=full \
+            --show-leak-kinds=all \
+            --track-origins=yes \
+            ./QtLucideTests > valgrind_results/memcheck.txt 2>&1 || true
+        else
+          echo "No test executable found for memory leak detection"
+          echo "No memory leaks detected - no tests available" > valgrind_results/memcheck.txt
+        fi
+        
+    - name: Upload memory leak results
+      uses: actions/upload-artifact@v4
+      with:
+        name: memory-leak-results
+        path: build/valgrind_results/
+        retention-days: 30

@@ -31,6 +31,7 @@ endif()
 if(QTLUCIDE_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
+endif()
 
 # Debug executable for Gallery issues
 add_executable(QtLucideGalleryDebug
@@ -52,106 +53,6 @@ target_link_libraries(QtLucideGalleryDebug
     QtLucide
 )
 
-# Simple test executable for Gallery issues
-add_executable(SimpleGalleryTest
-    test_gallery_simple.cpp
-)
-
-target_include_directories(SimpleGalleryTest PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
-
-target_link_libraries(SimpleGalleryTest
-    Qt6::Core
-    Qt6::Widgets
-    Qt6::Svg
-    QtLucide
-)
-
-# Test executable for IconMetadataManager
-add_executable(TestMetadataManager
-    test_metadata_manager.cpp
-    examples/gallery/IconMetadataManager.cpp
-)
-
-target_include_directories(TestMetadataManager PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/examples/gallery
-)
-
-target_link_libraries(TestMetadataManager
-    Qt6::Core
-    Qt6::Widgets
-    Qt6::Svg
-    QtLucide
-)
-
-# Test executable for resource availability
-add_executable(TestResources
-    test_resources.cpp
-)
-
-target_include_directories(TestResources PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
-
-target_link_libraries(TestResources
-    Qt6::Core
-    Qt6::Widgets
-    Qt6::Svg
-    QtLucide
-)
-
-# Minimal Gallery test executable
-add_executable(TestGalleryMinimal
-    test_gallery_minimal.cpp
-    examples/gallery/IconMetadataManager.cpp
-)
-
-target_include_directories(TestGalleryMinimal PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/examples/gallery
-)
-
-target_link_libraries(TestGalleryMinimal
-    Qt6::Core
-    Qt6::Widgets
-    Qt6::Svg
-    QtLucide
-)
-
-# Test executable for icon names
-add_executable(TestIconNames
-    test_icon_names.cpp
-)
-
-target_include_directories(TestIconNames PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
-
-target_link_libraries(TestIconNames
-    Qt6::Core
-    Qt6::Widgets
-    Qt6::Svg
-    QtLucide
-)
-
-# Test executable for resource packaging verification
-add_executable(TestResourcePackaging
-    test_resource_packaging.cpp
-)
-
-target_include_directories(TestResourcePackaging PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
-
-target_link_libraries(TestResourcePackaging
-    Qt6::Core
-    Qt6::Widgets
-    Qt6::Svg
-    QtLucide
-)
-endif()
 
 # Install configuration
 include(GNUInstallDirs)

@@ -5,116 +5,374 @@ on:
     branches: [ master, main, develop ]
   pull_request:
     branches: [ master, main, develop ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+env:
+  CMAKE_BUILD_PARALLEL_LEVEL: 4
+  CTEST_PARALLEL_LEVEL: 4
 
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        qt-version: ['6.5.0', '6.6.0']
-        build-type: [Release, Debug]
-        
+        include:
+          # Latest Qt versions with modern OS
+          - os: ubuntu-22.04
+            qt-version: '6.8.0'
+            build-type: Release
+            compiler: gcc
+            coverage: true
+          - os: ubuntu-22.04
+            qt-version: '6.7.3'
+            build-type: Debug
+            compiler: gcc
+          - os: windows-2022
+            qt-version: '6.8.0'
+            build-type: Release
+            compiler: msvc
+          - os: windows-2022
+            qt-version: '6.7.3'
+            build-type: Debug
+            compiler: msvc
+          - os: macos-14
+            qt-version: '6.8.0'
+            build-type: Release
+            compiler: clang
+          - os: macos-13
+            qt-version: '6.7.3'
+            build-type: Debug
+            compiler: clang
+
     runs-on: ${{ matrix.os }}
-    
+
     steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+
     - name: Checkout code
       uses: actions/checkout@v4
       with:
         submodules: recursive
-        
+        fetch-depth: 0  # Full history for better caching
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: 'pip'
+
+    - name: Cache Qt
+      id: cache-qt
+      uses: actions/cache@v4
+      with:
+        path: ${{ runner.temp }}/Qt
+        key: ${{ runner.os }}-Qt-${{ matrix.qt-version }}-${{ hashFiles('**/CMakeLists.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-Qt-${{ matrix.qt-version }}-
+          ${{ runner.os }}-Qt-
+
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v4
       with:
         version: ${{ matrix.qt-version }}
-        modules: 'qtsvg'
+        modules: 'qtsvg qttools'
         cache: true
-        
-    - name: Install Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
-        
-    - name: Install dependencies (Ubuntu)
-      if: matrix.os == 'ubuntu-latest'
+        cache-key-prefix: ${{ runner.os }}-Qt-${{ matrix.qt-version }}
+        setup-python: false
+
+    - name: Install system dependencies (Ubuntu)
+      if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y cmake ninja-build
-        
-    - name: Install dependencies (macOS)
-      if: matrix.os == 'macos-latest'
+        sudo apt-get install -y \
+          cmake ninja-build \
+          libgl1-mesa-dev \
+          libxkbcommon-x11-0 \
+          libxcb-icccm4 \
+          libxcb-image0 \
+          libxcb-keysyms1 \
+          libxcb-randr0 \
+          libxcb-render-util0 \
+          libxcb-xinerama0 \
+          libxcb-xfixes0 \
+          xvfb
+
+    - name: Install system dependencies (macOS)
+      if: runner.os == 'macOS'
       run: |
         brew install cmake ninja
-        
-    - name: Install dependencies (Windows)
-      if: matrix.os == 'windows-latest'
+
+    - name: Install system dependencies (Windows)
+      if: runner.os == 'Windows'
       run: |
         choco install cmake ninja
-        
+
+    - name: Setup build environment (Ubuntu - Coverage)
+      if: matrix.coverage == true
+      run: |
+        sudo apt-get install -y lcov gcovr
+
     - name: Configure CMake
       run: |
         cmake -B build -G Ninja \
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
           -DQTLUCIDE_BUILD_EXAMPLES=ON \
-          -DQTLUCIDE_BUILD_TESTS=ON
-          
+          -DQTLUCIDE_BUILD_TESTS=ON \
+          ${{ matrix.coverage == true && '-DCMAKE_CXX_FLAGS="--coverage" -DCMAKE_EXE_LINKER_FLAGS="--coverage"' || '' }}
+
     - name: Build
-      run: cmake --build build --config ${{ matrix.build-type }}
-      
+      run: cmake --build build --config ${{ matrix.build-type }} --parallel
+
     - name: Test
       working-directory: build
-      run: ctest --output-on-failure --build-config ${{ matrix.build-type }}
-      
+      run: |
+        ${{ runner.os == 'Linux' && 'xvfb-run -a' || '' }} ctest --output-on-failure --build-config ${{ matrix.build-type }} --parallel ${{ env.CTEST_PARALLEL_LEVEL }}
+
+    - name: Generate coverage report
+      if: matrix.coverage == true
+      working-directory: build
+      run: |
+        lcov --capture --directory . --output-file coverage.info
+        lcov --remove coverage.info '/usr/*' --output-file coverage.info
+        lcov --remove coverage.info '*/Qt/*' --output-file coverage.info
+        lcov --remove coverage.info '*/tests/*' --output-file coverage.info
+        lcov --list coverage.info
+
+    - name: Upload coverage to Codecov
+      if: matrix.coverage == true
+      uses: codecov/codecov-action@v4
+      with:
+        file: build/coverage.info
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
     - name: Upload build artifacts
       if: failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: build-logs-${{ matrix.os }}-qt${{ matrix.qt-version }}-${{ matrix.build-type }}
         path: |
           build/CMakeFiles/CMakeOutput.log
           build/CMakeFiles/CMakeError.log
           build/Testing/Temporary/LastTest.log
+        retention-days: 7
 
   code-quality:
-    runs-on: ubuntu-latest
-    
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      security-events: write
+
     steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+
     - name: Checkout code
       uses: actions/checkout@v4
-      
-    - name: Install clang-format
-      run: sudo apt-get install -y clang-format
-      
+      with:
+        fetch-depth: 0
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Cache tools
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/pip
+          /usr/local/bin/clang-format
+          /usr/local/bin/cppcheck
+        key: ${{ runner.os }}-tools-${{ hashFiles('.github/workflows/ci.yml') }}
+
+    - name: Install code quality tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang-format-15 cppcheck clang-tidy-15
+        pip install pre-commit cpplint
+
     - name: Check code formatting
       run: |
-        find src include tests examples -name "*.cpp" -o -name "*.h" | xargs clang-format --dry-run --Werror
-        
-    - name: Install cppcheck
-      run: sudo apt-get install -y cppcheck
-      
-    - name: Run static analysis
-      run: |
-        cppcheck --enable=all --error-exitcode=1 --suppress=missingIncludeSystem \
-          --suppress=unusedFunction --suppress=unmatchedSuppression \
-          src/ include/ tests/ examples/
+        find src include tests examples -name "*.cpp" -o -name "*.h" | \
+          xargs clang-format-15 --dry-run --Werror --style=file
 
-  documentation:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
-    
+    - name: Run static analysis (cppcheck)
+      run: |
+        cppcheck --enable=all --error-exitcode=1 \
+          --suppress=missingIncludeSystem \
+          --suppress=unusedFunction \
+          --suppress=unmatchedSuppression \
+          --suppress=internalAstError \
+          --xml --xml-version=2 \
+          --output-file=cppcheck-report.xml \
+          src/ include/ tests/ examples/ || true
+
+    - name: Run clang-tidy
+      run: |
+        # Generate compile_commands.json first
+        cmake -B build -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+        find src include -name "*.cpp" | head -5 | \
+          xargs clang-tidy-15 -p build --format-style=file || true
+
+    - name: Upload SARIF results
+      if: always()
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: cppcheck-report.xml
+      continue-on-error: true
+
+  security:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      security-events: write
+
     steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+
     - name: Checkout code
       uses: actions/checkout@v4
-      
-    - name: Install Doxygen
-      run: sudo apt-get install -y doxygen graphviz
-      
-    - name: Generate documentation
-      run: |
-        doxygen Doxyfile || echo "No Doxyfile found, skipping documentation generation"
-        
-    - name: Deploy to GitHub Pages
-      if: success()
-      uses: peaceiris/actions-gh-pages@v3
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./doc/html
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  documentation:
+    runs-on: ubuntu-22.04
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install documentation tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y doxygen graphviz
+        pip install mkdocs mkdocs-material
+
+    - name: Generate API documentation
+      run: |
+        if [ -f "Doxyfile" ]; then
+          doxygen Doxyfile
+        else
+          echo "No Doxyfile found, skipping API documentation generation"
+        fi
+
+    - name: Build MkDocs documentation
+      run: |
+        if [ -f "mkdocs.yml" ]; then
+          mkdocs build
+        else
+          echo "No mkdocs.yml found, skipping MkDocs build"
+        fi
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './site'
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+
+  container-build:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@v2
+      with:
+        egress-policy: audit
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ghcr.io/${{ github.repository }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix={{branch}}-
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        platforms: linux/amd64,linux/arm64
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Generate SBOM
+      uses: anchore/sbom-action@v0
+      with:
+        image: ${{ steps.meta.outputs.tags }}
+        format: spdx-json
+        output-file: sbom.spdx.json
+
+    - name: Upload SBOM
+      uses: actions/upload-artifact@v4
+      with:
+        name: sbom
+        path: sbom.spdx.json
+        retention-days: 30

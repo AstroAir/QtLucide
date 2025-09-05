@@ -1,9 +1,11 @@
 # Pull Request
 
 ## Description
+
 Brief description of the changes in this PR.
 
 ## Type of Change
+
 Please delete options that are not relevant.
 
 - [ ] Bug fix (non-breaking change which fixes an issue)
@@ -15,11 +17,13 @@ Please delete options that are not relevant.
 - [ ] Test improvements
 
 ## Related Issues
+
 Fixes #(issue number)
 Closes #(issue number)
 Related to #(issue number)
 
 ## Changes Made
+
 Detailed description of the changes:
 
 - Change 1: Description
@@ -27,6 +31,7 @@ Detailed description of the changes:
 - Change 3: Description
 
 ## Testing
+
 Describe the tests that you ran to verify your changes:
 
 - [ ] Unit tests pass
@@ -35,43 +40,52 @@ Describe the tests that you ran to verify your changes:
 - [ ] Cross-platform testing (specify platforms)
 
 ### Test Configuration
-- Qt Version: 
-- OS: 
-- Compiler: 
+
+- Qt Version:
+- OS:
+- Compiler:
 - Build Type: Debug/Release
 
 ### New Tests Added
+
 - [ ] Added unit tests for new functionality
 - [ ] Added integration tests
 - [ ] Updated existing tests
 - [ ] No tests needed (explain why)
 
 ## Screenshots (if applicable)
+
 Add screenshots to help explain your changes, especially for UI-related changes.
 
 ## API Changes
+
 If this PR introduces API changes, please describe them:
 
 ### New APIs
+
 ```cpp
 // New methods or classes
 ```
 
 ### Modified APIs
+
 ```cpp
 // Changed method signatures
 ```
 
 ### Deprecated APIs
+
 ```cpp
 // APIs that are now deprecated
 ```
 
 ### Breaking Changes
+
 - List any breaking changes
 - Migration guide for users
 
 ## Documentation
+
 - [ ] Updated README.md
 - [ ] Updated API documentation
 - [ ] Updated examples
@@ -79,6 +93,7 @@ If this PR introduces API changes, please describe them:
 - [ ] No documentation changes needed
 
 ## Performance Impact
+
 Describe any performance implications:
 
 - [ ] No performance impact
@@ -87,11 +102,13 @@ Describe any performance implications:
 - [ ] Performance testing completed
 
 ## Backward Compatibility
+
 - [ ] Fully backward compatible
 - [ ] Backward compatible with deprecation warnings
 - [ ] Breaking changes (documented in CHANGELOG.md)
 
 ## Checklist
+
 Please check all that apply:
 
 - [ ] My code follows the project's coding standards
@@ -104,6 +121,7 @@ Please check all that apply:
 - [ ] Any dependent changes have been merged and published
 
 ## Additional Notes
+
 Any additional information that reviewers should know:
 
 - Special considerations
