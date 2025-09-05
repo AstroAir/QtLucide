@@ -308,6 +308,15 @@ void IconGridWidget::setIconSize(int size)
     }
 }
 
+void IconGridWidget::setViewMode(ViewMode mode)
+{
+    if (mode != m_viewMode) {
+        m_viewMode = mode;
+        updateViewSettings();
+        updateItemSize();
+    }
+}
+
 void IconGridWidget::setShowIconNames(bool show)
 {
     if (m_showIconNames != show) {
@@ -376,6 +385,54 @@ void IconGridWidget::onScrollValueChanged() { /* TODO */ }
 void IconGridWidget::keyPressEvent(QKeyEvent *event) { QWidget::keyPressEvent(event); }
 void IconGridWidget::wheelEvent(QWheelEvent *event) { QWidget::wheelEvent(event); }
 void IconGridWidget::resizeEvent(QResizeEvent *event) { QWidget::resizeEvent(event); }
+
+void IconGridWidget::updateViewSettings()
+{
+    if (!m_listView) return;
+
+    switch (m_viewMode) {
+        case GridView:
+            m_listView->setViewMode(QListView::IconMode);
+            m_listView->setFlow(QListView::LeftToRight);
+            m_listView->setWrapping(true);
+            m_listView->setResizeMode(QListView::Adjust);
+            m_listView->setSpacing(8);
+            break;
+
+        case ListView:
+            m_listView->setViewMode(QListView::ListMode);
+            m_listView->setFlow(QListView::TopToBottom);
+            m_listView->setWrapping(false);
+            m_listView->setResizeMode(QListView::Fixed);
+            m_listView->setSpacing(2);
+            break;
+
+        case CompactView:
+            m_listView->setViewMode(QListView::IconMode);
+            m_listView->setFlow(QListView::LeftToRight);
+            m_listView->setWrapping(true);
+            m_listView->setResizeMode(QListView::Adjust);
+            m_listView->setSpacing(4);
+            break;
+    }
+
+    // Update delegate display mode
+    if (m_delegate) {
+        IconItem::DisplayMode displayMode;
+        switch (m_viewMode) {
+            case GridView:
+                displayMode = IconItem::GridMode;
+                break;
+            case ListView:
+                displayMode = IconItem::ListMode;
+                break;
+            case CompactView:
+                displayMode = IconItem::CompactMode;
+                break;
+        }
+        m_delegate->setDisplayMode(displayMode);
+    }
+}
 
 // IconGridModel missing methods
 void IconGridModel::updateFavorites() { /* TODO */ }

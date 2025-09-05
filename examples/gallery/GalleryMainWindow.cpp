@@ -8,6 +8,8 @@
 #include "SearchWidget.h"
 #include "CategoryFilterWidget.h"
 #include "IconMetadataManager.h"
+#include "PreferencesDialog.h"
+#include "IconExportDialog.h"
 
 #include <QApplication>
 #include <QMessageBox>
@@ -102,6 +104,7 @@ void GalleryMainWindow::createActions()
     // File menu actions
     m_aboutAction = new QAction("&About QtLucide Gallery", this);
     m_aboutAction->setStatusTip("Show information about QtLucide Gallery");
+    m_aboutAction->setShortcut(QKeySequence("F1"));
 
     m_aboutQtAction = new QAction("About &Qt", this);
     m_aboutQtAction->setStatusTip("Show information about Qt");
@@ -148,12 +151,17 @@ void GalleryMainWindow::createActions()
     largeGridAction->setCheckable(true);
     mediumGridAction->setChecked(true);
 
+    smallGridAction->setShortcut(QKeySequence("Ctrl+1"));
+    mediumGridAction->setShortcut(QKeySequence("Ctrl+2"));
+    largeGridAction->setShortcut(QKeySequence("Ctrl+3"));
+
     smallGridAction->setData(32);
     mediumGridAction->setData(64);
     largeGridAction->setData(96);
 
     // Export/Import actions
     m_exportAction = new QAction("&Export Icons...", this);
+    m_exportAction->setShortcut(QKeySequence("Ctrl+E"));
     m_exportAction->setStatusTip("Export selected icons");
 
     m_importFavoritesAction = new QAction("&Import Favorites...", this);
@@ -186,6 +194,63 @@ void GalleryMainWindow::createActions()
     m_clearFiltersAction = new QAction("&Clear All Filters", this);
     m_clearFiltersAction->setShortcut(QKeySequence("Ctrl+Shift+X"));
     m_clearFiltersAction->setStatusTip("Clear all search filters");
+
+    // Additional navigation shortcuts
+    QAction* focusSearchAction = new QAction("Focus Search", this);
+    focusSearchAction->setShortcut(QKeySequence("Ctrl+K"));
+    focusSearchAction->setStatusTip("Focus on search field");
+    connect(focusSearchAction, &QAction::triggered, this, [this]() {
+        if (m_searchWidget) {
+            m_searchWidget->setFocus();
+        }
+    });
+    addAction(focusSearchAction);
+
+    QAction* viewModeAction = new QAction("Toggle View Mode", this);
+    viewModeAction->setShortcut(QKeySequence("Ctrl+M"));
+    viewModeAction->setStatusTip("Cycle through view modes");
+    connect(viewModeAction, &QAction::triggered, this, &GalleryMainWindow::onChangeViewMode);
+    addAction(viewModeAction);
+
+    QAction* zoomInAction = new QAction("Zoom In", this);
+    zoomInAction->setShortcut(QKeySequence::ZoomIn);
+    zoomInAction->setStatusTip("Increase icon size");
+    connect(zoomInAction, &QAction::triggered, this, [this]() {
+        if (m_iconGrid) {
+            m_iconGrid->zoomIn();
+        }
+    });
+    addAction(zoomInAction);
+
+    QAction* zoomOutAction = new QAction("Zoom Out", this);
+    zoomOutAction->setShortcut(QKeySequence::ZoomOut);
+    zoomOutAction->setStatusTip("Decrease icon size");
+    connect(zoomOutAction, &QAction::triggered, this, [this]() {
+        if (m_iconGrid) {
+            m_iconGrid->zoomOut();
+        }
+    });
+    addAction(zoomOutAction);
+
+    QAction* resetZoomAction = new QAction("Reset Zoom", this);
+    resetZoomAction->setShortcut(QKeySequence("Ctrl+0"));
+    resetZoomAction->setStatusTip("Reset icon size to default");
+    connect(resetZoomAction, &QAction::triggered, this, [this]() {
+        if (m_iconGrid) {
+            m_iconGrid->resetZoom();
+        }
+    });
+    addAction(resetZoomAction);
+
+    QAction* refreshAction = new QAction("Refresh", this);
+    refreshAction->setShortcut(QKeySequence::Refresh);
+    refreshAction->setStatusTip("Refresh icon grid");
+    connect(refreshAction, &QAction::triggered, this, [this]() {
+        if (m_iconGrid) {
+            m_iconGrid->refreshIcons();
+        }
+    });
+    addAction(refreshAction);
 }
 
 void GalleryMainWindow::setupMenuBar()
@@ -556,8 +621,44 @@ void GalleryMainWindow::onAboutQt()
 
 void GalleryMainWindow::onShowPreferences()
 {
-    // TODO: Implement preferences dialog
-    QMessageBox::information(this, "Preferences", "Preferences dialog not yet implemented.");
+    PreferencesDialog dialog(this);
+
+    // Connect signals to update the application when settings change
+    connect(&dialog, &PreferencesDialog::themeChanged,
+            this, [this](const QString& theme) {
+                // Apply theme changes
+                Q_UNUSED(theme)
+                // TODO: Implement theme switching
+            });
+
+    connect(&dialog, &PreferencesDialog::iconSizeChanged,
+            this, [this](int size) {
+                if (m_iconGrid) {
+                    m_iconGrid->setIconSize(size);
+                }
+            });
+
+    connect(&dialog, &PreferencesDialog::viewModeChanged,
+            this, [this](const QString& mode) {
+                if (m_iconGrid) {
+                    // TODO: Implement view mode switching
+                    Q_UNUSED(mode)
+                }
+            });
+
+    connect(&dialog, &PreferencesDialog::settingsChanged,
+            this, [this]() {
+                // Refresh the application with new settings
+                if (m_iconGrid) {
+                    m_iconGrid->refreshIcons();
+                }
+                updateActions();
+            });
+
+    if (dialog.exec() == QDialog::Accepted) {
+        // Settings have been applied
+        m_statusLabel->setText("Preferences updated successfully");
+    }
 }
 
 void GalleryMainWindow::onToggleFullscreen()
@@ -573,8 +674,37 @@ void GalleryMainWindow::onToggleFullscreen()
 
 void GalleryMainWindow::onExportIcons()
 {
-    // TODO: Implement icon export functionality
-    QMessageBox::information(this, "Export Icons", "Export functionality not yet implemented.");
+    IconExportDialog dialog(m_lucide, m_metadataManager, this);
+
+    // Set current icon if one is selected
+    if (!m_currentIconName.isEmpty()) {
+        dialog.setIconName(m_currentIconName);
+    }
+
+    // Connect signals for progress feedback
+    connect(&dialog, &IconExportDialog::exportStarted,
+            this, [this]() {
+                m_statusLabel->setText("Starting icon export...");
+            });
+
+    connect(&dialog, &IconExportDialog::exportProgress,
+            this, [this](int current, int total, const QString& currentIcon) {
+                m_statusLabel->setText(QString("Exporting %1... (%2/%3)")
+                                     .arg(currentIcon).arg(current + 1).arg(total));
+            });
+
+    connect(&dialog, &IconExportDialog::exportFinished,
+            this, [this](bool success, const QString& message) {
+                m_statusLabel->setText(message);
+                if (success) {
+                    // Show success message briefly
+                    QTimer::singleShot(3000, this, [this]() {
+                        updateStatusBar();
+                    });
+                }
+            });
+
+    dialog.exec();
 }
 
 void GalleryMainWindow::onImportFavorites()
@@ -640,7 +770,44 @@ void GalleryMainWindow::onChangeGridSize(int size)
 
 void GalleryMainWindow::onChangeViewMode()
 {
-    // TODO: Implement view mode changes
+    if (!m_iconGrid) return;
+
+    // Cycle through view modes
+    IconGridWidget::ViewMode currentMode = m_iconGrid->viewMode();
+    IconGridWidget::ViewMode newMode;
+
+    switch (currentMode) {
+        case IconGridWidget::GridView:
+            newMode = IconGridWidget::ListView;
+            break;
+        case IconGridWidget::ListView:
+            newMode = IconGridWidget::CompactView;
+            break;
+        case IconGridWidget::CompactView:
+            newMode = IconGridWidget::GridView;
+            break;
+    }
+
+    m_iconGrid->setViewMode(newMode);
+
+    // Update status bar
+    QString modeText;
+    switch (newMode) {
+        case IconGridWidget::GridView:
+            modeText = "Grid View";
+            break;
+        case IconGridWidget::ListView:
+            modeText = "List View";
+            break;
+        case IconGridWidget::CompactView:
+            modeText = "Compact View";
+            break;
+    }
+
+    m_statusLabel->setText(QString("Switched to %1").arg(modeText));
+
+    // Update actions if needed
+    updateActions();
 }
 
 void GalleryMainWindow::onIconSelected(const QString& iconName)

@@ -80,11 +80,13 @@ target_sources(QtLucide PRIVATE ${QTLUCIDE_RESOURCES})
 # Make sure resources are generated before building the library
 add_dependencies(QtLucide generate_qtlucide_resources)
 
-# Install the library
-install(TARGETS QtLucide
-    EXPORT QtLucideTargets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
+# Install the library (only when installation is enabled)
+if(QTLUCIDE_INSTALL)
+    install(TARGETS QtLucide
+        EXPORT QtLucideTargets
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+endif()

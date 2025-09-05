@@ -16,6 +16,10 @@ set(GALLERY_SOURCES
     IconMetadataManager.h
     IconItem.cpp
     IconItem.h
+    PreferencesDialog.cpp
+    PreferencesDialog.h
+    IconExportDialog.cpp
+    IconExportDialog.h
 )
 
 add_executable(QtLucideGallery ${GALLERY_SOURCES})

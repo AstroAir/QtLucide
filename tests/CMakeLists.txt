@@ -13,8 +13,21 @@ set(TEST_SOURCES
     test_thread_safety.cpp
     test_boundary_conditions.cpp
     test_memory_management.cpp
+    test_integration.cpp
+    test_ui_components.cpp
+    test_performance_regression.cpp
+    test_platform_specific.cpp
+    test_export_functionality.cpp
+    test_accessibility.cpp
     ../examples/gallery/IconMetadataManager.cpp
     ../examples/gallery/IconItem.cpp
+    ../examples/gallery/SearchWidget.cpp
+    ../examples/gallery/CategoryFilterWidget.cpp
+    ../examples/gallery/IconGridWidget.cpp
+    ../examples/gallery/IconDetailsPanel.cpp
+    ../examples/gallery/PreferencesDialog.cpp
+    ../examples/gallery/IconExportDialog.cpp
+    ../examples/gallery/GalleryMainWindow.cpp
 )
 
 # Test headers (needed for MOC processing)
@@ -27,8 +40,21 @@ set(TEST_HEADERS
     test_thread_safety.h
     test_boundary_conditions.h
     test_memory_management.h
+    test_integration.h
+    test_ui_components.h
+    test_performance_regression.h
+    test_platform_specific.h
+    test_export_functionality.h
+    test_accessibility.h
     ../examples/gallery/IconMetadataManager.h
     ../examples/gallery/IconItem.h
+    ../examples/gallery/SearchWidget.h
+    ../examples/gallery/CategoryFilterWidget.h
+    ../examples/gallery/IconGridWidget.h
+    ../examples/gallery/IconDetailsPanel.h
+    ../examples/gallery/PreferencesDialog.h
+    ../examples/gallery/IconExportDialog.h
+    ../examples/gallery/GalleryMainWindow.h
 )
 
 # Create test executable

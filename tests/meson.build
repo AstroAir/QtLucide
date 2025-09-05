@@ -46,7 +46,7 @@ qtlucide_tests = executable('QtLucideTests',
   test_moc,
   dependencies: [qt6_dep, qt6_test_dep, qtlucide_dep],
   include_directories: [inc_dir, include_directories('../examples/gallery')],
-  gui_app: false,
+  win_subsystem: 'console',
   install: false
 )
 

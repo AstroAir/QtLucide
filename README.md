@@ -80,6 +80,29 @@ sudo xmake install
 sudo meson install -C builddir
 ```
 
+#### As Git Submodule (Recommended for Integration)
+
+QtLucide is optimized for use as a Git submodule with automatic detection and minimal footprint:
+
+```bash
+# Add QtLucide as submodule
+git submodule add https://github.com/AstroAir/QtLucide.git third-party/QtLucide
+git submodule update --init --recursive
+
+# In your CMakeLists.txt
+add_subdirectory(third-party/QtLucide)
+target_link_libraries(your_target PRIVATE QtLucide::QtLucide)
+```
+
+**Submodule Benefits:**
+
+- Automatic detection (examples/tests disabled by default)
+- No installation conflicts
+- Version pinning for reproducible builds
+- Works with all build systems (CMake, Meson, XMake)
+
+See [Submodule Integration Guide](docs/submodule-integration.md) for detailed instructions.
+
 #### Using in Your Project
 
 ##### CMake Projects

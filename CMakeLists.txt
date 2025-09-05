@@ -5,18 +5,28 @@ project(QtLucide VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Detect if QtLucide is being built as a submodule/subdirectory
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+    set(QTLUCIDE_IS_MAIN_PROJECT TRUE)
+else()
+    set(QTLUCIDE_IS_MAIN_PROJECT FALSE)
+endif()
+
 # Find Qt6 components
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Svg)
 
-# Find Python3 for resource generation scripts
-find_package(Python3 REQUIRED COMPONENTS Interpreter)
+# Find Python3 for resource generation scripts (only if needed)
+if(QTLUCIDE_IS_MAIN_PROJECT OR QTLUCIDE_BUILD_EXAMPLES OR QTLUCIDE_BUILD_TESTS)
+    find_package(Python3 REQUIRED COMPONENTS Interpreter)
+endif()
 
 # Enable Qt6 features
 qt6_standard_project_setup()
 
-# Project options
-option(QTLUCIDE_BUILD_EXAMPLES "Build QtLucide examples" ON)
-option(QTLUCIDE_BUILD_TESTS "Build QtLucide tests" ON)
+# Project options - default to OFF when used as submodule
+option(QTLUCIDE_BUILD_EXAMPLES "Build QtLucide examples" ${QTLUCIDE_IS_MAIN_PROJECT})
+option(QTLUCIDE_BUILD_TESTS "Build QtLucide tests" ${QTLUCIDE_IS_MAIN_PROJECT})
+option(QTLUCIDE_INSTALL "Install QtLucide" ${QTLUCIDE_IS_MAIN_PROJECT})
 
 # Include directories
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -54,44 +64,51 @@ target_link_libraries(QtLucideGalleryDebug
 )
 
 
-# Install configuration
-include(GNUInstallDirs)
-include(CMakePackageConfigHelpers)
+# Install configuration (only when building as main project or explicitly requested)
+if(QTLUCIDE_INSTALL)
+    include(GNUInstallDirs)
+    include(CMakePackageConfigHelpers)
 
-# Install headers
-install(DIRECTORY include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    FILES_MATCHING PATTERN "*.h"
-)
+    # Install headers
+    install(DIRECTORY include/
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        FILES_MATCHING PATTERN "*.h"
+    )
 
-# Create and install package config files
-set(QTLUCIDE_CMAKE_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/QtLucide)
+    # Create and install package config files
+    set(QTLUCIDE_CMAKE_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/QtLucide)
 
-# Generate package config file
-configure_package_config_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/QtLucideConfig.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/QtLucideConfig.cmake"
-    INSTALL_DESTINATION ${QTLUCIDE_CMAKE_DIR}
-    PATH_VARS CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_LIBDIR
-)
+    # Generate package config file
+    configure_package_config_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/QtLucideConfig.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/QtLucideConfig.cmake"
+        INSTALL_DESTINATION ${QTLUCIDE_CMAKE_DIR}
+        PATH_VARS CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_LIBDIR
+    )
 
-# Generate package version file
-write_basic_package_version_file(
-    "${CMAKE_CURRENT_BINARY_DIR}/QtLucideConfigVersion.cmake"
-    VERSION ${PROJECT_VERSION}
-    COMPATIBILITY SameMajorVersion
-)
+    # Generate package version file
+    write_basic_package_version_file(
+        "${CMAKE_CURRENT_BINARY_DIR}/QtLucideConfigVersion.cmake"
+        VERSION ${PROJECT_VERSION}
+        COMPATIBILITY SameMajorVersion
+    )
 
-# Install package config files
-install(FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/QtLucideConfig.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/QtLucideConfigVersion.cmake"
-    DESTINATION ${QTLUCIDE_CMAKE_DIR}
-)
+    # Install package config files
+    install(FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/QtLucideConfig.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/QtLucideConfigVersion.cmake"
+        DESTINATION ${QTLUCIDE_CMAKE_DIR}
+    )
 
-# Export targets
-install(EXPORT QtLucideTargets
-    FILE QtLucideTargets.cmake
-    NAMESPACE QtLucide::
-    DESTINATION ${QTLUCIDE_CMAKE_DIR}
-)
+    # Export targets
+    install(EXPORT QtLucideTargets
+        FILE QtLucideTargets.cmake
+        NAMESPACE QtLucide::
+        DESTINATION ${QTLUCIDE_CMAKE_DIR}
+    )
+endif()
+
+# When used as submodule, create an alias target for easier integration
+if(NOT QTLUCIDE_IS_MAIN_PROJECT)
+    add_library(QtLucide::QtLucide ALIAS QtLucide)
+endif()

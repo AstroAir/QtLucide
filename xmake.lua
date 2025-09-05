@@ -6,16 +6,28 @@ set_project("QtLucide")
 set_version("1.0.0")
 set_languages("cxx17")
 
--- Build options
+-- Detect if QtLucide is being built as a submodule
+local is_subproject = os.scriptdir() ~= os.projectdir()
+
+-- Build options - default to false when used as subproject
+local default_examples = not is_subproject
+local default_tests = not is_subproject
+
 option("examples")
-    set_default(true)
+    set_default(default_examples)
     set_description("Build QtLucide examples")
     set_showmenu(true)
 option_end()
 
 option("tests")
-    set_default(true)
+    set_default(default_tests)
     set_description("Build QtLucide tests")
+    set_showmenu(true)
+option_end()
+
+option("install")
+    set_default(not is_subproject)
+    set_description("Install QtLucide files")
     set_showmenu(true)
 option_end()
 
@@ -97,20 +109,21 @@ target("QtLucide")
         add_defines("QTLUCIDE_LIBRARY")
     end
 
-    -- Installation
-    on_install(function (target)
-        -- Install headers
-        os.cp("include/QtLucide", path.join(target:installdir(), "include"))
+    -- Installation (only when not used as subproject or explicitly requested)
+    if has_config("install") then
+        on_install(function (target)
+            -- Install headers
+            os.cp("include/QtLucide", path.join(target:installdir(), "include"))
 
-        -- Install library
-        os.cp(target:targetfile(), path.join(target:installdir(), "lib"))
+            -- Install library
+            os.cp(target:targetfile(), path.join(target:installdir(), "lib"))
 
-        -- Install package config (simplified version)
-        local config_dir = path.join(target:installdir(), "lib", "cmake", "QtLucide")
-        os.mkdir(config_dir)
+            -- Install package config (simplified version)
+            local config_dir = path.join(target:installdir(), "lib", "cmake", "QtLucide")
+            os.mkdir(config_dir)
 
-        -- Create a simple config file
-        local config_content = [[
+            -- Create a simple config file
+            local config_content = [[
 # QtLucide CMake configuration file
 find_dependency(Qt6 REQUIRED COMPONENTS Core Gui Widgets Svg)
 
@@ -123,8 +136,9 @@ if(NOT TARGET QtLucide::QtLucide)
     )
 endif()
 ]]
-        io.writefile(path.join(config_dir, "QtLucideConfig.cmake"), config_content)
-    end)
+            io.writefile(path.join(config_dir, "QtLucideConfig.cmake"), config_content)
+        end)
+    end
 target_end()
 
 -- Examples

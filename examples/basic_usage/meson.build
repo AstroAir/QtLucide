@@ -23,6 +23,6 @@ qtlucide_example = executable('QtLucideExample',
   example_headers,
   example_moc,
   dependencies: [qt6_dep, qtlucide_dep],
-  gui_app: true,
+  win_subsystem: 'windows',
   install: false
 )

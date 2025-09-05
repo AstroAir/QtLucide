@@ -109,15 +109,60 @@
     "square-chevron-up",
     "wind-arrow-down"
   ],
-  "a": [
+  "down": [
     "a-arrow-down",
-    "a-arrow-up",
-    "a-large-small",
+    "arrow-big-down-dash",
+    "arrow-big-down",
+    "arrow-down-0-1",
+    "arrow-down-1-0",
     "arrow-down-a-z",
+    "arrow-down-from-line",
+    "arrow-down-left",
+    "arrow-down-narrow-wide",
+    "arrow-down-right",
+    "arrow-down-to-dot",
+    "arrow-down-to-line",
+    "arrow-down-up",
+    "arrow-down-wide-narrow",
     "arrow-down-z-a",
-    "arrow-up-a-z",
-    "arrow-up-z-a",
-    "book-a"
+    "arrow-down",
+    "arrow-up-down",
+    "banknote-arrow-down",
+    "book-down",
+    "calendar-arrow-down",
+    "chevron-down",
+    "chevrons-down-up",
+    "chevrons-down",
+    "chevrons-up-down",
+    "circle-arrow-down",
+    "circle-arrow-out-down-left",
+    "circle-arrow-out-down-right",
+    "circle-chevron-down",
+    "clock-arrow-down",
+    "corner-down-left",
+    "corner-down-right",
+    "corner-left-down",
+    "corner-right-down",
+    "file-down",
+    "folder-down",
+    "image-down",
+    "lamp-wall-down",
+    "list-chevrons-down-up",
+    "list-chevrons-up-down",
+    "monitor-down",
+    "move-down-left",
+    "move-down-right",
+    "move-down",
+    "square-arrow-down-left",
+    "square-arrow-down-right",
+    "square-arrow-down",
+    "square-arrow-out-down-left",
+    "square-arrow-out-down-right",
+    "square-chevron-down",
+    "thumbs-down",
+    "trending-down",
+    "trending-up-down",
+    "wind-arrow-down"
   ],
   "arrow": [
     "a-arrow-down",
@@ -198,60 +243,15 @@
     "square-arrow-up",
     "wind-arrow-down"
   ],
-  "down": [
+  "a": [
     "a-arrow-down",
-    "arrow-big-down-dash",
-    "arrow-big-down",
-    "arrow-down-0-1",
-    "arrow-down-1-0",
+    "a-arrow-up",
+    "a-large-small",
     "arrow-down-a-z",
-    "arrow-down-from-line",
-    "arrow-down-left",
-    "arrow-down-narrow-wide",
-    "arrow-down-right",
-    "arrow-down-to-dot",
-    "arrow-down-to-line",
-    "arrow-down-up",
-    "arrow-down-wide-narrow",
     "arrow-down-z-a",
-    "arrow-down",
-    "arrow-up-down",
-    "banknote-arrow-down",
-    "book-down",
-    "calendar-arrow-down",
-    "chevron-down",
-    "chevrons-down-up",
-    "chevrons-down",
-    "chevrons-up-down",
-    "circle-arrow-down",
-    "circle-arrow-out-down-left",
-    "circle-arrow-out-down-right",
-    "circle-chevron-down",
-    "clock-arrow-down",
-    "corner-down-left",
-    "corner-down-right",
-    "corner-left-down",
-    "corner-right-down",
-    "file-down",
-    "folder-down",
-    "image-down",
-    "lamp-wall-down",
-    "list-chevrons-down-up",
-    "list-chevrons-up-down",
-    "monitor-down",
-    "move-down-left",
-    "move-down-right",
-    "move-down",
-    "square-arrow-down-left",
-    "square-arrow-down-right",
-    "square-arrow-down",
-    "square-arrow-out-down-left",
-    "square-arrow-out-down-right",
-    "square-chevron-down",
-    "thumbs-down",
-    "trending-down",
-    "trending-up-down",
-    "wind-arrow-down"
+    "arrow-up-a-z",
+    "arrow-up-z-a",
+    "book-a"
   ],
   "up": [
     "a-arrow-up",
@@ -333,6 +333,14 @@
   "airplay": [
     "airplay"
   ],
+  "alarm": [
+    "alarm-clock-check",
+    "alarm-clock-minus",
+    "alarm-clock-off",
+    "alarm-clock-plus",
+    "alarm-clock",
+    "alarm-smoke"
+  ],
   "check": [
     "alarm-clock-check",
     "badge-check",
@@ -399,14 +407,6 @@
     "clock",
     "file-clock",
     "folder-clock"
-  ],
-  "alarm": [
-    "alarm-clock-check",
-    "alarm-clock-minus",
-    "alarm-clock-off",
-    "alarm-clock-plus",
-    "alarm-clock",
-    "alarm-smoke"
   ],
   "minus": [
     "alarm-clock-minus",
@@ -566,34 +566,6 @@
     "align-vertical-justify-center",
     "text-align-center"
   ],
-  "align": [
-    "align-center-horizontal",
-    "align-center-vertical",
-    "align-end-horizontal",
-    "align-end-vertical",
-    "align-horizontal-distribute-center",
-    "align-horizontal-distribute-end",
-    "align-horizontal-distribute-start",
-    "align-horizontal-justify-center",
-    "align-horizontal-justify-end",
-    "align-horizontal-justify-start",
-    "align-horizontal-space-around",
-    "align-horizontal-space-between",
-    "align-start-horizontal",
-    "align-start-vertical",
-    "align-vertical-distribute-center",
-    "align-vertical-distribute-end",
-    "align-vertical-distribute-start",
-    "align-vertical-justify-center",
-    "align-vertical-justify-end",
-    "align-vertical-justify-start",
-    "align-vertical-space-around",
-    "align-vertical-space-between",
-    "text-align-center",
-    "text-align-end",
-    "text-align-justify",
-    "text-align-start"
-  ],
   "horizontal": [
     "align-center-horizontal",
     "align-end-horizontal",
@@ -623,6 +595,34 @@
     "square-split-horizontal",
     "stretch-horizontal",
     "unfold-horizontal"
+  ],
+  "align": [
+    "align-center-horizontal",
+    "align-center-vertical",
+    "align-end-horizontal",
+    "align-end-vertical",
+    "align-horizontal-distribute-center",
+    "align-horizontal-distribute-end",
+    "align-horizontal-distribute-start",
+    "align-horizontal-justify-center",
+    "align-horizontal-justify-end",
+    "align-horizontal-justify-start",
+    "align-horizontal-space-around",
+    "align-horizontal-space-between",
+    "align-start-horizontal",
+    "align-start-vertical",
+    "align-vertical-distribute-center",
+    "align-vertical-distribute-end",
+    "align-vertical-distribute-start",
+    "align-vertical-justify-center",
+    "align-vertical-justify-end",
+    "align-vertical-justify-start",
+    "align-vertical-space-around",
+    "align-vertical-space-between",
+    "text-align-center",
+    "text-align-end",
+    "text-align-justify",
+    "text-align-start"
   ],
   "vertical": [
     "align-center-vertical",
@@ -733,16 +733,16 @@
     "align-vertical-justify-start",
     "text-align-justify"
   ],
-  "around": [
-    "align-horizontal-space-around",
-    "align-vertical-space-around"
-  ],
   "space": [
     "align-horizontal-space-around",
     "align-horizontal-space-between",
     "align-vertical-space-around",
     "align-vertical-space-between",
     "space"
+  ],
+  "around": [
+    "align-horizontal-space-around",
+    "align-vertical-space-around"
   ],
   "between": [
     "align-horizontal-space-between",
@@ -796,15 +796,15 @@
   "apple": [
     "apple"
   ],
+  "restore": [
+    "archive-restore"
+  ],
   "archive": [
     "archive-restore",
     "archive-x",
     "archive",
     "file-archive",
     "folder-archive"
-  ],
-  "restore": [
-    "archive-restore"
   ],
   "x": [
     "archive-x",
@@ -843,12 +843,6 @@
   "armchair": [
     "armchair"
   ],
-  "dash": [
-    "arrow-big-down-dash",
-    "arrow-big-left-dash",
-    "arrow-big-right-dash",
-    "arrow-big-up-dash"
-  ],
   "big": [
     "arrow-big-down-dash",
     "arrow-big-down",
@@ -864,6 +858,12 @@
     "library-big",
     "signpost-big",
     "square-check-big"
+  ],
+  "dash": [
+    "arrow-big-down-dash",
+    "arrow-big-left-dash",
+    "arrow-big-right-dash",
+    "arrow-big-up-dash"
   ],
   "left": [
     "arrow-big-left-dash",
@@ -954,12 +954,6 @@
     "toggle-right",
     "triangle-right"
   ],
-  "0": [
-    "arrow-down-0-1",
-    "arrow-down-1-0",
-    "arrow-up-0-1",
-    "arrow-up-1-0"
-  ],
   "1": [
     "arrow-down-0-1",
     "arrow-down-1-0",
@@ -973,19 +967,17 @@
     "tally-1",
     "volume-1"
   ],
+  "0": [
+    "arrow-down-0-1",
+    "arrow-down-1-0",
+    "arrow-up-0-1",
+    "arrow-up-1-0"
+  ],
   "z": [
     "arrow-down-a-z",
     "arrow-down-z-a",
     "arrow-up-a-z",
     "arrow-up-z-a"
-  ],
-  "from": [
-    "arrow-down-from-line",
-    "arrow-left-from-line",
-    "arrow-right-from-line",
-    "arrow-up-from-dot",
-    "arrow-up-from-line",
-    "arrows-up-from-line"
   ],
   "line": [
     "arrow-down-from-line",
@@ -1008,6 +1000,14 @@
     "ruler-dimension-line",
     "scan-line",
     "scissors-line-dashed"
+  ],
+  "from": [
+    "arrow-down-from-line",
+    "arrow-left-from-line",
+    "arrow-right-from-line",
+    "arrow-up-from-dot",
+    "arrow-up-from-line",
+    "arrows-up-from-line"
   ],
   "wide": [
     "arrow-down-narrow-wide",
@@ -1066,15 +1066,15 @@
   "atom": [
     "atom"
   ],
+  "lines": [
+    "audio-lines"
+  ],
   "audio": [
     "audio-lines",
     "audio-waveform",
     "book-audio",
     "file-audio-2",
     "file-audio"
-  ],
-  "lines": [
-    "audio-lines"
   ],
   "waveform": [
     "audio-waveform"
@@ -1085,6 +1085,10 @@
   "axe": [
     "axe"
   ],
+  "axis": [
+    "axis-3d",
+    "file-axis-3d"
+  ],
   "3d": [
     "axis-3d",
     "file-axis-3d",
@@ -1092,15 +1096,21 @@
     "rotate-3d",
     "scale-3d"
   ],
-  "axis": [
-    "axis-3d",
-    "file-axis-3d"
-  ],
   "baby": [
     "baby"
   ],
   "backpack": [
     "backpack"
+  ],
+  "alert": [
+    "badge-alert",
+    "book-alert",
+    "circle-alert",
+    "clock-alert",
+    "cloud-alert",
+    "octagon-alert",
+    "shield-alert",
+    "triangle-alert"
   ],
   "badge": [
     "badge-alert",
@@ -1123,16 +1133,6 @@
     "badge",
     "file-badge-2",
     "file-badge"
-  ],
-  "alert": [
-    "badge-alert",
-    "book-alert",
-    "circle-alert",
-    "clock-alert",
-    "cloud-alert",
-    "octagon-alert",
-    "shield-alert",
-    "triangle-alert"
   ],
   "cent": [
     "badge-cent",
@@ -1162,12 +1162,12 @@
     "badge-info",
     "info"
   ],
-  "japanese": [
+  "yen": [
     "badge-japanese-yen",
     "japanese-yen",
     "receipt-japanese-yen"
   ],
-  "yen": [
+  "japanese": [
     "badge-japanese-yen",
     "japanese-yen",
     "receipt-japanese-yen"
@@ -1192,14 +1192,6 @@
     "pound-sterling",
     "receipt-pound-sterling"
   ],
-  "mark": [
-    "badge-question-mark",
-    "circle-question-mark",
-    "file-question-mark",
-    "mail-question-mark",
-    "message-circle-question-mark",
-    "shield-question-mark"
-  ],
   "question": [
     "badge-question-mark",
     "circle-question-mark",
@@ -1208,22 +1200,30 @@
     "message-circle-question-mark",
     "shield-question-mark"
   ],
-  "ruble": [
-    "badge-russian-ruble",
-    "receipt-russian-ruble",
-    "russian-ruble"
+  "mark": [
+    "badge-question-mark",
+    "circle-question-mark",
+    "file-question-mark",
+    "mail-question-mark",
+    "message-circle-question-mark",
+    "shield-question-mark"
   ],
   "russian": [
     "badge-russian-ruble",
     "receipt-russian-ruble",
     "russian-ruble"
   ],
-  "swiss": [
+  "ruble": [
+    "badge-russian-ruble",
+    "receipt-russian-ruble",
+    "russian-ruble"
+  ],
+  "franc": [
     "badge-swiss-franc",
     "receipt-swiss-franc",
     "swiss-franc"
   ],
-  "franc": [
+  "swiss": [
     "badge-swiss-franc",
     "receipt-swiss-franc",
     "swiss-franc"
@@ -1238,10 +1238,10 @@
     "receipt-turkish-lira",
     "turkish-lira"
   ],
-  "claim": [
+  "baggage": [
     "baggage-claim"
   ],
-  "baggage": [
+  "claim": [
     "baggage-claim"
   ],
   "ban": [
@@ -1274,6 +1274,10 @@
   "bath": [
     "bath"
   ],
+  "charging": [
+    "battery-charging",
+    "smartphone-charging"
+  ],
   "battery": [
     "battery-charging",
     "battery-full",
@@ -1282,10 +1286,6 @@
     "battery-plus",
     "battery-warning",
     "battery"
-  ],
-  "charging": [
-    "battery-charging",
-    "smartphone-charging"
   ],
   "full": [
     "battery-full"
@@ -1383,14 +1383,14 @@
   "blocks": [
     "blocks"
   ],
-  "connected": [
-    "bluetooth-connected"
-  ],
   "bluetooth": [
     "bluetooth-connected",
     "bluetooth-off",
     "bluetooth-searching",
     "bluetooth"
+  ],
+  "connected": [
+    "bluetooth-connected"
   ],
   "searching": [
     "bluetooth-searching"
@@ -1634,6 +1634,33 @@
     "unlink-2",
     "volume-2"
   ],
+  "user": [
+    "book-user",
+    "circle-user-round",
+    "circle-user",
+    "file-user",
+    "shield-user",
+    "square-user-round",
+    "square-user",
+    "user-check",
+    "user-cog",
+    "user-lock",
+    "user-minus",
+    "user-pen",
+    "user-plus",
+    "user-round-check",
+    "user-round-cog",
+    "user-round-minus",
+    "user-round-pen",
+    "user-round-plus",
+    "user-round-search",
+    "user-round-x",
+    "user-round",
+    "user-search",
+    "user-star",
+    "user-x",
+    "user"
+  ],
   "users": [
     "book-user",
     "circle-user-round",
@@ -1664,33 +1691,6 @@
     "users-round",
     "users"
   ],
-  "user": [
-    "book-user",
-    "circle-user-round",
-    "circle-user",
-    "file-user",
-    "shield-user",
-    "square-user-round",
-    "square-user",
-    "user-check",
-    "user-cog",
-    "user-lock",
-    "user-minus",
-    "user-pen",
-    "user-plus",
-    "user-round-check",
-    "user-round-cog",
-    "user-round-minus",
-    "user-round-pen",
-    "user-round-plus",
-    "user-round-search",
-    "user-round-x",
-    "user-round",
-    "user-search",
-    "user-star",
-    "user-x",
-    "user"
-  ],
   "bookmark": [
     "bookmark-check",
     "bookmark-minus",
@@ -1698,43 +1698,13 @@
     "bookmark-x",
     "bookmark"
   ],
-  "boom": [
-    "boom-box"
-  ],
   "box": [
     "boom-box",
     "box",
     "file-box"
   ],
-  "message": [
-    "bot-message-square",
-    "message-circle-code",
-    "message-circle-dashed",
-    "message-circle-heart",
-    "message-circle-more",
-    "message-circle-off",
-    "message-circle-plus",
-    "message-circle-question-mark",
-    "message-circle-reply",
-    "message-circle-warning",
-    "message-circle-x",
-    "message-circle",
-    "message-square-code",
-    "message-square-dashed",
-    "message-square-diff",
-    "message-square-dot",
-    "message-square-heart",
-    "message-square-lock",
-    "message-square-more",
-    "message-square-off",
-    "message-square-plus",
-    "message-square-quote",
-    "message-square-reply",
-    "message-square-share",
-    "message-square-text",
-    "message-square-warning",
-    "message-square-x",
-    "message-square"
+  "boom": [
+    "boom-box"
   ],
   "square": [
     "bot-message-square",
@@ -1825,6 +1795,36 @@
     "square",
     "vector-square"
   ],
+  "message": [
+    "bot-message-square",
+    "message-circle-code",
+    "message-circle-dashed",
+    "message-circle-heart",
+    "message-circle-more",
+    "message-circle-off",
+    "message-circle-plus",
+    "message-circle-question-mark",
+    "message-circle-reply",
+    "message-circle-warning",
+    "message-circle-x",
+    "message-circle",
+    "message-square-code",
+    "message-square-dashed",
+    "message-square-diff",
+    "message-square-dot",
+    "message-square-heart",
+    "message-square-lock",
+    "message-square-more",
+    "message-square-off",
+    "message-square-plus",
+    "message-square-quote",
+    "message-square-reply",
+    "message-square-share",
+    "message-square-text",
+    "message-square-warning",
+    "message-square-x",
+    "message-square"
+  ],
   "bot": [
     "bot-message-square",
     "bot-off",
@@ -1851,14 +1851,14 @@
   "brackets": [
     "brackets"
   ],
+  "circuit": [
+    "brain-circuit",
+    "circuit-board"
+  ],
   "brain": [
     "brain-circuit",
     "brain-cog",
     "brain"
-  ],
-  "circuit": [
-    "brain-circuit",
-    "circuit-board"
   ],
   "cog": [
     "brain-cog",
@@ -1878,18 +1878,18 @@
     "brick-wall-fire",
     "fire-extinguisher"
   ],
+  "brick": [
+    "brick-wall-fire",
+    "brick-wall-shield",
+    "brick-wall",
+    "toy-brick"
+  ],
   "wall": [
     "brick-wall-fire",
     "brick-wall-shield",
     "brick-wall",
     "lamp-wall-down",
     "lamp-wall-up"
-  ],
-  "brick": [
-    "brick-wall-fire",
-    "brick-wall-shield",
-    "brick-wall",
-    "toy-brick"
   ],
   "shield": [
     "brick-wall-shield",
@@ -1906,14 +1906,14 @@
     "shield-x",
     "shield"
   ],
-  "business": [
-    "briefcase-business"
-  ],
   "briefcase": [
     "briefcase-business",
     "briefcase-conveyor-belt",
     "briefcase-medical",
     "briefcase"
+  ],
+  "business": [
+    "briefcase-business"
   ],
   "conveyor": [
     "briefcase-conveyor-belt"
@@ -1979,13 +1979,13 @@
     "car-taxi-front",
     "car"
   ],
-  "slice": [
-    "cake-slice",
-    "slice"
-  ],
   "cake": [
     "cake-slice",
     "cake"
+  ],
+  "slice": [
+    "cake-slice",
+    "slice"
   ],
   "calculator": [
     "calculator"
@@ -2053,13 +2053,13 @@
     "file-video-camera",
     "switch-camera"
   ],
-  "cane": [
-    "candy-cane"
-  ],
   "candy": [
     "candy-cane",
     "candy-off",
     "candy"
+  ],
+  "cane": [
+    "candy-cane"
   ],
   "cannabis": [
     "cannabis"
@@ -2074,14 +2074,14 @@
   "caravan": [
     "caravan"
   ],
+  "sim": [
+    "card-sim"
+  ],
   "card": [
     "card-sim",
     "credit-card",
     "id-card-lanyard",
     "id-card"
-  ],
-  "sim": [
-    "card-sim"
   ],
   "carrot": [
     "carrot"
@@ -2120,6 +2120,9 @@
   "cctv": [
     "cctv"
   ],
+  "area": [
+    "chart-area"
+  ],
   "chart": [
     "chart-area",
     "chart-bar-big",
@@ -2149,9 +2152,6 @@
     "file-chart-line",
     "file-chart-pie",
     "square-chart-gantt"
-  ],
-  "area": [
-    "chart-area"
   ],
   "bar": [
     "chart-bar-big",
@@ -2228,13 +2228,13 @@
     "spline-pointer",
     "spline"
   ],
-  "chef": [
-    "chef-hat"
-  ],
   "hat": [
     "chef-hat",
     "hard-hat",
     "hat-glasses"
+  ],
+  "chef": [
+    "chef-hat"
   ],
   "cherry": [
     "cherry"
@@ -2562,6 +2562,9 @@
   "9": [
     "clock-9"
   ],
+  "caption": [
+    "closed-caption"
+  ],
   "closed": [
     "closed-caption",
     "door-closed-locked",
@@ -2569,9 +2572,6 @@
     "eye-closed",
     "folder-closed",
     "git-pull-request-closed"
-  ],
-  "caption": [
-    "closed-caption"
   ],
   "cloud": [
     "cloud-alert",
@@ -2657,9 +2657,6 @@
   "club": [
     "club"
   ],
-  "xml": [
-    "code-xml"
-  ],
   "code": [
     "code-xml",
     "code",
@@ -2673,6 +2670,9 @@
     "search-code",
     "square-code",
     "square-dashed-bottom-code"
+  ],
+  "xml": [
+    "code-xml"
   ],
   "codepen": [
     "codepen"
@@ -2787,10 +2787,10 @@
   "cuboid": [
     "cuboid"
   ],
-  "soda": [
+  "cup": [
     "cup-soda"
   ],
-  "cup": [
+  "soda": [
     "cup-soda"
   ],
   "currency": [
@@ -2802,13 +2802,13 @@
   "dam": [
     "dam"
   ],
+  "backup": [
+    "database-backup"
+  ],
   "database": [
     "database-backup",
     "database-zap",
     "database"
-  ],
-  "backup": [
-    "database-backup"
   ],
   "zap": [
     "database-zap",
@@ -2870,13 +2870,13 @@
   "donut": [
     "donut"
   ],
-  "locked": [
-    "door-closed-locked"
-  ],
   "door": [
     "door-closed-locked",
     "door-closed",
     "door-open"
+  ],
+  "locked": [
+    "door-closed-locked"
   ],
   "drafting": [
     "drafting-compass"
@@ -2921,13 +2921,13 @@
   "eclipse": [
     "eclipse"
   ],
+  "fried": [
+    "egg-fried"
+  ],
   "egg": [
     "egg-fried",
     "egg-off",
     "egg"
-  ],
-  "fried": [
-    "egg-fried"
   ],
   "approximately": [
     "equal-approximately"
@@ -2948,14 +2948,14 @@
   "expand": [
     "expand"
   ],
+  "external": [
+    "external-link"
+  ],
   "link": [
     "external-link",
     "link-2-off",
     "link-2",
     "link"
-  ],
-  "external": [
-    "external-link"
   ],
   "eye": [
     "eye-closed",
@@ -2972,14 +2972,14 @@
   "fan": [
     "fan"
   ],
+  "fast": [
+    "fast-forward"
+  ],
   "forward": [
     "fast-forward",
     "forward",
     "skip-forward",
     "step-forward"
-  ],
-  "fast": [
-    "fast-forward"
   ],
   "feather": [
     "feather"
@@ -3267,14 +3267,14 @@
     "flashlight-off",
     "flashlight"
   ],
+  "conical": [
+    "flask-conical-off",
+    "flask-conical"
+  ],
   "flask": [
     "flask-conical-off",
     "flask-conical",
     "flask-round"
-  ],
-  "conical": [
-    "flask-conical-off",
-    "flask-conical"
   ],
   "flip": [
     "flip-horizontal-2",
@@ -3406,10 +3406,10 @@
   "gem": [
     "gem"
   ],
-  "lari": [
+  "georgian": [
     "georgian-lari"
   ],
-  "georgian": [
+  "lari": [
     "georgian-lari"
   ],
   "ghost": [
@@ -3441,7 +3441,7 @@
     "merge",
     "table-cells-merge"
   ],
-  "request": [
+  "pull": [
     "git-pull-request-arrow",
     "git-pull-request-closed",
     "git-pull-request-create-arrow",
@@ -3449,7 +3449,7 @@
     "git-pull-request-draft",
     "git-pull-request"
   ],
-  "pull": [
+  "request": [
     "git-pull-request-arrow",
     "git-pull-request-closed",
     "git-pull-request-create-arrow",
@@ -3470,10 +3470,10 @@
   "gitlab": [
     "gitlab"
   ],
-  "glass": [
+  "water": [
     "glass-water"
   ],
-  "water": [
+  "glass": [
     "glass-water"
   ],
   "glasses": [
@@ -3490,14 +3490,20 @@
   "gpu": [
     "gpu"
   ],
-  "cap": [
+  "graduation": [
     "graduation-cap"
   ],
-  "graduation": [
+  "cap": [
     "graduation-cap"
   ],
   "grape": [
     "grape"
+  ],
+  "2x2": [
+    "grid-2x2-check",
+    "grid-2x2-plus",
+    "grid-2x2-x",
+    "grid-2x2"
   ],
   "grid": [
     "grid-2x2-check",
@@ -3507,12 +3513,6 @@
     "grid-3x2",
     "grid-3x3",
     "layout-grid"
-  ],
-  "2x2": [
-    "grid-2x2-check",
-    "grid-2x2-plus",
-    "grid-2x2-x",
-    "grid-2x2"
   ],
   "3x2": [
     "grid-3x2"
@@ -3572,16 +3572,16 @@
     "handshake",
     "heart-handshake"
   ],
+  "drive": [
+    "hard-drive-download",
+    "hard-drive-upload",
+    "hard-drive"
+  ],
   "hard": [
     "hard-drive-download",
     "hard-drive-upload",
     "hard-drive",
     "hard-hat"
-  ],
-  "drive": [
-    "hard-drive-download",
-    "hard-drive-upload",
-    "hard-drive"
   ],
   "hash": [
     "hash"
@@ -3638,18 +3638,18 @@
   "hourglass": [
     "hourglass"
   ],
-  "plug": [
-    "house-plug",
-    "plug-2",
-    "plug-zap",
-    "plug"
-  ],
   "house": [
     "house-plug",
     "house-plus",
     "house-wifi",
     "house",
     "map-pin-house"
+  ],
+  "plug": [
+    "house-plug",
+    "plug-2",
+    "plug-zap",
+    "plug"
   ],
   "wifi": [
     "house-wifi",
@@ -3662,10 +3662,6 @@
     "wifi-zero",
     "wifi"
   ],
-  "cream": [
-    "ice-cream-bowl",
-    "ice-cream-cone"
-  ],
   "bowl": [
     "ice-cream-bowl"
   ],
@@ -3673,12 +3669,16 @@
     "ice-cream-bowl",
     "ice-cream-cone"
   ],
-  "lanyard": [
-    "id-card-lanyard"
+  "cream": [
+    "ice-cream-bowl",
+    "ice-cream-cone"
   ],
   "id": [
     "id-card-lanyard",
     "id-card"
+  ],
+  "lanyard": [
+    "id-card-lanyard"
   ],
   "upscale": [
     "image-upscale"
@@ -3786,17 +3786,17 @@
   "languages": [
     "languages"
   ],
-  "laptop": [
-    "laptop-minimal-check",
-    "laptop-minimal",
-    "laptop"
-  ],
   "minimal": [
     "laptop-minimal-check",
     "laptop-minimal",
     "tv-minimal-play",
     "tv-minimal",
     "wallet-minimal"
+  ],
+  "laptop": [
+    "laptop-minimal-check",
+    "laptop-minimal",
+    "laptop"
   ],
   "select": [
     "lasso-select",
@@ -3854,10 +3854,10 @@
     "library",
     "square-library"
   ],
-  "life": [
+  "buoy": [
     "life-buoy"
   ],
-  "buoy": [
+  "life": [
     "life-buoy"
   ],
   "ligature": [
@@ -3910,13 +3910,13 @@
   "pinwheel": [
     "loader-pinwheel"
   ],
+  "fixed": [
+    "locate-fixed"
+  ],
   "locate": [
     "locate-fixed",
     "locate-off",
     "locate"
-  ],
-  "fixed": [
-    "locate-fixed"
   ],
   "keyhole": [
     "lock-keyhole-open",
@@ -3979,6 +3979,12 @@
     "map-plus",
     "map"
   ],
+  "inside": [
+    "map-pin-check-inside",
+    "map-pin-minus-inside",
+    "map-pin-plus-inside",
+    "map-pin-x-inside"
+  ],
   "pin": [
     "map-pin-check-inside",
     "map-pin-check",
@@ -3995,22 +4001,16 @@
     "pin-off",
     "pin"
   ],
-  "inside": [
-    "map-pin-check-inside",
-    "map-pin-minus-inside",
-    "map-pin-plus-inside",
-    "map-pin-x-inside"
-  ],
   "pinned": [
     "map-pinned"
-  ],
-  "stroke": [
-    "mars-stroke"
   ],
   "mars": [
     "mars-stroke",
     "mars",
     "venus-and-mars"
+  ],
+  "stroke": [
+    "mars-stroke"
   ],
   "martini": [
     "martini"
@@ -4029,10 +4029,10 @@
   "meh": [
     "meh"
   ],
-  "stick": [
+  "memory": [
     "memory-stick"
   ],
-  "memory": [
+  "stick": [
     "memory-stick"
   ],
   "menu": [
@@ -4223,12 +4223,12 @@
     "package-x",
     "package"
   ],
-  "bucket": [
-    "paint-bucket"
-  ],
   "paint": [
     "paint-bucket",
     "paint-roller"
+  ],
+  "bucket": [
+    "paint-bucket"
   ],
   "roller": [
     "paint-roller",
@@ -4244,6 +4244,12 @@
   "panda": [
     "panda"
   ],
+  "close": [
+    "panel-bottom-close",
+    "panel-left-close",
+    "panel-right-close",
+    "panel-top-close"
+  ],
   "bottom": [
     "panel-bottom-close",
     "panel-bottom-dashed",
@@ -4255,12 +4261,6 @@
     "square-bottom-dashed-scissors",
     "square-dashed-bottom-code",
     "square-dashed-bottom"
-  ],
-  "close": [
-    "panel-bottom-close",
-    "panel-left-close",
-    "panel-right-close",
-    "panel-top-close"
   ],
   "panels": [
     "panels-left-bottom",
@@ -4282,10 +4282,10 @@
   "popper": [
     "party-popper"
   ],
-  "paw": [
+  "print": [
     "paw-print"
   ],
-  "print": [
+  "paw": [
     "paw-print"
   ],
   "pc": [
@@ -4309,10 +4309,10 @@
   "pentagon": [
     "pentagon"
   ],
-  "person": [
+  "standing": [
     "person-standing"
   ],
-  "standing": [
+  "person": [
     "person-standing"
   ],
   "peso": [
@@ -4703,10 +4703,10 @@
   "shovel": [
     "shovel"
   ],
-  "shower": [
+  "head": [
     "shower-head"
   ],
-  "head": [
+  "shower": [
     "shower-head"
   ],
   "shredder": [
@@ -4774,10 +4774,10 @@
     "snowflake",
     "thermometer-snowflake"
   ],
-  "soap": [
+  "dispenser": [
     "soap-dispenser-droplet"
   ],
-  "dispenser": [
+  "soap": [
     "soap-dispenser-droplet"
   ],
   "sofa": [
@@ -4835,14 +4835,14 @@
   "m": [
     "square-m"
   ],
-  "exclude": [
-    "squares-exclude"
-  ],
   "squares": [
     "squares-exclude",
     "squares-intersect",
     "squares-subtract",
     "squares-unite"
+  ],
+  "exclude": [
+    "squares-exclude"
   ],
   "intersect": [
     "squares-intersect"
@@ -4873,10 +4873,10 @@
   "sticker": [
     "sticker"
   ],
-  "sticky": [
+  "note": [
     "sticky-note"
   ],
-  "note": [
+  "sticky": [
     "sticky-note"
   ],
   "store": [
@@ -4975,14 +4975,14 @@
     "tent-tree",
     "tent"
   ],
-  "tube": [
-    "test-tube-diagonal",
-    "test-tube"
-  ],
   "test": [
     "test-tube-diagonal",
     "test-tube",
     "test-tubes"
+  ],
+  "tube": [
+    "test-tube-diagonal",
+    "test-tube"
   ],
   "tubes": [
     "test-tubes"
@@ -5059,13 +5059,13 @@
   "traffic": [
     "traffic-cone"
   ],
-  "tunnel": [
-    "train-front-tunnel"
-  ],
   "train": [
     "train-front-tunnel",
     "train-front",
     "train-track"
+  ],
+  "tunnel": [
+    "train-front-tunnel"
   ],
   "track": [
     "train-track"
@@ -5166,10 +5166,10 @@
     "utensils-crossed",
     "utensils"
   ],
-  "utility": [
+  "pole": [
     "utility-pole"
   ],
-  "pole": [
+  "utility": [
     "utility-pole"
   ],
   "variable": [
@@ -5184,10 +5184,10 @@
   "vegan": [
     "vegan"
   ],
-  "mask": [
+  "venetian": [
     "venetian-mask"
   ],
-  "venetian": [
+  "mask": [
     "venetian-mask"
   ],
   "and": [
@@ -5234,10 +5234,10 @@
   "warehouse": [
     "warehouse"
   ],
-  "machine": [
+  "washing": [
     "washing-machine"
   ],
-  "washing": [
+  "machine": [
     "washing-machine"
   ],
   "watch": [
@@ -5267,10 +5267,10 @@
     "wheat-off",
     "wheat"
   ],
-  "whole": [
+  "word": [
     "whole-word"
   ],
-  "word": [
+  "whole": [
     "whole-word"
   ],
   "workflow": [

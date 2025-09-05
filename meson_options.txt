@@ -1,16 +1,21 @@
 # QtLucide Meson Build Options
 
-option('examples', 
-       type: 'boolean', 
-       value: true, 
-       description: 'Build QtLucide examples')
+option('examples',
+       type: 'feature',
+       value: 'auto',
+       description: 'Build QtLucide examples (auto-disabled when used as subproject)')
 
-option('tests', 
-       type: 'boolean', 
-       value: true, 
-       description: 'Build QtLucide tests')
+option('tests',
+       type: 'feature',
+       value: 'auto',
+       description: 'Build QtLucide tests (auto-disabled when used as subproject)')
 
-option('debug_executables', 
-       type: 'boolean', 
-       value: false, 
+option('debug_executables',
+       type: 'boolean',
+       value: false,
        description: 'Build debug/test executables')
+
+option('install',
+       type: 'boolean',
+       value: true,
+       description: 'Install QtLucide files')

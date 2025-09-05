@@ -35,7 +35,7 @@ qtlucide_gallery = executable('QtLucideGallery',
   gallery_headers,
   gallery_moc,
   dependencies: [qt6_dep, qtlucide_dep],
-  gui_app: true,
+  win_subsystem: 'windows',
   install: true,
   install_dir: get_option('bindir')
 )

@@ -14,6 +14,12 @@
 #include "test_qtlucide.h"
 #include "test_svg_rendering.h"
 #include "test_thread_safety.h"
+#include "test_integration.h"
+#include "test_ui_components.h"
+#include "test_performance_regression.h"
+#include "test_platform_specific.h"
+#include "test_export_functionality.h"
+#include "test_accessibility.h"
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
@@ -58,6 +64,36 @@ int main(int argc, char* argv[]) {
 
     {
         TestMemoryManagement test;
+        result |= QTest::qExec(&test, argc, argv);
+    }
+
+    {
+        TestIntegration test;
+        result |= QTest::qExec(&test, argc, argv);
+    }
+
+    {
+        TestUIComponents test;
+        result |= QTest::qExec(&test, argc, argv);
+    }
+
+    {
+        TestPerformanceRegression test;
+        result |= QTest::qExec(&test, argc, argv);
+    }
+
+    {
+        TestPlatformSpecific test;
+        result |= QTest::qExec(&test, argc, argv);
+    }
+
+    {
+        TestExportFunctionality test;
+        result |= QTest::qExec(&test, argc, argv);
+    }
+
+    {
+        TestAccessibility test;
         result |= QTest::qExec(&test, argc, argv);
     }
 

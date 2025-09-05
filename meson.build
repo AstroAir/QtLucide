@@ -18,9 +18,22 @@ project_version_major = version_array[0].to_int()
 project_version_minor = version_array[1].to_int()
 project_version_patch = version_array[2].to_int()
 
-# Build options
-build_examples = get_option('examples')
-build_tests = get_option('tests')
+# Detect if QtLucide is being built as a subproject
+is_subproject = meson.is_subproject()
+
+# Build options - default to false when used as subproject
+if is_subproject
+  default_examples = false
+  default_tests = false
+  default_debug = false
+else
+  default_examples = true
+  default_tests = true
+  default_debug = false
+endif
+
+build_examples = get_option('examples').disable_auto_if(is_subproject).allowed()
+build_tests = get_option('tests').disable_auto_if(is_subproject).allowed()
 build_debug_executables = get_option('debug_executables')
 
 # Find dependencies
@@ -108,25 +121,37 @@ if build_debug_executables
   )
 endif
 
-# Installation
-install_headers(
-  'include/QtLucide/QtLucide.h',
-  'include/QtLucide/QtLucideIconEngine.h',
-  'include/QtLucide/QtLucideIconPainter.h',
-  'include/QtLucide/QtLucideEnums.h',
-  'include/QtLucide/QtLucideStrings.h',
-  subdir: 'QtLucide'
-)
+# Installation (only when not used as subproject or explicitly requested)
+build_install = get_option('install')
+if not is_subproject and build_install
+  install_headers(
+    'include/QtLucide/QtLucide.h',
+    'include/QtLucide/QtLucideIconEngine.h',
+    'include/QtLucide/QtLucideIconPainter.h',
+    'include/QtLucide/QtLucideEnums.h',
+    'include/QtLucide/QtLucideStrings.h',
+    subdir: 'QtLucide'
+  )
 
-# Generate pkg-config file
-pkg = import('pkgconfig')
-pkg.generate(qtlucide_lib,
-  name: 'QtLucide',
-  description: 'Lucide Icons for Qt Applications',
-  version: project_version,
-  requires: ['Qt6Core', 'Qt6Gui', 'Qt6Widgets', 'Qt6Svg'],
-  subdirs: 'QtLucide'
-)
+  # Generate pkg-config file
+  pkg = import('pkgconfig')
+  pkg.generate(qtlucide_lib,
+    name: 'QtLucide',
+    description: 'Lucide Icons for Qt Applications',
+    version: project_version,
+    requires: ['Qt6Core', 'Qt6Gui', 'Qt6Widgets', 'Qt6Svg'],
+    subdirs: 'QtLucide'
+  )
+endif
+
+# When used as subproject, declare dependency for parent project
+if is_subproject
+  qtlucide_dep = declare_dependency(
+    link_with: qtlucide_lib,
+    include_directories: inc_dir,
+    dependencies: qt6_dep
+  )
+endif
 
 # Summary
 summary({

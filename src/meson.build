@@ -57,9 +57,8 @@ qrc_source_file = files('../resources/icons/lucide_icons.qrc')
 
 # Compile Qt resources
 qtlucide_resources = qt6.compile_resources(
-  name: 'qtlucide_resources',
-  sources: qrc_source_file,
-  depends: generate_resources
+  name: 'lucide_icons',
+  sources: qrc_source_file
 )
 
 # Process headers that need MOC
@@ -71,10 +70,7 @@ qtlucide_moc = qt6.compile_moc(
 
 # Create the QtLucide library
 qtlucide_lib = library('QtLucide',
-  qtlucide_sources,
-  qtlucide_headers,
-  qtlucide_resources,
-  qtlucide_moc,
+  [qtlucide_sources, qtlucide_headers, qtlucide_resources, qtlucide_moc],
   dependencies: qt6_dep,
   include_directories: inc_dir,
   version: project_version,
