@@ -2,7 +2,7 @@
 # Multi-stage build for development and runtime
 
 # Build stage
-FROM ubuntu:22.04 AS builder
+FROM ubuntu:24.04 AS builder
 
 # Avoid interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
@@ -47,7 +47,7 @@ RUN cd build && ninja
 RUN cd build && ctest --output-on-failure
 
 # Runtime stage (minimal)
-FROM ubuntu:22.04 AS runtime
+FROM ubuntu:24.04 AS runtime
 
 # Install runtime dependencies
 RUN apt-get update && apt-get install -y \
