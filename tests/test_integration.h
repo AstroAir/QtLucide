@@ -1,6 +1,6 @@
 /**
  * QtLucide Integration Tests - Header
- * 
+ *
  * Comprehensive end-to-end tests that verify the complete workflow
  * from icon loading to rendering, including cross-component interactions.
  */
@@ -58,6 +58,7 @@ private slots:
     void testComponentStateSync();
 
     // Application lifecycle integration
+    void testApplicationLifecycleIntegration();
     void testApplicationStartupIntegration();
     void testApplicationShutdownIntegration();
     void testApplicationStateTransitions();
@@ -90,11 +91,11 @@ private:
     QWidget* m_testWidget;
     QLabel* m_testLabel;
     QTemporaryDir* m_tempDir;
-    
+
     // Performance tracking
     QElapsedTimer m_performanceTimer;
     QList<qint64> m_performanceMetrics;
-    
+
     // Test configuration
     static constexpr int INTEGRATION_TIMEOUT_MS = 5000;
     static constexpr int PERFORMANCE_ITERATIONS = 100;

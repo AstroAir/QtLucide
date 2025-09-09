@@ -200,6 +200,7 @@ if has_config("examples") then
 
         add_files("examples/gallery/main.cpp")
         add_files("examples/gallery/GalleryMainWindow.cpp")
+        add_files("examples/gallery/GalleryLogger.cpp")
         add_files("examples/gallery/IconGridWidget.cpp")
         add_files("examples/gallery/IconDetailsPanel.cpp")
         add_files("examples/gallery/SearchWidget.cpp")
@@ -208,6 +209,7 @@ if has_config("examples") then
         add_files("examples/gallery/IconItem.cpp")
 
         add_files("examples/gallery/GalleryMainWindow.h")
+        add_files("examples/gallery/GalleryLogger.h")
         add_files("examples/gallery/IconGridWidget.h")
         add_files("examples/gallery/IconDetailsPanel.h")
         add_files("examples/gallery/SearchWidget.h")
@@ -268,6 +270,7 @@ if has_config("tests") then
         add_files("tests/test_gallery_icon_loading.cpp")
 
         -- Include gallery sources needed for tests
+        add_files("examples/gallery/GalleryLogger.cpp")
         add_files("examples/gallery/IconMetadataManager.cpp")
         add_files("examples/gallery/IconItem.cpp")
 
@@ -276,6 +279,7 @@ if has_config("tests") then
         add_files("tests/test_icon_loading.h")
         add_files("tests/test_svg_rendering.h")
         add_files("tests/test_gallery_icon_loading.h")
+        add_files("examples/gallery/GalleryLogger.h")
         add_files("examples/gallery/IconMetadataManager.h")
         add_files("examples/gallery/IconItem.h")
 

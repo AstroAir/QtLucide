@@ -11,8 +11,8 @@
 #include <QPixmap>
 #include <QtTest/QtTest>
 
-#include "../examples/gallery/IconItem.h"
-#include "../examples/gallery/IconMetadataManager.h"
+#include "core/models/IconItem.h"
+#include "core/managers/IconMetadataManager.h"
 #include "test_gallery_icon_loading.h"
 #include <QtLucide/QtLucide.h>
 

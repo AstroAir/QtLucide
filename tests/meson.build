@@ -14,6 +14,13 @@ test_sources = [
   'test_thread_safety.cpp',
   'test_boundary_conditions.cpp',
   'test_memory_management.cpp',
+  # Re-enabling tests one by one after fixing
+  # 'test_accessibility.cpp',
+  # 'test_integration.cpp',
+  # 'test_export_functionality.cpp',
+  # 'test_platform_specific.cpp', # Disabled: incomplete implementation
+  # 'test_performance_regression.cpp',
+  # 'test_ui_components.cpp',
   '../examples/gallery/IconMetadataManager.cpp',
   '../examples/gallery/IconItem.cpp'
 ]
@@ -28,6 +35,13 @@ test_headers = [
   'test_thread_safety.h',
   'test_boundary_conditions.h',
   'test_memory_management.h',
+  # Re-enabling tests one by one after fixing
+  # 'test_accessibility.h',
+  # 'test_integration.h',
+  # 'test_export_functionality.h',
+  # 'test_platform_specific.h', # Disabled: incomplete implementation
+  # 'test_performance_regression.h',
+  # 'test_ui_components.h',
   '../examples/gallery/IconMetadataManager.h',
   '../examples/gallery/IconItem.h'
 ]

@@ -1,6 +1,6 @@
 /**
  * QtLucide Accessibility Tests - Header
- * 
+ *
  * Comprehensive tests to ensure the application is accessible including
  * keyboard navigation, screen reader compatibility, and high contrast support.
  */
@@ -12,13 +12,15 @@
 #include <QtTest/QtTest>
 #include <QApplication>
 #include <QWidget>
-#include <QAccessible>
-#include <QAccessibleInterface>
 #include <QKeyEvent>
 #include <QFocusEvent>
 #include <QPalette>
 #include <QStyleFactory>
 #include <QTimer>
+
+// Include accessibility headers (safe now since we're included before Windows headers)
+#include <QAccessible>
+#include <QAccessibleInterface>
 
 namespace lucide {
 class QtLucide;
@@ -151,44 +153,44 @@ private:
     bool canActivateElement(QWidget* element);
     bool isFocusIndicatorVisible(QWidget* element);
     QList<QWidget*> getTabOrder(QWidget* parent);
-    
+
     // Screen reader helpers
     ScreenReaderResult testElementScreenReaderSupport(QWidget* element);
     QAccessibleInterface* getAccessibleInterface(QWidget* element);
     bool hasValidAccessibleName(QAccessibleInterface* interface);
     bool hasValidAccessibleDescription(QAccessibleInterface* interface);
-    
+
     // High contrast helpers
     void enableHighContrastMode();
     void disableHighContrastMode();
     bool isHighContrastModeActive();
     double calculateContrastRatio(const QColor& foreground, const QColor& background);
     bool meetsContrastRequirements(double ratio, int level = 2); // 1=AA, 2=AAA
-    
+
     // Color accessibility helpers
     bool isColorBlindnessFriendly(const QColor& color1, const QColor& color2);
     bool hasNonColorIndicators(QWidget* element);
-    
+
     // Font and text helpers
     bool meetsFontSizeRequirements(QWidget* element);
     bool isTextReadable(QWidget* element);
     QString getTextAlternative(QWidget* element);
-    
+
     // ARIA helpers
     QString getAriaLabel(QWidget* element);
     QString getAriaDescription(QWidget* element);
     QString getAriaRole(QWidget* element);
     QStringList getAriaStates(QWidget* element);
-    
+
     // Test simulation helpers
     void simulateKeyboardNavigation(QWidget* startElement, const QList<Qt::Key>& keys);
     void simulateScreenReaderInteraction(QWidget* element);
     void simulateHighContrastEnvironment();
-    
+
     // Validation helpers
     bool validateAccessibilityCompliance(QWidget* element);
     QStringList getAccessibilityViolations(QWidget* element);
-    
+
     // Test data and objects
     lucide::QtLucide* m_lucide;
     IconMetadataManager* m_metadataManager;
@@ -198,19 +200,19 @@ private:
     IconGridWidget* m_iconGrid;
     IconDetailsPanel* m_detailsPanel;
     PreferencesDialog* m_preferencesDialog;
-    
+
     // Accessibility configuration
     AccessibilityConfig m_accessibilityConfig;
-    
+
     // Original system settings (for restoration)
     QPalette m_originalPalette;
     QString m_originalStyle;
-    
+
     // Test tracking
     QList<KeyboardNavigationResult> m_navigationResults;
     QList<ScreenReaderResult> m_screenReaderResults;
     QStringList m_accessibilityViolations;
-    
+
     // Accessibility standards compliance
     static constexpr double WCAG_AA_CONTRAST_RATIO = 4.5;
     static constexpr double WCAG_AAA_CONTRAST_RATIO = 7.0;

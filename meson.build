@@ -49,6 +49,26 @@ inc_dir = include_directories('include')
 # Add subdirectories
 subdir('src')
 
+# Icon validation (compile-time check)
+icon_validator = find_program('python3', required: false)
+if icon_validator.found()
+  icon_check_script = files('tools/check_example_icons.py')
+
+  # Run icon validation as a custom target
+  icon_validation = custom_target('validate_icons',
+    output: 'icon_validation_done.stamp',
+    command: [icon_validator, icon_check_script, meson.current_source_dir(), '@OUTPUT@'],
+    build_by_default: build_examples,
+    console: true
+  )
+
+  # Make examples depend on icon validation
+  if build_examples
+    # This will be referenced in examples/meson.build
+    icon_validation_dep = declare_dependency(sources: icon_validation)
+  endif
+endif
+
 if build_examples
   subdir('examples')
 endif
@@ -62,6 +82,7 @@ if build_debug_executables
   # QtLucideGalleryDebug
   qtlucide_gallery_debug = executable('QtLucideGalleryDebug',
     'debug_gallery.cpp',
+    'examples/gallery/GalleryLogger.cpp',
     'examples/gallery/IconMetadataManager.cpp',
     'examples/gallery/IconGridWidget.cpp',
     'examples/gallery/IconItem.cpp',
@@ -81,6 +102,7 @@ if build_debug_executables
   # TestMetadataManager
   test_metadata_manager = executable('TestMetadataManager',
     'test_metadata_manager.cpp',
+    'examples/gallery/GalleryLogger.cpp',
     'examples/gallery/IconMetadataManager.cpp',
     dependencies: [qt6_dep, qtlucide_dep],
     include_directories: [inc_dir, include_directories('examples/gallery')],
@@ -98,6 +120,7 @@ if build_debug_executables
   # TestGalleryMinimal
   test_gallery_minimal = executable('TestGalleryMinimal',
     'test_gallery_minimal.cpp',
+    'examples/gallery/GalleryLogger.cpp',
     'examples/gallery/IconMetadataManager.cpp',
     dependencies: [qt6_dep, qtlucide_dep],
     include_directories: [inc_dir, include_directories('examples/gallery')],

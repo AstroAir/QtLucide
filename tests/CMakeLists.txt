@@ -19,15 +19,17 @@ set(TEST_SOURCES
     test_platform_specific.cpp
     test_export_functionality.cpp
     test_accessibility.cpp
-    ../examples/gallery/IconMetadataManager.cpp
-    ../examples/gallery/IconItem.cpp
-    ../examples/gallery/SearchWidget.cpp
-    ../examples/gallery/CategoryFilterWidget.cpp
-    ../examples/gallery/IconGridWidget.cpp
-    ../examples/gallery/IconDetailsPanel.cpp
-    ../examples/gallery/PreferencesDialog.cpp
-    ../examples/gallery/IconExportDialog.cpp
-    ../examples/gallery/GalleryMainWindow.cpp
+    ../examples/gallery/src/core/utils/GalleryLogger.cpp
+    ../examples/gallery/src/core/managers/IconMetadataManager.cpp
+    ../examples/gallery/src/core/managers/ManagerStubs.cpp
+    ../examples/gallery/src/core/models/IconItem.cpp
+    ../examples/gallery/src/ui/widgets/search/SearchWidget.cpp
+    ../examples/gallery/src/ui/widgets/search/CategoryFilterWidget.cpp
+    ../examples/gallery/src/ui/widgets/grids/IconGridWidget.cpp
+    ../examples/gallery/src/ui/widgets/panels/IconDetailsPanel.cpp
+    ../examples/gallery/src/ui/dialogs/PreferencesDialog.cpp
+    ../examples/gallery/src/ui/dialogs/IconExportDialog.cpp
+    ../examples/gallery/src/ui/windows/GalleryMainWindow.cpp
 )
 
 # Test headers (needed for MOC processing)
@@ -46,19 +48,38 @@ set(TEST_HEADERS
     test_platform_specific.h
     test_export_functionality.h
     test_accessibility.h
-    ../examples/gallery/IconMetadataManager.h
-    ../examples/gallery/IconItem.h
-    ../examples/gallery/SearchWidget.h
-    ../examples/gallery/CategoryFilterWidget.h
-    ../examples/gallery/IconGridWidget.h
-    ../examples/gallery/IconDetailsPanel.h
-    ../examples/gallery/PreferencesDialog.h
-    ../examples/gallery/IconExportDialog.h
-    ../examples/gallery/GalleryMainWindow.h
+    ../examples/gallery/src/core/managers/IconMetadataManager.h
+    ../examples/gallery/src/core/models/IconItem.h
+    ../examples/gallery/src/ui/widgets/search/SearchWidget.h
+    ../examples/gallery/src/ui/widgets/search/CategoryFilterWidget.h
+    ../examples/gallery/src/ui/widgets/grids/IconGridWidget.h
+    ../examples/gallery/src/ui/widgets/panels/IconDetailsPanel.h
+    ../examples/gallery/src/ui/dialogs/PreferencesDialog.h
+    ../examples/gallery/src/ui/dialogs/IconExportDialog.h
+    ../examples/gallery/src/ui/windows/GalleryMainWindow.h
 )
 
 # Create test executable
 add_executable(QtLucideTests ${TEST_SOURCES} ${TEST_HEADERS})
+
+# Add include directories for the reorganized gallery structure
+target_include_directories(QtLucideTests PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/../include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../examples/gallery/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/../examples/gallery/src/config
+    ${CMAKE_CURRENT_SOURCE_DIR}/../examples/gallery/src/core
+    ${CMAKE_CURRENT_SOURCE_DIR}/../examples/gallery/src/core/managers
+    ${CMAKE_CURRENT_SOURCE_DIR}/../examples/gallery/src/core/models
+    ${CMAKE_CURRENT_SOURCE_DIR}/../examples/gallery/src/core/utils
+    ${CMAKE_CURRENT_SOURCE_DIR}/../examples/gallery/src/ui
+    ${CMAKE_CURRENT_SOURCE_DIR}/../examples/gallery/src/ui/widgets
+    ${CMAKE_CURRENT_SOURCE_DIR}/../examples/gallery/src/ui/widgets/grids
+    ${CMAKE_CURRENT_SOURCE_DIR}/../examples/gallery/src/ui/widgets/panels
+    ${CMAKE_CURRENT_SOURCE_DIR}/../examples/gallery/src/ui/widgets/search
+    ${CMAKE_CURRENT_SOURCE_DIR}/../examples/gallery/src/ui/widgets/viewers
+    ${CMAKE_CURRENT_SOURCE_DIR}/../examples/gallery/src/ui/dialogs
+    ${CMAKE_CURRENT_SOURCE_DIR}/../examples/gallery/src/ui/windows
+)
 
 target_link_libraries(QtLucideTests
     PRIVATE
