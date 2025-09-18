@@ -304,7 +304,7 @@ bool TestPlatformSpecific::isWindowsDarkModeEnabled() {
 HighDpiConfig TestPlatformSpecific::testIconAtDpiScale(qreal scale, const QString& iconName) {
     HighDpiConfig config;
     config.dpiScale = scale;
-    config.expectedIconSize = QSize(64 * scale, 64 * scale);
+    config.expectedIconSize = QSize(static_cast<int>(64 * scale), static_cast<int>(64 * scale));
 
     QIcon icon = m_lucide->icon(iconName);
     QPixmap pixmap = icon.pixmap(64, 64);
@@ -496,4 +496,4 @@ void TestPlatformSpecific::testNetworkPath() {
 }
 
 // Note: In Meson, MOC files are generated with moc_ prefix and included automatically
-#include "test_platform_specific.moc"
+// MOC file automatically included by CMake/Meson

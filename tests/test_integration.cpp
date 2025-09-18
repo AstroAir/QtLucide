@@ -138,7 +138,7 @@ void TestIntegration::testLibraryGalleryIntegration() {
     QVERIFY(m_metadataManager->loadMetadata());
 
     // Verify icon count consistency
-    int lucideIconCount = m_lucide->availableIcons().size();
+    int lucideIconCount = static_cast<int>(m_lucide->availableIcons().size());
     int metadataIconCount = m_metadataManager->getTotalIconCount();
 
     QCOMPARE(lucideIconCount, metadataIconCount);
@@ -203,7 +203,7 @@ void TestIntegration::testIntegratedPerformanceMetrics() {
     QVERIFY(elapsed < 2000);
 
     // Average should be less than 40ms per icon
-    double averagePerIcon = static_cast<double>(elapsed) / testIcons.size();
+    double averagePerIcon = static_cast<double>(elapsed) / static_cast<double>(testIcons.size());
     QVERIFY(averagePerIcon < 40.0);
 
     qDebug() << "Integrated performance metrics test passed";
@@ -334,4 +334,4 @@ void TestIntegration::measureIntegrationPerformance() {
     // Stub implementation
 }
 
-#include "test_integration.moc"
+// MOC file automatically included by CMake/Meson

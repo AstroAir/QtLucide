@@ -441,6 +441,8 @@ private:
      */
     QString iconIdToString(Icons iconId) const;
 
+
+
     QHash<QString, Icons> m_nameToIconMap; ///< @brief Maps icon names to enum values
     QHash<Icons, QString> m_iconToNameMap; ///< @brief Maps enum values to icon names
     QHash<QString, QtLucideIconPainter*> m_customPainters; ///< @brief Custom registered painters

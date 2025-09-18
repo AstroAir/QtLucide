@@ -577,4 +577,4 @@ void TestAccessibility::testVoiceControlCompatibility() {
     QSKIP("Test not implemented yet");
 }
 
-#include "test_accessibility.moc"
+// MOC file automatically included by CMake/Meson

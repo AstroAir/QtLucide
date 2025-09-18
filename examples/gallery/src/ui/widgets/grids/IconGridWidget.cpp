@@ -29,7 +29,7 @@ IconGridModel::IconGridModel(QObject *parent)
 int IconGridModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return m_iconNames.size();
+    return static_cast<int>(m_iconNames.size());
 }
 
 QVariant IconGridModel::data(const QModelIndex &index, int role) const
@@ -113,8 +113,13 @@ void IconGridModel::refreshData()
 IconGridDelegate::IconGridDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
     , m_iconSize(64)
-    , m_displayMode(IconItem::GridMode)
     , m_showIconNames(true)
+    , m_animationsEnabled(true)
+    , m_hoverEffectsEnabled(true)
+    , m_dropShadowEnabled(true)
+    , m_highlightColor(QColor(100, 149, 237))
+    , m_selectionColor(QColor(70, 130, 180))
+    , m_displayMode(IconItem::GridMode)
 {
 }
 
@@ -387,8 +392,42 @@ void IconGridWidget::updateVisibleItems()
 }
 
 // Missing method implementations
-void IconGridWidget::updateIconSizes() { /* TODO */ }
-void IconGridWidget::updateFavorites() { /* TODO */ }
+void IconGridWidget::updateIconSizes()
+{
+    if (m_model) {
+        m_model->setIconSize(QSize(m_iconSize, m_iconSize));
+    }
+
+    if (m_delegate) {
+        m_delegate->setIconSize(QSize(m_iconSize, m_iconSize));
+    }
+
+    // Update grid item size
+    if (m_gridView) {
+        int itemSize = m_iconSize + 20; // Add padding
+        m_gridView->setGridSize(QSize(itemSize, itemSize));
+        m_gridView->setIconSize(QSize(m_iconSize, m_iconSize));
+    }
+
+    // Force layout update
+    update();
+    emit iconSizeChanged(m_iconSize);
+}
+
+void IconGridWidget::updateFavorites()
+{
+    if (m_model && m_favoritesManager) {
+        QStringList favorites = m_favoritesManager->getFavorites();
+        m_model->setFavorites(favorites);
+
+        // Update view to reflect favorite status changes
+        if (m_gridView) {
+            m_gridView->update();
+        }
+
+        emit favoritesUpdated(favorites.size());
+    }
+}
 void IconGridWidget::zoomIn() { setIconSize(m_iconSize + ZOOM_STEP); }
 void IconGridWidget::zoomOut() { setIconSize(m_iconSize - ZOOM_STEP); }
 void IconGridWidget::resetZoom() { setIconSize(DEFAULT_ICON_SIZE); }
@@ -398,7 +437,29 @@ void IconGridWidget::onIconClicked(const QString& iconName, const QPoint& positi
 }
 void IconGridWidget::onIconDoubleClicked(const QString& iconName) { emit iconDoubleClicked(iconName); }
 void IconGridWidget::onFavoriteToggled(const QString& iconName) { emit favoriteToggled(iconName, true); }
-void IconGridWidget::onScrollValueChanged() { /* TODO */ }
+void IconGridWidget::onScrollValueChanged()
+{
+    if (m_gridView) {
+        QScrollBar* vScrollBar = m_gridView->verticalScrollBar();
+        QScrollBar* hScrollBar = m_gridView->horizontalScrollBar();
+
+        if (vScrollBar) {
+            int value = vScrollBar->value();
+            int maximum = vScrollBar->maximum();
+
+            // Emit scroll position for potential lazy loading
+            emit scrollPositionChanged(value, maximum);
+
+            // Check if we're near the bottom for infinite scroll
+            if (maximum > 0 && value >= maximum * 0.9) {
+                emit nearBottomReached();
+            }
+        }
+
+        // Update visible items for performance optimization
+        updateVisibleItems();
+    }
+}
 void IconGridWidget::keyPressEvent(QKeyEvent *event) { QWidget::keyPressEvent(event); }
 void IconGridWidget::wheelEvent(QWheelEvent *event) { QWidget::wheelEvent(event); }
 void IconGridWidget::resizeEvent(QResizeEvent *event) { QWidget::resizeEvent(event); }
@@ -463,7 +524,17 @@ void IconGridWidget::updateViewSettings()
 }
 
 // IconGridModel missing methods
-void IconGridModel::updateFavorites() { /* TODO */ }
+void IconGridModel::updateFavorites()
+{
+    if (m_favoritesManager) {
+        m_favorites = m_favoritesManager->getFavorites().toSet();
+
+        // Update all items to reflect favorite status changes
+        emit dataChanged(index(0), index(rowCount() - 1), {Qt::DecorationRole, Qt::UserRole});
+
+        emit favoritesUpdated();
+    }
+}
 
 void IconGridModel::updateSelection() {
     // Update selection state
@@ -597,6 +668,72 @@ void IconGridWidget::dropEvent(QDropEvent *event) {
     QWidget::dropEvent(event);
 }
 
+// Helper method implementations
+void IconGridWidget::updateVisibleItems()
+{
+    if (!m_gridView) return;
+
+    // Get visible rect
+    QRect visibleRect = m_gridView->viewport()->rect();
+    QModelIndex topLeft = m_gridView->indexAt(visibleRect.topLeft());
+    QModelIndex bottomRight = m_gridView->indexAt(visibleRect.bottomRight());
+
+    if (topLeft.isValid() && bottomRight.isValid()) {
+        int startRow = topLeft.row();
+        int endRow = bottomRight.row();
+
+        // Emit visible range for potential optimizations
+        emit visibleRangeChanged(startRow, endRow);
+    }
+}
+
+void IconGridWidget::setAnimationsEnabled(bool enabled)
+{
+    m_animationsEnabled = enabled;
+
+    if (m_delegate) {
+        m_delegate->setAnimationsEnabled(enabled);
+    }
+
+    // Update animation duration
+    int duration = enabled ? 250 : 0;
+    setProperty("animationDuration", duration);
+}
+
+void IconGridWidget::setSpacing(int spacing)
+{
+    m_spacing = spacing;
+    if (m_gridView) {
+        m_gridView->setSpacing(spacing);
+    }
+    update();
+}
+
+void IconGridWidget::setMargin(int margin)
+{
+    m_margin = margin;
+    if (m_gridView) {
+        m_gridView->setContentsMargins(margin, margin, margin, margin);
+    }
+    update();
+}
+
+void IconGridWidget::setFilteredIcons(const QStringList& icons)
+{
+    if (m_model) {
+        m_model->setFilteredIcons(icons);
+    }
+    emit filteredIconsChanged(icons.size());
+}
+
+void IconGridWidget::clearFilter()
+{
+    if (m_model) {
+        m_model->clearFilter();
+    }
+    emit filterCleared();
+}
+
 // Missing methods that are called from other code
 void IconGridWidget::setLucide(lucide::QtLucide* lucide) {
     m_lucide = lucide;
@@ -610,6 +747,46 @@ void IconGridWidget::setMetadataManager(IconMetadataManager* manager) {
     if (m_model) {
         m_model->setMetadataManager(manager);
     }
+}
+
+// IconGridModel helper methods
+void IconGridModel::setIconSize(const QSize& size)
+{
+    m_iconSize = size;
+    emit dataChanged(index(0), index(rowCount() - 1), {Qt::SizeHintRole});
+}
+
+void IconGridModel::setFavorites(const QStringList& favorites)
+{
+    m_favorites = favorites.toSet();
+    emit dataChanged(index(0), index(rowCount() - 1), {Qt::DecorationRole, Qt::UserRole});
+}
+
+void IconGridModel::setFilteredIcons(const QStringList& icons)
+{
+    beginResetModel();
+    m_filteredIcons = icons;
+    m_isFiltered = true;
+    endResetModel();
+}
+
+void IconGridModel::clearFilter()
+{
+    beginResetModel();
+    m_filteredIcons.clear();
+    m_isFiltered = false;
+    endResetModel();
+}
+
+// IconGridDelegate helper methods
+void IconGridDelegate::setIconSize(const QSize& size)
+{
+    m_iconSize = size;
+}
+
+void IconGridDelegate::setAnimationsEnabled(bool enabled)
+{
+    m_animationsEnabled = enabled;
 }
 
 int IconGridWidget::iconSize() const {

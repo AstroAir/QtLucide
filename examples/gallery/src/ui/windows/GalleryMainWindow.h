@@ -119,6 +119,7 @@ protected:
     void closeEvent(QCloseEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *event) override;
     void changeEvent(QEvent *event) override;
     void showEvent(QShowEvent *event) override;
     void dragEnterEvent(QDragEnterEvent *event) override;

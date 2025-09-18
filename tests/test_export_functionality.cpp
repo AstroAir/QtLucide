@@ -166,7 +166,7 @@ void TestExportFunctionality::testBatchExportSameFormat() {
 
     QList<ExportResult> results = exportBatch(config);
 
-    int expectedCount = config.iconNames.size() * config.sizes.size() * config.formats.size();
+    int expectedCount = static_cast<int>(config.iconNames.size() * config.sizes.size() * config.formats.size());
     QCOMPARE(results.size(), expectedCount);
 
     // Verify all exports succeeded
@@ -578,4 +578,4 @@ void TestExportFunctionality::testExportDialogSettings() {
     QSKIP("Test not implemented yet");
 }
 
-#include "test_export_functionality.moc"
+// MOC file automatically included by CMake/Meson

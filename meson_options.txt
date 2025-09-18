@@ -10,11 +10,6 @@ option('tests',
        value: 'auto',
        description: 'Build QtLucide tests (auto-disabled when used as subproject)')
 
-option('debug_executables',
-       type: 'boolean',
-       value: false,
-       description: 'Build debug/test executables')
-
 option('install',
        type: 'boolean',
        value: true,

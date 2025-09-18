@@ -305,7 +305,6 @@ debug_*.h
 # Caches and temporary directories
 # =============================================================================
 .cache/
-.augment/
 temp_*/
 tmp/
 .tmp/

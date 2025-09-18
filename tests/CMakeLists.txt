@@ -21,7 +21,6 @@ set(TEST_SOURCES
     test_accessibility.cpp
     ../examples/gallery/src/core/utils/GalleryLogger.cpp
     ../examples/gallery/src/core/managers/IconMetadataManager.cpp
-    ../examples/gallery/src/core/managers/ManagerStubs.cpp
     ../examples/gallery/src/core/models/IconItem.cpp
     ../examples/gallery/src/ui/widgets/search/SearchWidget.cpp
     ../examples/gallery/src/ui/widgets/search/CategoryFilterWidget.cpp

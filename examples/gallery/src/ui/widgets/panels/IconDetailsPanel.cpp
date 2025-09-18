@@ -38,6 +38,23 @@ void CodeSyntaxHighlighter::setLanguage(Language language)
     case CSS:
         setupCssRules();
         break;
+    case TypeScript:
+    case React:
+    case Vue:
+    case Angular:
+    case SCSS:
+    case Python:
+    case CSharp:
+    case Java:
+    case Swift:
+    case Kotlin:
+    case Dart:
+    case XML:
+    case JSON:
+        // TODO: Implement syntax highlighting for these languages
+        // For now, use basic highlighting
+        setupCppRules();
+        break;
     }
 }
 
@@ -47,7 +64,7 @@ void CodeSyntaxHighlighter::highlightBlock(const QString &text)
         QRegularExpressionMatchIterator matchIterator = rule.pattern.globalMatch(text);
         while (matchIterator.hasNext()) {
             QRegularExpressionMatch match = matchIterator.next();
-            setFormat(match.capturedStart(), match.capturedLength(), rule.format);
+            setFormat(static_cast<int>(match.capturedStart()), static_cast<int>(match.capturedLength()), rule.format);
         }
     }
 }

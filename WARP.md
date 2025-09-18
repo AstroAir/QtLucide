@@ -6,10 +6,10 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 
 ### Build Commands
 
-**Quick Setup (Any Build System):**
+**Quick Setup (Auto-detect Build System):**
 ```bash
 # Auto-detect best build system and build
-python scripts\build.py --examples --tests
+python scripts/build.py --examples --tests
 
 # On Windows, use batch script
 scripts\build.bat --examples --tests
@@ -29,8 +29,15 @@ meson compile -C builddir_meson
 
 **XMake Build (Modern Alternative):**
 ```bash
+# Configure and build with examples and tests
 xmake config --examples=true --tests=true
 xmake build
+
+# Or use Python wrapper script
+python scripts/build_xmake.py --examples --tests
+
+# Windows batch script
+scripts\build_xmake.bat --examples --tests
 ```
 
 ### Testing Commands
@@ -50,7 +57,17 @@ xmake run QtLucideTests
 
 Icons are automatically generated during build, but can be manually triggered:
 ```bash
+# Generate all resources (QRC, enums, metadata)
 python build_all_resources.py
+
+# Using XMake task
+xmake generate-resources
+
+# Direct tool usage
+python tools/build_resources.py .
+
+# Clean generated resources
+xmake clean-resources
 ```
 
 ### Running Examples
@@ -150,12 +167,14 @@ python build_all_resources.py
 - Regenerate resources using `python build_all_resources.py`
 - SVG files located in `resources/icons/svg/`
 - Resource validation via `tools/check_example_icons.py`
+- Generated files: `lucide_icons.qrc`, `icons.json`, `categories.json`, `tags.json`
 
 ### Dependencies
 
 - **Required**: Qt6 (Core, Gui, Widgets, Svg), C++17 compiler, Python3
 - **Optional**: Meson, XMake (alternatives to CMake)
 - **Development**: clang-format for code formatting
+- **CI/CD**: GitHub Actions with Qt 6.7.3/6.8.0, security scanning, performance monitoring
 
 ### Integration Patterns
 
@@ -175,3 +194,134 @@ target_link_libraries(your_target PRIVATE QtLucide::QtLucide)
 - Drop-in replacement with compatible API
 - Change `initFontAwesome()` to `initLucide()`
 - Use string names or enum values instead of font character codes
+
+## CI/CD and Development Workflow
+
+### GitHub Actions Workflows
+
+**Main CI Pipeline (`ci.yml`)**:
+- Multi-platform builds (Ubuntu 22.04, Windows 2022, macOS 13/14)
+- Qt versions: 6.7.3 and 6.8.0
+- Security hardening with Step Security Harden Runner
+- Code coverage reporting (LCOV + Codecov)
+- Code quality tools: clang-format, cppcheck, clang-tidy
+- Container builds with SBOM generation
+
+**Security Workflow (`security.yml`)**:
+- CodeQL analysis for semantic code scanning
+- Dependency vulnerability scanning
+- Trivy, Semgrep, OSV Scanner integration
+- TruffleHog secret detection
+- OSSF Scorecard security assessment
+
+**Performance Workflow (`performance.yml`)**:
+- Google Benchmark integration
+- Valgrind memory profiling and leak detection
+- HTML reports deployed to GitHub Pages
+- Automated performance regression detection
+
+**XMake Workflow (`xmake.yml`)**:
+- Alternative build system validation
+- Build output comparison (CMake vs XMake)
+- Installation testing
+
+### Release Process
+
+```bash
+# Automated release on git tag
+git tag v1.0.1
+git push origin v1.0.1
+```
+
+Features automatic:
+- Multi-platform package generation
+- SBOM and build provenance attestation
+- SHA256 checksums for all artifacts
+- Container image publishing to GHCR
+- Pre-release detection for alpha/beta/rc tags
+
+### Quality Assurance
+
+**Before Committing:**
+```bash
+# Format code
+clang-format -i src/*.cpp include/QtLucide/*.h
+
+# Run tests
+ctest --test-dir build --output-on-failure
+
+# Validate examples
+python tools/check_example_icons.py
+```
+
+**Icon Validation:**
+- Compile-time validation in `tools/check_example_icons.py`
+- Ensures all referenced icons exist in SVG collection
+- Validates icon name consistency across examples
+
+## Troubleshooting Common Issues
+
+### Build Issues
+
+**Resource Generation Fails:**
+```bash
+# Manual resource generation
+python tools/build_resources.py .
+
+# Check Python dependencies
+python -c "import json, pathlib"
+
+# Verify SVG files exist
+ls resources/icons/svg/*.svg | wc -l  # Should be 1600+
+```
+
+**Qt Not Found:**
+```bash
+# Set Qt path explicitly
+export Qt6_DIR=/path/to/qt6/lib/cmake/Qt6
+
+# Or use system package manager
+sudo apt install qt6-base-dev qt6-svg-dev  # Ubuntu
+brew install qt@6  # macOS
+```
+
+**XMake Issues:**
+```bash
+# Verify XMake installation
+xmake --version
+
+# Update packages
+xmake require --upgrade
+
+# Clean and reconfigure
+xmake clean
+xmake config --examples=true --tests=true
+```
+
+### Runtime Issues
+
+**Icons Not Loading:**
+- Check icon names match exactly (case-sensitive)
+- Verify `initLucide()` was called before creating icons
+- Use `availableIcons()` to list all available icons
+- Check Qt resource system with `qrc://` paths
+
+**Performance Issues:**
+- Enable icon caching (default behavior)
+- Use appropriate scale factors (0.8-1.2 range)
+- Consider pre-loading frequently used icons
+- Monitor SVG rendering performance in profiler
+
+### Development Environment Setup
+
+**Required Tools:**
+- Qt6 (6.7.3+ recommended)
+- CMake 3.16+ or XMake 2.8+ or Meson 0.59+
+- Python 3.6+ with standard library
+- C++17 compatible compiler (GCC 8+, Clang 10+, MSVC 2019+)
+
+**Optional Development Tools:**
+- clang-format for code formatting
+- Ninja build system for faster builds
+- Valgrind for memory debugging (Linux/macOS)
+- Qt Creator or Visual Studio Code for development

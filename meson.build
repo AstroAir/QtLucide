@@ -25,16 +25,13 @@ is_subproject = meson.is_subproject()
 if is_subproject
   default_examples = false
   default_tests = false
-  default_debug = false
 else
   default_examples = true
   default_tests = true
-  default_debug = false
 endif
 
 build_examples = get_option('examples').disable_auto_if(is_subproject).allowed()
 build_tests = get_option('tests').disable_auto_if(is_subproject).allowed()
-build_debug_executables = get_option('debug_executables')
 
 # Find dependencies
 qt6_dep = dependency('qt6', modules: ['Core', 'Gui', 'Widgets', 'Svg'], required: true)
@@ -77,73 +74,6 @@ if build_tests
   subdir('tests')
 endif
 
-# Debug executables (optional)
-if build_debug_executables
-  # QtLucideGalleryDebug
-  qtlucide_gallery_debug = executable('QtLucideGalleryDebug',
-    'debug_gallery.cpp',
-    'examples/gallery/GalleryLogger.cpp',
-    'examples/gallery/IconMetadataManager.cpp',
-    'examples/gallery/IconGridWidget.cpp',
-    'examples/gallery/IconItem.cpp',
-    dependencies: [qt6_dep, qtlucide_dep],
-    include_directories: [inc_dir, include_directories('examples/gallery')],
-    install: false
-  )
-
-  # SimpleGalleryTest
-  simple_gallery_test = executable('SimpleGalleryTest',
-    'test_gallery_simple.cpp',
-    dependencies: [qt6_dep, qtlucide_dep],
-    include_directories: inc_dir,
-    install: false
-  )
-
-  # TestMetadataManager
-  test_metadata_manager = executable('TestMetadataManager',
-    'test_metadata_manager.cpp',
-    'examples/gallery/GalleryLogger.cpp',
-    'examples/gallery/IconMetadataManager.cpp',
-    dependencies: [qt6_dep, qtlucide_dep],
-    include_directories: [inc_dir, include_directories('examples/gallery')],
-    install: false
-  )
-
-  # TestResources
-  test_resources = executable('TestResources',
-    'test_resources.cpp',
-    dependencies: [qt6_dep, qtlucide_dep],
-    include_directories: inc_dir,
-    install: false
-  )
-
-  # TestGalleryMinimal
-  test_gallery_minimal = executable('TestGalleryMinimal',
-    'test_gallery_minimal.cpp',
-    'examples/gallery/GalleryLogger.cpp',
-    'examples/gallery/IconMetadataManager.cpp',
-    dependencies: [qt6_dep, qtlucide_dep],
-    include_directories: [inc_dir, include_directories('examples/gallery')],
-    install: false
-  )
-
-  # TestIconNames
-  test_icon_names = executable('TestIconNames',
-    'test_icon_names.cpp',
-    dependencies: [qt6_dep, qtlucide_dep],
-    include_directories: inc_dir,
-    install: false
-  )
-
-  # TestResourcePackaging
-  test_resource_packaging = executable('TestResourcePackaging',
-    'test_resource_packaging.cpp',
-    dependencies: [qt6_dep, qtlucide_dep],
-    include_directories: inc_dir,
-    install: false
-  )
-endif
-
 # Installation (only when not used as subproject or explicitly requested)
 build_install = get_option('install')
 if not is_subproject and build_install
@@ -181,7 +111,6 @@ summary({
   'Version': project_version,
   'Examples': build_examples,
   'Tests': build_tests,
-  'Debug executables': build_debug_executables,
   'Install prefix': get_option('prefix'),
 }, section: 'Configuration')
 

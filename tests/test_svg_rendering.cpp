@@ -152,5 +152,5 @@ void TestSvgRendering::testRenderingPerformance() {
     QVERIFY2(elapsed < 5000, qPrintable(QString("Rendering took too long: %1ms").arg(elapsed)));
 
     qDebug() << "Rendered" << (testIcons.size() * 100) << "icons in" << elapsed << "ms";
-    qDebug() << "Average time per icon:" << (double(elapsed) / (testIcons.size() * 100)) << "ms";
+    qDebug() << "Average time per icon:" << (double(elapsed) / (static_cast<double>(testIcons.size()) * 100)) << "ms";
 }

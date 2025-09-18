@@ -5,6 +5,13 @@ project(QtLucide VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Enable compiler warnings
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    add_compile_options(-Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wunused -Wformat=2)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    add_compile_options(/W4 /permissive-)
+endif()
+
 # Detect if QtLucide is being built as a submodule/subdirectory
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     set(QTLUCIDE_IS_MAIN_PROJECT TRUE)
@@ -13,7 +20,7 @@ else()
 endif()
 
 # Find Qt6 components
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Svg Network)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Svg)
 
 # Find Python3 for resource generation scripts (only if needed)
 if(QTLUCIDE_IS_MAIN_PROJECT OR QTLUCIDE_BUILD_EXAMPLES OR QTLUCIDE_BUILD_TESTS)
@@ -42,53 +49,6 @@ if(QTLUCIDE_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()
-
-# Debug executable for Gallery issues
-add_executable(QtLucideGalleryDebug
-    debug_gallery.cpp
-    examples/gallery/src/core/utils/GalleryLogger.cpp
-    examples/gallery/src/core/managers/IconMetadataManager.cpp
-    examples/gallery/src/core/managers/ManagerStubs.cpp
-    examples/gallery/src/ui/widgets/grids/IconGridWidget.cpp
-    examples/gallery/src/core/models/IconItem.cpp
-    examples/gallery/src/ui/windows/GalleryMainWindow.cpp
-    examples/gallery/src/ui/widgets/search/SearchWidget.cpp
-    examples/gallery/src/ui/widgets/search/CategoryFilterWidget.cpp
-    examples/gallery/src/ui/widgets/panels/IconDetailsPanel.cpp
-    examples/gallery/src/ui/dialogs/PreferencesDialog.cpp
-    examples/gallery/src/ui/dialogs/IconExportDialog.cpp
-)
-
-target_include_directories(QtLucideGalleryDebug PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/examples/gallery/src
-    ${CMAKE_CURRENT_SOURCE_DIR}/examples/gallery/src/config
-    ${CMAKE_CURRENT_SOURCE_DIR}/examples/gallery/src/core
-    ${CMAKE_CURRENT_SOURCE_DIR}/examples/gallery/src/core/managers
-    ${CMAKE_CURRENT_SOURCE_DIR}/examples/gallery/src/core/models
-    ${CMAKE_CURRENT_SOURCE_DIR}/examples/gallery/src/core/utils
-    ${CMAKE_CURRENT_SOURCE_DIR}/examples/gallery/src/ui
-    ${CMAKE_CURRENT_SOURCE_DIR}/examples/gallery/src/ui/widgets
-    ${CMAKE_CURRENT_SOURCE_DIR}/examples/gallery/src/ui/widgets/grids
-    ${CMAKE_CURRENT_SOURCE_DIR}/examples/gallery/src/ui/widgets/panels
-    ${CMAKE_CURRENT_SOURCE_DIR}/examples/gallery/src/ui/widgets/search
-    ${CMAKE_CURRENT_SOURCE_DIR}/examples/gallery/src/ui/widgets/viewers
-    ${CMAKE_CURRENT_SOURCE_DIR}/examples/gallery/src/ui/dialogs
-    ${CMAKE_CURRENT_SOURCE_DIR}/examples/gallery/src/ui/windows
-)
-
-target_link_libraries(QtLucideGalleryDebug
-    Qt6::Core
-    Qt6::Widgets
-    Qt6::Svg
-    Qt6::Network
-    QtLucide
-)
-
-
-
-
-
 
 # Install configuration (only when building as main project or explicitly requested)
 if(QTLUCIDE_INSTALL)

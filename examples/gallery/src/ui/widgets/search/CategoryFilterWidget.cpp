@@ -90,7 +90,7 @@ void CategoryTreeWidget::populateTree()
 
     for (const QString& category : categories) {
         QStringList icons = m_metadataManager->getIconsByCategory(category);
-        addCategoryItem(category, icons.size());
+        addCategoryItem(category, static_cast<int>(icons.size()));
     }
 
     expandAll();
@@ -104,6 +104,8 @@ void CategoryTreeWidget::addCategoryItem(const QString& category, int iconCount)
 
 void CategoryTreeWidget::addTagItems(CategoryTreeItem* categoryItem, const QString& category)
 {
+    Q_UNUSED(categoryItem)
+    Q_UNUSED(category)
     // For simplicity, we'll just show the category without sub-tags
     // In a full implementation, you would add related tags as children
 }
@@ -156,6 +158,7 @@ void CategoryTreeWidget::clearSelection()
 
 void CategoryTreeWidget::onItemChanged(QTreeWidgetItem *item, int column)
 {
+    Q_UNUSED(item)
     Q_UNUSED(column)
     if (!m_updatingSelection) {
         emitSelectionChanged();
@@ -311,7 +314,7 @@ bool CategoryFilterWidget::hasActiveFilters() const
 
 int CategoryFilterWidget::selectedCategoryCount() const
 {
-    return selectedCategories().size();
+    return static_cast<int>(selectedCategories().size());
 }
 
 void CategoryFilterWidget::onCategorySelectionChanged(const QStringList& categories)

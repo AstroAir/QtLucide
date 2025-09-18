@@ -166,7 +166,7 @@ public:
     // Getters
     QString getCurrentImage() const { return m_currentImage; }
     int getCurrentIndex() const { return m_currentIndex; }
-    int getImageCount() const { return m_imageList.size(); }
+    int getImageCount() const { return static_cast<int>(m_imageList.size()); }
     ViewMode getViewMode() const { return m_viewMode; }
     double getZoomFactor() const;
 

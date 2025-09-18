@@ -138,7 +138,7 @@ void TestThreadSafety::testConcurrentAvailableIconsAccess() {
     const int accessesPerThread = 10;
 
     QAtomicInt successCount(0);
-    QAtomicInt expectedSize(m_lucide->availableIcons().size());
+    QAtomicInt expectedSize(static_cast<int>(m_lucide->availableIcons().size()));
 
     auto testFunction = [this, &successCount, &expectedSize, accessesPerThread]() {
         for (int i = 0; i < accessesPerThread; ++i) {

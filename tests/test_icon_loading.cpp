@@ -116,7 +116,7 @@ void TestIconLoading::testResourceAccess() {
     QVERIFY(availableIcons.size() > 100);
 
     // Test a sample of icons to ensure they all load
-    int testCount = qMin(50, availableIcons.size());
+    int testCount = qMin(50, static_cast<int>(availableIcons.size()));
     for (int i = 0; i < testCount; ++i) {
         const QString& iconName = availableIcons[i];
         QByteArray svgData = m_lucide->svgData(iconName);

@@ -15,8 +15,11 @@
 
 PreferencesDialog::PreferencesDialog(QWidget *parent)
     : QDialog(parent)
-    , m_tabWidget(nullptr)
+    , m_mainSplitter(nullptr)
     , m_mainLayout(nullptr)
+    , m_categoryList(nullptr)
+    , m_searchEdit(nullptr)
+    , m_tabWidget(nullptr)
     , m_settings(new QSettings(this))
     , m_settingsChanged(false)
 {

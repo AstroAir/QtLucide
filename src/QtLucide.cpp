@@ -13,8 +13,11 @@
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
+#include <QThread>
 #include <QFile>
 #include <QPalette>
+#include <QResource>
+#include <QSet>
 
 // Forward declare resource initialization functions
 extern int qInitResources_lucide_icons();
@@ -25,7 +28,8 @@ namespace lucide {
 QtLucide::QtLucide(QObject* parent)
     : QObject(parent), m_svgIconPainter(nullptr), m_initialized(false) {
     // Initialize resources
-    qInitResources_lucide_icons();
+    int resourceResult = qInitResources_lucide_icons();
+    qDebug() << "Resource initialization result:" << resourceResult;
 
     // Initialize default options
     resetDefaultOptions();
@@ -138,14 +142,33 @@ QByteArray QtLucide::svgData(Icons iconId) const {
 
 QByteArray QtLucide::svgData(const QString& name) const {
     QString resourcePath = QString(":/lucide/%1").arg(name);
-    QFile file(resourcePath);
 
-    if (!file.open(QIODevice::ReadOnly)) {
-        qWarning() << "Failed to load SVG data for icon:" << name;
-        return QByteArray();
+    // Try QResource first (more reliable for Qt resources)
+    QResource resource(resourcePath);
+    if (resource.isValid()) {
+        const uchar* data = resource.data();
+        if (data && resource.size() > 0) {
+            return QByteArray(reinterpret_cast<const char*>(data), resource.size());
+        }
     }
 
-    return file.readAll();
+    // Fallback to QFile if QResource fails (can happen under stress)
+    QFile file(resourcePath);
+    if (file.open(QIODevice::ReadOnly)) {
+        QByteArray data = file.readAll();
+        if (!data.isEmpty()) {
+            return data;
+        }
+    }
+
+    // Only warn if both methods fail (indicates a real problem)
+    static QSet<QString> warnedPaths;
+    if (!warnedPaths.contains(resourcePath)) {
+        qWarning() << "SVG resource could not be loaded:" << resourcePath;
+        warnedPaths.insert(resourcePath);
+    }
+
+    return QByteArray();
 }
 
 QStringList QtLucide::availableIcons() const {

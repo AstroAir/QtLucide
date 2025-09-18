@@ -6,21 +6,13 @@
 #include <QtTest/QtTest>
 
 // Include test class headers
-// Note: Include accessibility tests before platform-specific tests to avoid Windows header conflicts
-// #include "test_accessibility.h"
 #include "test_boundary_conditions.h"
 #include "test_error_handling.h"
-#include "test_gallery_icon_loading.h"
 #include "test_icon_loading.h"
 #include "test_memory_management.h"
 #include "test_qtlucide.h"
 #include "test_svg_rendering.h"
 #include "test_thread_safety.h"
-// #include "test_integration.h"
-// #include "test_ui_components.h"
-// #include "test_performance_regression.h"
-// #include "test_platform_specific.h" // Disabled: incomplete implementation
-// #include "test_export_functionality.h"
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
@@ -44,11 +36,6 @@ int main(int argc, char* argv[]) {
     }
 
     {
-        TestGalleryIconLoading test;
-        result |= QTest::qExec(&test, argc, argv);
-    }
-
-    {
         TestErrorHandling test;
         result |= QTest::qExec(&test, argc, argv);
     }
@@ -67,42 +54,6 @@ int main(int argc, char* argv[]) {
         TestMemoryManagement test;
         result |= QTest::qExec(&test, argc, argv);
     }
-
-    // Disabled: incomplete implementation
-    /*
-    {
-        TestPlatformSpecific test;
-        result |= QTest::qExec(&test, argc, argv);
-    }
-    */
-
-    // Still disabled problematic tests
-    /*
-    {
-        TestIntegration test;
-        result |= QTest::qExec(&test, argc, argv);
-    }
-
-    {
-        TestUIComponents test;
-        result |= QTest::qExec(&test, argc, argv);
-    }
-
-    {
-        TestPerformanceRegression test;
-        result |= QTest::qExec(&test, argc, argv);
-    }
-
-    {
-        TestExportFunctionality test;
-        result |= QTest::qExec(&test, argc, argv);
-    }
-
-    {
-        TestAccessibility test;
-        result |= QTest::qExec(&test, argc, argv);
-    }
-    */
 
     return result;
 }

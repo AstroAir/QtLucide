@@ -736,19 +736,57 @@ void ImageViewerWidget::onToggleImageInfo()
 
 void ImageViewerWidget::onImageLoaded()
 {
-    // Placeholder for image loaded handling
-    qDebug() << "Image loaded";
+    // Update UI after image is loaded
+    updateNavigationActions();
+    updateImageInfo();
+
+    // Enable relevant actions
+    if (m_zoomInAction) m_zoomInAction->setEnabled(true);
+    if (m_zoomOutAction) m_zoomOutAction->setEnabled(true);
+    if (m_fitToWindowAction) m_fitToWindowAction->setEnabled(true);
+    if (m_actualSizeAction) m_actualSizeAction->setEnabled(true);
+    if (m_rotateLeftAction) m_rotateLeftAction->setEnabled(true);
+    if (m_rotateRightAction) m_rotateRightAction->setEnabled(true);
+    if (m_flipHorizontalAction) m_flipHorizontalAction->setEnabled(true);
+    if (m_flipVerticalAction) m_flipVerticalAction->setEnabled(true);
+
+    emit imageLoaded(m_currentImage);
 }
 
 void ImageViewerWidget::onZoomSliderChanged(int value)
 {
-    // Placeholder for zoom slider handling
-    Q_UNUSED(value)
-    qDebug() << "Zoom slider changed:" << value;
+    if (m_imageView) {
+        // Convert slider value to zoom factor
+        // Assuming slider range is 10-500 (representing 10% to 500%)
+        double zoomFactor = value / 100.0;
+        m_imageView->setZoomFactor(zoomFactor);
+        m_viewMode = CustomZoom;
+
+        // Update zoom label if available
+        if (m_zoomLabel) {
+            m_zoomLabel->setText(QString("%1%").arg(qRound(zoomFactor * 100)));
+        }
+
+        emit zoomChanged(zoomFactor);
+    }
 }
 
 void ImageViewerWidget::onViewModeChanged()
 {
-    // Placeholder for view mode change handling
-    qDebug() << "View mode changed";
+    // Update UI based on current view mode
+    updateNavigationActions();
+
+    // Update view mode combo box if available
+    if (m_viewModeCombo) {
+        m_viewModeCombo->setCurrentIndex(static_cast<int>(m_viewMode));
+    }
+
+    // Update zoom slider based on current zoom
+    if (m_zoomSlider && m_imageView) {
+        double zoomFactor = m_imageView->getZoomFactor();
+        int sliderValue = qRound(zoomFactor * 100);
+        m_zoomSlider->setValue(sliderValue);
+    }
+
+    emit viewModeChanged(m_viewMode);
 }

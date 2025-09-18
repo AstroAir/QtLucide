@@ -3,6 +3,7 @@
  */
 
 #include "SearchWidget.h"
+#include "../../../core/utils/ErrorHandler.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDebug>
@@ -415,26 +416,415 @@ SearchLineEdit::~SearchLineEdit() = default;
 AdvancedSearchPanel::~AdvancedSearchPanel() = default;
 
 // Missing methods declared in headers but not implemented
-void SearchLineEdit::onSearchTimer() { /* TODO */ }
-void SearchLineEdit::onHistoryAction() { /* TODO */ }
-void SearchLineEdit::onClearHistoryAction() { /* TODO */ }
-void SearchLineEdit::contextMenuEvent(QContextMenuEvent *event) { QLineEdit::contextMenuEvent(event); }
+void SearchLineEdit::onSearchTimer()
+{
+    QString searchText = text().trimmed();
+    if (!searchText.isEmpty()) {
+        // Add to search history if not already present
+        if (!m_searchHistory.contains(searchText)) {
+            m_searchHistory.prepend(searchText);
+            // Limit history size
+            if (m_searchHistory.size() > 20) {
+                m_searchHistory.removeLast();
+            }
+            updateCompleter();
+        }
 
-void AdvancedSearchPanel::expandPanel() { /* TODO */ }
-void AdvancedSearchPanel::collapsePanel() { /* TODO */ }
-void AdvancedSearchPanel::onContributorSelectionChanged() { /* TODO */ }
-void AdvancedSearchPanel::onDateRangeChanged() { /* TODO */ }
-void AdvancedSearchPanel::onUsageRangeChanged() { /* TODO */ }
-void AdvancedSearchPanel::onSavePreset() { /* TODO */ }
-void AdvancedSearchPanel::onLoadPreset() { /* TODO */ }
-void AdvancedSearchPanel::onDeletePreset() { /* TODO */ }
-void AdvancedSearchPanel::onAnimationFinished() { /* TODO */ }
+        // Emit search signal
+        emit searchRequested(searchText);
+    }
+}
 
-void SearchWidget::performSearch() { /* TODO */ }
-void SearchWidget::saveCurrentSearch() { /* TODO */ }
-void SearchWidget::loadSavedSearch(const QString& name) { Q_UNUSED(name) /* TODO */ }
-void SearchWidget::onSearchTimer() { /* TODO */ }
-void SearchWidget::onUpdateStatistics() { /* TODO */ }
-void SearchWidget::resizeEvent(QResizeEvent *event) { QWidget::resizeEvent(event); }
+void SearchLineEdit::onHistoryAction()
+{
+    QAction* action = qobject_cast<QAction*>(sender());
+    if (action) {
+        QString searchText = action->data().toString();
+        setText(searchText);
+        emit searchRequested(searchText);
+    }
+}
+
+void SearchLineEdit::onClearHistoryAction()
+{
+    m_searchHistory.clear();
+    updateCompleter();
+    emit historyCleared();
+}
+
+void SearchLineEdit::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu* menu = createStandardContextMenu();
+
+    if (!m_searchHistory.isEmpty()) {
+        menu->addSeparator();
+
+        // Add search history submenu
+        QMenu* historyMenu = menu->addMenu(tr("Search History"));
+        for (const QString& searchText : m_searchHistory) {
+            QAction* historyAction = historyMenu->addAction(searchText);
+            historyAction->setData(searchText);
+            connect(historyAction, &QAction::triggered, this, &SearchLineEdit::onHistoryAction);
+        }
+
+        historyMenu->addSeparator();
+        QAction* clearHistoryAction = historyMenu->addAction(tr("Clear History"));
+        connect(clearHistoryAction, &QAction::triggered, this, &SearchLineEdit::onClearHistoryAction);
+    }
+
+    menu->exec(event->globalPos());
+    delete menu;
+}
+
+void AdvancedSearchPanel::expandPanel()
+{
+    if (!m_expanded) {
+        m_expanded = true;
+
+        // Create expand animation
+        QPropertyAnimation* animation = new QPropertyAnimation(this, "maximumHeight");
+        animation->setDuration(250);
+        animation->setStartValue(m_collapsedHeight);
+        animation->setEndValue(m_expandedHeight);
+        animation->setEasingCurve(QEasingCurve::OutCubic);
+
+        connect(animation, &QPropertyAnimation::finished, this, &AdvancedSearchPanel::onAnimationFinished);
+        animation->start(QAbstractAnimation::DeleteWhenStopped);
+
+        emit panelExpanded();
+    }
+}
+
+void AdvancedSearchPanel::collapsePanel()
+{
+    if (m_expanded) {
+        m_expanded = false;
+
+        // Create collapse animation
+        QPropertyAnimation* animation = new QPropertyAnimation(this, "maximumHeight");
+        animation->setDuration(200);
+        animation->setStartValue(m_expandedHeight);
+        animation->setEndValue(m_collapsedHeight);
+        animation->setEasingCurve(QEasingCurve::InCubic);
+
+        connect(animation, &QPropertyAnimation::finished, this, &AdvancedSearchPanel::onAnimationFinished);
+        animation->start(QAbstractAnimation::DeleteWhenStopped);
+
+        emit panelCollapsed();
+    }
+}
+
+void AdvancedSearchPanel::onContributorSelectionChanged()
+{
+    QStringList selectedContributors;
+
+    // Collect selected contributors from UI controls
+    // This would depend on the actual UI implementation
+    // For now, emit the signal with empty list
+
+    emit contributorFilterChanged(selectedContributors);
+    emitFiltersChanged();
+}
+
+void AdvancedSearchPanel::onDateRangeChanged()
+{
+    // Handle date range changes
+    QDate startDate = QDate::currentDate().addYears(-1); // Default to last year
+    QDate endDate = QDate::currentDate();
+
+    // This would get actual dates from date picker widgets
+    emit dateRangeChanged(startDate, endDate);
+    emitFiltersChanged();
+}
+
+void AdvancedSearchPanel::onUsageRangeChanged()
+{
+    // Handle usage frequency range changes
+    int minUsage = 0;
+    int maxUsage = 100;
+
+    // This would get actual values from range slider widgets
+    emit usageRangeChanged(minUsage, maxUsage);
+    emitFiltersChanged();
+}
+
+void AdvancedSearchPanel::onSavePreset()
+{
+    bool ok;
+    QString presetName = QInputDialog::getText(
+        this,
+        tr("Save Search Preset"),
+        tr("Enter preset name:"),
+        QLineEdit::Normal,
+        QString(),
+        &ok
+    );
+
+    if (ok && !presetName.isEmpty()) {
+        // Save current search criteria as preset
+        SearchCriteria criteria = getCurrentCriteria();
+        m_savedPresets[presetName] = criteria;
+
+        // Save to settings
+        QSettings settings;
+        settings.beginGroup("SearchPresets");
+        settings.setValue(presetName + "/searchText", criteria.searchText);
+        settings.setValue(presetName + "/categories", criteria.categories);
+        settings.setValue(presetName + "/tags", criteria.tags);
+        settings.setValue(presetName + "/contributors", criteria.contributors);
+        settings.endGroup();
+
+        emit presetSaved(presetName);
+    }
+}
+
+void AdvancedSearchPanel::onLoadPreset()
+{
+    QSettings settings;
+    settings.beginGroup("SearchPresets");
+    QStringList presetNames = settings.childGroups();
+    settings.endGroup();
+
+    if (presetNames.isEmpty()) {
+        QMessageBox::information(this, tr("Load Preset"), tr("No saved presets found."));
+        return;
+    }
+
+    bool ok;
+    QString selectedPreset = QInputDialog::getItem(
+        this,
+        tr("Load Search Preset"),
+        tr("Select preset to load:"),
+        presetNames,
+        0,
+        false,
+        &ok
+    );
+
+    if (ok && !selectedPreset.isEmpty()) {
+        // Load preset from settings
+        settings.beginGroup("SearchPresets");
+        SearchCriteria criteria;
+        criteria.searchText = settings.value(selectedPreset + "/searchText").toString();
+        criteria.categories = settings.value(selectedPreset + "/categories").toStringList();
+        criteria.tags = settings.value(selectedPreset + "/tags").toStringList();
+        criteria.contributors = settings.value(selectedPreset + "/contributors").toStringList();
+        settings.endGroup();
+
+        // Apply loaded criteria
+        applyCriteria(criteria);
+        emit presetLoaded(selectedPreset);
+    }
+}
+
+void AdvancedSearchPanel::onDeletePreset()
+{
+    QSettings settings;
+    settings.beginGroup("SearchPresets");
+    QStringList presetNames = settings.childGroups();
+    settings.endGroup();
+
+    if (presetNames.isEmpty()) {
+        QMessageBox::information(this, tr("Delete Preset"), tr("No saved presets found."));
+        return;
+    }
+
+    bool ok;
+    QString selectedPreset = QInputDialog::getItem(
+        this,
+        tr("Delete Search Preset"),
+        tr("Select preset to delete:"),
+        presetNames,
+        0,
+        false,
+        &ok
+    );
+
+    if (ok && !selectedPreset.isEmpty()) {
+        int ret = QMessageBox::question(
+            this,
+            tr("Delete Preset"),
+            tr("Are you sure you want to delete the preset '%1'?").arg(selectedPreset),
+            QMessageBox::Yes | QMessageBox::No,
+            QMessageBox::No
+        );
+
+        if (ret == QMessageBox::Yes) {
+            // Remove from settings
+            settings.beginGroup("SearchPresets");
+            settings.remove(selectedPreset);
+            settings.endGroup();
+
+            // Remove from memory
+            m_savedPresets.remove(selectedPreset);
+
+            emit presetDeleted(selectedPreset);
+        }
+    }
+}
+
+void AdvancedSearchPanel::onAnimationFinished()
+{
+    // Animation completed - update UI state if needed
+    update();
+}
+
+void SearchWidget::performSearch()
+{
+    QString searchText = m_searchEdit->text().trimmed();
+
+    if (searchText.isEmpty()) {
+        // Clear search results
+        emit searchCleared();
+        return;
+    }
+
+    // Update current criteria
+    m_currentCriteria.searchText = searchText;
+
+    // Add to search history
+    if (!m_searchHistory.contains(searchText)) {
+        m_searchHistory.prepend(searchText);
+        if (m_searchHistory.size() > 20) {
+            m_searchHistory.removeLast();
+        }
+        updateSearchHistory();
+    }
+
+    // Emit search signal
+    emit searchRequested(searchText);
+    emit filtersChanged(m_currentCriteria);
+
+    // Update statistics
+    onUpdateStatistics();
+}
+
+void SearchWidget::saveCurrentSearch()
+{
+    QString searchText = m_searchEdit->text().trimmed();
+    if (searchText.isEmpty()) {
+        return;
+    }
+
+    bool ok;
+    QString searchName = QInputDialog::getText(
+        this,
+        tr("Save Search"),
+        tr("Enter search name:"),
+        QLineEdit::Normal,
+        searchText,
+        &ok
+    );
+
+    if (ok && !searchName.isEmpty()) {
+        // Save current search criteria
+        QSettings settings;
+        settings.beginGroup("SavedSearches");
+        settings.setValue(searchName + "/searchText", m_currentCriteria.searchText);
+        settings.setValue(searchName + "/categories", m_currentCriteria.categories);
+        settings.setValue(searchName + "/tags", m_currentCriteria.tags);
+        settings.setValue(searchName + "/contributors", m_currentCriteria.contributors);
+        settings.setValue(searchName + "/timestamp", QDateTime::currentDateTime());
+        settings.endGroup();
+
+        emit searchSaved(searchName);
+    }
+}
+
+void SearchWidget::loadSavedSearch(const QString& name)
+{
+    if (name.isEmpty()) {
+        return;
+    }
+
+    QSettings settings;
+    settings.beginGroup("SavedSearches");
+
+    if (!settings.childGroups().contains(name)) {
+        return;
+    }
+
+    // Load search criteria
+    SearchCriteria criteria;
+    criteria.searchText = settings.value(name + "/searchText").toString();
+    criteria.categories = settings.value(name + "/categories").toStringList();
+    criteria.tags = settings.value(name + "/tags").toStringList();
+    criteria.contributors = settings.value(name + "/contributors").toStringList();
+
+    settings.endGroup();
+
+    // Apply loaded criteria
+    m_searchEdit->setText(criteria.searchText);
+    m_currentCriteria = criteria;
+
+    // Apply to advanced panel if available
+    if (m_advancedPanel) {
+        m_advancedPanel->applyCriteria(criteria);
+    }
+
+    // Perform the search
+    performSearch();
+
+    emit searchLoaded(name);
+}
+
+void SearchWidget::onSearchTimer()
+{
+    // Delayed search execution
+    performSearch();
+}
+
+void SearchWidget::onUpdateStatistics()
+{
+    // Update search statistics
+    int totalSearches = m_searchHistory.size();
+    QString currentSearch = m_searchEdit->text().trimmed();
+
+    // This would update a statistics display if available
+    emit statisticsUpdated(totalSearches, currentSearch);
+}
+
+void SearchWidget::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+
+    // Adjust layout based on new size
+    if (event->size().width() < 400) {
+        // Compact layout for narrow widths
+        if (m_advancedPanel && m_advancedPanel->isVisible()) {
+            m_advancedPanel->collapsePanel();
+        }
+    }
+}
+
+// Helper method implementations
+void SearchLineEdit::updateCompleter()
+{
+    if (m_completer && m_completerModel) {
+        m_completerModel->setStringList(m_searchHistory);
+        m_completer->setModel(m_completerModel);
+    }
+}
+
+SearchCriteria AdvancedSearchPanel::getCurrentCriteria() const
+{
+    SearchCriteria criteria;
+    // This would collect criteria from actual UI controls
+    // For now, return empty criteria
+    return criteria;
+}
+
+void AdvancedSearchPanel::applyCriteria(const SearchCriteria& criteria)
+{
+    // This would apply criteria to actual UI controls
+    // For now, just store the criteria
+    Q_UNUSED(criteria)
+}
+
+void SearchWidget::updateSearchHistory()
+{
+    // Update search history in UI if there's a history widget
+    // This would update a dropdown or list widget showing recent searches
+}
 
 // Only methods that are actually declared in headers are implemented above

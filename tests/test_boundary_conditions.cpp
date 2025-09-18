@@ -429,7 +429,7 @@ void TestBoundaryConditions::testMemoryLimitTesting() {
 void TestBoundaryConditions::testCacheOverflow() {
     // Test cache behavior with many different icon configurations
     QStringList availableIcons = m_lucide->availableIcons();
-    int testCount = qMin(100, availableIcons.size());
+    int testCount = qMin(100, static_cast<int>(availableIcons.size()));
 
     measurePerformance("Cache Overflow Testing", [this, &availableIcons, testCount]() {
         for (int i = 0; i < testCount; ++i) {
