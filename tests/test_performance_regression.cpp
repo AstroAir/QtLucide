@@ -3,14 +3,14 @@
  */
 
 #include "test_performance_regression.h"
-#include <QtLucide/QtLucide.h>
 #include "core/managers/IconMetadataManager.h"
-#include "ui/widgets/search/SearchWidget.h"
 #include "ui/widgets/grids/IconGridWidget.h"
+#include "ui/widgets/search/SearchWidget.h"
+#include <QtLucide/QtLucide.h>
 
 #include <QApplication>
-#include <QPixmap>
 #include <QIcon>
+#include <QPixmap>
 #include <QThread>
 #include <cmath>
 
@@ -71,15 +71,16 @@ void TestPerformanceRegression::testIconRenderingPerformance() {
         PerformanceMetrics metrics = measureIconRendering(iconCount, PERFORMANCE_ITERATIONS);
 
         qDebug() << QString("Rendered %1 icons: avg=%2ms, min=%3ms, max=%4ms")
-                    .arg(iconCount)
-                    .arg(metrics.averageTime)
-                    .arg(metrics.minTime)
-                    .arg(metrics.maxTime);
+                        .arg(iconCount)
+                        .arg(metrics.averageTime)
+                        .arg(metrics.minTime)
+                        .arg(metrics.maxTime);
 
         // Verify performance is within acceptable limits
         QVERIFY2(metrics.averageTime < ICON_RENDER_THRESHOLD_MS * iconCount,
-                qPrintable(QString("Icon rendering too slow: %1ms for %2 icons")
-                          .arg(metrics.averageTime).arg(iconCount)));
+                 qPrintable(QString("Icon rendering too slow: %1ms for %2 icons")
+                                .arg(metrics.averageTime)
+                                .arg(iconCount)));
     }
 
     qDebug() << "Icon rendering performance test passed";
@@ -98,15 +99,15 @@ void TestPerformanceRegression::testMemoryUsageBaseline() {
     });
 
     qDebug() << QString("Memory baseline: initial=%1KB, peak=%2KB, final=%3KB, growth=%4KB")
-                .arg(baseline.initialMemory / 1024)
-                .arg(baseline.peakMemory / 1024)
-                .arg(baseline.finalMemory / 1024)
-                .arg(baseline.memoryGrowth / 1024);
+                    .arg(baseline.initialMemory / 1024)
+                    .arg(baseline.peakMemory / 1024)
+                    .arg(baseline.finalMemory / 1024)
+                    .arg(baseline.memoryGrowth / 1024);
 
     // Verify memory growth is within acceptable limits
-    QVERIFY2(baseline.memoryGrowth < MEMORY_LEAK_THRESHOLD_KB * 1024,
-            qPrintable(QString("Excessive memory growth: %1KB")
-                      .arg(baseline.memoryGrowth / 1024)));
+    QVERIFY2(
+        baseline.memoryGrowth < MEMORY_LEAK_THRESHOLD_KB * 1024,
+        qPrintable(QString("Excessive memory growth: %1KB").arg(baseline.memoryGrowth / 1024)));
 
     qDebug() << "Memory usage baseline test passed";
 }
@@ -119,14 +120,11 @@ void TestPerformanceRegression::testSearchPerformanceBaseline() {
     for (const QString& term : searchTerms) {
         qint64 searchTime = measureSearchTime(term, PERFORMANCE_ITERATIONS);
 
-        qDebug() << QString("Search for '%1': %2ms average")
-                    .arg(term)
-                    .arg(searchTime);
+        qDebug() << QString("Search for '%1': %2ms average").arg(term).arg(searchTime);
 
         // Verify search response time is acceptable
         QVERIFY2(searchTime < SEARCH_RESPONSE_THRESHOLD_MS,
-                qPrintable(QString("Search too slow: %1ms for '%2'")
-                          .arg(searchTime).arg(term)));
+                 qPrintable(QString("Search too slow: %1ms for '%2'").arg(searchTime).arg(term)));
     }
 
     qDebug() << "Search performance baseline test passed";
@@ -135,9 +133,8 @@ void TestPerformanceRegression::testSearchPerformanceBaseline() {
 void TestPerformanceRegression::testApplicationStartupPerformance() {
     qDebug() << "Testing application startup performance";
 
-    QList<qint64> startupTimes = runBenchmark([this]() {
-        return measureApplicationStartup();
-    }, 10); // Fewer iterations for startup test
+    QList<qint64> startupTimes = runBenchmark([this]() { return measureApplicationStartup(); },
+                                              10); // Fewer iterations for startup test
 
     PerformanceMetrics metrics;
     for (qint64 time : startupTimes) {
@@ -146,15 +143,14 @@ void TestPerformanceRegression::testApplicationStartupPerformance() {
     metrics.calculateStandardDeviation(startupTimes);
 
     qDebug() << QString("Application startup: avg=%1ms, min=%2ms, max=%3ms, stddev=%4ms")
-                .arg(metrics.averageTime)
-                .arg(metrics.minTime)
-                .arg(metrics.maxTime)
-                .arg(metrics.standardDeviation);
+                    .arg(metrics.averageTime)
+                    .arg(metrics.minTime)
+                    .arg(metrics.maxTime)
+                    .arg(metrics.standardDeviation);
 
     // Verify startup time is acceptable
     QVERIFY2(metrics.averageTime < STARTUP_THRESHOLD_MS,
-            qPrintable(QString("Startup too slow: %1ms")
-                      .arg(metrics.averageTime)));
+             qPrintable(QString("Startup too slow: %1ms").arg(metrics.averageTime)));
 
     qDebug() << "Application startup performance test passed";
 }
@@ -261,7 +257,8 @@ void TestPerformanceRegression::clearSystemCaches() {
     QThread::msleep(10);
 }
 
-QList<qint64> TestPerformanceRegression::runBenchmark(std::function<qint64()> benchmark, int iterations) {
+QList<qint64> TestPerformanceRegression::runBenchmark(std::function<qint64()> benchmark,
+                                                      int iterations) {
     QList<qint64> results;
 
     for (int i = 0; i < iterations; ++i) {
@@ -378,7 +375,8 @@ qint64 TestPerformanceRegression::measureApplicationShutdown() {
     return 0; // Stub implementation
 }
 
-bool TestPerformanceRegression::isPerformanceAcceptable(const PerformanceMetrics& metrics, qint64 threshold) {
+bool TestPerformanceRegression::isPerformanceAcceptable(const PerformanceMetrics& metrics,
+                                                        qint64 threshold) {
     Q_UNUSED(metrics)
     Q_UNUSED(threshold)
     return true; // Stub implementation
@@ -388,5 +386,3 @@ void TestPerformanceRegression::trackMemoryAllocations(bool enable) {
     Q_UNUSED(enable)
     // Stub implementation
 }
-
-

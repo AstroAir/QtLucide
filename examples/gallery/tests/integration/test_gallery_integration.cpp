@@ -8,32 +8,31 @@
  * - End-to-end functionality tests
  */
 
-#include <QtTest/QtTest>
 #include <QApplication>
-#include <QtTest/QSignalSpy>
-#include <QTimer>
+#include <QElapsedTimer>
+#include <QMainWindow>
 #include <QPixmap>
 #include <QStringList>
 #include <QTemporaryDir>
-#include <QElapsedTimer>
-#include <QMainWindow>
+#include <QTimer>
+#include <QtTest/QSignalSpy>
+#include <QtTest/QtTest>
 
 // Include Gallery components
-#include "ui/windows/GalleryMainWindow.h"
-#include "ui/widgets/grids/IconGridWidget.h"
-#include "ui/widgets/grids/IconThumbnailGridWidget.h"
-#include "ui/widgets/search/SearchWidget.h"
-#include "ui/widgets/search/IconSearchWidget.h"
-#include "ui/widgets/search/CategoryFilterWidget.h"
-#include "ui/widgets/panels/CategorySidebarWidget.h"
-#include "ui/widgets/viewers/ImageViewerWidget.h"
+#include "core/managers/ContentManager.h"
 #include "core/managers/IconMetadataManager.h"
 #include "core/managers/ImageMetadataManager.h"
-#include "core/managers/ContentManager.h"
+#include "ui/widgets/grids/IconGridWidget.h"
+#include "ui/widgets/grids/IconThumbnailGridWidget.h"
+#include "ui/widgets/panels/CategorySidebarWidget.h"
+#include "ui/widgets/search/CategoryFilterWidget.h"
+#include "ui/widgets/search/IconSearchWidget.h"
+#include "ui/widgets/search/SearchWidget.h"
+#include "ui/widgets/viewers/ImageViewerWidget.h"
+#include "ui/windows/GalleryMainWindow.h"
 #include <QtLucide/QtLucide.h>
 
-class TestGalleryIntegration : public QObject
-{
+class TestGalleryIntegration : public QObject {
     Q_OBJECT
 
 private slots:
@@ -100,8 +99,7 @@ private:
     void simulateUserInteraction();
 };
 
-void TestGalleryIntegration::initTestCase()
-{
+void TestGalleryIntegration::initTestCase() {
     // Initialize QtLucide
     m_lucide = new lucide::QtLucide(this);
     QVERIFY(m_lucide->initLucide());
@@ -117,8 +115,7 @@ void TestGalleryIntegration::initTestCase()
     qDebug() << "Test icons available:" << m_testIconNames.size();
 }
 
-void TestGalleryIntegration::cleanupTestCase()
-{
+void TestGalleryIntegration::cleanupTestCase() {
     if (m_mainWindow) {
         m_mainWindow->close();
         delete m_mainWindow;
@@ -127,8 +124,7 @@ void TestGalleryIntegration::cleanupTestCase()
     qDebug() << "Gallery integration test environment cleaned up";
 }
 
-void TestGalleryIntegration::init()
-{
+void TestGalleryIntegration::init() {
     // Create fresh main window for each test
     m_mainWindow = new GalleryMainWindow();
     m_mainWindow->setLucide(m_lucide);
@@ -138,8 +134,7 @@ void TestGalleryIntegration::init()
     QTest::qWait(100);
 }
 
-void TestGalleryIntegration::cleanup()
-{
+void TestGalleryIntegration::cleanup() {
     if (m_mainWindow) {
         m_mainWindow->close();
         delete m_mainWindow;
@@ -147,14 +142,12 @@ void TestGalleryIntegration::cleanup()
     }
 }
 
-void TestGalleryIntegration::setupTestData()
-{
+void TestGalleryIntegration::setupTestData() {
     m_testIconNames = getTestIconNames(100);
     QVERIFY(!m_testIconNames.isEmpty());
 }
 
-void TestGalleryIntegration::createTestImages()
-{
+void TestGalleryIntegration::createTestImages() {
     // Create test images in temporary directory
     m_testImagePath = m_tempDir->path() + "/test_image.png";
 
@@ -163,8 +156,7 @@ void TestGalleryIntegration::createTestImages()
     QVERIFY(testPixmap.save(m_testImagePath, "PNG"));
 }
 
-QStringList TestGalleryIntegration::getTestIconNames(int count)
-{
+QStringList TestGalleryIntegration::getTestIconNames(int count) {
     QStringList allIcons = m_lucide->availableIcons();
     if (allIcons.size() < count) {
         return allIcons;
@@ -172,29 +164,25 @@ QStringList TestGalleryIntegration::getTestIconNames(int count)
     return allIcons.mid(0, count);
 }
 
-bool TestGalleryIntegration::waitForSignal(QObject* sender, const char* signal, int timeout)
-{
+bool TestGalleryIntegration::waitForSignal(QObject* sender, const char* signal, int timeout) {
     QSignalSpy spy(sender, signal);
     return spy.wait(timeout);
 }
 
-void TestGalleryIntegration::simulateUserInteraction()
-{
+void TestGalleryIntegration::simulateUserInteraction() {
     // Simulate some user interactions
     QTest::qWait(50);
     QApplication::processEvents();
 }
 
 // Main Window Integration Tests
-void TestGalleryIntegration::testMainWindow_Creation()
-{
+void TestGalleryIntegration::testMainWindow_Creation() {
     QVERIFY(m_mainWindow != nullptr);
     QVERIFY(m_mainWindow->isVisible());
     QVERIFY(m_mainWindow->windowTitle().contains("Gallery"));
 }
 
-void TestGalleryIntegration::testMainWindow_ComponentInitialization()
-{
+void TestGalleryIntegration::testMainWindow_ComponentInitialization() {
     // Test that all major components are initialized
     IconGridWidget* gridWidget = m_mainWindow->findChild<IconGridWidget*>();
     SearchWidget* searchWidget = m_mainWindow->findChild<SearchWidget*>();
@@ -205,8 +193,7 @@ void TestGalleryIntegration::testMainWindow_ComponentInitialization()
     QVERIFY(sidebarWidget != nullptr);
 }
 
-void TestGalleryIntegration::testMainWindow_LayoutManagement()
-{
+void TestGalleryIntegration::testMainWindow_LayoutManagement() {
     // Test window layout
     QVERIFY(m_mainWindow->centralWidget() != nullptr);
 
@@ -221,8 +208,7 @@ void TestGalleryIntegration::testMainWindow_LayoutManagement()
     m_mainWindow->resize(originalSize);
 }
 
-void TestGalleryIntegration::testMainWindow_MenuAndToolbar()
-{
+void TestGalleryIntegration::testMainWindow_MenuAndToolbar() {
     // Test that menu bar exists
     QMenuBar* menuBar = m_mainWindow->menuBar();
     QVERIFY(menuBar != nullptr);
@@ -233,8 +219,7 @@ void TestGalleryIntegration::testMainWindow_MenuAndToolbar()
     QVERIFY(!toolbars.isEmpty());
 }
 
-void TestGalleryIntegration::testMainWindow_StatusBar()
-{
+void TestGalleryIntegration::testMainWindow_StatusBar() {
     // Test that status bar exists and shows information
     QStatusBar* statusBar = m_mainWindow->statusBar();
     QVERIFY(statusBar != nullptr);
@@ -242,8 +227,7 @@ void TestGalleryIntegration::testMainWindow_StatusBar()
 }
 
 // Component Interaction Tests
-void TestGalleryIntegration::testInteraction_SearchAndGrid()
-{
+void TestGalleryIntegration::testInteraction_SearchAndGrid() {
     SearchWidget* searchWidget = m_mainWindow->findChild<SearchWidget*>();
     IconGridWidget* gridWidget = m_mainWindow->findChild<IconGridWidget*>();
 
@@ -264,8 +248,7 @@ void TestGalleryIntegration::testInteraction_SearchAndGrid()
     QVERIFY(gridUpdateSpy.count() >= 1);
 }
 
-void TestGalleryIntegration::testInteraction_FilterAndGrid()
-{
+void TestGalleryIntegration::testInteraction_FilterAndGrid() {
     CategoryFilterWidget* filterWidget = m_mainWindow->findChild<CategoryFilterWidget*>();
     IconGridWidget* gridWidget = m_mainWindow->findChild<IconGridWidget*>();
 
@@ -284,8 +267,7 @@ void TestGalleryIntegration::testInteraction_FilterAndGrid()
     }
 }
 
-void TestGalleryIntegration::testInteraction_GridAndViewer()
-{
+void TestGalleryIntegration::testInteraction_GridAndViewer() {
     IconGridWidget* gridWidget = m_mainWindow->findChild<IconGridWidget*>();
     ImageViewerWidget* viewerWidget = m_mainWindow->findChild<ImageViewerWidget*>();
 
@@ -308,8 +290,7 @@ void TestGalleryIntegration::testInteraction_GridAndViewer()
     }
 }
 
-void TestGalleryIntegration::testInteraction_SidebarAndGrid()
-{
+void TestGalleryIntegration::testInteraction_SidebarAndGrid() {
     CategorySidebarWidget* sidebarWidget = m_mainWindow->findChild<CategorySidebarWidget*>();
     IconGridWidget* gridWidget = m_mainWindow->findChild<IconGridWidget*>();
 
@@ -326,8 +307,7 @@ void TestGalleryIntegration::testInteraction_SidebarAndGrid()
     }
 }
 
-void TestGalleryIntegration::testInteraction_SearchAndFilter()
-{
+void TestGalleryIntegration::testInteraction_SearchAndFilter() {
     SearchWidget* searchWidget = m_mainWindow->findChild<SearchWidget*>();
     CategoryFilterWidget* filterWidget = m_mainWindow->findChild<CategoryFilterWidget*>();
 
@@ -347,8 +327,7 @@ void TestGalleryIntegration::testInteraction_SearchAndFilter()
 }
 
 // Data Flow Tests
-void TestGalleryIntegration::testDataFlow_IconLoading()
-{
+void TestGalleryIntegration::testDataFlow_IconLoading() {
     IconGridWidget* gridWidget = m_mainWindow->findChild<IconGridWidget*>();
     QVERIFY(gridWidget != nullptr);
 
@@ -366,8 +345,7 @@ void TestGalleryIntegration::testDataFlow_IconLoading()
     QCOMPARE(finishedSpy.count(), 1);
 }
 
-void TestGalleryIntegration::testDataFlow_SearchFiltering()
-{
+void TestGalleryIntegration::testDataFlow_SearchFiltering() {
     SearchWidget* searchWidget = m_mainWindow->findChild<SearchWidget*>();
     IconGridWidget* gridWidget = m_mainWindow->findChild<IconGridWidget*>();
 
@@ -393,8 +371,7 @@ void TestGalleryIntegration::testDataFlow_SearchFiltering()
     }
 }
 
-void TestGalleryIntegration::testDataFlow_CategoryFiltering()
-{
+void TestGalleryIntegration::testDataFlow_CategoryFiltering() {
     CategoryFilterWidget* filterWidget = m_mainWindow->findChild<CategoryFilterWidget*>();
     IconGridWidget* gridWidget = m_mainWindow->findChild<IconGridWidget*>();
 
@@ -416,8 +393,7 @@ void TestGalleryIntegration::testDataFlow_CategoryFiltering()
     }
 }
 
-void TestGalleryIntegration::testDataFlow_SelectionPropagation()
-{
+void TestGalleryIntegration::testDataFlow_SelectionPropagation() {
     IconGridWidget* gridWidget = m_mainWindow->findChild<IconGridWidget*>();
 
     if (gridWidget) {
@@ -437,8 +413,7 @@ void TestGalleryIntegration::testDataFlow_SelectionPropagation()
     }
 }
 
-void TestGalleryIntegration::testDataFlow_ViewModeChanges()
-{
+void TestGalleryIntegration::testDataFlow_ViewModeChanges() {
     IconGridWidget* gridWidget = m_mainWindow->findChild<IconGridWidget*>();
 
     if (gridWidget) {
@@ -459,8 +434,7 @@ void TestGalleryIntegration::testDataFlow_ViewModeChanges()
 }
 
 // End-to-End Tests
-void TestGalleryIntegration::testEndToEnd_BasicWorkflow()
-{
+void TestGalleryIntegration::testEndToEnd_BasicWorkflow() {
     // Test complete basic workflow: open app -> load icons -> select icon
     QVERIFY(m_mainWindow->isVisible());
 
@@ -480,8 +454,7 @@ void TestGalleryIntegration::testEndToEnd_BasicWorkflow()
     QVERIFY(m_mainWindow->isVisible());
 }
 
-void TestGalleryIntegration::testEndToEnd_SearchWorkflow()
-{
+void TestGalleryIntegration::testEndToEnd_SearchWorkflow() {
     // Test complete search workflow: search -> filter results -> select
     SearchWidget* searchWidget = m_mainWindow->findChild<SearchWidget*>();
     IconGridWidget* gridWidget = m_mainWindow->findChild<IconGridWidget*>();
@@ -510,8 +483,7 @@ void TestGalleryIntegration::testEndToEnd_SearchWorkflow()
     }
 }
 
-void TestGalleryIntegration::testEndToEnd_CategoryWorkflow()
-{
+void TestGalleryIntegration::testEndToEnd_CategoryWorkflow() {
     // Test complete category workflow: select category -> view icons -> select icon
     CategoryFilterWidget* filterWidget = m_mainWindow->findChild<CategoryFilterWidget*>();
     IconGridWidget* gridWidget = m_mainWindow->findChild<IconGridWidget*>();
@@ -536,8 +508,7 @@ void TestGalleryIntegration::testEndToEnd_CategoryWorkflow()
     }
 }
 
-void TestGalleryIntegration::testEndToEnd_ViewerWorkflow()
-{
+void TestGalleryIntegration::testEndToEnd_ViewerWorkflow() {
     // Test complete viewer workflow: select icon -> view in viewer -> navigate
     IconGridWidget* gridWidget = m_mainWindow->findChild<IconGridWidget*>();
     ImageViewerWidget* viewerWidget = m_mainWindow->findChild<ImageViewerWidget*>();
@@ -563,8 +534,7 @@ void TestGalleryIntegration::testEndToEnd_ViewerWorkflow()
     }
 }
 
-void TestGalleryIntegration::testEndToEnd_PerformanceWorkflow()
-{
+void TestGalleryIntegration::testEndToEnd_PerformanceWorkflow() {
     // Test performance with larger dataset
     IconGridWidget* gridWidget = m_mainWindow->findChild<IconGridWidget*>();
     QVERIFY(gridWidget != nullptr);
@@ -580,7 +550,8 @@ void TestGalleryIntegration::testEndToEnd_PerformanceWorkflow()
     QTest::qWait(2000); // Wait for loading
 
     qint64 loadTime = timer.elapsed();
-    qDebug() << "Large icon set (" << largeIconSet.size() << " icons) loaded in" << loadTime << "ms";
+    qDebug() << "Large icon set (" << largeIconSet.size() << " icons) loaded in" << loadTime
+             << "ms";
 
     // Performance should be reasonable (less than 5 seconds for 500 icons)
     QVERIFY(loadTime < 5000);
@@ -598,17 +569,11 @@ void TestGalleryIntegration::testEndToEnd_PerformanceWorkflow()
 }
 
 // Window Management Tests
-void TestGalleryIntegration::testWindowManagement_Resize()
-{
+void TestGalleryIntegration::testWindowManagement_Resize() {
     QSize originalSize = m_mainWindow->size();
 
     // Test various window sizes
-    QSize testSizes[] = {
-        QSize(800, 600),
-        QSize(1024, 768),
-        QSize(1200, 900),
-        QSize(600, 400)
-    };
+    QSize testSizes[] = {QSize(800, 600), QSize(1024, 768), QSize(1200, 900), QSize(600, 400)};
 
     for (const QSize& size : testSizes) {
         m_mainWindow->resize(size);
@@ -627,8 +592,7 @@ void TestGalleryIntegration::testWindowManagement_Resize()
     m_mainWindow->resize(originalSize);
 }
 
-void TestGalleryIntegration::testWindowManagement_SplitterAdjustment()
-{
+void TestGalleryIntegration::testWindowManagement_SplitterAdjustment() {
     // Find splitters in the main window
     QList<QSplitter*> splitters = m_mainWindow->findChildren<QSplitter*>();
 
@@ -653,8 +617,7 @@ void TestGalleryIntegration::testWindowManagement_SplitterAdjustment()
     }
 }
 
-void TestGalleryIntegration::testWindowManagement_PanelVisibility()
-{
+void TestGalleryIntegration::testWindowManagement_PanelVisibility() {
     // Test sidebar visibility toggle
     CategorySidebarWidget* sidebarWidget = m_mainWindow->findChild<CategorySidebarWidget*>();
     if (sidebarWidget) {
@@ -684,8 +647,7 @@ void TestGalleryIntegration::testWindowManagement_PanelVisibility()
     }
 }
 
-void TestGalleryIntegration::testWindowManagement_FullscreenMode()
-{
+void TestGalleryIntegration::testWindowManagement_FullscreenMode() {
     QVERIFY(!m_mainWindow->isFullScreen());
 
     // Enter fullscreen
@@ -700,8 +662,7 @@ void TestGalleryIntegration::testWindowManagement_FullscreenMode()
 }
 
 // State Management Tests
-void TestGalleryIntegration::testStateManagement_Settings()
-{
+void TestGalleryIntegration::testStateManagement_Settings() {
     // Test that settings can be saved and restored
     IconGridWidget* gridWidget = m_mainWindow->findChild<IconGridWidget*>();
     if (gridWidget) {
@@ -718,8 +679,7 @@ void TestGalleryIntegration::testStateManagement_Settings()
     }
 }
 
-void TestGalleryIntegration::testStateManagement_SessionRestore()
-{
+void TestGalleryIntegration::testStateManagement_SessionRestore() {
     // Test session state restoration
     IconGridWidget* gridWidget = m_mainWindow->findChild<IconGridWidget*>();
     if (gridWidget) {
@@ -737,15 +697,15 @@ void TestGalleryIntegration::testStateManagement_SessionRestore()
     }
 }
 
-void TestGalleryIntegration::testStateManagement_ViewPreferences()
-{
+void TestGalleryIntegration::testStateManagement_ViewPreferences() {
     // Test view preference persistence
     IconGridWidget* gridWidget = m_mainWindow->findChild<IconGridWidget*>();
     if (gridWidget) {
         // Test view mode preference
         IconGridWidget::ViewMode originalMode = gridWidget->viewMode();
         IconGridWidget::ViewMode newMode = (originalMode == IconGridWidget::GridView)
-            ? IconGridWidget::ListView : IconGridWidget::GridView;
+                                               ? IconGridWidget::ListView
+                                               : IconGridWidget::GridView;
 
         gridWidget->setViewMode(newMode);
         QCOMPARE(gridWidget->viewMode(), newMode);

@@ -3,17 +3,17 @@
  */
 
 #include "test_ui_components.h"
-#include <QtLucide/QtLucide.h>
-#include "ui/widgets/search/SearchWidget.h"
-#include "ui/widgets/search/CategoryFilterWidget.h"
+#include "core/managers/IconMetadataManager.h"
+#include "ui/dialogs/PreferencesDialog.h"
 #include "ui/widgets/grids/IconGridWidget.h"
 #include "ui/widgets/panels/IconDetailsPanel.h"
-#include "ui/dialogs/PreferencesDialog.h"
-#include "core/managers/IconMetadataManager.h"
+#include "ui/widgets/search/CategoryFilterWidget.h"
+#include "ui/widgets/search/SearchWidget.h"
+#include <QtLucide/QtLucide.h>
 
+#include <QApplication>
 #include <QSignalSpy>
 #include <QTest>
-#include <QApplication>
 
 void TestUIComponents::initTestCase() {
     qDebug() << "Initializing UI Component Test Suite";
@@ -344,21 +344,20 @@ void TestUIComponents::testSearchFilterIntegration() {
     qDebug() << "Testing search and filter integration";
 
     // Connect search widget to icon grid
-    connect(m_searchWidget, &SearchWidget::searchChanged,
-            this, [this](const QString& text) {
-                // Filter icons based on search text
-                QStringList filteredIcons;
-                for (const QString& iconName : m_testIconNames) {
-                    if (iconName.contains(text, Qt::CaseInsensitive)) {
-                        filteredIcons.append(iconName);
-                    }
-                }
-                m_iconGrid->setIconNames(filteredIcons);
-            });
+    connect(m_searchWidget, &SearchWidget::searchChanged, this, [this](const QString& text) {
+        // Filter icons based on search text
+        QStringList filteredIcons;
+        for (const QString& iconName : m_testIconNames) {
+            if (iconName.contains(text, Qt::CaseInsensitive)) {
+                filteredIcons.append(iconName);
+            }
+        }
+        m_iconGrid->setIconNames(filteredIcons);
+    });
 
     // Connect category filter to icon grid
-    connect(m_categoryFilter, &CategoryFilterWidget::categorySelectionChanged,
-            this, [this](const QStringList& categories) {
+    connect(m_categoryFilter, &CategoryFilterWidget::categorySelectionChanged, this,
+            [this](const QStringList& categories) {
                 // Filter icons based on categories (simplified for test)
                 if (categories.isEmpty()) {
                     m_iconGrid->setIconNames(m_testIconNames);
@@ -509,5 +508,3 @@ void TestUIComponents::testPreferencesGridIntegration() {
 void TestUIComponents::testComponentStateSync() {
     QSKIP("Test not implemented yet");
 }
-
-

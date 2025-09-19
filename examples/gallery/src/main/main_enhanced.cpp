@@ -12,21 +12,20 @@
  */
 
 #include <QApplication>
-#include <QStyleFactory>
-#include <QDir>
-#include <QStandardPaths>
-#include <QMessageBox>
-#include <QSplashScreen>
-#include <QPixmap>
-#include <QPainter>
-#include <QTimer>
 #include <QDebug>
+#include <QDir>
+#include <QMessageBox>
+#include <QPainter>
+#include <QPixmap>
+#include <QSplashScreen>
+#include <QStandardPaths>
+#include <QStyleFactory>
+#include <QTimer>
 
 #include "../ui/windows/GalleryMainWindow.h"
 #include "GalleryLogger.h"
 
-void setupApplicationProperties(QApplication& app)
-{
+void setupApplicationProperties(QApplication& app) {
     app.setApplicationName("QtLucide Enhanced Gallery");
     app.setApplicationVersion("2.0.0");
     app.setOrganizationName("QtLucide Project");
@@ -39,8 +38,7 @@ void setupApplicationProperties(QApplication& app)
     // High DPI support is enabled by default in Qt 6
 }
 
-void setupApplicationStyle(QApplication& app)
-{
+void setupApplicationStyle(QApplication& app) {
     // Try to use a modern style
     QStringList availableStyles = QStyleFactory::keys();
 
@@ -69,8 +67,7 @@ void setupApplicationStyle(QApplication& app)
     // app.setPalette(darkPalette);
 }
 
-void createApplicationDirectories()
-{
+void createApplicationDirectories() {
     // Ensure application data directories exist
     QString appDataDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
     QDir().mkpath(appDataDir);
@@ -87,8 +84,7 @@ void createApplicationDirectories()
     qDebug() << "  Cache:" << cacheDir;
 }
 
-QSplashScreen* createSplashScreen()
-{
+QSplashScreen* createSplashScreen() {
     // Create a simple splash screen
     QPixmap splashPixmap(400, 300);
     splashPixmap.fill(QColor(42, 130, 218));
@@ -99,7 +95,7 @@ QSplashScreen* createSplashScreen()
 
     // Draw application name
     painter.drawText(splashPixmap.rect(), Qt::AlignCenter,
-                    "QtLucide Enhanced Gallery\n\nLoading...");
+                     "QtLucide Enhanced Gallery\n\nLoading...");
 
     QSplashScreen* splash = new QSplashScreen(splashPixmap);
     splash->show();
@@ -107,16 +103,14 @@ QSplashScreen* createSplashScreen()
     return splash;
 }
 
-void showSplashMessage(QSplashScreen* splash, const QString& message)
-{
+void showSplashMessage(QSplashScreen* splash, const QString& message) {
     if (splash) {
         splash->showMessage(message, Qt::AlignBottom | Qt::AlignCenter, Qt::white);
         QApplication::processEvents();
     }
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
 
     // Setup application properties
@@ -155,7 +149,8 @@ int main(int argc, char *argv[])
         GALLERY_LOG_INFO(galleryInit, "Enhanced Gallery Main Window created successfully");
 
     } catch (const std::exception& e) {
-        GALLERY_LOG_CRITICAL(galleryInit, QString("Failed to create main window: %1").arg(e.what()));
+        GALLERY_LOG_CRITICAL(galleryInit,
+                             QString("Failed to create main window: %1").arg(e.what()));
 
         if (splash) {
             splash->close();
@@ -163,7 +158,7 @@ int main(int argc, char *argv[])
         }
 
         QMessageBox::critical(nullptr, "Initialization Error",
-                             QString("Failed to initialize the application:\n%1").arg(e.what()));
+                              QString("Failed to initialize the application:\n%1").arg(e.what()));
         return 1;
     }
 

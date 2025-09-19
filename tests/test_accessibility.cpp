@@ -3,18 +3,18 @@
  */
 
 #include "test_accessibility.h"
-#include <QtLucide/QtLucide.h>
-#include "ui/windows/GalleryMainWindow.h"
-#include "ui/widgets/search/SearchWidget.h"
-#include "ui/widgets/search/CategoryFilterWidget.h"
+#include "core/managers/IconMetadataManager.h"
+#include "ui/dialogs/PreferencesDialog.h"
 #include "ui/widgets/grids/IconGridWidget.h"
 #include "ui/widgets/panels/IconDetailsPanel.h"
-#include "ui/dialogs/PreferencesDialog.h"
-#include "core/managers/IconMetadataManager.h"
+#include "ui/widgets/search/CategoryFilterWidget.h"
+#include "ui/widgets/search/SearchWidget.h"
+#include "ui/windows/GalleryMainWindow.h"
+#include <QtLucide/QtLucide.h>
 
-#include <QApplication>
 #include <QAccessible>
 #include <QAccessibleInterface>
+#include <QApplication>
 #include <QStyleFactory>
 #include <cmath>
 
@@ -56,7 +56,8 @@ void TestAccessibility::initTestCase() {
 
     qDebug() << "Accessibility test environment initialized successfully";
     qDebug() << "Screen reader active:" << QAccessible::isActive();
-    qDebug() << "Accessibility bridge:" << (QAccessible::isActive() ? "Available" : "Not available");
+    qDebug() << "Accessibility bridge:"
+             << (QAccessible::isActive() ? "Available" : "Not available");
 }
 
 void TestAccessibility::cleanupTestCase() {
@@ -104,7 +105,8 @@ void TestAccessibility::testMainWindowKeyboardNavigation() {
         // Test Alt key activation
         QTest::keyClick(m_mainWindow, Qt::Key_Alt);
         QTest::qWait(100);
-        QVERIFY2(menuBar->hasFocus() || menuBar->isActiveWindow(), "Alt key doesn't activate menu bar");
+        QVERIFY2(menuBar->hasFocus() || menuBar->isActiveWindow(),
+                 "Alt key doesn't activate menu bar");
     }
 
     m_navigationResults.append(result);
@@ -186,33 +188,31 @@ void TestAccessibility::testIconGridKeyboardNavigation() {
 void TestAccessibility::testAccessibleInterfaceAvailability() {
     qDebug() << "Testing accessible interface availability";
 
-    QList<QWidget*> testWidgets = {
-        m_mainWindow,
-        m_searchWidget,
-        m_categoryFilter,
-        m_iconGrid,
-        m_detailsPanel
-    };
+    QList<QWidget*> testWidgets = {m_mainWindow, m_searchWidget, m_categoryFilter, m_iconGrid,
+                                   m_detailsPanel};
 
     for (QWidget* widget : testWidgets) {
-        if (!widget) continue;
+        if (!widget)
+            continue;
 
         ScreenReaderResult result = testElementScreenReaderSupport(widget);
 
-        QVERIFY2(result.hasAccessibleInterface,
-                qPrintable(QString("Widget %1 lacks accessible interface").arg(widget->objectName())));
+        QVERIFY2(
+            result.hasAccessibleInterface,
+            qPrintable(QString("Widget %1 lacks accessible interface").arg(widget->objectName())));
 
         if (m_accessibilityConfig.accessibleNamesProvided) {
-            QVERIFY2(result.hasAccessibleName,
-                    qPrintable(QString("Widget %1 lacks accessible name").arg(widget->objectName())));
+            QVERIFY2(
+                result.hasAccessibleName,
+                qPrintable(QString("Widget %1 lacks accessible name").arg(widget->objectName())));
         }
 
         m_screenReaderResults.append(result);
 
         qDebug() << QString("Widget %1: name='%2', role=%3")
-                    .arg(widget->objectName())
-                    .arg(result.accessibleName)
-                    .arg(static_cast<int>(result.accessibleRole));
+                        .arg(widget->objectName())
+                        .arg(result.accessibleName)
+                        .arg(static_cast<int>(result.accessibleRole));
     }
 
     qDebug() << "Accessible interface availability test passed";
@@ -233,7 +233,8 @@ void TestAccessibility::testHighContrastModeSupport() {
     QList<QWidget*> testWidgets = {m_mainWindow, m_searchWidget, m_iconGrid};
 
     for (QWidget* widget : testWidgets) {
-        if (!widget) continue;
+        if (!widget)
+            continue;
 
         // Test that widget is still visible
         QVERIFY(widget->isVisible());
@@ -245,12 +246,12 @@ void TestAccessibility::testHighContrastModeSupport() {
 
         double contrastRatio = calculateContrastRatio(foreground, background);
         QVERIFY2(contrastRatio >= WCAG_AA_CONTRAST_RATIO,
-                qPrintable(QString("Insufficient contrast ratio: %1 (minimum: %2)")
-                          .arg(contrastRatio).arg(WCAG_AA_CONTRAST_RATIO)));
+                 qPrintable(QString("Insufficient contrast ratio: %1 (minimum: %2)")
+                                .arg(contrastRatio)
+                                .arg(WCAG_AA_CONTRAST_RATIO)));
 
-        qDebug() << QString("Widget %1 contrast ratio: %2")
-                    .arg(widget->objectName())
-                    .arg(contrastRatio);
+        qDebug()
+            << QString("Widget %1 contrast ratio: %2").arg(widget->objectName()).arg(contrastRatio);
     }
 
     // Test icon visibility in high contrast mode
@@ -276,7 +277,8 @@ void TestAccessibility::testColorContrastRatios() {
     QList<QWidget*> testWidgets = {m_mainWindow, m_searchWidget, m_iconGrid, m_detailsPanel};
 
     for (QWidget* widget : testWidgets) {
-        if (!widget) continue;
+        if (!widget)
+            continue;
 
         QPalette palette = widget->palette();
 
@@ -285,8 +287,7 @@ void TestAccessibility::testColorContrastRatios() {
             {QPalette::WindowText, QPalette::Window},
             {QPalette::ButtonText, QPalette::Button},
             {QPalette::Text, QPalette::Base},
-            {QPalette::HighlightedText, QPalette::Highlight}
-        };
+            {QPalette::HighlightedText, QPalette::Highlight}};
 
         for (const auto& pair : colorPairs) {
             QColor foreground = palette.color(pair.first);
@@ -298,26 +299,28 @@ void TestAccessibility::testColorContrastRatios() {
             bool meetsAA = contrastRatio >= WCAG_AA_CONTRAST_RATIO;
 
             if (!meetsAA) {
-                QString violation = QString("Widget %1: Insufficient contrast %2:1 for colors %3/%4")
-                                   .arg(widget->objectName())
-                                   .arg(contrastRatio, 0, 'f', 2)
-                                   .arg(foreground.name())
-                                   .arg(background.name());
+                QString violation =
+                    QString("Widget %1: Insufficient contrast %2:1 for colors %3/%4")
+                        .arg(widget->objectName())
+                        .arg(contrastRatio, 0, 'f', 2)
+                        .arg(foreground.name())
+                        .arg(background.name());
                 m_accessibilityViolations.append(violation);
                 qWarning() << violation;
             }
 
             qDebug() << QString("Widget %1 contrast: %2:1 (%3/%4)")
-                        .arg(widget->objectName())
-                        .arg(contrastRatio, 0, 'f', 2)
-                        .arg(foreground.name())
-                        .arg(background.name());
+                            .arg(widget->objectName())
+                            .arg(contrastRatio, 0, 'f', 2)
+                            .arg(foreground.name())
+                            .arg(background.name());
         }
     }
 
     // For this test, we'll be lenient and just warn about violations
     // In a production environment, you might want to fail on violations
-    qDebug() << QString("Color contrast test completed with %1 violations").arg(m_accessibilityViolations.size());
+    qDebug() << QString("Color contrast test completed with %1 violations")
+                    .arg(m_accessibilityViolations.size());
 }
 
 KeyboardNavigationResult TestAccessibility::testElementKeyboardNavigation(QWidget* element) {
@@ -401,7 +404,8 @@ bool TestAccessibility::isHighContrastModeActive() {
            (windowColor == Qt::white && textColor == Qt::black);
 }
 
-double TestAccessibility::calculateContrastRatio(const QColor& foreground, const QColor& background) {
+double TestAccessibility::calculateContrastRatio(const QColor& foreground,
+                                                 const QColor& background) {
     // Calculate relative luminance for each color
     auto relativeLuminance = [](const QColor& color) -> double {
         double r = color.redF();

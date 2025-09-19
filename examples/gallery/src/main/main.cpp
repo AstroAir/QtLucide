@@ -10,22 +10,21 @@
  */
 
 #include <QApplication>
-#include <QStyleFactory>
-#include <QDir>
-#include <QStandardPaths>
-#include <QMessageBox>
-#include <QSplashScreen>
-#include <QPixmap>
-#include <QPainter>
-#include <QTimer>
 #include <QDebug>
+#include <QDir>
+#include <QMessageBox>
+#include <QPainter>
+#include <QPixmap>
+#include <QSplashScreen>
+#include <QStandardPaths>
+#include <QStyleFactory>
+#include <QTimer>
 
-#include "../ui/windows/GalleryMainWindow.h"
 #include "../core/utils/GalleryLogger.h"
+#include "../ui/windows/GalleryMainWindow.h"
 #include <QtLucide/QtLucide.h>
 
-void setupApplicationProperties(QApplication& app)
-{
+void setupApplicationProperties(QApplication& app) {
     app.setApplicationName("QtLucide Gallery");
     app.setApplicationVersion("2.0.0");
     app.setOrganizationName("QtLucide");
@@ -37,24 +36,21 @@ void setupApplicationProperties(QApplication& app)
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 }
 
-QSplashScreen* createSplashScreen()
-{
+QSplashScreen* createSplashScreen() {
     QPixmap splashPixmap(400, 300);
     splashPixmap.fill(QColor(45, 52, 54));
 
     QPainter painter(&splashPixmap);
     painter.setPen(Qt::white);
     painter.setFont(QFont("Arial", 16, QFont::Bold));
-    painter.drawText(splashPixmap.rect(), Qt::AlignCenter,
-                    "QtLucide Gallery\nLoading...");
+    painter.drawText(splashPixmap.rect(), Qt::AlignCenter, "QtLucide Gallery\nLoading...");
 
     auto* splash = new QSplashScreen(splashPixmap);
     splash->show();
     return splash;
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
 
     // Setup application properties
@@ -73,8 +69,8 @@ int main(int argc, char *argv[])
     lucide::QtLucide lucide;
     if (!lucide.initLucide()) {
         QMessageBox::critical(nullptr, "Error",
-            "Failed to initialize QtLucide library.\n"
-            "The application will continue with limited functionality.");
+                              "Failed to initialize QtLucide library.\n"
+                              "The application will continue with limited functionality.");
         GALLERY_LOG_ERROR(galleryMain, "Failed to initialize QtLucide library");
     }
 
@@ -97,4 +93,3 @@ int main(int argc, char *argv[])
     GALLERY_LOG_INFO(galleryMain, "QtLucide Gallery started successfully");
 
     return app.exec();
-

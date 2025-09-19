@@ -11,31 +11,30 @@
  * - Resource cleanup verification
  */
 
-#include <QtTest/QtTest>
 #include <QApplication>
-#include <QtTest/QSignalSpy>
-#include <QElapsedTimer>
-#include <QTimer>
-#include <QThread>
-#include <QPixmap>
-#include <QStringList>
-#include <QProcess>
 #include <QDir>
+#include <QElapsedTimer>
+#include <QPixmap>
+#include <QProcess>
+#include <QStringList>
 #include <QTemporaryDir>
+#include <QThread>
+#include <QTimer>
+#include <QtTest/QSignalSpy>
+#include <QtTest/QtTest>
 
 // Include Gallery components
-#include "ui/widgets/grids/IconGridWidget.h"
-#include "ui/widgets/grids/IconThumbnailGridWidget.h"
-#include "ui/widgets/search/SearchWidget.h"
-#include "ui/widgets/search/IconSearchWidget.h"
-#include "ui/widgets/panels/CategorySidebarWidget.h"
-#include "core/managers/IconMetadataManager.h"
 #include "core/managers/ContentManager.h"
 #include "core/managers/FavoritesManager.h"
+#include "core/managers/IconMetadataManager.h"
+#include "ui/widgets/grids/IconGridWidget.h"
+#include "ui/widgets/grids/IconThumbnailGridWidget.h"
+#include "ui/widgets/panels/CategorySidebarWidget.h"
+#include "ui/widgets/search/IconSearchWidget.h"
+#include "ui/widgets/search/SearchWidget.h"
 #include <QtLucide/QtLucide.h>
 
-class TestPerformance : public QObject
-{
+class TestPerformance : public QObject {
     Q_OBJECT
 
 private slots:
@@ -97,9 +96,9 @@ private:
     QTemporaryDir* m_tempDir;
 
     // Test data
-    QStringList m_smallDataset;    // ~50 icons
-    QStringList m_mediumDataset;   // ~200 icons
-    QStringList m_largeDataset;    // ~500 icons
+    QStringList m_smallDataset;     // ~50 icons
+    QStringList m_mediumDataset;    // ~200 icons
+    QStringList m_largeDataset;     // ~500 icons
     QStringList m_veryLargeDataset; // ~1000+ icons
 
     // Performance tracking
@@ -122,8 +121,7 @@ private:
     void generateTestThumbnails(const QStringList& icons);
 };
 
-void TestPerformance::initTestCase()
-{
+void TestPerformance::initTestCase() {
     // Initialize QtLucide
     m_lucide = new lucide::QtLucide(this);
     QVERIFY(m_lucide->initLucide());
@@ -146,25 +144,21 @@ void TestPerformance::initTestCase()
     qDebug() << "Very large dataset:" << m_veryLargeDataset.size() << "icons";
 }
 
-void TestPerformance::cleanupTestCase()
-{
+void TestPerformance::cleanupTestCase() {
     delete m_tempDir;
     qDebug() << "Performance test environment cleaned up";
 }
 
-void TestPerformance::init()
-{
+void TestPerformance::init() {
     // Reset state before each test
 }
 
-void TestPerformance::cleanup()
-{
+void TestPerformance::cleanup() {
     // Clean up after each test
     QApplication::processEvents(); // Process any pending events
 }
 
-void TestPerformance::setupTestData()
-{
+void TestPerformance::setupTestData() {
     QStringList allIcons = m_lucide->availableIcons();
 
     // Create datasets of different sizes
@@ -179,8 +173,7 @@ void TestPerformance::setupTestData()
     QVERIFY(!m_veryLargeDataset.isEmpty());
 }
 
-QStringList TestPerformance::getIconSubset(int count)
-{
+QStringList TestPerformance::getIconSubset(int count) {
     QStringList allIcons = m_lucide->availableIcons();
     if (count >= allIcons.size()) {
         return allIcons;
@@ -188,8 +181,8 @@ QStringList TestPerformance::getIconSubset(int count)
     return allIcons.mid(0, count);
 }
 
-TestPerformance::PerformanceMetrics TestPerformance::measureLoadingPerformance(const QStringList& icons)
-{
+TestPerformance::PerformanceMetrics
+TestPerformance::measureLoadingPerformance(const QStringList& icons) {
     PerformanceMetrics metrics;
 
     IconGridWidget* widget = new IconGridWidget();
@@ -216,8 +209,8 @@ TestPerformance::PerformanceMetrics TestPerformance::measureLoadingPerformance(c
     return metrics;
 }
 
-TestPerformance::PerformanceMetrics TestPerformance::measureSearchPerformance(const QString& query, const QStringList& dataset)
-{
+TestPerformance::PerformanceMetrics
+TestPerformance::measureSearchPerformance(const QString& query, const QStringList& dataset) {
     PerformanceMetrics metrics;
 
     SearchWidget* widget = new SearchWidget(m_iconMetadataManager);
@@ -238,8 +231,7 @@ TestPerformance::PerformanceMetrics TestPerformance::measureSearchPerformance(co
     return metrics;
 }
 
-qint64 TestPerformance::getCurrentMemoryUsage()
-{
+qint64 TestPerformance::getCurrentMemoryUsage() {
     // This is a simplified memory usage measurement
     // In a real implementation, you might use platform-specific APIs
     // or QProcess to get actual memory usage
@@ -248,8 +240,7 @@ qint64 TestPerformance::getCurrentMemoryUsage()
     return 0; // Would need platform-specific implementation
 }
 
-bool TestPerformance::verifyUIResponsiveness(QWidget* widget, int timeoutMs)
-{
+bool TestPerformance::verifyUIResponsiveness(QWidget* widget, int timeoutMs) {
     QElapsedTimer timer;
     timer.start();
 
@@ -261,15 +252,14 @@ bool TestPerformance::verifyUIResponsiveness(QWidget* widget, int timeoutMs)
     return timer.elapsed() < timeoutMs;
 }
 
-void TestPerformance::simulateUserInteraction(QWidget* widget, int duration)
-{
+void TestPerformance::simulateUserInteraction(QWidget* widget, int duration) {
     QElapsedTimer timer;
     timer.start();
 
     while (timer.elapsed() < duration) {
         // Simulate various user interactions
         QTest::mouseClick(widget, Qt::LeftButton, Qt::NoModifier,
-                         QPoint(qrand() % widget->width(), qrand() % widget->height()));
+                          QPoint(qrand() % widget->width(), qrand() % widget->height()));
 
         QTest::keyClick(widget, Qt::Key_Down);
         QTest::keyClick(widget, Qt::Key_Up);
@@ -279,8 +269,7 @@ void TestPerformance::simulateUserInteraction(QWidget* widget, int duration)
     }
 }
 
-void TestPerformance::generateTestThumbnails(const QStringList& icons)
-{
+void TestPerformance::generateTestThumbnails(const QStringList& icons) {
     // Generate thumbnails for performance testing
     for (const QString& iconName : icons) {
         QPixmap pixmap = m_lucide->icon(iconName).pixmap(64, 64);
@@ -289,8 +278,7 @@ void TestPerformance::generateTestThumbnails(const QStringList& icons)
 }
 
 // Loading Performance Tests
-void TestPerformance::testLoadingPerformance_SmallDataset()
-{
+void TestPerformance::testLoadingPerformance_SmallDataset() {
     PerformanceMetrics metrics = measureLoadingPerformance(m_smallDataset);
 
     qDebug() << "Small dataset (" << m_smallDataset.size() << " icons):";
@@ -302,8 +290,7 @@ void TestPerformance::testLoadingPerformance_SmallDataset()
     QVERIFY(metrics.renderTime < 500);
 }
 
-void TestPerformance::testLoadingPerformance_MediumDataset()
-{
+void TestPerformance::testLoadingPerformance_MediumDataset() {
     PerformanceMetrics metrics = measureLoadingPerformance(m_mediumDataset);
 
     qDebug() << "Medium dataset (" << m_mediumDataset.size() << " icons):";
@@ -315,8 +302,7 @@ void TestPerformance::testLoadingPerformance_MediumDataset()
     QVERIFY(metrics.renderTime < 1000);
 }
 
-void TestPerformance::testLoadingPerformance_LargeDataset()
-{
+void TestPerformance::testLoadingPerformance_LargeDataset() {
     PerformanceMetrics metrics = measureLoadingPerformance(m_largeDataset);
 
     qDebug() << "Large dataset (" << m_largeDataset.size() << " icons):";
@@ -328,8 +314,7 @@ void TestPerformance::testLoadingPerformance_LargeDataset()
     QVERIFY(metrics.renderTime < 2000);
 }
 
-void TestPerformance::testLoadingPerformance_VeryLargeDataset()
-{
+void TestPerformance::testLoadingPerformance_VeryLargeDataset() {
     PerformanceMetrics metrics = measureLoadingPerformance(m_veryLargeDataset);
 
     qDebug() << "Very large dataset (" << m_veryLargeDataset.size() << " icons):";
@@ -342,8 +327,7 @@ void TestPerformance::testLoadingPerformance_VeryLargeDataset()
 }
 
 // Memory Usage Tests
-void TestPerformance::testMemoryUsage_BaselineUsage()
-{
+void TestPerformance::testMemoryUsage_BaselineUsage() {
     qint64 baselineMemory = getCurrentMemoryUsage();
 
     // Create minimal components
@@ -363,8 +347,7 @@ void TestPerformance::testMemoryUsage_BaselineUsage()
     delete widget;
 }
 
-void TestPerformance::testMemoryUsage_AfterLoading()
-{
+void TestPerformance::testMemoryUsage_AfterLoading() {
     IconGridWidget* widget = new IconGridWidget();
     widget->setLucide(m_lucide);
     widget->setMetadataManager(m_iconMetadataManager);
@@ -387,8 +370,7 @@ void TestPerformance::testMemoryUsage_AfterLoading()
     delete widget;
 }
 
-void TestPerformance::testMemoryUsage_ThumbnailCache()
-{
+void TestPerformance::testMemoryUsage_ThumbnailCache() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setContentManager(m_contentManager);
     widget->setIconMetadataManager(m_iconMetadataManager);
@@ -411,8 +393,7 @@ void TestPerformance::testMemoryUsage_ThumbnailCache()
     delete widget;
 }
 
-void TestPerformance::testMemoryUsage_SearchOperations()
-{
+void TestPerformance::testMemoryUsage_SearchOperations() {
     SearchWidget* widget = new SearchWidget(m_iconMetadataManager);
 
     qint64 beforeSearch = getCurrentMemoryUsage();
@@ -441,8 +422,7 @@ void TestPerformance::testMemoryUsage_SearchOperations()
     delete widget;
 }
 
-void TestPerformance::testMemoryUsage_ResourceCleanup()
-{
+void TestPerformance::testMemoryUsage_ResourceCleanup() {
     qint64 initialMemory = getCurrentMemoryUsage();
 
     // Create and destroy multiple widgets
@@ -470,8 +450,7 @@ void TestPerformance::testMemoryUsage_ResourceCleanup()
 }
 
 // Response Time Tests
-void TestPerformance::testResponseTime_IconSelection()
-{
+void TestPerformance::testResponseTime_IconSelection() {
     IconGridWidget* widget = new IconGridWidget();
     widget->setLucide(m_lucide);
     widget->setMetadataManager(m_iconMetadataManager);
@@ -495,8 +474,7 @@ void TestPerformance::testResponseTime_IconSelection()
     delete widget;
 }
 
-void TestPerformance::testResponseTime_SearchQuery()
-{
+void TestPerformance::testResponseTime_SearchQuery() {
     PerformanceMetrics metrics = measureSearchPerformance("home", m_largeDataset);
 
     qDebug() << "Search query response time:" << metrics.searchTime << "ms";
@@ -505,8 +483,7 @@ void TestPerformance::testResponseTime_SearchQuery()
     QVERIFY(metrics.searchTime < 1000);
 }
 
-void TestPerformance::testResponseTime_CategoryFilter()
-{
+void TestPerformance::testResponseTime_CategoryFilter() {
     CategorySidebarWidget* widget = new CategorySidebarWidget();
     widget->setIconMetadataManager(m_iconMetadataManager);
     widget->show();
@@ -531,8 +508,7 @@ void TestPerformance::testResponseTime_CategoryFilter()
     delete widget;
 }
 
-void TestPerformance::testResponseTime_ScrollingLarge()
-{
+void TestPerformance::testResponseTime_ScrollingLarge() {
     IconGridWidget* widget = new IconGridWidget();
     widget->setLucide(m_lucide);
     widget->setMetadataManager(m_iconMetadataManager);
@@ -561,8 +537,7 @@ void TestPerformance::testResponseTime_ScrollingLarge()
 }
 
 // Thumbnail Performance Tests
-void TestPerformance::testThumbnailPerformance_GenerationSpeed()
-{
+void TestPerformance::testThumbnailPerformance_GenerationSpeed() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setContentManager(m_contentManager);
     widget->setIconMetadataManager(m_iconMetadataManager);
@@ -575,7 +550,8 @@ void TestPerformance::testThumbnailPerformance_GenerationSpeed()
     QTest::qWait(3000); // Allow thumbnail generation
 
     qint64 generationTime = timer.elapsed();
-    qDebug() << "Thumbnail generation for" << m_mediumDataset.size() << "icons:" << generationTime << "ms";
+    qDebug() << "Thumbnail generation for" << m_mediumDataset.size() << "icons:" << generationTime
+             << "ms";
     qDebug() << "Average per thumbnail:" << (generationTime / m_mediumDataset.size()) << "ms";
 
     // Thumbnail generation should be reasonable
@@ -585,8 +561,7 @@ void TestPerformance::testThumbnailPerformance_GenerationSpeed()
     delete widget;
 }
 
-void TestPerformance::testThumbnailPerformance_CacheEfficiency()
-{
+void TestPerformance::testThumbnailPerformance_CacheEfficiency() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setContentManager(m_contentManager);
     widget->setIconMetadataManager(m_iconMetadataManager);
@@ -600,14 +575,15 @@ void TestPerformance::testThumbnailPerformance_CacheEfficiency()
 
     // Second load - should use cached thumbnails
     timer.restart();
-    widget->setIconList(QStringList()); // Clear
+    widget->setIconList(QStringList());  // Clear
     widget->setIconList(m_smallDataset); // Reload same icons
     QTest::qWait(1000);
     qint64 secondLoadTime = timer.elapsed();
 
     qDebug() << "First thumbnail load:" << firstLoadTime << "ms";
     qDebug() << "Second thumbnail load (cached):" << secondLoadTime << "ms";
-    qDebug() << "Cache efficiency:" << ((firstLoadTime - secondLoadTime) * 100 / firstLoadTime) << "%";
+    qDebug() << "Cache efficiency:" << ((firstLoadTime - secondLoadTime) * 100 / firstLoadTime)
+             << "%";
 
     // Cached load should be significantly faster
     QVERIFY(secondLoadTime <= firstLoadTime);
@@ -615,8 +591,7 @@ void TestPerformance::testThumbnailPerformance_CacheEfficiency()
     delete widget;
 }
 
-void TestPerformance::testThumbnailPerformance_ConcurrentGeneration()
-{
+void TestPerformance::testThumbnailPerformance_ConcurrentGeneration() {
     // Test concurrent thumbnail generation
     QList<IconThumbnailGridWidget*> widgets;
 
@@ -646,8 +621,7 @@ void TestPerformance::testThumbnailPerformance_ConcurrentGeneration()
     }
 }
 
-void TestPerformance::testThumbnailPerformance_MemoryFootprint()
-{
+void TestPerformance::testThumbnailPerformance_MemoryFootprint() {
     qint64 beforeThumbnails = getCurrentMemoryUsage();
 
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();

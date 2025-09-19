@@ -4,18 +4,12 @@
 
 #include "MainWindow.h"
 #include <QApplication>
-#include <QMessageBox>
 #include <QDebug>
+#include <QMessageBox>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , m_lucide(nullptr)
-    , m_centralWidget(nullptr)
-    , m_currentColor(Qt::black)
-    , m_iconSize(32)
-    , m_scaleFactor(0.9)
-    , m_showAllIcons(false)
-{
+MainWindow::MainWindow(QWidget* parent)
+    : QMainWindow(parent), m_lucide(nullptr), m_centralWidget(nullptr), m_currentColor(Qt::black),
+      m_iconSize(32), m_scaleFactor(0.9), m_showAllIcons(false) {
     // Initialize QtLucide
     m_lucide = new lucide::QtLucide(this);
     if (!m_lucide->initLucide()) {
@@ -34,7 +28,8 @@ MainWindow::MainWindow(QWidget *parent)
                   << "heart" << "house" << "info" << "lock" << "mail"
                   << "map-pin" << "menu" << "message-circle" << "phone" << "play"
                   << "plus" << "refresh-cw" << "save" << "search" << "settings"
-                  << "share" << "star" << "trash" << "user" << "x"
+                  << "share" << "star" << "trash" << "user"
+                  << "x"
                   // Add more icons to demonstrate the fix
                   << "shield" << "sun" << "moon" << "battery" << "wifi" << "bluetooth"
                   << "volume-2" << "mic" << "headphones" << "camera-off" << "video"
@@ -51,12 +46,9 @@ MainWindow::MainWindow(QWidget *parent)
     createIconGrid();
 }
 
-MainWindow::~MainWindow()
-{
-}
+MainWindow::~MainWindow() {}
 
-void MainWindow::setupUI()
-{
+void MainWindow::setupUI() {
     setWindowTitle("QtLucide Example - Lucide Icons for Qt");
     setMinimumSize(800, 600);
 
@@ -83,8 +75,7 @@ void MainWindow::setupUI()
     m_mainLayout->addWidget(m_iconsGroup, 1);
 }
 
-void MainWindow::setupControls()
-{
+void MainWindow::setupControls() {
     m_controlsGroup = new QGroupBox("Icon Controls", this);
     QHBoxLayout* controlsLayout = new QHBoxLayout(m_controlsGroup);
 
@@ -99,8 +90,8 @@ void MainWindow::setupControls()
     m_sizeSpinBox->setRange(16, 128);
     m_sizeSpinBox->setValue(m_iconSize);
     m_sizeSpinBox->setSuffix(" px");
-    connect(m_sizeSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),
-            this, &MainWindow::onIconSizeChanged);
+    connect(m_sizeSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this,
+            &MainWindow::onIconSizeChanged);
 
     // Scale factor control
     QLabel* scaleLabel = new QLabel("Scale:", this);
@@ -108,8 +99,8 @@ void MainWindow::setupControls()
     m_scaleSpinBox->setRange(50, 150);
     m_scaleSpinBox->setValue(static_cast<int>(m_scaleFactor * 100));
     m_scaleSpinBox->setSuffix(" %");
-    connect(m_scaleSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),
-            this, [this](int value) { onScaleFactorChanged(value / 100.0); });
+    connect(m_scaleSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this,
+            [this](int value) { onScaleFactorChanged(value / 100.0); });
 
     // Search control
     QLabel* searchLabel = new QLabel("Search:", this);
@@ -132,8 +123,7 @@ void MainWindow::setupControls()
     controlsLayout->addStretch();
 }
 
-void MainWindow::onColorButtonClicked()
-{
+void MainWindow::onColorButtonClicked() {
     QColor color = QColorDialog::getColor(m_currentColor, this, "Choose Icon Color");
     if (color.isValid()) {
         m_currentColor = color;
@@ -142,39 +132,33 @@ void MainWindow::onColorButtonClicked()
     }
 }
 
-void MainWindow::onIconSizeChanged(int size)
-{
+void MainWindow::onIconSizeChanged(int size) {
     m_iconSize = size;
     createIconGrid();
 }
 
-void MainWindow::onScaleFactorChanged(double factor)
-{
+void MainWindow::onScaleFactorChanged(double factor) {
     m_scaleFactor = factor;
     m_lucide->setDefaultOption("scale-factor", factor);
     createIconGrid();
 }
 
-void MainWindow::updateIconColors()
-{
+void MainWindow::updateIconColors() {
     m_lucide->setDefaultOption("color", m_currentColor);
     createIconGrid();
 }
 
-void MainWindow::onSearchTextChanged(const QString& text)
-{
+void MainWindow::onSearchTextChanged(const QString& text) {
     m_searchFilter = text.toLower();
     createIconGrid();
 }
 
-void MainWindow::onShowAllIconsToggled(bool checked)
-{
+void MainWindow::onShowAllIconsToggled(bool checked) {
     m_showAllIcons = checked;
     createIconGrid();
 }
 
-void MainWindow::createIconGrid()
-{
+void MainWindow::createIconGrid() {
     // Clear existing icons
     QLayoutItem* item;
     while ((item = m_iconLayout->takeAt(0)) != nullptr) {
@@ -221,11 +205,11 @@ void MainWindow::createIconGrid()
             // Add click handler to show icon info
             connect(button, &QPushButton::clicked, this, [this, iconName]() {
                 QMessageBox::information(this, "Icon Info",
-                    QString("Icon: %1\nSize: %2x%2 px\nColor: %3\nScale: %4%")
-                    .arg(iconName)
-                    .arg(m_iconSize)
-                    .arg(m_currentColor.name())
-                    .arg(static_cast<int>(m_scaleFactor * 100)));
+                                         QString("Icon: %1\nSize: %2x%2 px\nColor: %3\nScale: %4%")
+                                             .arg(iconName)
+                                             .arg(m_iconSize)
+                                             .arg(m_currentColor.name())
+                                             .arg(static_cast<int>(m_scaleFactor * 100)));
             });
 
             m_iconLayout->addWidget(button, row, col);
@@ -255,13 +239,14 @@ void MainWindow::createIconGrid()
     }
 
     setWindowTitle(QString("QtLucide Example - Loaded: %1/%2 icons%3")
-                   .arg(loadedCount)
-                   .arg(iconsToDisplay.size())
-                   .arg(titleSuffix));
+                       .arg(loadedCount)
+                       .arg(iconsToDisplay.size())
+                       .arg(titleSuffix));
 
     // Log summary if there were any failures
     if (failedCount > 0) {
-        qWarning() << "Failed to load" << failedCount << "out of" << iconsToDisplay.size() << "icons";
+        qWarning() << "Failed to load" << failedCount << "out of" << iconsToDisplay.size()
+                   << "icons";
     } else {
         qDebug() << "Successfully loaded all" << loadedCount << "icons"
                  << (m_showAllIcons ? "(all available)" : "(sample set)");
@@ -271,8 +256,7 @@ void MainWindow::createIconGrid()
     m_iconLayout->setRowStretch(row + 1, 1);
 }
 
-void MainWindow::validateIconNames()
-{
+void MainWindow::validateIconNames() {
     // Get list of all available icons for validation
     QStringList availableIcons = m_lucide->availableIcons();
     QStringList invalidIcons;
@@ -296,7 +280,8 @@ void MainWindow::validateIconNames()
                 if (available.contains(invalid.split('-').first()) ||
                     invalid.contains(available.split('-').first())) {
                     suggestions.append(available);
-                    if (suggestions.size() >= 3) break; // Limit suggestions
+                    if (suggestions.size() >= 3)
+                        break; // Limit suggestions
                 }
             }
             if (!suggestions.isEmpty()) {

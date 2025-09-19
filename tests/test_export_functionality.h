@@ -1,6 +1,6 @@
 /**
  * QtLucide Export Functionality Tests - Header
- * 
+ *
  * Comprehensive tests for icon export features including multiple formats,
  * batch operations, quality verification, and error handling.
  */
@@ -8,19 +8,19 @@
 #ifndef TEST_EXPORT_FUNCTIONALITY_H
 #define TEST_EXPORT_FUNCTIONALITY_H
 
-#include <QObject>
-#include <QtTest/QtTest>
 #include <QApplication>
-#include <QWidget>
-#include <QPixmap>
-#include <QIcon>
-#include <QTemporaryDir>
-#include <QFileInfo>
+#include <QBuffer>
 #include <QDir>
+#include <QFileInfo>
+#include <QIcon>
 #include <QImageReader>
 #include <QImageWriter>
-#include <QBuffer>
 #include <QMimeDatabase>
+#include <QObject>
+#include <QPixmap>
+#include <QTemporaryDir>
+#include <QWidget>
+#include <QtTest/QtTest>
 
 namespace lucide {
 class QtLucide;
@@ -144,50 +144,50 @@ private slots:
 
 private:
     // Export operation helpers
-    ExportResult exportSingleIcon(const QString& iconName, const QString& format, 
-                                 int size, const QString& outputPath);
+    ExportResult exportSingleIcon(const QString& iconName, const QString& format, int size,
+                                  const QString& outputPath);
     QList<ExportResult> exportBatch(const BatchExportConfig& config);
-    bool verifyExportedFile(const QString& filePath, const QString& expectedFormat, 
-                           const QSize& expectedSize);
-    
+    bool verifyExportedFile(const QString& filePath, const QString& expectedFormat,
+                            const QSize& expectedSize);
+
     // Quality verification helpers
     bool verifyImageQuality(const QString& filePath, int expectedQuality);
     bool verifyImageIntegrity(const QString& filePath);
     bool verifyImageTransparency(const QString& filePath);
-    bool compareImageSimilarity(const QPixmap& original, const QPixmap& exported, 
-                               double threshold = 0.95);
-    
+    bool compareImageSimilarity(const QPixmap& original, const QPixmap& exported,
+                                double threshold = 0.95);
+
     // File system helpers
     bool createTestDirectory(const QString& path);
     bool simulateInsufficientDiskSpace();
     bool simulateReadOnlyDirectory(const QString& path);
     qint64 getAvailableDiskSpace(const QString& path);
-    
+
     // Format support helpers
     QList<ExportFormat> getSupportedExportFormats();
     bool isFormatSupported(const QString& format);
     ExportFormat getFormatInfo(const QString& format);
-    
+
     // Performance measurement helpers
     qint64 measureExportTime(std::function<void()> exportOperation);
     void measureBatchExportProgress(const BatchExportConfig& config);
-    
+
     // Test data and objects
     lucide::QtLucide* m_lucide;
     IconMetadataManager* m_metadataManager;
     IconExportDialog* m_exportDialog;
     QTemporaryDir* m_tempDir;
     QWidget* m_testWidget;
-    
+
     // Test configuration
     QStringList m_testIconNames;
     QList<int> m_testSizes;
     QStringList m_testFormats;
     QList<ExportFormat> m_supportedFormats;
-    
+
     // Performance tracking
     QElapsedTimer m_performanceTimer;
-    
+
     // Test thresholds
     static constexpr qint64 SINGLE_EXPORT_THRESHOLD_MS = 1000;
     static constexpr qint64 BATCH_EXPORT_THRESHOLD_MS = 5000;

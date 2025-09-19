@@ -1,19 +1,17 @@
 #include "MainWindow.h"
-#include <QApplication>
-#include <QMenuBar>
-#include <QToolBar>
-#include <QStatusBar>
 #include <QAction>
+#include <QApplication>
 #include <QLabel>
+#include <QMenuBar>
 #include <QMessageBox>
+#include <QStatusBar>
 #include <QTextEdit>
+#include <QToolBar>
 #include <QtLucide/QtLucide.h>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-{
+MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     // Create central widget
-    QTextEdit *textEdit = new QTextEdit(this);
+    QTextEdit* textEdit = new QTextEdit(this);
     setCentralWidget(textEdit);
 
     createActions();
@@ -28,43 +26,36 @@ MainWindow::MainWindow(QWidget *parent)
     statusLabel->setText("Ready - QtLucide integrated as submodule");
 }
 
-MainWindow::~MainWindow()
-{
-}
+MainWindow::~MainWindow() {}
 
-void MainWindow::newFile()
-{
-    QTextEdit *textEdit = qobject_cast<QTextEdit*>(centralWidget());
+void MainWindow::newFile() {
+    QTextEdit* textEdit = qobject_cast<QTextEdit*>(centralWidget());
     if (textEdit) {
         textEdit->clear();
         statusLabel->setText("New file created");
     }
 }
 
-void MainWindow::openFile()
-{
+void MainWindow::openFile() {
     statusLabel->setText("Open file clicked - QtLucide icon working!");
 }
 
-void MainWindow::saveFile()
-{
+void MainWindow::saveFile() {
     statusLabel->setText("Save file clicked - QtLucide icon working!");
 }
 
-void MainWindow::about()
-{
+void MainWindow::about() {
     QMessageBox::about(this, "About QtLucide Submodule Example",
-        "This example demonstrates how to use QtLucide as a Git submodule.\n\n"
-        "Features demonstrated:\n"
-        "• QtLucide icons in menus and toolbars\n"
-        "• Automatic submodule detection\n"
-        "• Minimal build configuration\n"
-        "• No installation conflicts\n\n"
-        "QtLucide provides 1634+ beautiful Lucide icons for Qt applications.");
+                       "This example demonstrates how to use QtLucide as a Git submodule.\n\n"
+                       "Features demonstrated:\n"
+                       "• QtLucide icons in menus and toolbars\n"
+                       "• Automatic submodule detection\n"
+                       "• Minimal build configuration\n"
+                       "• No installation conflicts\n\n"
+                       "QtLucide provides 1634+ beautiful Lucide icons for Qt applications.");
 }
 
-void MainWindow::createActions()
-{
+void MainWindow::createActions() {
     // Create QtLucide instance
     lucide::QtLucide qtlucide;
 
@@ -103,8 +94,7 @@ void MainWindow::createActions()
     connect(aboutAct, &QAction::triggered, this, &MainWindow::about);
 }
 
-void MainWindow::createMenus()
-{
+void MainWindow::createMenus() {
     fileMenu = menuBar()->addMenu("&File");
     fileMenu->addAction(newAct);
     fileMenu->addAction(openAct);
@@ -116,8 +106,7 @@ void MainWindow::createMenus()
     helpMenu->addAction(aboutAct);
 }
 
-void MainWindow::createToolBars()
-{
+void MainWindow::createToolBars() {
     // Create QtLucide instance
     lucide::QtLucide qtlucide;
 
@@ -128,24 +117,23 @@ void MainWindow::createToolBars()
     fileToolBar->addSeparator();
 
     // Add some additional icons to showcase QtLucide
-    QAction *homeAct = new QAction("Home", this);
+    QAction* homeAct = new QAction("Home", this);
     homeAct->setIcon(qtlucide.icon(lucide::Icons::house));
     homeAct->setStatusTip("Go to home");
     fileToolBar->addAction(homeAct);
 
-    QAction *settingsAct = new QAction("Settings", this);
+    QAction* settingsAct = new QAction("Settings", this);
     settingsAct->setIcon(qtlucide.icon(lucide::Icons::settings));
     settingsAct->setStatusTip("Open settings");
     fileToolBar->addAction(settingsAct);
 
-    QAction *searchAct = new QAction("Search", this);
+    QAction* searchAct = new QAction("Search", this);
     searchAct->setIcon(qtlucide.icon(lucide::Icons::search));
     searchAct->setStatusTip("Search");
     fileToolBar->addAction(searchAct);
 }
 
-void MainWindow::createStatusBar()
-{
+void MainWindow::createStatusBar() {
     statusLabel = new QLabel("Ready");
     statusBar()->addWidget(statusLabel);
 }

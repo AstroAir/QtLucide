@@ -31,11 +31,13 @@ QtLucide is designed for high performance, but understanding its internals and f
 ### 1. Use Enum Values Instead of Strings
 
 **Recommended:**
+
 ```cpp
 QIcon icon = lucide.icon(lucide::Icons::heart);  // Fast enum lookup
 ```
 
 **Avoid:**
+
 ```cpp
 QIcon icon = lucide.icon("heart");  // Slower string lookup
 ```

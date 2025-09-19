@@ -6,26 +6,23 @@
  */
 
 #include <QApplication>
-#include <QMainWindow>
-#include <QVBoxLayout>
+#include <QDebug>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMainWindow>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QSplitter>
-#include <QWidget>
-#include <QMessageBox>
-#include <QDebug>
 #include <QString>
+#include <QVBoxLayout>
+#include <QWidget>
 
 // Test the new layout configuration
 #include "../config/LayoutConfig.h"
 
-class StructureTestWindow : public QMainWindow
-{
+class StructureTestWindow : public QMainWindow {
 public:
-    StructureTestWindow(QWidget *parent = nullptr)
-        : QMainWindow(parent)
-    {
+    StructureTestWindow(QWidget* parent = nullptr) : QMainWindow(parent) {
         setWindowTitle("QtLucide Gallery - Structure Test");
         setMinimumSize(800, 600);
 
@@ -34,8 +31,7 @@ public:
     }
 
 private:
-    void onTestLayoutConfig()
-    {
+    void onTestLayoutConfig() {
         QString message = "Layout Configuration Test Results:\n\n";
 
         // Test spacing constants
@@ -50,39 +46,46 @@ private:
 
         QString screenSizeStr;
         switch (screenSize) {
-            case GalleryLayout::ResponsiveLayout::ScreenSize::Small:  screenSizeStr = "Small"; break;
-            case GalleryLayout::ResponsiveLayout::ScreenSize::Medium: screenSizeStr = "Medium"; break;
-            case GalleryLayout::ResponsiveLayout::ScreenSize::Large:  screenSizeStr = "Large"; break;
-            case GalleryLayout::ResponsiveLayout::ScreenSize::XLarge: screenSizeStr = "XLarge"; break;
+            case GalleryLayout::ResponsiveLayout::ScreenSize::Small:
+                screenSizeStr = "Small";
+                break;
+            case GalleryLayout::ResponsiveLayout::ScreenSize::Medium:
+                screenSizeStr = "Medium";
+                break;
+            case GalleryLayout::ResponsiveLayout::ScreenSize::Large:
+                screenSizeStr = "Large";
+                break;
+            case GalleryLayout::ResponsiveLayout::ScreenSize::XLarge:
+                screenSizeStr = "XLarge";
+                break;
         }
 
         message += QString("\nScreen Size: %1\n").arg(screenSizeStr);
         message += QString("Responsive Thumbnail Size: %1px\n")
-                   .arg(GalleryLayout::ResponsiveLayout::getThumbnailSize(screenSize));
+                       .arg(GalleryLayout::ResponsiveLayout::getThumbnailSize(screenSize));
         message += QString("Responsive Sidebar Width: %1px\n")
-                   .arg(GalleryLayout::ResponsiveLayout::getSidebarWidth(screenSize));
+                       .arg(GalleryLayout::ResponsiveLayout::getSidebarWidth(screenSize));
 
         // Test grid calculation
         int testWidth = 800;
         int thumbnailSize = GalleryLayout::ResponsiveLayout::getThumbnailSize(screenSize);
-        int columns = GalleryLayout::ResponsiveLayout::calculateGridColumns(testWidth, thumbnailSize);
+        int columns =
+            GalleryLayout::ResponsiveLayout::calculateGridColumns(testWidth, thumbnailSize);
         message += QString("Grid Columns for %1px width: %2\n").arg(testWidth).arg(columns);
 
         QMessageBox::information(this, "Layout Configuration Test", message);
     }
 
 private:
-    void setupUI()
-    {
+    void setupUI() {
         QWidget* centralWidget = new QWidget(this);
         setCentralWidget(centralWidget);
 
         // Use the new layout configuration
         QVBoxLayout* mainLayout = new QVBoxLayout(centralWidget);
-        mainLayout->setContentsMargins(GalleryLayout::Margins::WINDOW_MARGIN,
-                                      GalleryLayout::Margins::WINDOW_MARGIN,
-                                      GalleryLayout::Margins::WINDOW_MARGIN,
-                                      GalleryLayout::Margins::WINDOW_MARGIN);
+        mainLayout->setContentsMargins(
+            GalleryLayout::Margins::WINDOW_MARGIN, GalleryLayout::Margins::WINDOW_MARGIN,
+            GalleryLayout::Margins::WINDOW_MARGIN, GalleryLayout::Margins::WINDOW_MARGIN);
         mainLayout->setSpacing(GalleryLayout::Spacing::WIDGET_SPACING);
 
         // Title
@@ -102,10 +105,9 @@ private:
         leftPanel->setMaximumWidth(GalleryLayout::Sizing::SIDEBAR_MAX_WIDTH);
 
         QVBoxLayout* leftLayout = new QVBoxLayout(leftPanel);
-        leftLayout->setContentsMargins(GalleryLayout::Margins::PANEL_MARGIN,
-                                      GalleryLayout::Margins::PANEL_MARGIN,
-                                      GalleryLayout::Margins::PANEL_MARGIN,
-                                      GalleryLayout::Margins::PANEL_MARGIN);
+        leftLayout->setContentsMargins(
+            GalleryLayout::Margins::PANEL_MARGIN, GalleryLayout::Margins::PANEL_MARGIN,
+            GalleryLayout::Margins::PANEL_MARGIN, GalleryLayout::Margins::PANEL_MARGIN);
         leftLayout->setSpacing(GalleryLayout::Spacing::WIDGET_SPACING);
 
         leftLayout->addWidget(new QLabel("Sidebar Panel"));
@@ -119,10 +121,9 @@ private:
         rightPanel->setStyleSheet(GalleryLayout::getPanelStyleSheet());
 
         QVBoxLayout* rightLayout = new QVBoxLayout(rightPanel);
-        rightLayout->setContentsMargins(GalleryLayout::Margins::CONTENT_MARGIN,
-                                       GalleryLayout::Margins::CONTENT_MARGIN,
-                                       GalleryLayout::Margins::CONTENT_MARGIN,
-                                       GalleryLayout::Margins::CONTENT_MARGIN);
+        rightLayout->setContentsMargins(
+            GalleryLayout::Margins::CONTENT_MARGIN, GalleryLayout::Margins::CONTENT_MARGIN,
+            GalleryLayout::Margins::CONTENT_MARGIN, GalleryLayout::Margins::CONTENT_MARGIN);
         rightLayout->setSpacing(GalleryLayout::Spacing::SECTION_SPACING);
 
         rightLayout->addWidget(new QLabel("Content Area"));
@@ -146,7 +147,8 @@ private:
         // Set responsive proportions
         GalleryLayout::ResponsiveLayout::ScreenSize screenSize =
             GalleryLayout::ResponsiveLayout::getScreenSize(this);
-        QList<int> proportions = GalleryLayout::ResponsiveLayout::getSplitterProportions(screenSize, false);
+        QList<int> proportions =
+            GalleryLayout::ResponsiveLayout::getSplitterProportions(screenSize, false);
 
         int sidebarWidth = GalleryLayout::ResponsiveLayout::getSidebarWidth(screenSize);
         int contentWidth = width() - sidebarWidth;
@@ -155,14 +157,14 @@ private:
         mainLayout->addWidget(testSplitter);
 
         // Status info
-        QLabel* statusLabel = new QLabel("Directory structure reorganized ✓ | Layout system implemented ✓");
+        QLabel* statusLabel =
+            new QLabel("Directory structure reorganized ✓ | Layout system implemented ✓");
         statusLabel->setStyleSheet("color: #27ae60; font-style: italic;");
         statusLabel->setAlignment(Qt::AlignCenter);
         mainLayout->addWidget(statusLabel);
     }
 
-    void testLayoutConfig()
-    {
+    void testLayoutConfig() {
         // Validate that all layout constants are reasonable
         Q_ASSERT(GalleryLayout::Spacing::BASE_UNIT == 4);
         Q_ASSERT(GalleryLayout::Spacing::SMALL == 8);
@@ -177,8 +179,7 @@ private:
     }
 };
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
 
     app.setApplicationName("QtLucide Gallery Structure Test");

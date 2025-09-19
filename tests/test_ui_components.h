@@ -1,6 +1,6 @@
 /**
  * QtLucide UI Component Tests - Header
- * 
+ *
  * Comprehensive tests for Gallery application UI components including
  * SearchWidget, CategoryFilterWidget, IconGridWidget, IconDetailsPanel, and PreferencesDialog.
  */
@@ -8,23 +8,23 @@
 #ifndef TEST_UI_COMPONENTS_H
 #define TEST_UI_COMPONENTS_H
 
-#include <QObject>
-#include <QtTest/QtTest>
 #include <QApplication>
-#include <QWidget>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QDialog>
+#include <QGridLayout>
+#include <QKeyEvent>
+#include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
-#include <QGridLayout>
-#include <QLabel>
-#include <QComboBox>
-#include <QCheckBox>
-#include <QSpinBox>
-#include <QSlider>
-#include <QPushButton>
-#include <QDialog>
-#include <QKeyEvent>
 #include <QMouseEvent>
+#include <QObject>
+#include <QPushButton>
+#include <QSlider>
+#include <QSpinBox>
 #include <QTimer>
+#include <QWidget>
+#include <QtTest/QtTest>
 
 // Forward declarations
 class SearchWidget;
@@ -109,7 +109,8 @@ private:
     void createTestComponents();
     void destroyTestComponents();
     void simulateUserInput(QWidget* widget, const QString& text);
-    void simulateKeyPress(QWidget* widget, Qt::Key key, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+    void simulateKeyPress(QWidget* widget, Qt::Key key,
+                          Qt::KeyboardModifiers modifiers = Qt::NoModifier);
     void simulateMouseClick(QWidget* widget, const QPoint& position);
     bool waitForSignal(QObject* sender, const char* signal, int timeout = 1000);
     void verifyComponentState(QWidget* component, const QString& expectedState);
@@ -122,15 +123,15 @@ private:
     IconGridWidget* m_iconGrid;
     IconDetailsPanel* m_detailsPanel;
     PreferencesDialog* m_preferencesDialog;
-    
+
     // Test data
     QStringList m_testIconNames;
     QStringList m_testCategories;
     QWidget* m_testParent;
-    
+
     // Performance tracking
     QElapsedTimer m_performanceTimer;
-    
+
     // Test configuration
     static constexpr int UI_RESPONSE_TIMEOUT_MS = 1000;
     static constexpr int ANIMATION_TIMEOUT_MS = 500;

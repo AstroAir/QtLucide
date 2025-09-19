@@ -8,9 +8,11 @@ QtLucide is a library that provides easy access to [Lucide icons](https://lucide
 - **QtAwesome Compatible**: Drop-in replacement with familiar API
 - **Scalable Vector Graphics**: Perfect quality at any size
 - **Color Customization**: Runtime color changes and theming support
-- **Qt6 Ready**: Modern CMake-based build system
+- **Multiple Build Systems**: CMake, Meson, and XMake support
 - **High Performance**: Efficient caching and rendering
 - **Cross Platform**: Works on Windows, macOS, and Linux
+- **Comprehensive Testing**: 14 test classes covering functionality, performance, and accessibility
+- **Submodule Ready**: Optimized for Git submodule integration
 
 ## Quick Start
 
@@ -362,10 +364,11 @@ python --version
 - **Customizable**: Color, scale factor, and custom painter support
 - **Performance Optimized**: Efficient SVG rendering with caching
 - **Package Integration**: Easy integration with `find_package(QtLucide)`, pkg-config
-- **Comprehensive Tests**: Full test suite with unit, performance, and memory tests
+- **Comprehensive Tests**: 14 test classes covering functionality, performance, accessibility, and platform-specific features
 - **CI/CD Pipeline**: Automated testing with security scanning and performance monitoring
 - **Complete Documentation**: API reference, user guides, and examples
 - **Cross-Platform**: Works on Windows, Linux, and macOS
+- **Accessibility**: WCAG 2.1 AA compliance with full keyboard navigation support
 
 ## License
 

@@ -19,6 +19,7 @@ The enhanced Gallery application now provides:
 ### Core Components
 
 #### ContentManager
+
 Unified manager for both icons and images, providing a single interface for content access:
 
 ```cpp
@@ -32,6 +33,7 @@ QPixmap image = manager->getPixmap("/path/to/image.jpg", QSize(200, 200));
 ```
 
 #### ImageMetadataManager
+
 Handles metadata extraction and thumbnail generation for image files:
 
 ```cpp
@@ -44,6 +46,7 @@ QPixmap thumbnail = imageManager->getThumbnail("/path/to/image.jpg", QSize(128, 
 ```
 
 #### ImageViewerWidget
+
 Advanced image viewer with full transformation capabilities:
 
 ```cpp
@@ -58,6 +61,7 @@ viewer->startSlideshow();
 ```
 
 #### FileBrowserWidget
+
 File system browser with image filtering and thumbnail support:
 
 ```cpp

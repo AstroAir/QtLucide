@@ -39,6 +39,7 @@ target_link_libraries(your_target PRIVATE QtLucide::QtLucide)
 ```
 
 **Optional: Enable examples/tests in submodule**
+
 ```cmake
 # Enable examples and tests even when used as submodule
 set(QTLUCIDE_BUILD_EXAMPLES ON CACHE BOOL "Build QtLucide examples" FORCE)
@@ -64,6 +65,7 @@ executable('your_app',
 ```
 
 **Optional: Enable examples/tests in subproject**
+
 ```meson
 # Enable examples and tests even when used as subproject
 qtlucide_proj = subproject('QtLucide', 
@@ -88,6 +90,7 @@ target_end()
 ```
 
 **Optional: Enable examples/tests in submodule**
+
 ```lua
 -- Enable examples and tests even when used as subproject
 set_config("examples", true)
@@ -133,16 +136,19 @@ int main(int argc, char *argv[])
 When QtLucide is used as a submodule, the following default behaviors apply:
 
 ### CMake Options
+
 - `QTLUCIDE_BUILD_EXAMPLES`: OFF (default when submodule)
 - `QTLUCIDE_BUILD_TESTS`: OFF (default when submodule)
 - `QTLUCIDE_INSTALL`: OFF (default when submodule)
 
 ### Meson Options
+
 - `examples`: auto (disabled when subproject)
 - `tests`: auto (disabled when subproject)
 - `install`: true (but only applies to main project)
 
 ### XMake Options
+
 - `examples`: false (default when submodule)
 - `tests`: false (default when submodule)
 - `install`: false (default when submodule)
@@ -163,6 +169,7 @@ python --version
 ### Qt6 Dependencies
 
 Make sure your parent project has the required Qt6 components:
+
 - Qt6::Core
 - Qt6::Gui
 - Qt6::Widgets

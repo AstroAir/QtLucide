@@ -3,17 +3,17 @@
  */
 
 #include "test_platform_specific.h"
-#include <QtLucide/QtLucide.h>
 #include "core/managers/IconMetadataManager.h"
+#include <QtLucide/QtLucide.h>
 
 #include <QApplication>
-#include <QScreen>
-#include <QPixmap>
-#include <QIcon>
 #include <QDir>
+#include <QIcon>
+#include <QPixmap>
+#include <QRegularExpression>
+#include <QScreen>
 #include <QStandardPaths>
 #include <QStyleFactory>
-#include <QRegularExpression>
 
 #ifdef Q_OS_WIN
 // Note: QWinTaskbarButton and QWinTaskbarProgress are not available in standard Qt6
@@ -41,23 +41,14 @@ void TestPlatformSpecific::initTestCase() {
     m_platformConfig = detectPlatformCapabilities();
 
     // Setup test data
-    m_testPaths = {
-        "C:\\Program Files\\Test App\\icons",
-        "C:\\Users\\Test User\\Documents\\My Icons",
-        "D:\\Projects\\QtLucide\\resources"
-    };
+    m_testPaths = {"C:\\Program Files\\Test App\\icons",
+                   "C:\\Users\\Test User\\Documents\\My Icons",
+                   "D:\\Projects\\QtLucide\\resources"};
 
-    m_unicodeTestPaths = {
-        "C:\\测试\\图标",
-        "C:\\Тест\\иконки",
-        "C:\\テスト\\アイコン"
-    };
+    m_unicodeTestPaths = {"C:\\测试\\图标", "C:\\Тест\\иконки", "C:\\テスト\\アイコン"};
 
-    m_specialCharPaths = {
-        "C:\\Test & Special\\icons",
-        "C:\\Test (Parentheses)\\icons",
-        "C:\\Test-Dash_Underscore\\icons"
-    };
+    m_specialCharPaths = {"C:\\Test & Special\\icons", "C:\\Test (Parentheses)\\icons",
+                          "C:\\Test-Dash_Underscore\\icons"};
 
     m_testDpiScales = {1.0, 1.25, 1.5, 2.0, 2.5, 3.0};
     m_testIconSizes = {{16, 16}, {24, 24}, {32, 32}, {48, 48}, {64, 64}, {128, 128}};
@@ -168,17 +159,17 @@ void TestPlatformSpecific::testHighDpiIconRendering() {
         HighDpiConfig config = testIconAtDpiScale(dpiScale, testIconName);
 
         qDebug() << QString("DPI Scale %1: expected=%2x%3, actual=%4x%5, correct=%6")
-                    .arg(dpiScale)
-                    .arg(config.expectedIconSize.width())
-                    .arg(config.expectedIconSize.height())
-                    .arg(config.actualIconSize.width())
-                    .arg(config.actualIconSize.height())
-                    .arg(config.scalingCorrect);
+                        .arg(dpiScale)
+                        .arg(config.expectedIconSize.width())
+                        .arg(config.expectedIconSize.height())
+                        .arg(config.actualIconSize.width())
+                        .arg(config.actualIconSize.height())
+                        .arg(config.scalingCorrect);
 
         // Verify scaling is approximately correct (within tolerance)
         if (dpiScale > HIGH_DPI_THRESHOLD) {
             QVERIFY2(config.scalingCorrect,
-                    qPrintable(QString("High DPI scaling failed at scale %1").arg(dpiScale)));
+                     qPrintable(QString("High DPI scaling failed at scale %1").arg(dpiScale)));
         }
     }
 
@@ -221,7 +212,7 @@ void TestPlatformSpecific::testPlatformSpecificPerformance() {
 
     if (isWindowsPlatform()) {
         QVERIFY2(fileAccessTime < WINDOWS_FILE_ACCESS_THRESHOLD_MS,
-                qPrintable(QString("Windows file access too slow: %1ms").arg(fileAccessTime)));
+                 qPrintable(QString("Windows file access too slow: %1ms").arg(fileAccessTime)));
     }
 
     // Test icon rendering performance on current platform
@@ -296,7 +287,9 @@ qreal TestPlatformSpecific::getCurrentDpiScale() {
 
 #ifdef Q_OS_WIN
 bool TestPlatformSpecific::isWindowsDarkModeEnabled() {
-    QSettings settings("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", QSettings::NativeFormat);
+    QSettings settings(
+        "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+        QSettings::NativeFormat);
     return settings.value("AppsUseLightTheme", 1).toInt() == 0;
 }
 #endif
@@ -311,11 +304,13 @@ HighDpiConfig TestPlatformSpecific::testIconAtDpiScale(qreal scale, const QStrin
     config.actualIconSize = pixmap.size();
 
     // Check if scaling is approximately correct
-    qreal widthRatio = static_cast<qreal>(config.actualIconSize.width()) / config.expectedIconSize.width();
-    qreal heightRatio = static_cast<qreal>(config.actualIconSize.height()) / config.expectedIconSize.height();
+    qreal widthRatio =
+        static_cast<qreal>(config.actualIconSize.width()) / config.expectedIconSize.width();
+    qreal heightRatio =
+        static_cast<qreal>(config.actualIconSize.height()) / config.expectedIconSize.height();
 
-    config.scalingCorrect = (qAbs(widthRatio - 1.0) < DPI_TOLERANCE) &&
-                           (qAbs(heightRatio - 1.0) < DPI_TOLERANCE);
+    config.scalingCorrect =
+        (qAbs(widthRatio - 1.0) < DPI_TOLERANCE) && (qAbs(heightRatio - 1.0) < DPI_TOLERANCE);
 
     return config;
 }
@@ -331,7 +326,8 @@ qint64 TestPlatformSpecific::measureFileSystemAccess(const QString& path) {
     return timer.elapsed();
 }
 
-qint64 TestPlatformSpecific::measureIconRenderingOnPlatform(const QString& iconName, const QSize& size) {
+qint64 TestPlatformSpecific::measureIconRenderingOnPlatform(const QString& iconName,
+                                                            const QSize& size) {
     QElapsedTimer timer;
     timer.start();
 
@@ -442,7 +438,8 @@ void TestPlatformSpecific::testCrossPlatformIconConsistency() {
     QSKIP("Test not implemented yet");
 }
 
-QPixmap TestPlatformSpecific::generateHighDpiPixmap(const QString& iconName, const QSize& size, qreal dpiScale) {
+QPixmap TestPlatformSpecific::generateHighDpiPixmap(const QString& iconName, const QSize& size,
+                                                    qreal dpiScale) {
     Q_UNUSED(iconName)
     Q_UNUSED(size)
     Q_UNUSED(dpiScale)

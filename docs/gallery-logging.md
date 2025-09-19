@@ -5,12 +5,14 @@ QtLucide Gallery应用现在包含了一个增强的日志系统，提供详细�
 ## 功能特性
 
 ### 🔍 多级日志记录
+
 - **Debug**: 详细的调试信息
 - **Info**: 一般信息消息
 - **Warning**: 警告消息
 - **Critical**: 严重错误消息
 
 ### 📂 分类日志
+
 - `gallery.main`: 主应用程序流程
 - `gallery.init`: 初始化过程
 - `gallery.ui`: 用户界面操作
@@ -21,11 +23,13 @@ QtLucide Gallery应用现在包含了一个增强的日志系统，提供详细�
 - `gallery.perf`: 性能监控
 
 ### ⏱️ 性能监控
+
 - 操作计时器
 - 内存使用监控
 - 自动性能统计
 
 ### 📄 文件日志
+
 - 自动日志文件创建
 - 日志轮转（超过10MB时）
 - 结构化日志格式
@@ -54,6 +58,7 @@ QtLucideGallery.exe --debug --log-file
 ### 日志文件位置
 
 日志文件自动保存在：
+
 - **Windows**: `%APPDATA%/QtLucide/gallery.log`
 - **Linux**: `~/.local/share/QtLucide/gallery.log`
 - **macOS**: `~/Library/Application Support/QtLucide/gallery.log`
@@ -65,6 +70,7 @@ QtLucideGallery.exe --debug --log-file
 ```
 
 示例：
+
 ```
 [2025-09-06 16:03:23.000] [INFO ] [gallery.main] [0x3b0d4] Gallery Logger initialized
 [2025-09-06 16:03:23.004] [DEBUG] [gallery.init] [GalleryMainWindow.cpp:37] Window properties set
@@ -107,26 +113,34 @@ GALLERY_LOG_MEMORY("After loading icons");
 ## 调试技巧
 
 ### 1. 启动问题调试
+
 ```bash
 QtLucideGallery.exe --debug --log-file
 ```
+
 检查日志文件中的初始化过程。
 
 ### 2. 性能问题分析
+
 查找日志中的性能计时信息：
+
 ```
 [INFO ] [gallery.perf] Timer 'Metadata loading' completed in 1250ms
 [INFO ] [gallery.perf] Memory usage (After loading): 45MB
 ```
 
 ### 3. 搜索功能调试
+
 启用搜索分类日志：
+
 ```cpp
 logger->enableCategory("gallery.search", true);
 ```
 
 ### 4. 内存泄漏检测
+
 定期检查内存使用情况：
+
 ```cpp
 GALLERY_LOG_MEMORY("Before operation");
 // ... 执行操作 ...
@@ -173,6 +187,7 @@ logger->rotateLogFile();
 ### 日志分析工具
 
 推荐使用以下工具分析日志：
+
 - **Windows**: Notepad++, VS Code
 - **Linux**: grep, awk, less
 - **跨平台**: LogExpert, Glogg
@@ -180,11 +195,13 @@ logger->rotateLogFile();
 ## 示例用法
 
 ### 调试应用启动问题
+
 ```bash
 QtLucideGallery.exe --debug --log-file > startup.log 2>&1
 ```
 
 ### 监控特定功能
+
 ```cpp
 // 在搜索功能中
 GALLERY_START_TIMER("Icon search");

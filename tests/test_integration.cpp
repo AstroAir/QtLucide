@@ -3,14 +3,14 @@
  */
 
 #include "test_integration.h"
-#include <QtLucide/QtLucide.h>
 #include "core/managers/IconMetadataManager.h"
 #include "core/models/IconItem.h"
+#include <QtLucide/QtLucide.h>
 
-#include <QPixmap>
-#include <QIcon>
-#include <QResource>
 #include <QCoreApplication>
+#include <QIcon>
+#include <QPixmap>
+#include <QResource>
 #include <QStandardPaths>
 #include <QThread>
 
@@ -97,7 +97,8 @@ void TestIntegration::testIconLoadingToDisplayWorkflow() {
         QList<int> sizes = {16, 24, 32, 48, 64, 128};
         for (int size : sizes) {
             QPixmap pixmap = icon.pixmap(size, size);
-            QVERIFY2(!pixmap.isNull(), qPrintable(QString("Failed to render %1 at size %2").arg(iconName).arg(size)));
+            QVERIFY2(!pixmap.isNull(),
+                     qPrintable(QString("Failed to render %1 at size %2").arg(iconName).arg(size)));
             QCOMPARE(pixmap.size(), QSize(size, size));
         }
     }
@@ -226,7 +227,8 @@ void TestIntegration::destroyTestWidget() {
 
 bool TestIntegration::verifyIconRendering(const QString& iconName, const QSize& size) {
     QIcon icon = m_lucide->icon(iconName);
-    if (icon.isNull()) return false;
+    if (icon.isNull())
+        return false;
 
     QPixmap pixmap = icon.pixmap(size);
     return !pixmap.isNull() && pixmap.size() == size;

@@ -9,26 +9,25 @@
  * - Performance with large images
  */
 
-#include <QtTest/QtTest>
 #include <QApplication>
-#include <QtTest/QSignalSpy>
-#include <QPixmap>
+#include <QDir>
+#include <QElapsedTimer>
+#include <QFileInfo>
 #include <QImage>
 #include <QImageReader>
 #include <QImageWriter>
+#include <QPixmap>
 #include <QTemporaryDir>
-#include <QFileInfo>
-#include <QDir>
-#include <QElapsedTimer>
+#include <QtTest/QSignalSpy>
+#include <QtTest/QtTest>
 
 // Include Gallery components
-#include "ui/widgets/viewers/ImageViewerWidget.h"
-#include "core/managers/ImageMetadataManager.h"
 #include "core/managers/ContentManager.h"
+#include "core/managers/ImageMetadataManager.h"
+#include "ui/widgets/viewers/ImageViewerWidget.h"
 #include <QtLucide/QtLucide.h>
 
-class TestImageBrowsing : public QObject
-{
+class TestImageBrowsing : public QObject {
     Q_OBJECT
 
 private slots:
@@ -96,8 +95,7 @@ private:
     QStringList getSupportedImageFormats();
 };
 
-void TestImageBrowsing::initTestCase()
-{
+void TestImageBrowsing::initTestCase() {
     // Initialize QtLucide
     m_lucide = new lucide::QtLucide(this);
     QVERIFY(m_lucide->initLucide());
@@ -116,24 +114,20 @@ void TestImageBrowsing::initTestCase()
     qDebug() << "Supported image formats:" << getSupportedImageFormats();
 }
 
-void TestImageBrowsing::cleanupTestCase()
-{
+void TestImageBrowsing::cleanupTestCase() {
     delete m_tempDir;
     qDebug() << "Image browsing test environment cleaned up";
 }
 
-void TestImageBrowsing::init()
-{
+void TestImageBrowsing::init() {
     // Reset state before each test
 }
 
-void TestImageBrowsing::cleanup()
-{
+void TestImageBrowsing::cleanup() {
     // Clean up after each test
 }
 
-void TestImageBrowsing::createTestImages()
-{
+void TestImageBrowsing::createTestImages() {
     // Create test images in various formats
     m_testImagePNG = createTestImage("PNG");
     m_testImageJPG = createTestImage("JPG");
@@ -154,8 +148,7 @@ void TestImageBrowsing::createTestImages()
     }
 }
 
-QString TestImageBrowsing::createTestImage(const QString& format, const QSize& size)
-{
+QString TestImageBrowsing::createTestImage(const QString& format, const QSize& size) {
     QString fileName = m_tempDir->path() + QString("/test_image.%1").arg(format.toLower());
 
     QImage image(size, QImage::Format_RGB32);
@@ -165,7 +158,7 @@ QString TestImageBrowsing::createTestImage(const QString& format, const QSize& s
     QPainter painter(&image);
     painter.setPen(Qt::red);
     painter.setBrush(Qt::yellow);
-    painter.drawEllipse(size.width()/4, size.height()/4, size.width()/2, size.height()/2);
+    painter.drawEllipse(size.width() / 4, size.height() / 4, size.width() / 2, size.height() / 2);
     painter.end();
 
     if (image.save(fileName, format.toUtf8().constData())) {
@@ -174,8 +167,7 @@ QString TestImageBrowsing::createTestImage(const QString& format, const QSize& s
     return QString();
 }
 
-QString TestImageBrowsing::createCorruptedImage()
-{
+QString TestImageBrowsing::createCorruptedImage() {
     QString fileName = m_tempDir->path() + "/corrupted_image.png";
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly)) {
@@ -185,19 +177,16 @@ QString TestImageBrowsing::createCorruptedImage()
     return fileName;
 }
 
-QString TestImageBrowsing::createLargeImage()
-{
+QString TestImageBrowsing::createLargeImage() {
     return createTestImage("PNG", QSize(2048, 2048));
 }
 
-bool TestImageBrowsing::isImageFormatSupported(const QString& format)
-{
+bool TestImageBrowsing::isImageFormatSupported(const QString& format) {
     QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
     return supportedFormats.contains(format.toLower().toUtf8());
 }
 
-QStringList TestImageBrowsing::getSupportedImageFormats()
-{
+QStringList TestImageBrowsing::getSupportedImageFormats() {
     QStringList formats;
     for (const QByteArray& format : QImageReader::supportedImageFormats()) {
         formats << QString::fromUtf8(format).toUpper();
@@ -206,8 +195,7 @@ QStringList TestImageBrowsing::getSupportedImageFormats()
 }
 
 // Image Format Tests
-void TestImageBrowsing::testImageFormats_PNG()
-{
+void TestImageBrowsing::testImageFormats_PNG() {
     if (!isImageFormatSupported("PNG")) {
         QSKIP("PNG format not supported");
     }
@@ -223,8 +211,7 @@ void TestImageBrowsing::testImageFormats_PNG()
     QCOMPARE(image.size(), QSize(100, 100));
 }
 
-void TestImageBrowsing::testImageFormats_JPG()
-{
+void TestImageBrowsing::testImageFormats_JPG() {
     if (!isImageFormatSupported("JPG")) {
         QSKIP("JPG format not supported");
     }
@@ -239,8 +226,7 @@ void TestImageBrowsing::testImageFormats_JPG()
     QCOMPARE(image.size(), QSize(100, 100));
 }
 
-void TestImageBrowsing::testImageFormats_SVG()
-{
+void TestImageBrowsing::testImageFormats_SVG() {
     if (!isImageFormatSupported("SVG")) {
         QSKIP("SVG format not supported");
     }
@@ -252,8 +238,7 @@ void TestImageBrowsing::testImageFormats_SVG()
     QCOMPARE(reader.format(), QByteArray("svg"));
 }
 
-void TestImageBrowsing::testImageFormats_GIF()
-{
+void TestImageBrowsing::testImageFormats_GIF() {
     if (!isImageFormatSupported("GIF")) {
         QSKIP("GIF format not supported");
     }
@@ -262,8 +247,7 @@ void TestImageBrowsing::testImageFormats_GIF()
     QVERIFY(true); // Placeholder
 }
 
-void TestImageBrowsing::testImageFormats_BMP()
-{
+void TestImageBrowsing::testImageFormats_BMP() {
     if (!isImageFormatSupported("BMP")) {
         QSKIP("BMP format not supported");
     }
@@ -277,8 +261,7 @@ void TestImageBrowsing::testImageFormats_BMP()
     QVERIFY(!image.isNull());
 }
 
-void TestImageBrowsing::testImageFormats_TIFF()
-{
+void TestImageBrowsing::testImageFormats_TIFF() {
     if (!isImageFormatSupported("TIFF")) {
         QSKIP("TIFF format not supported");
     }
@@ -287,8 +270,7 @@ void TestImageBrowsing::testImageFormats_TIFF()
     QVERIFY(true); // Placeholder
 }
 
-void TestImageBrowsing::testImageFormats_WEBP()
-{
+void TestImageBrowsing::testImageFormats_WEBP() {
     if (!isImageFormatSupported("WEBP")) {
         QSKIP("WEBP format not supported");
     }
@@ -298,8 +280,7 @@ void TestImageBrowsing::testImageFormats_WEBP()
 }
 
 // Image Loading Tests
-void TestImageBrowsing::testImageLoading_ValidImages()
-{
+void TestImageBrowsing::testImageLoading_ValidImages() {
     ImageViewerWidget* viewer = new ImageViewerWidget();
 
     // Test loading valid PNG image
@@ -314,8 +295,7 @@ void TestImageBrowsing::testImageLoading_ValidImages()
     delete viewer;
 }
 
-void TestImageBrowsing::testImageLoading_InvalidImages()
-{
+void TestImageBrowsing::testImageLoading_InvalidImages() {
     ImageViewerWidget* viewer = new ImageViewerWidget();
 
     // Test loading corrupted image
@@ -330,8 +310,7 @@ void TestImageBrowsing::testImageLoading_InvalidImages()
     delete viewer;
 }
 
-void TestImageBrowsing::testImageLoading_CorruptedImages()
-{
+void TestImageBrowsing::testImageLoading_CorruptedImages() {
     QImageReader reader(m_testImageCorrupted);
     QVERIFY(!reader.canRead());
 
@@ -339,8 +318,7 @@ void TestImageBrowsing::testImageLoading_CorruptedImages()
     QVERIFY(image.isNull());
 }
 
-void TestImageBrowsing::testImageLoading_LargeImages()
-{
+void TestImageBrowsing::testImageLoading_LargeImages() {
     if (!QFileInfo::exists(m_testImageLarge)) {
         QSKIP("Large test image not created");
     }
@@ -361,8 +339,7 @@ void TestImageBrowsing::testImageLoading_LargeImages()
     QVERIFY(loadTime < 5000);
 }
 
-void TestImageBrowsing::testImageLoading_EmptyFiles()
-{
+void TestImageBrowsing::testImageLoading_EmptyFiles() {
     QString emptyFile = m_tempDir->path() + "/empty.png";
     QFile file(emptyFile);
     file.open(QIODevice::WriteOnly);
@@ -376,8 +353,7 @@ void TestImageBrowsing::testImageLoading_EmptyFiles()
 }
 
 // Image Display Tests
-void TestImageBrowsing::testImageDisplay_BasicDisplay()
-{
+void TestImageBrowsing::testImageDisplay_BasicDisplay() {
     ImageViewerWidget* viewer = new ImageViewerWidget();
     viewer->resize(400, 300);
     viewer->show();
@@ -392,8 +368,7 @@ void TestImageBrowsing::testImageDisplay_BasicDisplay()
     delete viewer;
 }
 
-void TestImageBrowsing::testImageDisplay_Scaling()
-{
+void TestImageBrowsing::testImageDisplay_Scaling() {
     ImageViewerWidget* viewer = new ImageViewerWidget();
 
     if (QFileInfo::exists(m_testImagePNG)) {
@@ -411,8 +386,7 @@ void TestImageBrowsing::testImageDisplay_Scaling()
     delete viewer;
 }
 
-void TestImageBrowsing::testImageDisplay_AspectRatio()
-{
+void TestImageBrowsing::testImageDisplay_AspectRatio() {
     QImage image(200, 100, QImage::Format_RGB32); // 2:1 aspect ratio
     image.fill(Qt::green);
 
@@ -426,8 +400,7 @@ void TestImageBrowsing::testImageDisplay_AspectRatio()
     QCOMPARE(loadedImage.width() / loadedImage.height(), 2);
 }
 
-void TestImageBrowsing::testImageDisplay_Rotation()
-{
+void TestImageBrowsing::testImageDisplay_Rotation() {
     ImageViewerWidget* viewer = new ImageViewerWidget();
 
     if (QFileInfo::exists(m_testImagePNG)) {
@@ -443,8 +416,7 @@ void TestImageBrowsing::testImageDisplay_Rotation()
     delete viewer;
 }
 
-void TestImageBrowsing::testImageDisplay_Flipping()
-{
+void TestImageBrowsing::testImageDisplay_Flipping() {
     ImageViewerWidget* viewer = new ImageViewerWidget();
 
     if (QFileInfo::exists(m_testImagePNG)) {
@@ -461,8 +433,7 @@ void TestImageBrowsing::testImageDisplay_Flipping()
 }
 
 // Performance Tests
-void TestImageBrowsing::testPerformance_LoadingSpeed()
-{
+void TestImageBrowsing::testPerformance_LoadingSpeed() {
     const int numImages = 10;
     QStringList testImages;
 
@@ -492,8 +463,7 @@ void TestImageBrowsing::testPerformance_LoadingSpeed()
     QVERIFY((totalTime / testImages.size()) < 100);
 }
 
-void TestImageBrowsing::testPerformance_MemoryUsage()
-{
+void TestImageBrowsing::testPerformance_MemoryUsage() {
     // This is a basic test - in a real scenario you'd use memory profiling tools
     QImage largeImage(1024, 1024, QImage::Format_RGB32);
     largeImage.fill(Qt::blue);
@@ -506,8 +476,7 @@ void TestImageBrowsing::testPerformance_MemoryUsage()
     QVERIFY(expectedBytes == 1024 * 1024 * 4); // 4 bytes per pixel for RGB32
 }
 
-void TestImageBrowsing::testPerformance_MultipleImages()
-{
+void TestImageBrowsing::testPerformance_MultipleImages() {
     ImageViewerWidget* viewer = new ImageViewerWidget();
 
     QElapsedTimer timer;
@@ -528,8 +497,7 @@ void TestImageBrowsing::testPerformance_MultipleImages()
 }
 
 // Error Handling Tests
-void TestImageBrowsing::testErrorHandling_FileNotFound()
-{
+void TestImageBrowsing::testErrorHandling_FileNotFound() {
     QString nonExistentFile = "/path/that/does/not/exist/image.png";
 
     QImageReader reader(nonExistentFile);
@@ -543,8 +511,7 @@ void TestImageBrowsing::testErrorHandling_FileNotFound()
     qDebug() << "Expected error for non-existent file:" << error;
 }
 
-void TestImageBrowsing::testErrorHandling_UnsupportedFormat()
-{
+void TestImageBrowsing::testErrorHandling_UnsupportedFormat() {
     // Create a file with unsupported extension
     QString unsupportedFile = m_tempDir->path() + "/test.xyz";
     QFile file(unsupportedFile);
@@ -559,8 +526,7 @@ void TestImageBrowsing::testErrorHandling_UnsupportedFormat()
     QVERIFY(image.isNull());
 }
 
-void TestImageBrowsing::testErrorHandling_PermissionDenied()
-{
+void TestImageBrowsing::testErrorHandling_PermissionDenied() {
     // This test is platform-specific and may not work on all systems
     // On Windows, we can't easily create permission-denied scenarios in temp dirs
     QVERIFY(true); // Placeholder - would need platform-specific implementation

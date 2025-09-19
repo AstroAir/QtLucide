@@ -383,18 +383,22 @@ xmake config --option=value
 ## Recommendations
 
 ### For Beginners
+
 - **Start with CMake** - Most documentation and tutorials use CMake
 - **Try Meson** - If you want a modern, fast alternative
 
 ### For Teams
+
 - **Use CMake** - If your team already knows it
 - **Consider Meson** - For new projects prioritizing build speed
 
 ### For Cross-platform
+
 - **XMake** - Excellent cross-compilation support
 - **Meson** - Good cross-platform capabilities
 
 ### For Performance
+
 - **Meson** - Fastest build times
 - **XMake** - Good performance with built-in caching
 

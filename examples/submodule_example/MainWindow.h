@@ -11,12 +11,11 @@ class QToolBar;
 class QLabel;
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
 private slots:
@@ -31,13 +30,13 @@ private:
     void createToolBars();
     void createStatusBar();
 
-    QMenu *fileMenu;
-    QMenu *helpMenu;
-    QToolBar *fileToolBar;
-    QAction *newAct;
-    QAction *openAct;
-    QAction *saveAct;
-    QAction *exitAct;
-    QAction *aboutAct;
-    QLabel *statusLabel;
+    QMenu* fileMenu;
+    QMenu* helpMenu;
+    QToolBar* fileToolBar;
+    QAction* newAct;
+    QAction* openAct;
+    QAction* saveAct;
+    QAction* exitAct;
+    QAction* aboutAct;
+    QLabel* statusLabel;
 };

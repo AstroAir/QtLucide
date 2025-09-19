@@ -84,17 +84,20 @@ target_link_libraries(QtLucideSubmoduleExample PRIVATE
 In a real project, you would:
 
 1. **Add QtLucide as submodule**:
+
    ```bash
    git submodule add https://github.com/AstroAir/QtLucide.git third-party/QtLucide
    ```
 
 2. **Update your CMakeLists.txt**:
+
    ```cmake
    add_subdirectory(third-party/QtLucide)
    target_link_libraries(your_target PRIVATE QtLucide::QtLucide)
    ```
 
 3. **Use QtLucide icons in your code**:
+
    ```cpp
    #include <QtLucide/QtLucide.h>
    

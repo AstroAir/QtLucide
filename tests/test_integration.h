@@ -8,17 +8,17 @@
 #ifndef TEST_INTEGRATION_H
 #define TEST_INTEGRATION_H
 
-#include <QObject>
-#include <QtTest/QtTest>
 #include <QApplication>
-#include <QWidget>
-#include <QLabel>
-#include <QPixmap>
-#include <QTimer>
-#include <QEventLoop>
-#include <QTemporaryDir>
-#include <QFile>
 #include <QDir>
+#include <QEventLoop>
+#include <QFile>
+#include <QLabel>
+#include <QObject>
+#include <QPixmap>
+#include <QTemporaryDir>
+#include <QTimer>
+#include <QWidget>
+#include <QtTest/QtTest>
 
 namespace lucide {
 class QtLucide;

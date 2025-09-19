@@ -9,31 +9,30 @@
  * - Manager classes functionality
  */
 
-#include <QtTest/QtTest>
 #include <QApplication>
-#include <QtTest/QSignalSpy>
-#include <QTimer>
+#include <QElapsedTimer>
 #include <QPixmap>
+#include <QStandardPaths>
 #include <QStringList>
 #include <QTemporaryDir>
-#include <QStandardPaths>
-#include <QElapsedTimer>
+#include <QTimer>
+#include <QtTest/QSignalSpy>
+#include <QtTest/QtTest>
 
 // Include Gallery components
-#include "ui/widgets/grids/IconGridWidget.h"
-#include "ui/widgets/grids/IconThumbnailGridWidget.h"
-#include "ui/widgets/search/SearchWidget.h"
-#include "ui/widgets/search/IconSearchWidget.h"
-#include "ui/widgets/search/CategoryFilterWidget.h"
-#include "ui/widgets/panels/CategorySidebarWidget.h"
-#include "ui/widgets/viewers/ImageViewerWidget.h"
+#include "core/managers/ContentManager.h"
 #include "core/managers/IconMetadataManager.h"
 #include "core/managers/ImageMetadataManager.h"
-#include "core/managers/ContentManager.h"
+#include "ui/widgets/grids/IconGridWidget.h"
+#include "ui/widgets/grids/IconThumbnailGridWidget.h"
+#include "ui/widgets/panels/CategorySidebarWidget.h"
+#include "ui/widgets/search/CategoryFilterWidget.h"
+#include "ui/widgets/search/IconSearchWidget.h"
+#include "ui/widgets/search/SearchWidget.h"
+#include "ui/widgets/viewers/ImageViewerWidget.h"
 #include <QtLucide/QtLucide.h>
 
-class TestGalleryComponents : public QObject
-{
+class TestGalleryComponents : public QObject {
     Q_OBJECT
 
 private slots:
@@ -108,8 +107,7 @@ private:
     bool waitForSignal(QObject* sender, const char* signal, int timeout = 5000);
 };
 
-void TestGalleryComponents::initTestCase()
-{
+void TestGalleryComponents::initTestCase() {
     // Initialize QtLucide
     m_lucide = new lucide::QtLucide(this);
     QVERIFY(m_lucide->initLucide());
@@ -129,30 +127,25 @@ void TestGalleryComponents::initTestCase()
     qDebug() << "Test environment initialized with" << m_testIconNames.size() << "test icons";
 }
 
-void TestGalleryComponents::cleanupTestCase()
-{
+void TestGalleryComponents::cleanupTestCase() {
     delete m_tempDir;
     qDebug() << "Test environment cleaned up";
 }
 
-void TestGalleryComponents::init()
-{
+void TestGalleryComponents::init() {
     // Reset state before each test
 }
 
-void TestGalleryComponents::cleanup()
-{
+void TestGalleryComponents::cleanup() {
     // Clean up after each test
 }
 
-void TestGalleryComponents::setupTestData()
-{
+void TestGalleryComponents::setupTestData() {
     m_testIconNames = getTestIconNames(100);
     QVERIFY(!m_testIconNames.isEmpty());
 }
 
-void TestGalleryComponents::createTestImages()
-{
+void TestGalleryComponents::createTestImages() {
     // Create test images in temporary directory
     m_testImagePath = m_tempDir->path() + "/test_image.png";
 
@@ -161,8 +154,7 @@ void TestGalleryComponents::createTestImages()
     QVERIFY(testPixmap.save(m_testImagePath, "PNG"));
 }
 
-QStringList TestGalleryComponents::getTestIconNames(int count)
-{
+QStringList TestGalleryComponents::getTestIconNames(int count) {
     QStringList allIcons = m_lucide->availableIcons();
     if (allIcons.size() < count) {
         return allIcons;
@@ -170,15 +162,13 @@ QStringList TestGalleryComponents::getTestIconNames(int count)
     return allIcons.mid(0, count);
 }
 
-bool TestGalleryComponents::waitForSignal(QObject* sender, const char* signal, int timeout)
-{
+bool TestGalleryComponents::waitForSignal(QObject* sender, const char* signal, int timeout) {
     QSignalSpy spy(sender, signal);
     return spy.wait(timeout);
 }
 
 // IconGridWidget Tests
-void TestGalleryComponents::testIconGridWidget_Creation()
-{
+void TestGalleryComponents::testIconGridWidget_Creation() {
     IconGridWidget* widget = new IconGridWidget();
     QVERIFY(widget != nullptr);
     QVERIFY(widget->iconSize() > 0);
@@ -186,8 +176,7 @@ void TestGalleryComponents::testIconGridWidget_Creation()
     delete widget;
 }
 
-void TestGalleryComponents::testIconGridWidget_SetIconNames()
-{
+void TestGalleryComponents::testIconGridWidget_SetIconNames() {
     IconGridWidget* widget = new IconGridWidget();
     widget->setLucide(m_lucide);
     widget->setMetadataManager(m_iconMetadataManager);
@@ -202,8 +191,7 @@ void TestGalleryComponents::testIconGridWidget_SetIconNames()
     delete widget;
 }
 
-void TestGalleryComponents::testIconGridWidget_IconSelection()
-{
+void TestGalleryComponents::testIconGridWidget_IconSelection() {
     IconGridWidget* widget = new IconGridWidget();
     widget->setLucide(m_lucide);
     widget->setMetadataManager(m_iconMetadataManager);
@@ -221,8 +209,7 @@ void TestGalleryComponents::testIconGridWidget_IconSelection()
     delete widget;
 }
 
-void TestGalleryComponents::testIconGridWidget_IconSize()
-{
+void TestGalleryComponents::testIconGridWidget_IconSize() {
     IconGridWidget* widget = new IconGridWidget();
 
     int originalSize = widget->iconSize();
@@ -234,8 +221,7 @@ void TestGalleryComponents::testIconGridWidget_IconSize()
     delete widget;
 }
 
-void TestGalleryComponents::testIconGridWidget_ViewModes()
-{
+void TestGalleryComponents::testIconGridWidget_ViewModes() {
     IconGridWidget* widget = new IconGridWidget();
 
     // Test different view modes
@@ -248,8 +234,7 @@ void TestGalleryComponents::testIconGridWidget_ViewModes()
     delete widget;
 }
 
-void TestGalleryComponents::testIconGridWidget_Performance()
-{
+void TestGalleryComponents::testIconGridWidget_Performance() {
     IconGridWidget* widget = new IconGridWidget();
     widget->setLucide(m_lucide);
     widget->setMetadataManager(m_iconMetadataManager);
@@ -272,8 +257,7 @@ void TestGalleryComponents::testIconGridWidget_Performance()
 }
 
 // IconThumbnailGridWidget Tests
-void TestGalleryComponents::testThumbnailGrid_Creation()
-{
+void TestGalleryComponents::testThumbnailGrid_Creation() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     QVERIFY(widget != nullptr);
     QVERIFY(widget->thumbnailSize() > 0);
@@ -281,8 +265,7 @@ void TestGalleryComponents::testThumbnailGrid_Creation()
     delete widget;
 }
 
-void TestGalleryComponents::testThumbnailGrid_VirtualScrolling()
-{
+void TestGalleryComponents::testThumbnailGrid_VirtualScrolling() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setIconList(m_testIconNames);
 
@@ -297,8 +280,7 @@ void TestGalleryComponents::testThumbnailGrid_VirtualScrolling()
     delete widget;
 }
 
-void TestGalleryComponents::testThumbnailGrid_ThumbnailSize()
-{
+void TestGalleryComponents::testThumbnailGrid_ThumbnailSize() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
 
     int originalSize = widget->thumbnailSize();
@@ -310,8 +292,7 @@ void TestGalleryComponents::testThumbnailGrid_ThumbnailSize()
     delete widget;
 }
 
-void TestGalleryComponents::testThumbnailGrid_Selection()
-{
+void TestGalleryComponents::testThumbnailGrid_Selection() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setIconList(m_testIconNames);
 
@@ -326,8 +307,7 @@ void TestGalleryComponents::testThumbnailGrid_Selection()
     delete widget;
 }
 
-void TestGalleryComponents::testThumbnailGrid_Navigation()
-{
+void TestGalleryComponents::testThumbnailGrid_Navigation() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setIconList(m_testIconNames);
 
@@ -343,8 +323,7 @@ void TestGalleryComponents::testThumbnailGrid_Navigation()
     delete widget;
 }
 
-void TestGalleryComponents::testThumbnailGrid_Performance()
-{
+void TestGalleryComponents::testThumbnailGrid_Performance() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
 
     QStringList largeIconSet = getTestIconNames(1000);
@@ -357,7 +336,8 @@ void TestGalleryComponents::testThumbnailGrid_Performance()
     widget->show();
 
     qint64 setupTime = timer.elapsed();
-    qDebug() << "Thumbnail grid setup with" << largeIconSet.size() << "icons in" << setupTime << "ms";
+    qDebug() << "Thumbnail grid setup with" << largeIconSet.size() << "icons in" << setupTime
+             << "ms";
 
     // Should be fast due to virtual scrolling
     QVERIFY(setupTime < 1000);
@@ -366,16 +346,14 @@ void TestGalleryComponents::testThumbnailGrid_Performance()
 }
 
 // SearchWidget Tests
-void TestGalleryComponents::testSearchWidget_Creation()
-{
+void TestGalleryComponents::testSearchWidget_Creation() {
     SearchWidget* widget = new SearchWidget(m_iconMetadataManager);
     QVERIFY(widget != nullptr);
     QVERIFY(widget->searchText().isEmpty());
     delete widget;
 }
 
-void TestGalleryComponents::testSearchWidget_BasicSearch()
-{
+void TestGalleryComponents::testSearchWidget_BasicSearch() {
     SearchWidget* widget = new SearchWidget(m_iconMetadataManager);
 
     QSignalSpy searchSpy(widget, &SearchWidget::searchChanged);
@@ -392,8 +370,7 @@ void TestGalleryComponents::testSearchWidget_BasicSearch()
     delete widget;
 }
 
-void TestGalleryComponents::testSearchWidget_RealTimeSearch()
-{
+void TestGalleryComponents::testSearchWidget_RealTimeSearch() {
     SearchWidget* widget = new SearchWidget(m_iconMetadataManager);
 
     QSignalSpy searchSpy(widget, &SearchWidget::searchChanged);
@@ -409,8 +386,7 @@ void TestGalleryComponents::testSearchWidget_RealTimeSearch()
     delete widget;
 }
 
-void TestGalleryComponents::testSearchWidget_SearchHistory()
-{
+void TestGalleryComponents::testSearchWidget_SearchHistory() {
     SearchWidget* widget = new SearchWidget(m_iconMetadataManager);
 
     // Test that search history functionality exists
@@ -423,8 +399,7 @@ void TestGalleryComponents::testSearchWidget_SearchHistory()
     delete widget;
 }
 
-void TestGalleryComponents::testSearchWidget_FilterCriteria()
-{
+void TestGalleryComponents::testSearchWidget_FilterCriteria() {
     SearchWidget* widget = new SearchWidget(m_iconMetadataManager);
 
     IconFilterCriteria criteria = widget->getFilterCriteria();
@@ -438,8 +413,7 @@ void TestGalleryComponents::testSearchWidget_FilterCriteria()
     delete widget;
 }
 
-void TestGalleryComponents::testSearchWidget_AdvancedFilters()
-{
+void TestGalleryComponents::testSearchWidget_AdvancedFilters() {
     SearchWidget* widget = new SearchWidget(m_iconMetadataManager);
 
     // Test that advanced filtering functionality exists
@@ -452,16 +426,14 @@ void TestGalleryComponents::testSearchWidget_AdvancedFilters()
 }
 
 // CategoryFilterWidget Tests
-void TestGalleryComponents::testCategoryFilter_Creation()
-{
+void TestGalleryComponents::testCategoryFilter_Creation() {
     CategoryFilterWidget* widget = new CategoryFilterWidget(m_iconMetadataManager);
     QVERIFY(widget != nullptr);
     QVERIFY(widget->selectedCategories().isEmpty());
     delete widget;
 }
 
-void TestGalleryComponents::testCategoryFilter_CategorySelection()
-{
+void TestGalleryComponents::testCategoryFilter_CategorySelection() {
     CategoryFilterWidget* widget = new CategoryFilterWidget(m_iconMetadataManager);
 
     QSignalSpy selectionSpy(widget, &CategoryFilterWidget::categorySelectionChanged);
@@ -475,8 +447,7 @@ void TestGalleryComponents::testCategoryFilter_CategorySelection()
     delete widget;
 }
 
-void TestGalleryComponents::testCategoryFilter_TagFiltering()
-{
+void TestGalleryComponents::testCategoryFilter_TagFiltering() {
     CategoryFilterWidget* widget = new CategoryFilterWidget(m_iconMetadataManager);
 
     QSignalSpy tagSpy(widget, &CategoryFilterWidget::tagSelectionChanged);
@@ -490,8 +461,7 @@ void TestGalleryComponents::testCategoryFilter_TagFiltering()
     delete widget;
 }
 
-void TestGalleryComponents::testCategoryFilter_ViewModes()
-{
+void TestGalleryComponents::testCategoryFilter_ViewModes() {
     CategoryFilterWidget* widget = new CategoryFilterWidget(m_iconMetadataManager);
 
     // Test that view mode functionality exists
@@ -503,8 +473,7 @@ void TestGalleryComponents::testCategoryFilter_ViewModes()
     delete widget;
 }
 
-void TestGalleryComponents::testCategoryFilter_FilterCombination()
-{
+void TestGalleryComponents::testCategoryFilter_FilterCombination() {
     CategoryFilterWidget* widget = new CategoryFilterWidget(m_iconMetadataManager);
 
     QSignalSpy filterSpy(widget, &CategoryFilterWidget::selectionChanged);
@@ -521,30 +490,26 @@ void TestGalleryComponents::testCategoryFilter_FilterCombination()
 }
 
 // Manager Classes Tests - Simplified implementations
-void TestGalleryComponents::testIconMetadataManager_Creation()
-{
+void TestGalleryComponents::testIconMetadataManager_Creation() {
     IconMetadataManager* manager = new IconMetadataManager();
     QVERIFY(manager != nullptr);
     delete manager;
 }
 
-void TestGalleryComponents::testIconMetadataManager_IconLoading()
-{
+void TestGalleryComponents::testIconMetadataManager_IconLoading() {
     QVERIFY(m_iconMetadataManager != nullptr);
     QStringList allIcons = m_iconMetadataManager->getAllIconNames();
     QVERIFY(!allIcons.isEmpty());
 }
 
-void TestGalleryComponents::testIconMetadataManager_Categories()
-{
+void TestGalleryComponents::testIconMetadataManager_Categories() {
     QVERIFY(m_iconMetadataManager != nullptr);
     QStringList categories = m_iconMetadataManager->getAllCategories();
     // Categories may be empty in test environment
     QVERIFY(categories.size() >= 0);
 }
 
-void TestGalleryComponents::testIconMetadataManager_Favorites()
-{
+void TestGalleryComponents::testIconMetadataManager_Favorites() {
     QVERIFY(m_iconMetadataManager != nullptr);
     QString testIcon = "home";
 
@@ -553,38 +518,33 @@ void TestGalleryComponents::testIconMetadataManager_Favorites()
     QVERIFY(isFavorite == true || isFavorite == false); // Just verify it returns a boolean
 }
 
-void TestGalleryComponents::testContentManager_Creation()
-{
+void TestGalleryComponents::testContentManager_Creation() {
     ContentManager* manager = new ContentManager();
     QVERIFY(manager != nullptr);
     delete manager;
 }
 
-void TestGalleryComponents::testContentManager_ContentLoading()
-{
+void TestGalleryComponents::testContentManager_ContentLoading() {
     QVERIFY(m_contentManager != nullptr);
     // Test basic functionality
     m_contentManager->setLucide(m_lucide);
     QVERIFY(m_contentManager != nullptr);
 }
 
-void TestGalleryComponents::testImageMetadataManager_Creation()
-{
+void TestGalleryComponents::testImageMetadataManager_Creation() {
     ImageMetadataManager* manager = new ImageMetadataManager();
     QVERIFY(manager != nullptr);
     delete manager;
 }
 
-void TestGalleryComponents::testImageMetadataManager_ImageLoading()
-{
+void TestGalleryComponents::testImageMetadataManager_ImageLoading() {
     QVERIFY(m_imageMetadataManager != nullptr);
     // Test that it can handle image paths
     QVERIFY(!m_testImagePath.isEmpty());
 }
 
 // Integration Tests - Simplified
-void TestGalleryComponents::testComponentIntegration_SearchAndGrid()
-{
+void TestGalleryComponents::testComponentIntegration_SearchAndGrid() {
     SearchWidget* searchWidget = new SearchWidget(m_iconMetadataManager);
     IconGridWidget* gridWidget = new IconGridWidget();
 
@@ -601,8 +561,7 @@ void TestGalleryComponents::testComponentIntegration_SearchAndGrid()
     delete gridWidget;
 }
 
-void TestGalleryComponents::testComponentIntegration_FilterAndGrid()
-{
+void TestGalleryComponents::testComponentIntegration_FilterAndGrid() {
     CategoryFilterWidget* filterWidget = new CategoryFilterWidget(m_iconMetadataManager);
     IconGridWidget* gridWidget = new IconGridWidget();
 
@@ -617,8 +576,7 @@ void TestGalleryComponents::testComponentIntegration_FilterAndGrid()
     delete gridWidget;
 }
 
-void TestGalleryComponents::testComponentIntegration_ManagersAndWidgets()
-{
+void TestGalleryComponents::testComponentIntegration_ManagersAndWidgets() {
     // Test that managers can be shared between widgets
     IconGridWidget* gridWidget1 = new IconGridWidget();
     IconGridWidget* gridWidget2 = new IconGridWidget();

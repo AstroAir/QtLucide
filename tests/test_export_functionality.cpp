@@ -3,16 +3,16 @@
  */
 
 #include "test_export_functionality.h"
-#include <QtLucide/QtLucide.h>
-#include "ui/dialogs/IconExportDialog.h"
 #include "core/managers/IconMetadataManager.h"
+#include "ui/dialogs/IconExportDialog.h"
+#include <QtLucide/QtLucide.h>
 
 #include <QApplication>
-#include <QPixmap>
 #include <QIcon>
 #include <QImageReader>
 #include <QImageWriter>
 #include <QMimeDatabase>
+#include <QPixmap>
 #include <QStandardPaths>
 
 void TestExportFunctionality::initTestCase() {
@@ -93,8 +93,8 @@ void TestExportFunctionality::testSingleIconExportPNG() {
     QVERIFY(verifyImageIntegrity(result.filePath));
 
     qDebug() << QString("PNG export successful: %1 bytes, %2ms")
-                .arg(result.fileSize)
-                .arg(result.exportTime);
+                    .arg(result.fileSize)
+                    .arg(result.exportTime);
 
     qDebug() << "Single icon PNG export test passed";
 }
@@ -105,7 +105,8 @@ void TestExportFunctionality::testSingleIconExportSVG() {
     QString iconName = "star";
     QString outputPath = m_tempDir->path() + "/test_star.svg";
 
-    ExportResult result = exportSingleIcon(iconName, "SVG", 0, outputPath); // SVG is vector, size doesn't matter
+    ExportResult result =
+        exportSingleIcon(iconName, "SVG", 0, outputPath); // SVG is vector, size doesn't matter
 
     QVERIFY2(result.success, qPrintable(result.errorMessage));
     QVERIFY(QFileInfo::exists(result.filePath));
@@ -121,8 +122,8 @@ void TestExportFunctionality::testSingleIconExportSVG() {
     svgFile.close();
 
     qDebug() << QString("SVG export successful: %1 bytes, %2ms")
-                .arg(result.fileSize)
-                .arg(result.exportTime);
+                    .arg(result.fileSize)
+                    .arg(result.exportTime);
 
     qDebug() << "Single icon SVG export test passed";
 }
@@ -138,8 +139,9 @@ void TestExportFunctionality::testVariousSizeExports() {
 
         ExportResult result = exportSingleIcon(iconName, format, size, outputPath);
 
-        QVERIFY2(result.success, qPrintable(QString("Failed to export size %1: %2")
-                                           .arg(size).arg(result.errorMessage)));
+        QVERIFY2(
+            result.success,
+            qPrintable(QString("Failed to export size %1: %2").arg(size).arg(result.errorMessage)));
         QVERIFY(QFileInfo::exists(result.filePath));
         QCOMPARE(result.actualSize, QSize(size, size));
 
@@ -166,7 +168,8 @@ void TestExportFunctionality::testBatchExportSameFormat() {
 
     QList<ExportResult> results = exportBatch(config);
 
-    int expectedCount = static_cast<int>(config.iconNames.size() * config.sizes.size() * config.formats.size());
+    int expectedCount =
+        static_cast<int>(config.iconNames.size() * config.sizes.size() * config.formats.size());
     QCOMPARE(results.size(), expectedCount);
 
     // Verify all exports succeeded
@@ -182,9 +185,11 @@ void TestExportFunctionality::testBatchExportSameFormat() {
     }
 
     QVERIFY2(successCount == expectedCount,
-            qPrintable(QString("Only %1 of %2 exports succeeded").arg(successCount).arg(expectedCount)));
+             qPrintable(
+                 QString("Only %1 of %2 exports succeeded").arg(successCount).arg(expectedCount)));
 
-    qDebug() << QString("Batch export completed: %1/%2 successful").arg(successCount).arg(expectedCount);
+    qDebug()
+        << QString("Batch export completed: %1/%2 successful").arg(successCount).arg(expectedCount);
     qDebug() << "Batch export same format test passed";
 }
 
@@ -207,7 +212,8 @@ void TestExportFunctionality::testExportedImageQuality() {
     QVERIFY(!exportedPixmap.isNull());
 
     // Compare similarity
-    bool similarityAcceptable = compareImageSimilarity(originalPixmap, exportedPixmap, IMAGE_SIMILARITY_THRESHOLD);
+    bool similarityAcceptable =
+        compareImageSimilarity(originalPixmap, exportedPixmap, IMAGE_SIMILARITY_THRESHOLD);
     QVERIFY2(similarityAcceptable, "Exported image quality below acceptable threshold");
 
     // Verify image properties
@@ -225,18 +231,17 @@ void TestExportFunctionality::testFilePathHandling() {
 
     // Test various path scenarios
     QStringList testPaths = {
-        m_tempDir->path() + "/simple.png",
-        m_tempDir->path() + "/path with spaces.png",
+        m_tempDir->path() + "/simple.png", m_tempDir->path() + "/path with spaces.png",
         m_tempDir->path() + "/path-with-dashes.png",
-        m_tempDir->path() + "/path_with_underscores.png",
-        m_tempDir->path() + "/UPPERCASE.PNG"
-    };
+        m_tempDir->path() + "/path_with_underscores.png", m_tempDir->path() + "/UPPERCASE.PNG"};
 
     for (const QString& path : testPaths) {
         ExportResult result = exportSingleIcon(iconName, "PNG", size, path);
 
-        QVERIFY2(result.success, qPrintable(QString("Failed to export to path: %1 - %2")
-                                           .arg(path).arg(result.errorMessage)));
+        QVERIFY2(
+            result.success,
+            qPrintable(
+                QString("Failed to export to path: %1 - %2").arg(path).arg(result.errorMessage)));
         QVERIFY(QFileInfo::exists(result.filePath));
 
         qDebug() << "Successfully exported to:" << QFileInfo(path).fileName();
@@ -245,8 +250,9 @@ void TestExportFunctionality::testFilePathHandling() {
     qDebug() << "File path handling test passed";
 }
 
-ExportResult TestExportFunctionality::exportSingleIcon(const QString& iconName, const QString& format,
-                                                      int size, const QString& outputPath) {
+ExportResult TestExportFunctionality::exportSingleIcon(const QString& iconName,
+                                                       const QString& format, int size,
+                                                       const QString& outputPath) {
     ExportResult result;
     QElapsedTimer timer;
     timer.start();
@@ -303,11 +309,8 @@ QList<ExportResult> TestExportFunctionality::exportBatch(const BatchExportConfig
     for (const QString& iconName : config.iconNames) {
         for (int size : config.sizes) {
             for (const QString& format : config.formats) {
-                QString fileName = QString("%1_%2x%3.%4")
-                                  .arg(iconName)
-                                  .arg(size)
-                                  .arg(size)
-                                  .arg(format.toLower());
+                QString fileName =
+                    QString("%1_%2x%3.%4").arg(iconName).arg(size).arg(size).arg(format.toLower());
                 QString outputPath = config.outputDirectory + "/" + fileName;
 
                 ExportResult result = exportSingleIcon(iconName, format, size, outputPath);
@@ -319,16 +322,21 @@ QList<ExportResult> TestExportFunctionality::exportBatch(const BatchExportConfig
     return results;
 }
 
-bool TestExportFunctionality::verifyExportedFile(const QString& filePath, const QString& expectedFormat,
-                                                const QSize& expectedSize) {
+bool TestExportFunctionality::verifyExportedFile(const QString& filePath,
+                                                 const QString& expectedFormat,
+                                                 const QSize& expectedSize) {
     QFileInfo fileInfo(filePath);
-    if (!fileInfo.exists()) return false;
-    if (fileInfo.size() < MIN_FILE_SIZE_BYTES) return false;
+    if (!fileInfo.exists())
+        return false;
+    if (fileInfo.size() < MIN_FILE_SIZE_BYTES)
+        return false;
 
     if (expectedFormat.toUpper() != "SVG") {
         QImageReader reader(filePath);
-        if (!reader.canRead()) return false;
-        if (reader.size() != expectedSize) return false;
+        if (!reader.canRead())
+            return false;
+        if (reader.size() != expectedSize)
+            return false;
     }
 
     return true;
@@ -344,9 +352,11 @@ bool TestExportFunctionality::verifyImageTransparency(const QString& filePath) {
     return image.hasAlphaChannel();
 }
 
-bool TestExportFunctionality::compareImageSimilarity(const QPixmap& original, const QPixmap& exported, double threshold) {
+bool TestExportFunctionality::compareImageSimilarity(const QPixmap& original,
+                                                     const QPixmap& exported, double threshold) {
     // Simplified similarity comparison
-    if (original.size() != exported.size()) return false;
+    if (original.size() != exported.size())
+        return false;
 
     QImage originalImage = original.toImage();
     QImage exportedImage = exported.toImage();

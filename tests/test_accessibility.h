@@ -8,15 +8,15 @@
 #ifndef TEST_ACCESSIBILITY_H
 #define TEST_ACCESSIBILITY_H
 
-#include <QObject>
-#include <QtTest/QtTest>
 #include <QApplication>
-#include <QWidget>
-#include <QKeyEvent>
 #include <QFocusEvent>
+#include <QKeyEvent>
+#include <QObject>
 #include <QPalette>
 #include <QStyleFactory>
 #include <QTimer>
+#include <QWidget>
+#include <QtTest/QtTest>
 
 // Include accessibility headers (safe now since we're included before Windows headers)
 #include <QAccessible>

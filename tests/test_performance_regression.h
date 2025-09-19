@@ -8,19 +8,19 @@
 #ifndef TEST_PERFORMANCE_REGRESSION_H
 #define TEST_PERFORMANCE_REGRESSION_H
 
-#include <QObject>
-#include <QtTest/QtTest>
-#include <QElapsedTimer>
-#include <QTimer>
-#include <QEventLoop>
 #include <QApplication>
-#include <QWidget>
-#include <QPixmap>
+#include <QElapsedTimer>
+#include <QEventLoop>
 #include <QIcon>
+#include <QMutex>
+#include <QObject>
+#include <QPixmap>
 #include <QProcess>
 #include <QThread>
-#include <QMutex>
+#include <QTimer>
 #include <QWaitCondition>
+#include <QWidget>
+#include <QtTest/QtTest>
 
 namespace lucide {
 class QtLucide;
@@ -44,13 +44,16 @@ struct PerformanceMetrics {
     void addMeasurement(qint64 time) {
         totalTime += time;
         iterations++;
-        if (time < minTime) minTime = time;
-        if (time > maxTime) maxTime = time;
+        if (time < minTime)
+            minTime = time;
+        if (time > maxTime)
+            maxTime = time;
         averageTime = totalTime / iterations;
     }
 
     void calculateStandardDeviation(const QList<qint64>& measurements) {
-        if (measurements.size() < 2) return;
+        if (measurements.size() < 2)
+            return;
 
         double sum = 0.0;
         for (qint64 time : measurements) {

@@ -14,44 +14,44 @@
 #ifndef GALLERYMAINWINDOW_H
 #define GALLERYMAINWINDOW_H
 
-#include <QMainWindow>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QSplitter>
-#include <QMenuBar>
-#include <QStatusBar>
-#include <QToolBar>
 #include <QAction>
 #include <QActionGroup>
-#include <QLabel>
-#include <QPushButton>
-#include <QComboBox>
-#include <QSlider>
-#include <QProgressBar>
-#include <QTimer>
-#include <QSettings>
+#include <QApplication>
 #include <QCloseEvent>
-#include <QShowEvent>
-#include <QResizeEvent>
+#include <QComboBox>
+#include <QDesktopServices>
 #include <QDragEnterEvent>
 #include <QDropEvent>
-#include <QMimeData>
 #include <QFileDialog>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QMainWindow>
+#include <QMenuBar>
 #include <QMessageBox>
-#include <QApplication>
-#include <QDesktopServices>
-#include <QUrl>
+#include <QMimeData>
+#include <QProgressBar>
+#include <QPushButton>
+#include <QResizeEvent>
+#include <QSettings>
+#include <QShowEvent>
+#include <QSlider>
+#include <QSplitter>
 #include <QStandardPaths>
+#include <QStatusBar>
+#include <QTimer>
+#include <QToolBar>
+#include <QUrl>
+#include <QVBoxLayout>
 
-#include <QtLucide/QtLucide.h>
-#include "../ui/themes/ThemeManager.h"
-#include "../ui/layouts/ResponsiveLayoutManager.h"
-#include "../ui/widgets/grids/ModernIconGridWidget.h"
-#include "../ui/widgets/search/ModernSearchWidget.h"
-#include "../ui/widgets/panels/ModernSidebarWidget.h"
+#include "../core/BatchExportManager.h"
 #include "../ui/dialogs/ExportDialog.h"
 #include "../ui/dialogs/ImportDialog.h"
-#include "../core/BatchExportManager.h"
+#include "../ui/layouts/ResponsiveLayoutManager.h"
+#include "../ui/themes/ThemeManager.h"
+#include "../ui/widgets/grids/ModernIconGridWidget.h"
+#include "../ui/widgets/panels/ModernSidebarWidget.h"
+#include "../ui/widgets/search/ModernSearchWidget.h"
+#include <QtLucide/QtLucide.h>
 
 // Forward declarations
 class QSplitter;
@@ -60,8 +60,7 @@ class QStackedWidget;
 /**
  * @brief Main Gallery window with modern UI and export/import functionality
  */
-class GalleryMainWindow : public QMainWindow
-{
+class GalleryMainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
@@ -207,11 +206,11 @@ private:
     QWidget* m_centralWidget;
     QSplitter* m_mainSplitter;
     QSplitter* m_contentSplitter;
-    
+
     ModernSidebarWidget* m_sidebarWidget;
     ModernSearchWidget* m_searchWidget;
     ModernIconGridWidget* m_iconGridWidget;
-    
+
     // Dialogs
     ExportDialog* m_exportDialog;
     ImportDialog* m_importDialog;
@@ -228,7 +227,7 @@ private:
     QAction* m_lightThemeAction;
     QAction* m_darkThemeAction;
     QAction* m_systemThemeAction;
-    
+
     QAction* m_exportIconsAction;
     QAction* m_importSettingsAction;
     QAction* m_exportSettingsAction;

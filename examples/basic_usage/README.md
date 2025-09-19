@@ -5,17 +5,20 @@ This example demonstrates the basic usage of QtLucide icons in a Qt application,
 ## Features
 
 ### 🎨 **Icon Customization**
+
 - **Color Control**: Change icon colors using a color picker
 - **Size Control**: Adjust icon size from 16px to 128px
 - **Scale Factor**: Fine-tune icon scaling from 50% to 150%
 
 ### 🔍 **Icon Browsing**
+
 - **Sample Icons**: View a curated set of commonly used icons
 - **All Icons**: Toggle to view all 1600+ available Lucide icons
 - **Search Filter**: Type to filter icons by name
 - **Interactive Grid**: Click any icon to see its details
 
 ### 🛠️ **Developer Features**
+
 - **Icon Validation**: Automatic validation of icon names at startup
 - **Error Reporting**: Clear feedback about loading success/failures
 - **Debug Information**: Helpful suggestions for invalid icon names
@@ -34,6 +37,7 @@ This version fixes the following icon loading problems from the original example
 ## Usage
 
 ### Basic Icon Loading
+
 ```cpp
 #include <QtLucide/QtLucide.h>
 
@@ -47,6 +51,7 @@ button->setIcon(lucide->icon("heart"));
 ```
 
 ### With Custom Options
+
 ```cpp
 QVariantMap options;
 options["color"] = QColor(Qt::red);
@@ -57,6 +62,7 @@ button->setIcon(lucide->icon("heart", options));
 ## Building
 
 ### Using Meson (Recommended)
+
 ```bash
 cd QtLucide
 meson setup builddir
@@ -65,6 +71,7 @@ meson compile -C builddir examples/basic_usage/QtLucideExample
 ```
 
 ### Using CMake
+
 ```bash
 cd QtLucide
 mkdir build && cd build

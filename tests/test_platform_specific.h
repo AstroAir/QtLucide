@@ -1,6 +1,6 @@
 /**
  * QtLucide Platform-Specific Tests - Header
- * 
+ *
  * Tests for different operating system behaviors including Windows-specific
  * file path handling, theme integration, and high DPI display support.
  */
@@ -8,22 +8,22 @@
 #ifndef TEST_PLATFORM_SPECIFIC_H
 #define TEST_PLATFORM_SPECIFIC_H
 
-#include <QObject>
-#include <QtTest/QtTest>
 #include <QApplication>
-#include <QScreen>
-#include <QWidget>
-#include <QPixmap>
-#include <QIcon>
 #include <QDir>
 #include <QFileInfo>
+#include <QIcon>
+#include <QObject>
+#include <QPalette>
+#include <QPixmap>
+#include <QScreen>
 #include <QSettings>
 #include <QStyleFactory>
-#include <QPalette>
+#include <QWidget>
+#include <QtTest/QtTest>
 
 #ifdef Q_OS_WIN
-#include <windows.h>
-#include <dwmapi.h>
+    #include <dwmapi.h>
+    #include <windows.h>
 #endif
 
 namespace lucide {
@@ -114,7 +114,7 @@ private:
     bool isWindowsPlatform();
     bool isHighDpiDisplay();
     qreal getCurrentDpiScale();
-    
+
     // Windows-specific helpers
 #ifdef Q_OS_WIN
     bool isWindowsDarkModeEnabled();
@@ -122,49 +122,49 @@ private:
     QString getWindowsThemeName();
     void setWindowsDpiAwareness();
 #endif
-    
+
     // High DPI testing helpers
     HighDpiConfig testIconAtDpiScale(qreal scale, const QString& iconName);
     QPixmap generateHighDpiPixmap(const QString& iconName, const QSize& size, qreal dpiScale);
     bool verifyDpiScaling(const QPixmap& pixmap, qreal expectedScale);
-    
+
     // Theme testing helpers
     void applySystemTheme();
     void applyDarkTheme();
     void applyLightTheme();
     void applyHighContrastTheme();
     bool verifyThemeConsistency();
-    
+
     // File path testing helpers
     void testPathWithSpaces();
     void testPathWithUnicodeCharacters();
     void testPathWithSpecialCharacters();
     void testLongFilePath();
     void testNetworkPath();
-    
+
     // Performance measurement helpers
     qint64 measureFileSystemAccess(const QString& path);
     qint64 measureIconRenderingOnPlatform(const QString& iconName, const QSize& size);
     qint64 measureThemeSwitchingTime();
-    
+
     // Test data and objects
     lucide::QtLucide* m_lucide;
     IconMetadataManager* m_metadataManager;
     QWidget* m_testWidget;
     PlatformConfig m_platformConfig;
-    
+
     // Test paths for different scenarios
     QStringList m_testPaths;
     QStringList m_unicodeTestPaths;
     QStringList m_specialCharPaths;
-    
+
     // DPI test configurations
     QList<qreal> m_testDpiScales;
     QList<QSize> m_testIconSizes;
-    
+
     // Performance tracking
     QElapsedTimer m_performanceTimer;
-    
+
     // Platform-specific thresholds
     static constexpr qint64 WINDOWS_FILE_ACCESS_THRESHOLD_MS = 50;
     static constexpr qint64 THEME_SWITCH_THRESHOLD_MS = 500;

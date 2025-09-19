@@ -5,28 +5,27 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGridLayout>
-#include <QPushButton>
-#include <QLabel>
-#include <QComboBox>
-#include <QSpinBox>
-#include <QColorDialog>
-#include <QGroupBox>
-#include <QScrollArea>
-#include <QLineEdit>
 #include <QCheckBox>
+#include <QColorDialog>
+#include <QComboBox>
+#include <QGridLayout>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMainWindow>
+#include <QPushButton>
+#include <QScrollArea>
+#include <QSpinBox>
+#include <QVBoxLayout>
 
 #include <QtLucide/QtLucide.h>
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
 private slots:
