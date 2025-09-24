@@ -56,9 +56,9 @@ int main(int argc, char* argv[]) {
     // Setup application properties
     setupApplicationProperties(app);
 
-    // Initialize logging
-    GalleryLogger::initialize();
-    GALLERY_LOG_INFO(galleryMain, "Starting QtLucide Gallery application");
+    // Initialize logging (commented out until GalleryLogger is implemented)
+    // GalleryLogger::initialize();
+    // GALLERY_LOG_INFO(galleryMain, "Starting QtLucide Gallery application");
 
     // Create and show splash screen
     QSplashScreen* splash = createSplashScreen();
@@ -90,6 +90,7 @@ int main(int argc, char* argv[]) {
         splash->deleteLater();
     });
 
-    GALLERY_LOG_INFO(galleryMain, "QtLucide Gallery started successfully");
+    // GALLERY_LOG_INFO(galleryMain, "QtLucide Gallery started successfully");
 
     return app.exec();
+}

@@ -1221,3 +1221,35 @@ void ModernIconGridWidget::keyPressEvent(QKeyEvent* event)
 
     QWidget::keyPressEvent(event);
 }
+
+// Missing ModernIconGridWidget methods
+void ModernIconGridWidget::setItemMargins(const QMargins& margins)
+{
+    if (m_itemMargins != margins) {
+        m_itemMargins = margins;
+        updateLayout();
+        // Margins updated
+    }
+}
+
+void ModernIconGridWidget::setItemSpacing(int spacing)
+{
+    if (m_itemSpacing != spacing) {
+        m_itemSpacing = spacing;
+        updateLayout();
+        // Spacing updated
+    }
+}
+
+// ModernIconItem missing methods
+void ModernIconItem::updateVisualEffects()
+{
+    // Update visual effects based on current state
+    update();
+}
+
+void ModernIconItem::resizeEvent(QResizeEvent* event)
+{
+    QWidget::resizeEvent(event);
+    updateVisualEffects();
+}

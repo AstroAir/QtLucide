@@ -54,8 +54,10 @@
 #include <QElapsedTimer>
 #include <QRegularExpression>
 #include <QSettings>
+#include <QInputDialog>
 
 #include "IconMetadataManager.h"
+#include "core/GalleryTypes.h"
 
 // Forward declarations
 class SearchSuggestionPopup;
@@ -94,6 +96,7 @@ public:
     void updateSuggestions();
     void showSuggestions();
     void hideSuggestions();
+    void updateCompleter();
 
 public slots:
     void clearSearch();
@@ -106,6 +109,8 @@ signals:
     void suggestionSelected(const QString& suggestion);
     void searchSubmitted(const QString& text);
     void historyRequested();
+    void searchRequested(const QString& text);
+    void historyCleared();
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
@@ -173,6 +178,10 @@ public:
     void clearFilters();
     void resetToDefaults();
 
+    // Criteria management
+    SearchCriteria getCurrentCriteria() const;
+    void applyCriteria(const SearchCriteria& criteria);
+
     // Panel management
     bool isExpanded() const;
     void setAnimationsEnabled(bool enabled);
@@ -196,6 +205,14 @@ signals:
     void panelToggled(bool visible);
     void filterPresetSaved(const QString& name);
     void filterPresetLoaded(const QString& name);
+    void panelExpanded();
+    void panelCollapsed();
+    void contributorFilterChanged(const QStringList& contributors);
+    void dateRangeChanged(const QDateTime& startDate, const QDateTime& endDate);
+    void usageRangeChanged(int minUsage, int maxUsage);
+    void presetSaved(const QString& name);
+    void presetLoaded(const QString& name);
+    void presetDeleted(const QString& name);
 
 private slots:
     void onCategorySelectionChanged();
@@ -295,6 +312,8 @@ private:
     // Settings
     QSettings* m_settings;
     QHash<QString, IconFilterCriteria> m_filterPresets;
+    QHash<QString, SearchCriteria> m_savedPresets;
+    bool m_expanded;
 };
 
 /**
@@ -343,6 +362,7 @@ public:
     QStringList getMostUsedSearchTerms(int limit = 10) const;
     QVariantMap getSearchStatistics() const;
     void setPlaceholderText(const QString& text);
+    void setAnimationsEnabled(bool enabled) { m_animationsEnabled = enabled; }
 
 public slots:
     void clearAllFilters();
@@ -362,6 +382,10 @@ signals:
     void advancedPanelToggled(bool visible);
     void searchPerformed(const IconFilterCriteria& criteria);
     void searchStatisticsUpdated(const QVariantMap& stats);
+    void searchRequested(const QString& text);
+    void searchSaved(const QString& name);
+    void searchLoaded(const QString& name);
+    void statisticsUpdated(int totalSearches, int currentSearch);
 
 protected:
     void showEvent(QShowEvent *event) override;
@@ -390,6 +414,7 @@ private:
     void updateSearchStatistics();
     void saveSearchHistory();
     void loadSearchHistory();
+    void updateSearchHistory();
     void saveSettings();
     void loadSettings();
 

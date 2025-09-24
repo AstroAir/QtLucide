@@ -25,16 +25,20 @@ find_path(QTLUCIDE_INCLUDE_DIR QtLucide/QtLucide.h
     PATHS
         ${CMAKE_CURRENT_SOURCE_DIR}/../../include
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../build_cmake/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../../build_cmake/include
     NO_DEFAULT_PATH
 )
 
 find_library(QTLUCIDE_LIBRARY
-    NAMES QtLucide
+    NAMES QtLucide libQtLucide
     PATHS
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../build
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../../build
-        ${CMAKE_CURRENT_BINARY_DIR}/../../
-        ${CMAKE_CURRENT_BINARY_DIR}/../../../
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../build_cmake/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../../build_cmake/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../build/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../../build/src
+        ${CMAKE_CURRENT_BINARY_DIR}/../../src
+        ${CMAKE_CURRENT_BINARY_DIR}/../../../src
     PATH_SUFFIXES
         lib
         Release
@@ -74,6 +78,8 @@ set(GALLERY_SOURCES
     src/core/managers/IconMetadataManager.cpp
     src/core/managers/ImageMetadataManager.h
     src/core/managers/ImageMetadataManager.cpp
+    src/core/managers/ManagerStubs.h
+    src/core/managers/ManagerStubs.cpp
     src/core/managers/FavoritesManager.h
     src/core/managers/FavoritesManager.cpp
 
@@ -192,11 +198,10 @@ target_include_directories(QtLucideGallery PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/config
 )
 
-if(QTLUCIDE_FOUND)
-    target_include_directories(QtLucideGallery PRIVATE
-        ${QTLUCIDE_INCLUDE_DIR}
-    )
-endif()
+# Include QtLucide headers (using target interface)
+target_include_directories(QtLucideGallery PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../include
+)
 
 # Link Qt libraries
 target_link_libraries(QtLucideGallery
@@ -209,11 +214,9 @@ target_link_libraries(QtLucideGallery
         Qt6::Network
 )
 
-# Link QtLucide if found
-if(QTLUCIDE_FOUND)
-    target_link_libraries(QtLucideGallery PRIVATE ${QTLUCIDE_LIBRARY})
-    target_compile_definitions(QtLucideGallery PRIVATE QTLUCIDE_AVAILABLE)
-endif()
+# Link QtLucide target directly (since we're building together)
+target_link_libraries(QtLucideGallery PRIVATE QtLucide)
+target_compile_definitions(QtLucideGallery PRIVATE QTLUCIDE_AVAILABLE)
 
 # Set target properties
 set_target_properties(QtLucideGallery PROPERTIES

@@ -51,11 +51,11 @@
 #include <QDropEvent>
 
 #include "../themes/ThemeManager.h"
+#include "../../core/managers/ManagerStubs.h"
 
 // Forward declarations
 class ImportOptionsWidget;
 class ImportPreviewWidget;
-class SettingsManager;
 
 /**
  * @brief Import data types
@@ -291,6 +291,7 @@ public:
     void setImportConfig(const ImportConfig& config);
     ImportConfig importConfig() const;
     void setSourceFile(const QString& filePath);
+    QString sourceFile() const;
 
     // Integration
     void setThemeManager(ThemeManager* themeManager);
@@ -345,9 +346,10 @@ private:
     QVBoxLayout* m_rightLayout;
     
     QLabel* m_titleLabel;
+    QLabel* m_sourceLabel;
     ImportOptionsWidget* m_optionsWidget;
     ImportPreviewWidget* m_previewWidget;
-    
+
     QHBoxLayout* m_buttonLayout;
     QPushButton* m_importButton;
     QPushButton* m_cancelButton;
@@ -356,6 +358,7 @@ private:
     // Data
     ImportConfig m_config;
     ImportData m_importData;
+    QString m_sourceFile;
     bool m_importInProgress;
     bool m_importSuccessful;
     QStringList m_importedDataTypes;
@@ -371,13 +374,13 @@ private:
 /**
  * @brief Settings manager for handling import/export
  */
-class SettingsManager : public QObject
+class ImportSettingsManager : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit SettingsManager(QObject* parent = nullptr);
-    ~SettingsManager();
+    explicit ImportSettingsManager(QObject* parent = nullptr);
+    ~ImportSettingsManager();
 
     // Export functionality
     bool exportSettings(const QString& filePath, const QList<ImportDataType>& dataTypes);

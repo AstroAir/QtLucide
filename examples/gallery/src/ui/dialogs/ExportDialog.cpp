@@ -3,6 +3,7 @@
  */
 
 #include "ExportDialog.h"
+#include "../core/BatchExportManager.h"
 #include <QApplication>
 #include <QStyle>
 #include <QStyleOption>
@@ -576,3 +577,328 @@ void ExportOptionsWidget::onBrowseOutputDirectory() {}
 void ExportOptionsWidget::onFileNameTemplateChanged() { emit configChanged(m_config); }
 void ExportOptionsWidget::onPreviewTemplate() {}
 void ExportOptionsWidget::updatePreview() {}
+
+// Missing ExportOptionsWidget methods
+void ExportOptionsWidget::onOutputSettingsChanged() {
+    emit configChanged(m_config);
+}
+
+void ExportOptionsWidget::onPresetSizeToggled() {
+    emit configChanged(m_config);
+}
+
+void ExportOptionsWidget::updateFormatOptions() {
+    // Update UI based on selected format
+}
+
+void ExportOptionsWidget::updateSizeOptions() {
+    // Update size options UI
+}
+
+void ExportOptionsWidget::updateColorOptions() {
+    // Update color options UI
+}
+
+void ExportOptionsWidget::showEvent(QShowEvent* event) {
+    QWidget::showEvent(event);
+}
+
+// ExportPreviewWidget Implementation
+ExportPreviewWidget::ExportPreviewWidget(QWidget* parent)
+    : QWidget(parent)
+{
+    setupUI();
+}
+
+ExportPreviewWidget::~ExportPreviewWidget() = default;
+
+void ExportPreviewWidget::setupUI() {
+    setMinimumSize(300, 400);
+}
+
+void ExportPreviewWidget::onConfigChanged() {
+    // Update preview based on config changes
+    update();
+}
+
+void ExportPreviewWidget::updateLayout() {
+    // Update layout based on current configuration
+}
+
+void ExportPreviewWidget::paintEvent(QPaintEvent* event) {
+    QWidget::paintEvent(event);
+    QPainter painter(this);
+    painter.fillRect(rect(), QColor(240, 240, 240));
+    painter.drawText(rect(), Qt::AlignCenter, "Preview");
+}
+
+void ExportPreviewWidget::resizeEvent(QResizeEvent* event) {
+    QWidget::resizeEvent(event);
+    updateLayout();
+}
+
+void ExportPreviewWidget::mousePressEvent(QMouseEvent* event) {
+    QWidget::mousePressEvent(event);
+}
+
+void ExportPreviewWidget::mouseDoubleClickEvent(QMouseEvent* event) {
+    QWidget::mouseDoubleClickEvent(event);
+}
+
+
+
+// ExportDialog Implementation
+ExportDialog::ExportDialog(QWidget* parent)
+    : QDialog(parent)
+    , m_mainLayout(nullptr)
+    , m_contentLayout(nullptr)
+    , m_leftLayout(nullptr)
+    , m_rightLayout(nullptr)
+    , m_titleLabel(nullptr)
+    , m_iconCountLabel(nullptr)
+    , m_optionsWidget(nullptr)
+    , m_previewWidget(nullptr)
+    , m_progressWidget(nullptr)
+    , m_buttonLayout(nullptr)
+    , m_exportButton(nullptr)
+    , m_cancelButton(nullptr)
+    , m_closeButton(nullptr)
+    , m_exportInProgress(false)
+    , m_exportSuccessful(false)
+    , m_lucide(nullptr)
+    , m_themeManager(nullptr)
+    , m_exportManager(nullptr)
+    , m_themeWidget(nullptr)
+{
+    setupUI();
+    setupLayout();
+    setupConnections();
+}
+
+ExportDialog::~ExportDialog() = default;
+
+void ExportDialog::setupUI() {
+    setWindowTitle("Export Icons");
+    setModal(true);
+    resize(800, 600);
+
+    // Create main components
+    m_titleLabel = new QLabel("Export Icons", this);
+    m_iconCountLabel = new QLabel("0 icons selected", this);
+    m_optionsWidget = new ExportOptionsWidget(this);
+    m_previewWidget = new ExportPreviewWidget(this);
+    m_progressWidget = new ExportProgressWidget(this);
+
+    // Create buttons
+    m_exportButton = new QPushButton("Export", this);
+    m_cancelButton = new QPushButton("Cancel", this);
+    m_closeButton = new QPushButton("Close", this);
+
+    m_progressWidget->hide();
+}
+
+void ExportDialog::setupLayout() {
+    m_mainLayout = new QVBoxLayout(this);
+    m_contentLayout = new QHBoxLayout();
+    m_leftLayout = new QVBoxLayout();
+    m_rightLayout = new QVBoxLayout();
+    m_buttonLayout = new QHBoxLayout();
+
+    // Left side - options
+    m_leftLayout->addWidget(m_titleLabel);
+    m_leftLayout->addWidget(m_iconCountLabel);
+    m_leftLayout->addWidget(m_optionsWidget);
+
+    // Right side - preview
+    m_rightLayout->addWidget(m_previewWidget);
+
+    // Content layout
+    m_contentLayout->addLayout(m_leftLayout, 1);
+    m_contentLayout->addLayout(m_rightLayout, 1);
+
+    // Button layout
+    m_buttonLayout->addStretch();
+    m_buttonLayout->addWidget(m_exportButton);
+    m_buttonLayout->addWidget(m_cancelButton);
+    m_buttonLayout->addWidget(m_closeButton);
+
+    // Main layout
+    m_mainLayout->addLayout(m_contentLayout);
+    m_mainLayout->addWidget(m_progressWidget);
+    m_mainLayout->addLayout(m_buttonLayout);
+}
+
+void ExportDialog::setupConnections() {
+    connect(m_exportButton, &QPushButton::clicked, this, &ExportDialog::onExportClicked);
+    connect(m_cancelButton, &QPushButton::clicked, this, &ExportDialog::onCancelClicked);
+    connect(m_closeButton, &QPushButton::clicked, this, &QDialog::reject);
+
+    if (m_optionsWidget) {
+        connect(m_optionsWidget, &ExportOptionsWidget::configChanged,
+                this, &ExportDialog::onConfigChanged);
+    }
+}
+
+// ExportDialog slot implementations
+void ExportDialog::onExportClicked() {
+    if (validateExportConfig()) {
+        startExport();
+    }
+}
+
+void ExportDialog::onCancelClicked() {
+    if (m_exportInProgress) {
+        cancelExport();
+    } else {
+        reject();
+    }
+}
+
+void ExportDialog::onConfigChanged(const ExportConfig& config) {
+    m_config = config;
+    updateUI();
+}
+
+void ExportDialog::onExportProgress(int current, int total, const QString& currentFile) {
+    emit exportProgress(current, total, currentFile);
+    if (m_progressWidget) {
+        // Update progress widget
+    }
+}
+
+void ExportDialog::onExportFinished(bool success) {
+    m_exportInProgress = false;
+    m_exportSuccessful = success;
+
+    if (success) {
+        emit exportFinished(true, m_exportedFiles);
+        accept();
+    } else {
+        emit exportFinished(false, QStringList());
+    }
+}
+
+void ExportDialog::onPreviewIconClicked(const QString& iconName) {
+    // Handle preview icon click
+    Q_UNUSED(iconName)
+}
+
+// ExportDialog utility methods
+void ExportDialog::updateUI() {
+    if (m_iconCountLabel) {
+        m_iconCountLabel->setText(QString("%1 icons selected").arg(m_iconNames.size()));
+    }
+}
+
+bool ExportDialog::validateExportConfig() {
+    return !m_iconNames.isEmpty();
+}
+
+void ExportDialog::startExport() {
+    m_exportInProgress = true;
+    m_exportSuccessful = false;
+    m_exportedFiles.clear();
+
+    if (m_progressWidget) {
+        m_progressWidget->show();
+    }
+
+    emit exportStarted();
+
+    // Simulate export completion for now
+    QTimer::singleShot(1000, this, [this]() {
+        onExportFinished(true);
+    });
+}
+
+void ExportDialog::cancelExport() {
+    m_exportInProgress = false;
+    emit exportCancelled();
+
+    if (m_progressWidget) {
+        m_progressWidget->hide();
+    }
+}
+
+// ExportDialog public methods
+void ExportDialog::setIconNames(const QStringList& iconNames) {
+    m_iconNames = iconNames;
+    updateUI();
+}
+
+QStringList ExportDialog::iconNames() const {
+    return m_iconNames;
+}
+
+void ExportDialog::addIconName(const QString& iconName) {
+    if (!m_iconNames.contains(iconName)) {
+        m_iconNames.append(iconName);
+        updateUI();
+    }
+}
+
+void ExportDialog::removeIconName(const QString& iconName) {
+    m_iconNames.removeAll(iconName);
+    updateUI();
+}
+
+void ExportDialog::clearIconNames() {
+    m_iconNames.clear();
+    updateUI();
+}
+
+void ExportDialog::setExportConfig(const ExportConfig& config) {
+    m_config = config;
+    if (m_optionsWidget) {
+        m_optionsWidget->setExportConfig(config);
+    }
+}
+
+ExportConfig ExportDialog::exportConfig() const {
+    return m_config;
+}
+
+#ifdef QTLUCIDE_AVAILABLE
+void ExportDialog::setLucide(lucide::QtLucide* lucide) {
+    m_lucide = lucide;
+}
+#else
+void ExportDialog::setLucide(void* lucide) {
+    m_lucide = lucide;
+}
+#endif
+
+void ExportDialog::setThemeManager(ThemeManager* themeManager) {
+    m_themeManager = themeManager;
+    applyTheme();
+}
+
+void ExportDialog::applyTheme() {
+    if (m_themeManager) {
+        // Apply theme styling
+    }
+}
+
+// ExportDialog event handlers
+void ExportDialog::showEvent(QShowEvent* event) {
+    QDialog::showEvent(event);
+    updateUI();
+}
+
+void ExportDialog::closeEvent(QCloseEvent* event) {
+    if (m_exportInProgress) {
+        cancelExport();
+    }
+    QDialog::closeEvent(event);
+}
+
+void ExportDialog::accept() {
+    QDialog::accept();
+}
+
+void ExportDialog::reject() {
+    if (m_exportInProgress) {
+        cancelExport();
+    }
+    QDialog::reject();
+}

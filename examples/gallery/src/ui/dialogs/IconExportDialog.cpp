@@ -1325,7 +1325,7 @@ void IconExportDialog::loadPreset(const QString& presetName)
         m_iconSize = settings.value(presetName + "/iconSize", 64).toInt();
         m_exportFormat = settings.value(presetName + "/format", "PNG").toString();
         m_quality = settings.value(presetName + "/quality", 100).toInt();
-        m_backgroundColor = settings.value(presetName + "/backgroundColor", Qt::transparent).value<QColor>();
+        m_backgroundColor = settings.value(presetName + "/backgroundColor", QColor(Qt::transparent)).value<QColor>();
         m_backgroundType = static_cast<BackgroundType>(settings.value(presetName + "/backgroundType", 0).toInt());
         m_namingPattern = settings.value(presetName + "/namingPattern", "{name}").toString();
 

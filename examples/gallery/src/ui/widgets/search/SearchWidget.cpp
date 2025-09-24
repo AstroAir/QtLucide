@@ -7,6 +7,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDebug>
+#include <QInputDialog>
 
 // SearchLineEdit Implementation
 SearchLineEdit::SearchLineEdit(QWidget *parent)
@@ -532,8 +533,12 @@ void AdvancedSearchPanel::onDateRangeChanged()
     QDate startDate = QDate::currentDate().addYears(-1); // Default to last year
     QDate endDate = QDate::currentDate();
 
+    // Convert QDate to QDateTime for the signal
+    QDateTime startDateTime(startDate, QTime(0, 0));
+    QDateTime endDateTime(endDate, QTime(23, 59, 59));
+
     // This would get actual dates from date picker widgets
-    emit dateRangeChanged(startDate, endDate);
+    emit dateRangeChanged(startDateTime, endDateTime);
     emitFiltersChanged();
 }
 
@@ -777,11 +782,15 @@ void SearchWidget::onSearchTimer()
 void SearchWidget::onUpdateStatistics()
 {
     // Update search statistics
-    int totalSearches = m_searchHistory.size();
-    QString currentSearch = m_searchEdit->text().trimmed();
+    int totalSearches = static_cast<int>(m_searchHistory.size());
+    QString currentSearchText = m_searchEdit->text().trimmed();
+    int currentSearchIndex = static_cast<int>(m_searchHistory.indexOf(currentSearchText));
+    if (currentSearchIndex == -1) {
+        currentSearchIndex = 0; // Default to 0 if not found
+    }
 
     // This would update a statistics display if available
-    emit statisticsUpdated(totalSearches, currentSearch);
+    emit statisticsUpdated(totalSearches, currentSearchIndex);
 }
 
 void SearchWidget::resizeEvent(QResizeEvent *event)

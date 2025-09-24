@@ -142,7 +142,7 @@ void SearchInputWidget::applyTheme()
         "    border-color: %10; "
         "}"
     ).arg(
-        THEME_COLOR(InputBackground).name(),
+        THEME_COLOR(ContentBackground).name(),
         THEME_COLOR(BorderColor).name(),
         QString::number(BORDER_RADIUS),
         QString::number(PADDING / 2),
@@ -150,7 +150,7 @@ void SearchInputWidget::applyTheme()
         THEME_COLOR(PrimaryText).name(),
         THEME_COLOR(AccentColor).name(),
         THEME_COLOR(AccentColor).name(),
-        THEME_COLOR(InputBackground).lighter(105).name(),
+        THEME_COLOR(ContentBackground).lighter(105).name(),
         THEME_COLOR(BorderColor).lighter(120).name()
     );
 
@@ -177,7 +177,7 @@ void SearchInputWidget::applyTheme()
         QString::number(CLEAR_BUTTON_SIZE / 2),
         THEME_COLOR(SecondaryText).name(),
         THEME_COLOR(HoverBackground).name(),
-        THEME_COLOR(PressedBackground).name()
+        THEME_COLOR(AccentColorPressed).name()
     );
 
     if (m_clearButton) {
@@ -203,7 +203,7 @@ void SearchInputWidget::paintEvent(QPaintEvent* event)
 
     // Draw background with subtle gradient
     QLinearGradient gradient(0, 0, 0, height());
-    QColor baseColor = THEME_COLOR(InputBackground);
+    QColor baseColor = THEME_COLOR(ContentBackground);
     gradient.setColorAt(0, baseColor.lighter(102));
     gradient.setColorAt(1, baseColor.darker(102));
 
@@ -842,4 +842,379 @@ void FilterPanelWidget::onClearFiltersClicked()
 void FilterPanelWidget::onExpandToggled()
 {
     setExpanded(!m_expanded);
+}
+
+// Missing FilterPanelWidget method implementations
+void FilterPanelWidget::setMetadataManager(IconMetadataManager* manager)
+{
+    m_metadataManager = manager;
+    // Update available categories and tags from metadata manager
+    if (manager) {
+        // Get available categories and tags from the metadata manager
+        // This would typically involve calling methods on the manager
+        // For now, we'll just store the reference
+    }
+}
+
+void FilterPanelWidget::setAnimationsEnabled(bool enabled)
+{
+    m_animationsEnabled = enabled;
+    if (m_expansionAnimation) {
+        if (!enabled) {
+            m_expansionAnimation->stop();
+        }
+    }
+}
+
+bool FilterPanelWidget::isExpanded() const
+{
+    return m_expanded;
+}
+
+bool FilterPanelWidget::animationsEnabled() const
+{
+    return m_animationsEnabled;
+}
+
+// Missing SearchInputWidget methods
+void SearchInputWidget::onSuggestionClicked(const QString& suggestion)
+{
+    if (m_searchInput) {
+        m_searchInput->setText(suggestion);
+        emit searchRequested(suggestion);
+    }
+}
+
+void SearchInputWidget::updateAnimations()
+{
+    // Update animation states
+    if (m_focusAnimation) {
+        m_focusAnimation->setCurrentTime(m_hasFocus ? m_focusAnimation->duration() : 0);
+    }
+}
+
+void SearchInputWidget::resizeEvent(QResizeEvent* event)
+{
+    QFrame::resizeEvent(event);
+    updateAnimations();
+}
+
+// FilterPanelWidget missing method
+void FilterPanelWidget::resizeEvent(QResizeEvent* event)
+{
+    QFrame::resizeEvent(event);
+}
+
+// ModernSearchWidget Implementation
+ModernSearchWidget::ModernSearchWidget(QWidget* parent)
+    : QWidget(parent)
+    , m_mainLayout(nullptr)
+    , m_topLayout(nullptr)
+    , m_searchInput(nullptr)
+    , m_filterToggleButton(nullptr)
+    , m_splitter(nullptr)
+    , m_filterPanel(nullptr)
+    , m_historyWidget(nullptr)
+    , m_metadataManager(nullptr)
+    , m_themeManager(nullptr)
+    , m_searchHistory()
+    , m_showFilterPanel(false)
+    , m_showSearchHistory(false)
+    , m_animationsEnabled(true)
+    , m_searchDelayTimer(nullptr)
+{
+    setupUI();
+    setupConnections();
+    loadSearchHistory();
+}
+
+ModernSearchWidget::~ModernSearchWidget()
+{
+    saveSearchHistory();
+}
+
+void ModernSearchWidget::setupUI()
+{
+    m_mainLayout = new QVBoxLayout(this);
+    m_mainLayout->setContentsMargins(0, 0, 0, 0);
+    m_mainLayout->setSpacing(0);
+
+    // Create top layout
+    m_topLayout = new QHBoxLayout();
+
+    // Create search input
+    m_searchInput = new SearchInputWidget(this);
+    m_topLayout->addWidget(m_searchInput);
+
+    // Create filter toggle button
+    m_filterToggleButton = new QPushButton("Filters", this);
+    m_topLayout->addWidget(m_filterToggleButton);
+
+    m_mainLayout->addLayout(m_topLayout);
+
+    // Create splitter
+    m_splitter = new QSplitter(Qt::Vertical, this);
+
+    // Create filter panel
+    m_filterPanel = new FilterPanelWidget(this);
+    m_filterPanel->hide();
+    m_splitter->addWidget(m_filterPanel);
+
+    // Create search history widget (placeholder for now)
+    // m_historyWidget = new SearchHistoryWidget(this);
+    // m_historyWidget->hide();
+    // m_splitter->addWidget(m_historyWidget);
+
+    m_mainLayout->addWidget(m_splitter);
+
+    // Create delay timer
+    m_searchDelayTimer = new QTimer(this);
+    m_searchDelayTimer->setSingleShot(true);
+    m_searchDelayTimer->setInterval(SEARCH_DELAY_MS);
+}
+
+
+
+void ModernSearchWidget::setupConnections()
+{
+    if (m_searchInput) {
+        connect(m_searchInput, &SearchInputWidget::searchTextChanged,
+                this, &ModernSearchWidget::onSearchTextChanged);
+        connect(m_searchInput, &SearchInputWidget::searchRequested,
+                this, &ModernSearchWidget::onSearchRequested);
+    }
+
+    if (m_filterPanel) {
+        connect(m_filterPanel, &FilterPanelWidget::filterChanged,
+                this, &ModernSearchWidget::onFilterChanged);
+    }
+
+    if (m_searchDelayTimer) {
+        connect(m_searchDelayTimer, &QTimer::timeout,
+                this, &ModernSearchWidget::performDelayedSearch);
+    }
+}
+
+void ModernSearchWidget::loadSearchHistory()
+{
+    QSettings settings;
+    settings.beginGroup("SearchHistory");
+    m_searchHistory = settings.value("items").toStringList();
+    settings.endGroup();
+}
+
+void ModernSearchWidget::saveSearchHistory()
+{
+    QSettings settings;
+    settings.beginGroup("SearchHistory");
+    settings.setValue("items", m_searchHistory);
+    settings.endGroup();
+}
+
+// ModernSearchWidget slot implementations
+void ModernSearchWidget::focusSearch()
+{
+    if (m_searchInput) {
+        m_searchInput->focusSearch();
+    }
+}
+
+void ModernSearchWidget::toggleFilterPanel()
+{
+    m_showFilterPanel = !m_showFilterPanel;
+    if (m_filterPanel) {
+        m_filterPanel->setVisible(m_showFilterPanel);
+    }
+}
+
+void ModernSearchWidget::refreshSuggestions()
+{
+    // Refresh search suggestions
+    if (m_searchInput) {
+        // Update suggestions based on current text
+    }
+}
+
+void ModernSearchWidget::onSearchTextChanged(const QString& text)
+{
+    m_currentSearchText = text;
+
+    // Start delayed search
+    m_searchDelayTimer->stop();
+    if (!text.isEmpty()) {
+        m_searchDelayTimer->start();
+    }
+
+    emit searchTextChanged(text);
+}
+
+void ModernSearchWidget::onSearchRequested(const QString& text)
+{
+    if (!text.isEmpty()) {
+        addToSearchHistory(text);
+    }
+    // Emit signal if needed - check header for available signals
+}
+
+void ModernSearchWidget::onFilterChanged(const FilterPanelWidget::FilterCriteria& criteria)
+{
+    emit filterChanged(criteria);
+}
+
+void ModernSearchWidget::onSearchHistoryItemSelected(const QString& item)
+{
+    if (m_searchInput) {
+        m_searchInput->setSearchText(item);
+        onSearchRequested(item);
+    }
+}
+
+void ModernSearchWidget::performDelayedSearch()
+{
+    if (m_searchInput) {
+        QString text = m_searchInput->searchText();
+        if (!text.isEmpty()) {
+            emit searchTextChanged(text);
+        }
+    }
+}
+
+void ModernSearchWidget::addToSearchHistory(const QString& text)
+{
+    m_searchHistory.removeAll(text);
+    m_searchHistory.prepend(text);
+
+    while (m_searchHistory.size() > MAX_SEARCH_HISTORY) {
+        m_searchHistory.removeLast();
+    }
+
+    saveSearchHistory();
+}
+
+// ModernSearchWidget event handlers
+void ModernSearchWidget::keyPressEvent(QKeyEvent* event)
+{
+    if (event->key() == Qt::Key_Escape) {
+        if (m_showFilterPanel) {
+            toggleFilterPanel();
+        }
+    }
+    QWidget::keyPressEvent(event);
+}
+
+void ModernSearchWidget::resizeEvent(QResizeEvent* event)
+{
+    QWidget::resizeEvent(event);
+}
+
+// Missing ModernSearchWidget method implementations
+void ModernSearchWidget::setSearchText(const QString& text)
+{
+    if (m_searchInput) {
+        m_searchInput->setSearchText(text);
+    }
+    m_currentSearchText = text;
+}
+
+QString ModernSearchWidget::searchText() const
+{
+    return m_currentSearchText;
+}
+
+void ModernSearchWidget::performSearch()
+{
+    if (!m_currentSearchText.isEmpty()) {
+        addToSearchHistory(m_currentSearchText);
+        // Perform actual search logic here
+        emit searchTextChanged(m_currentSearchText);
+    }
+}
+
+void ModernSearchWidget::clearSearch()
+{
+    if (m_searchInput) {
+        m_searchInput->clearSearch();
+    }
+    m_currentSearchText.clear();
+    m_searchResults.clear();
+    emit searchTextChanged(QString());
+}
+
+QList<ModernSearchWidget::SearchResult> ModernSearchWidget::searchResults() const
+{
+    return m_searchResults;
+}
+
+void ModernSearchWidget::setMetadataManager(IconMetadataManager* manager)
+{
+    m_metadataManager = manager;
+    if (m_filterPanel) {
+        m_filterPanel->setMetadataManager(manager);
+    }
+}
+
+void ModernSearchWidget::setThemeManager(ThemeManager* themeManager)
+{
+    m_themeManager = themeManager;
+    // Apply theme to components
+    if (m_searchInput) {
+        m_searchInput->applyTheme();
+    }
+    if (m_filterPanel) {
+        m_filterPanel->applyTheme();
+    }
+}
+
+QStringList ModernSearchWidget::searchHistory() const
+{
+    return m_searchHistory;
+}
+
+void ModernSearchWidget::clearSearchHistory()
+{
+    m_searchHistory.clear();
+    saveSearchHistory();
+    emit searchHistoryChanged(m_searchHistory);
+}
+
+bool ModernSearchWidget::showFilterPanel() const
+{
+    return m_showFilterPanel;
+}
+
+void ModernSearchWidget::setShowFilterPanel(bool show)
+{
+    if (m_showFilterPanel != show) {
+        m_showFilterPanel = show;
+        if (m_filterPanel) {
+            m_filterPanel->setVisible(show);
+        }
+    }
+}
+
+bool ModernSearchWidget::showSearchHistory() const
+{
+    return m_showSearchHistory;
+}
+
+void ModernSearchWidget::setShowSearchHistory(bool show)
+{
+    m_showSearchHistory = show;
+    // Update history widget visibility if it exists
+}
+
+bool ModernSearchWidget::animationsEnabled() const
+{
+    return m_animationsEnabled;
+}
+
+void ModernSearchWidget::setAnimationsEnabled(bool enabled)
+{
+    m_animationsEnabled = enabled;
+    if (m_searchInput) {
+        // Update search input animations
+    }
+    if (m_filterPanel) {
+        m_filterPanel->setAnimationsEnabled(enabled);
+    }
 }

@@ -444,9 +444,159 @@ void FileBrowserWidget::onFileListDoubleClicked(const QModelIndex& index)
 {
     QString filePath = m_fileSystemModel->filePath(m_proxyModel->mapToSource(index));
     QFileInfo fileInfo(filePath);
-    
+
     if (fileInfo.isDir()) {
         setCurrentDirectory(filePath);
         emit directoryDoubleClicked(filePath);
+    }
+}
+
+// Missing FileBrowserWidget methods
+void FileBrowserWidget::refresh()
+{
+    if (m_fileSystemModel) {
+        // Refresh the model by setting the root path again
+        QString currentPath = m_fileSystemModel->rootPath();
+        m_fileSystemModel->setRootPath(currentPath);
+    }
+    updateThumbnails();
+}
+
+void FileBrowserWidget::selectAll()
+{
+    if (m_fileList) {
+        m_fileList->selectAll();
+    }
+}
+
+void FileBrowserWidget::clearSelection()
+{
+    if (m_fileList) {
+        m_fileList->clearSelection();
+    }
+}
+
+void FileBrowserWidget::onThumbnailReady(const QString& filePath, const QPixmap& thumbnail)
+{
+    Q_UNUSED(filePath)
+    Q_UNUSED(thumbnail)
+    // Handle thumbnail ready - update the view
+}
+
+void FileBrowserWidget::onSelectionChanged()
+{
+    // Handle selection change
+    QItemSelectionModel* selectionModel = m_fileList->selectionModel();
+    if (selectionModel) {
+        QModelIndexList selected = selectionModel->selectedIndexes();
+        // Emit appropriate signal based on selection
+        if (selected.size() == 1) {
+            QString filePath = m_fileSystemModel->filePath(selected.first());
+            emit fileSelected(filePath);
+        } else if (selected.size() > 1) {
+            QStringList filePaths;
+            for (const QModelIndex& index : selected) {
+                filePaths.append(m_fileSystemModel->filePath(index));
+            }
+            emit filesSelected(filePaths);
+        }
+    }
+}
+
+void FileBrowserWidget::onNameFilterChanged()
+{
+    QString filter = m_nameFilterEdit->text();
+    if (m_proxyModel) {
+        m_proxyModel->setFilterWildcard(filter);
+    }
+}
+
+void FileBrowserWidget::onViewModeChanged()
+{
+    int mode = m_viewModeCombo->currentIndex();
+    switch (mode) {
+        case 0: // List view
+            m_fileList->setViewMode(QListView::ListMode);
+            break;
+        case 1: // Icon view
+            m_fileList->setViewMode(QListView::IconMode);
+            break;
+    }
+}
+
+void FileBrowserWidget::onNavigationButtonClicked()
+{
+    QPushButton* button = qobject_cast<QPushButton*>(sender());
+    if (button == m_upButton) {
+        navigateUp();
+    } else if (button == m_homeButton) {
+        navigateHome();
+    } else if (button == m_refreshButton) {
+        refresh();
+    }
+}
+
+void FileBrowserWidget::onBookmarkClicked()
+{
+    QAction* action = qobject_cast<QAction*>(sender());
+    if (action) {
+        QString path = action->data().toString();
+        setCurrentDirectory(path);
+    }
+}
+
+void FileBrowserWidget::addBookmark(const QString& path, const QString& name)
+{
+    // Add bookmark to the bookmarks menu/list
+    Q_UNUSED(path)
+    Q_UNUSED(name)
+    // Implementation would add to bookmarks UI
+}
+
+void FileBrowserWidget::navigateHome()
+{
+    setCurrentDirectory(QDir::homePath());
+}
+
+void FileBrowserWidget::navigateUp()
+{
+    QDir currentDir(m_currentDirectory);
+    if (currentDir.cdUp()) {
+        setCurrentDirectory(currentDir.absolutePath());
+    }
+}
+
+void FileBrowserWidget::updateThumbnails()
+{
+    // Update thumbnails for visible items
+    if (m_thumbnailDelegate) {
+        // Thumbnails are handled by the delegate
+        m_fileList->update();
+    }
+}
+
+// DirectoryScanner Implementation
+DirectoryScanner::DirectoryScanner(QObject* parent)
+    : QObject(parent)
+    , m_cancelled(false)
+{
+}
+
+void DirectoryScanner::doScan()
+{
+    // Perform directory scanning
+    int totalFiles = 0;
+
+    // Simulate scanning completion
+    QTimer::singleShot(100, this, [this, totalFiles]() {
+        emit scanFinished(totalFiles);
+    });
+}
+
+// Missing FileBrowserWidget methods
+void FileBrowserWidget::setShowOnlyImages(bool showOnly)
+{
+    if (m_fileSystemModel) {
+        m_fileSystemModel->setShowOnlyImages(showOnly);
     }
 }

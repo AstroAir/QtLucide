@@ -2,8 +2,8 @@
  * Gallery Icon Loading Tests - Header
  */
 
-#ifndef TEST_GALLERY_ICON_LOADING_H
-#define TEST_GALLERY_ICON_LOADING_H
+#ifndef TEST_ICON_LOADING_H
+#define TEST_ICON_LOADING_H
 
 #include <QObject>
 #include <QtTest/QtTest>

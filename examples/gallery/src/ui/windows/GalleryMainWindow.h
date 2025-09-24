@@ -291,10 +291,10 @@ private:
     // Enhanced settings management
     void loadSettings();
     void saveSettings();
-    void restoreGeometry();
-    void saveGeometry();
-    void restoreState();
-    void saveState();
+    void restoreWindowGeometry();
+    void saveWindowGeometry();
+    void restoreWindowState();
+    void saveWindowState();
     void applyTheme();
     void applyLanguage();
 

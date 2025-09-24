@@ -29,7 +29,6 @@
 #include <QSlider>
 #include <QSpinBox>
 #include <QGroupBox>
-#include <QCollapsibleGroupBox>
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 #include <QGraphicsOpacityEffect>
@@ -58,6 +57,7 @@
 #include <QJsonDocument>
 
 #include "../themes/ThemeManager.h"
+#include "core/GalleryTypes.h"
 
 // Forward declarations
 class SearchInputWidget;
@@ -221,6 +221,9 @@ public:
     // Integration
     void setMetadataManager(IconMetadataManager* manager);
 
+    // Theme integration
+    void applyTheme();
+
 signals:
     void filterChanged(const FilterCriteria& criteria);
     void filtersCleared();
@@ -246,7 +249,6 @@ private:
     void updateFilterCriteria();
     void applyFilterCriteria();
     void animateExpansion();
-    void applyTheme();
 
     // UI components
     QVBoxLayout* m_mainLayout;

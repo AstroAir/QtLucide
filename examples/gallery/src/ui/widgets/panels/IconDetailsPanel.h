@@ -454,6 +454,7 @@ public:
     void setCollapsible(bool collapsible);
     void setAutoRefresh(bool enabled);
     void setPinned(bool pinned);
+    void setAnimationsEnabled(bool enabled) { Q_UNUSED(enabled); } // Stub implementation
 
     // Export and sharing
     void exportIconInfo(const QString& filePath) const;

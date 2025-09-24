@@ -5,6 +5,7 @@
 #include "IconGridWidget.h"
 #include "IconItem.h"
 #include <QVBoxLayout>
+#include <QGridLayout>
 #include <QScrollArea>
 #include <QLabel>
 #include <QApplication>
@@ -395,18 +396,17 @@ void IconGridWidget::updateVisibleItems()
 void IconGridWidget::updateIconSizes()
 {
     if (m_model) {
-        m_model->setIconSize(QSize(m_iconSize, m_iconSize));
+        m_model->setIconSize(m_iconSize);
     }
 
     if (m_delegate) {
-        m_delegate->setIconSize(QSize(m_iconSize, m_iconSize));
+        m_delegate->setIconSize(m_iconSize);
     }
 
-    // Update grid item size
-    if (m_gridView) {
-        int itemSize = m_iconSize + 20; // Add padding
-        m_gridView->setGridSize(QSize(itemSize, itemSize));
-        m_gridView->setIconSize(QSize(m_iconSize, m_iconSize));
+    // Update list view item size
+    if (m_listView) {
+        // Update the list view's icon size
+        m_listView->setIconSize(QSize(m_iconSize, m_iconSize));
     }
 
     // Force layout update
@@ -416,13 +416,14 @@ void IconGridWidget::updateIconSizes()
 
 void IconGridWidget::updateFavorites()
 {
-    if (m_model && m_favoritesManager) {
-        QStringList favorites = m_favoritesManager->getFavorites();
+    if (m_model) {
+        // For now, use empty favorites list until FavoritesManager is implemented
+        QStringList favorites; // Empty list for now
         m_model->setFavorites(favorites);
 
         // Update view to reflect favorite status changes
-        if (m_gridView) {
-            m_gridView->update();
+        if (m_listView) {
+            m_listView->update();
         }
 
         emit favoritesUpdated(favorites.size());
@@ -439,9 +440,9 @@ void IconGridWidget::onIconDoubleClicked(const QString& iconName) { emit iconDou
 void IconGridWidget::onFavoriteToggled(const QString& iconName) { emit favoriteToggled(iconName, true); }
 void IconGridWidget::onScrollValueChanged()
 {
-    if (m_gridView) {
-        QScrollBar* vScrollBar = m_gridView->verticalScrollBar();
-        QScrollBar* hScrollBar = m_gridView->horizontalScrollBar();
+    if (m_listView) {
+        QScrollBar* vScrollBar = m_listView->verticalScrollBar();
+        QScrollBar* hScrollBar = m_listView->horizontalScrollBar();
 
         if (vScrollBar) {
             int value = vScrollBar->value();
@@ -524,16 +525,23 @@ void IconGridWidget::updateViewSettings()
 }
 
 // IconGridModel missing methods
+void IconGridModel::setFavorites(const QStringList& favorites)
+{
+    m_favorites = QSet<QString>(favorites.begin(), favorites.end());
+    // Update all items to reflect favorite status changes
+    emit dataChanged(index(0), index(rowCount() - 1), {Qt::DecorationRole, Qt::UserRole});
+    emit favoritesUpdated();
+}
+
 void IconGridModel::updateFavorites()
 {
-    if (m_favoritesManager) {
-        m_favorites = m_favoritesManager->getFavorites().toSet();
+    // For now, use empty favorites until FavoritesManager is implemented
+    m_favorites.clear();
 
-        // Update all items to reflect favorite status changes
-        emit dataChanged(index(0), index(rowCount() - 1), {Qt::DecorationRole, Qt::UserRole});
+    // Update all items to reflect favorite status changes
+    emit dataChanged(index(0), index(rowCount() - 1), {Qt::DecorationRole, Qt::UserRole});
 
-        emit favoritesUpdated();
-    }
+    emit favoritesUpdated();
 }
 
 void IconGridModel::updateSelection() {
@@ -668,24 +676,7 @@ void IconGridWidget::dropEvent(QDropEvent *event) {
     QWidget::dropEvent(event);
 }
 
-// Helper method implementations
-void IconGridWidget::updateVisibleItems()
-{
-    if (!m_gridView) return;
-
-    // Get visible rect
-    QRect visibleRect = m_gridView->viewport()->rect();
-    QModelIndex topLeft = m_gridView->indexAt(visibleRect.topLeft());
-    QModelIndex bottomRight = m_gridView->indexAt(visibleRect.bottomRight());
-
-    if (topLeft.isValid() && bottomRight.isValid()) {
-        int startRow = topLeft.row();
-        int endRow = bottomRight.row();
-
-        // Emit visible range for potential optimizations
-        emit visibleRangeChanged(startRow, endRow);
-    }
-}
+// Helper method implementations - removed duplicate updateVisibleItems
 
 void IconGridWidget::setAnimationsEnabled(bool enabled)
 {
@@ -703,8 +694,10 @@ void IconGridWidget::setAnimationsEnabled(bool enabled)
 void IconGridWidget::setSpacing(int spacing)
 {
     m_spacing = spacing;
-    if (m_gridView) {
-        m_gridView->setSpacing(spacing);
+    if (m_gridView && m_gridView->layout()) {
+        if (auto* gridLayout = qobject_cast<QGridLayout*>(m_gridView->layout())) {
+            gridLayout->setSpacing(spacing);
+        }
     }
     update();
 }
@@ -752,15 +745,11 @@ void IconGridWidget::setMetadataManager(IconMetadataManager* manager) {
 // IconGridModel helper methods
 void IconGridModel::setIconSize(const QSize& size)
 {
-    m_iconSize = size;
+    m_iconSize = size.width();  // Use width as the icon size
     emit dataChanged(index(0), index(rowCount() - 1), {Qt::SizeHintRole});
 }
 
-void IconGridModel::setFavorites(const QStringList& favorites)
-{
-    m_favorites = favorites.toSet();
-    emit dataChanged(index(0), index(rowCount() - 1), {Qt::DecorationRole, Qt::UserRole});
-}
+
 
 void IconGridModel::setFilteredIcons(const QStringList& icons)
 {
@@ -781,7 +770,7 @@ void IconGridModel::clearFilter()
 // IconGridDelegate helper methods
 void IconGridDelegate::setIconSize(const QSize& size)
 {
-    m_iconSize = size;
+    m_iconSize = size.width();  // Use width as the icon size
 }
 
 void IconGridDelegate::setAnimationsEnabled(bool enabled)
@@ -795,4 +784,12 @@ int IconGridWidget::iconSize() const {
 
 IconGridWidget::ViewMode IconGridWidget::viewMode() const {
     return m_viewMode;
+}
+
+// Missing IconGridWidget methods
+void IconGridWidget::selectAll()
+{
+    if (m_listView && m_listView->selectionModel()) {
+        m_listView->selectAll();
+    }
 }

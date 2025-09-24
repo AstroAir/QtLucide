@@ -49,7 +49,7 @@
 #include "../themes/ThemeManager.h"
 
 // Forward declarations
-class CategoryTreeWidget;
+class ModernCategoryTreeWidget;
 class SidebarHeaderWidget;
 class CategoryItemWidget;
 
@@ -185,7 +185,7 @@ private:
 /**
  * @brief Modern category tree widget with enhanced features
  */
-class CategoryTreeWidget : public QFrame
+class ModernCategoryTreeWidget : public QFrame
 {
     Q_OBJECT
 
@@ -200,8 +200,8 @@ public:
         bool visible;
     };
 
-    explicit CategoryTreeWidget(QWidget* parent = nullptr);
-    ~CategoryTreeWidget();
+    explicit ModernCategoryTreeWidget(QWidget* parent = nullptr);
+    ~ModernCategoryTreeWidget();
 
     // Category management
     void setCategories(const QHash<QString, CategoryData>& categories);
@@ -245,6 +245,9 @@ signals:
     void categoryExpanded(const QString& categoryName, bool expanded);
     void categoryCountChanged(const QString& categoryName, int count);
     void filterChanged(const QString& filter);
+    void categorySelectionChanged(const QStringList& categories);
+    void tagSelectionChanged(const QStringList& tags);
+    void selectionChanged();
 
 protected:
     void paintEvent(QPaintEvent* event) override;
@@ -374,8 +377,8 @@ public:
     ~ModernSidebarWidget();
 
     // Category management
-    void setCategories(const QHash<QString, CategoryTreeWidget::CategoryData>& categories);
-    QHash<QString, CategoryTreeWidget::CategoryData> categories() const;
+    void setCategories(const QHash<QString, ModernCategoryTreeWidget::CategoryData>& categories);
+    QHash<QString, ModernCategoryTreeWidget::CategoryData> categories() const;
     void updateCategoryCount(const QString& categoryName, int count);
 
     // Selection
@@ -423,7 +426,7 @@ private:
     // UI components
     QVBoxLayout* m_mainLayout;
     SidebarHeaderWidget* m_headerWidget;
-    CategoryTreeWidget* m_categoryTree;
+    ModernCategoryTreeWidget* m_categoryTree;
     
     // State
     bool m_collapsed;

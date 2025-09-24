@@ -40,10 +40,12 @@ ResponsiveLayoutManager::ResponsiveLayoutManager(QWidget* mainWidget, QObject* p
     m_screenCheckTimer->start(SCREEN_CHECK_INTERVAL);
 
     // Connect to application screen changes
-    connect(QGuiApplication::instance(), &QGuiApplication::screenAdded,
-            this, &ResponsiveLayoutManager::onScreenSizeChanged);
-    connect(QGuiApplication::instance(), &QGuiApplication::screenRemoved,
-            this, &ResponsiveLayoutManager::onScreenSizeChanged);
+    if (auto* guiApp = qobject_cast<QGuiApplication*>(QGuiApplication::instance())) {
+        connect(guiApp, &QGuiApplication::screenAdded,
+                this, &ResponsiveLayoutManager::onScreenSizeChanged);
+        connect(guiApp, &QGuiApplication::screenRemoved,
+                this, &ResponsiveLayoutManager::onScreenSizeChanged);
+    }
 
     // Install event filter on main widget
     if (m_mainWidget) {
@@ -350,10 +352,10 @@ void ResponsiveLayoutManager::updateLayout()
 
         // Emit signals
         if (screenSizeChanged) {
-            emit screenSizeChanged(newScreenSize, oldScreenSize);
+            emit ResponsiveLayoutManager::screenSizeChanged(newScreenSize, oldScreenSize);
         }
         if (layoutModeChanged) {
-            emit layoutModeChanged(newLayoutMode, oldLayoutMode);
+            emit ResponsiveLayoutManager::layoutModeChanged(newLayoutMode, oldLayoutMode);
         }
         emit layoutUpdated();
 
@@ -563,5 +565,138 @@ void ResponsiveLayoutManager::applySpacingAndMargins()
     if (mainLayout) {
         mainLayout->setSpacing(getOptimalSpacing());
         mainLayout->setContentsMargins(getOptimalMargins());
+    }
+}
+
+// Missing ResponsiveLayoutManager methods
+void ResponsiveLayoutManager::resetToDefaults()
+{
+    // Reset to default configuration
+    m_currentConfig = LayoutConfig();
+    applyLayoutConfig(m_currentConfig);
+    emit layoutUpdated();
+}
+
+void ResponsiveLayoutManager::onAnimationFinished()
+{
+    // Handle animation completion
+    emit layoutUpdated();
+}
+
+void ResponsiveLayoutManager::onSplitterMoved()
+{
+    QSplitter* splitter = qobject_cast<QSplitter*>(sender());
+    if (!splitter) return;
+
+    // Find the splitter name and update sizes
+    for (auto it = m_splitters.begin(); it != m_splitters.end(); ++it) {
+        if (it.value() == splitter) {
+            m_splitterSizes[it.key()] = splitter->sizes();
+            emit splitterSizesChanged(it.key(), splitter->sizes());
+            break;
+        }
+    }
+}
+
+void ResponsiveLayoutManager::animateSplitterResize(QSplitter* splitter, const QList<int>& sizes)
+{
+    if (!splitter || !m_animationsEnabled) {
+        splitter->setSizes(sizes);
+        return;
+    }
+
+    // Create animation for splitter resize
+    QPropertyAnimation* animation = new QPropertyAnimation(splitter, "sizes");
+    animation->setDuration(m_animationDuration);
+    animation->setEasingCurve(QEasingCurve::OutCubic);
+    animation->setEndValue(QVariant::fromValue(sizes));
+
+    m_layoutAnimationGroup->addAnimation(animation);
+    m_layoutAnimationGroup->start();
+}
+
+void ResponsiveLayoutManager::animatePanelTransition(QWidget* panel, PanelState fromState, PanelState toState)
+{
+    if (!panel || !m_animationsEnabled) {
+        // Apply state immediately
+        switch (toState) {
+            case Hidden:
+                panel->hide();
+                break;
+            case Collapsed:
+                panel->setMaximumWidth(50);
+                panel->show();
+                break;
+            case Visible:
+                panel->setMaximumWidth(200);
+                panel->show();
+                break;
+            case Expanded:
+                panel->setMaximumWidth(QWIDGETSIZE_MAX);
+                panel->show();
+                break;
+        }
+        return;
+    }
+
+    // Create animation for panel transition
+    QPropertyAnimation* animation = new QPropertyAnimation(panel, "maximumWidth");
+    animation->setDuration(m_animationDuration);
+    animation->setEasingCurve(QEasingCurve::OutCubic);
+
+    switch (toState) {
+        case Hidden:
+            animation->setEndValue(0);
+            connect(animation, &QPropertyAnimation::finished, panel, &QWidget::hide);
+            break;
+        case Collapsed:
+            animation->setEndValue(50);
+            panel->show();
+            break;
+        case Visible:
+            animation->setEndValue(200);
+            panel->show();
+            break;
+        case Expanded:
+            animation->setEndValue(300);
+            panel->show();
+            break;
+    }
+
+    m_layoutAnimationGroup->addAnimation(animation);
+    m_layoutAnimationGroup->start();
+}
+
+void ResponsiveLayoutManager::animateLayoutTransition()
+{
+    if (!m_animationsEnabled) return;
+
+    // Start the layout animation group
+    if (m_layoutAnimationGroup->animationCount() > 0) {
+        m_layoutAnimationGroup->start();
+    }
+}
+
+// ResponsiveWidget Implementation
+ResponsiveWidget::ResponsiveWidget(QWidget* widget, ResponsiveLayoutManager* manager, QObject* parent)
+    : QObject(parent)
+    , m_widget(widget)
+    , m_manager(manager)
+{
+    if (m_manager) {
+        connect(m_manager, &ResponsiveLayoutManager::screenSizeChanged,
+                this, &ResponsiveWidget::onScreenSizeChanged);
+    }
+}
+
+ResponsiveWidget::~ResponsiveWidget() = default;
+
+void ResponsiveWidget::onScreenSizeChanged(ResponsiveLayoutManager::ScreenSize oldSize, ResponsiveLayoutManager::ScreenSize newSize)
+{
+    Q_UNUSED(oldSize)
+    Q_UNUSED(newSize)
+    // Handle screen size change
+    if (m_widget) {
+        m_widget->update();
     }
 }

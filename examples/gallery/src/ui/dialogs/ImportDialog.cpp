@@ -21,9 +21,7 @@
 #include <QCryptographicHash>
 #include <QDebug>
 
-// Static constants for SettingsManager
-const QString SettingsManager::EXPORT_VERSION = "2.1.0";
-const QString SettingsManager::EXPORT_FORMAT_VERSION = "1.0";
+// Static constants are defined in ManagerStubs.cpp
 
 // ImportOptionsWidget Implementation
 ImportOptionsWidget::ImportOptionsWidget(QWidget* parent)
@@ -552,4 +550,275 @@ void ImportOptionsWidget::updateBackupOptions()
     m_backupDirectoryEdit->setText(m_config.backupDirectory);
     m_backupDirectoryEdit->setEnabled(m_config.createBackup);
     m_browseBackupButton->setEnabled(m_config.createBackup);
+}
+
+// ImportPreviewWidget Implementation
+ImportPreviewWidget::ImportPreviewWidget(QWidget* parent)
+    : QWidget(parent)
+{
+    setupUI();
+}
+
+ImportPreviewWidget::~ImportPreviewWidget() = default;
+
+void ImportPreviewWidget::setupUI() {
+    setMinimumSize(300, 400);
+}
+
+void ImportPreviewWidget::onTreeItemClicked(QTreeWidgetItem* item, int column) {
+    Q_UNUSED(item)
+    Q_UNUSED(column)
+    // Handle tree item click
+}
+
+void ImportPreviewWidget::onShowDetailsToggled(bool show) {
+    Q_UNUSED(show)
+    // Handle show details toggle
+}
+
+void ImportPreviewWidget::paintEvent(QPaintEvent* event) {
+    QWidget::paintEvent(event);
+    QPainter painter(this);
+    painter.fillRect(rect(), QColor(245, 245, 245));
+    painter.drawText(rect(), Qt::AlignCenter, "Import Preview");
+}
+
+// ImportSettingsManager Implementation
+ImportSettingsManager::ImportSettingsManager(QObject* parent)
+    : QObject(parent)
+{
+}
+
+ImportSettingsManager::~ImportSettingsManager() = default;
+
+// ImportDialog Implementation
+ImportDialog::ImportDialog(QWidget* parent)
+    : QDialog(parent)
+    , m_mainLayout(nullptr)
+    , m_contentLayout(nullptr)
+    , m_leftLayout(nullptr)
+    , m_rightLayout(nullptr)
+    , m_titleLabel(nullptr)
+    , m_sourceLabel(nullptr)
+    , m_optionsWidget(nullptr)
+    , m_previewWidget(nullptr)
+    , m_buttonLayout(nullptr)
+    , m_importButton(nullptr)
+    , m_cancelButton(nullptr)
+    , m_closeButton(nullptr)
+    , m_importInProgress(false)
+    , m_importSuccessful(false)
+    , m_themeManager(nullptr)
+    , m_settingsManager(nullptr)
+    , m_themeWidget(nullptr)
+{
+    setupUI();
+    setupLayout();
+    setupConnections();
+    setAcceptDrops(true);
+}
+
+ImportDialog::~ImportDialog() = default;
+
+void ImportDialog::setupUI() {
+    setWindowTitle("Import Settings");
+    setModal(true);
+    resize(800, 600);
+
+    // Create main components
+    m_titleLabel = new QLabel("Import Settings", this);
+    m_sourceLabel = new QLabel("No file selected", this);
+    m_optionsWidget = new ImportOptionsWidget(this);
+    m_previewWidget = new ImportPreviewWidget(this);
+
+    // Create buttons
+    m_importButton = new QPushButton("Import", this);
+    m_cancelButton = new QPushButton("Cancel", this);
+    m_closeButton = new QPushButton("Close", this);
+
+    m_importButton->setEnabled(false);
+}
+
+void ImportDialog::setupLayout() {
+    m_mainLayout = new QVBoxLayout(this);
+    m_contentLayout = new QHBoxLayout();
+    m_leftLayout = new QVBoxLayout();
+    m_rightLayout = new QVBoxLayout();
+    m_buttonLayout = new QHBoxLayout();
+
+    // Left side - options
+    m_leftLayout->addWidget(m_titleLabel);
+    m_leftLayout->addWidget(m_sourceLabel);
+    m_leftLayout->addWidget(m_optionsWidget);
+
+    // Right side - preview
+    m_rightLayout->addWidget(m_previewWidget);
+
+    // Content layout
+    m_contentLayout->addLayout(m_leftLayout, 1);
+    m_contentLayout->addLayout(m_rightLayout, 1);
+
+    // Button layout
+    m_buttonLayout->addStretch();
+    m_buttonLayout->addWidget(m_importButton);
+    m_buttonLayout->addWidget(m_cancelButton);
+    m_buttonLayout->addWidget(m_closeButton);
+
+    // Main layout
+    m_mainLayout->addLayout(m_contentLayout);
+    m_mainLayout->addLayout(m_buttonLayout);
+}
+
+void ImportDialog::setupConnections() {
+    connect(m_importButton, &QPushButton::clicked, this, &ImportDialog::onImportClicked);
+    connect(m_cancelButton, &QPushButton::clicked, this, &ImportDialog::onCancelClicked);
+    connect(m_closeButton, &QPushButton::clicked, this, &QDialog::reject);
+
+    if (m_optionsWidget) {
+        connect(m_optionsWidget, &ImportOptionsWidget::configChanged,
+                this, &ImportDialog::onConfigChanged);
+        connect(m_optionsWidget, &ImportOptionsWidget::sourceFileChanged,
+                this, &ImportDialog::onSourceFileChanged);
+    }
+}
+
+// ImportDialog slot implementations
+void ImportDialog::onImportClicked() {
+    if (validateImportConfig()) {
+        startImport();
+    }
+}
+
+void ImportDialog::onCancelClicked() {
+    if (m_importInProgress) {
+        cancelImport();
+    } else {
+        reject();
+    }
+}
+
+void ImportDialog::onConfigChanged(const ImportConfig& config) {
+    m_config = config;
+    updateUI();
+}
+
+void ImportDialog::onSourceFileChanged(const QString& filename) {
+    m_sourceFile = filename;
+    if (m_sourceLabel) {
+        m_sourceLabel->setText(QFileInfo(filename).fileName());
+    }
+    m_importButton->setEnabled(!filename.isEmpty());
+    loadAndPreviewFile();
+}
+
+void ImportDialog::onPreviewDataItem(ImportDataType type, const QString& data) {
+    Q_UNUSED(type)
+    Q_UNUSED(data)
+    // Handle preview data item
+}
+
+void ImportDialog::loadAndPreviewFile() {
+    if (m_sourceFile.isEmpty()) {
+        return;
+    }
+
+    // Load and preview the import file
+    // This would parse the file and show preview in m_previewWidget
+}
+
+// ImportDialog utility methods
+bool ImportDialog::validateImportConfig() {
+    return !m_sourceFile.isEmpty() && !m_config.dataTypes.isEmpty();
+}
+
+void ImportDialog::startImport() {
+    m_importInProgress = true;
+    m_importSuccessful = false;
+
+    // Simulate import completion for now
+    QTimer::singleShot(1000, this, [this]() {
+        m_importInProgress = false;
+        m_importSuccessful = true;
+        accept();
+    });
+}
+
+void ImportDialog::cancelImport() {
+    m_importInProgress = false;
+}
+
+void ImportDialog::updateUI() {
+    // Update UI based on current configuration
+}
+
+// ImportDialog public methods
+void ImportDialog::setSourceFile(const QString& filename) {
+    onSourceFileChanged(filename);
+}
+
+QString ImportDialog::sourceFile() const {
+    return m_sourceFile;
+}
+
+void ImportDialog::setImportConfig(const ImportConfig& config) {
+    m_config = config;
+    if (m_optionsWidget) {
+        m_optionsWidget->setImportConfig(config);
+    }
+}
+
+ImportConfig ImportDialog::importConfig() const {
+    return m_config;
+}
+
+void ImportDialog::setThemeManager(ThemeManager* themeManager) {
+    m_themeManager = themeManager;
+    applyTheme();
+}
+
+void ImportDialog::applyTheme() {
+    if (m_themeManager) {
+        // Apply theme styling
+    }
+}
+
+// ImportDialog event handlers
+void ImportDialog::showEvent(QShowEvent* event) {
+    QDialog::showEvent(event);
+    updateUI();
+}
+
+void ImportDialog::closeEvent(QCloseEvent* event) {
+    if (m_importInProgress) {
+        cancelImport();
+    }
+    QDialog::closeEvent(event);
+}
+
+void ImportDialog::dragEnterEvent(QDragEnterEvent* event) {
+    if (event->mimeData()->hasUrls()) {
+        event->acceptProposedAction();
+    }
+}
+
+void ImportDialog::dropEvent(QDropEvent* event) {
+    const QMimeData* mimeData = event->mimeData();
+    if (mimeData->hasUrls()) {
+        QList<QUrl> urls = mimeData->urls();
+        if (!urls.isEmpty()) {
+            QString filename = urls.first().toLocalFile();
+            setSourceFile(filename);
+        }
+    }
+}
+
+void ImportDialog::accept() {
+    QDialog::accept();
+}
+
+void ImportDialog::reject() {
+    if (m_importInProgress) {
+        cancelImport();
+    }
+    QDialog::reject();
 }

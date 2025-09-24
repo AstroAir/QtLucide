@@ -14,6 +14,7 @@
 #include <QJsonParseError>
 #include <QCoreApplication>
 #include <QStyleHints>
+#include <QtLucide/QtLucide.h>
 
 // Static instance
 ThemeManager* ThemeManager::s_instance = nullptr;
@@ -118,8 +119,12 @@ QColor ThemeManager::getColor(ColorRole role) const
 
 void ThemeManager::setColor(ColorRole role, const QColor& color)
 {
-    m_currentColors.colors[role] = color;
-    emit colorsChanged();
+    // Only set the color if it's valid
+    if (color.isValid()) {
+        m_currentColors.colors[role] = color;
+        emit colorsChanged();
+    }
+    // If invalid color is provided, keep the existing color (no change)
 }
 
 ThemeManager::ThemeColors ThemeManager::getCurrentColors() const
@@ -204,7 +209,9 @@ void ThemeManager::onSystemThemeChanged()
 void ThemeManager::refreshTheme()
 {
     Theme current = m_currentTheme;
-    m_currentTheme = static_cast<Theme>(-1); // Force refresh
+    // Force refresh by temporarily setting to a different theme
+    Theme tempTheme = (current == SystemTheme) ? LightTheme : SystemTheme;
+    m_currentTheme = tempTheme;
     setTheme(current);
 }
 
@@ -333,24 +340,24 @@ ThemeManager::ThemeColors ThemeManager::loadDarkTheme()
     colors.colors[SecondaryText] = QColor("#b0b0b0");
     colors.colors[DisabledText] = QColor("#888888");
 
-    // Accent colors
-    colors.colors[AccentColor] = QColor("#3498db");
-    colors.colors[AccentColorHover] = QColor("#2980b9");
-    colors.colors[AccentColorPressed] = QColor("#21618c");
+    // Accent colors (different from light theme)
+    colors.colors[AccentColor] = QColor("#5dade2");
+    colors.colors[AccentColorHover] = QColor("#3498db");
+    colors.colors[AccentColorPressed] = QColor("#2980b9");
 
     // Border colors
     colors.colors[BorderColor] = QColor("#404040");
     colors.colors[BorderColorHover] = QColor("#606060");
-    colors.colors[BorderColorFocus] = QColor("#3498db");
+    colors.colors[BorderColorFocus] = QColor("#5dade2");
 
     // State colors
     colors.colors[SuccessColor] = QColor("#27ae60");
     colors.colors[WarningColor] = QColor("#f39c12");
     colors.colors[ErrorColor] = QColor("#e74c3c");
-    colors.colors[InfoColor] = QColor("#3498db");
+    colors.colors[InfoColor] = QColor("#5dade2");
 
     // Selection colors
-    colors.colors[SelectionBackground] = QColor("#3498db");
+    colors.colors[SelectionBackground] = QColor("#5dade2");
     colors.colors[SelectionText] = QColor("#ffffff");
 
     // Hover colors
@@ -666,4 +673,39 @@ bool ThemeManager::isValidThemeFile(const QString& filePath)
     QJsonDocument doc = QJsonDocument::fromJson(file.readAll(), &error);
 
     return (error.error == QJsonParseError::NoError && doc.isObject());
+}
+
+// Missing ThemeManager method
+ThemeManager::ThemeColors ThemeManager::loadCustomThemeFromFile(const QString& filePath)
+{
+    ThemeColors themeColors;
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly)) {
+        return themeColors; // Return empty colors on failure
+    }
+
+    QJsonParseError error;
+    QJsonDocument doc = QJsonDocument::fromJson(file.readAll(), &error);
+
+    if (error.error != QJsonParseError::NoError || !doc.isObject()) {
+        return themeColors; // Return empty colors on failure
+    }
+
+    QJsonObject themeObj = doc.object();
+
+    // Load basic theme info
+    themeColors.name = themeObj["name"].toString();
+    themeColors.description = themeObj["description"].toString();
+    themeColors.isDark = themeObj["isDark"].toBool();
+
+    // Load color values (simplified implementation)
+    QJsonObject colorsObj = themeObj["colors"].toObject();
+
+    // Map basic colors to ColorRole enum values
+    themeColors.colors[WindowBackground] = QColor(colorsObj["background"].toString());
+    themeColors.colors[PrimaryText] = QColor(colorsObj["text"].toString());
+    themeColors.colors[AccentColor] = QColor(colorsObj["accent"].toString());
+
+    return themeColors;
 }

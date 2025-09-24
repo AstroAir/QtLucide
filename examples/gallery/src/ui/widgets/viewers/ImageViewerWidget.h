@@ -187,6 +187,7 @@ signals:
     void viewModeChanged(ViewMode mode);
     void slideshowStateChanged(bool active);
     void loadingStarted(const QString& identifier);
+    void imageLoaded(const QString& identifier);  // Added for compatibility
     void loadingFinished(const QString& identifier);
     void loadingFailed(const QString& identifier, const QString& error);
 
@@ -242,6 +243,7 @@ private:
     QAction* m_infoAction;
 
     QSlider* m_zoomSlider;
+    QLabel* m_zoomLabel;  // Added for compatibility
     QComboBox* m_viewModeCombo;
     QProgressBar* m_loadingProgress;
 

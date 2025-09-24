@@ -49,6 +49,17 @@
 #include <QPixmapCache>
 #include <QThreadPool>
 #include <QRunnable>
+#include <QAbstractListModel>
+#include <QModelIndex>
+#include <QVariant>
+#include <QStringList>
+#include <QSet>
+#include <QHash>
+#include <QStyleOptionViewItem>
+#include <QPainter>
+#include <QSplitter>
+#include <QEasingCurve>
+#include <QObject>
 
 #include <QtLucide/QtLucide.h>
 #include "core/managers/IconMetadataManager.h"
@@ -60,6 +71,7 @@
 class IconGridDelegate;
 class IconRenderTask;
 class IconGridViewport;
+class FavoritesManager;
 
 /**
  * @brief Enhanced model for icon data with advanced caching and virtual scrolling
@@ -81,10 +93,14 @@ public:
     // Enhanced custom methods
     void setIconNames(const QStringList& iconNames);
     void setIconSize(int size);
+    void setIconSize(const QSize& size);  // Added for compatibility
     void setMetadataManager(IconMetadataManager* manager);
     void setLucide(lucide::QtLucide* lucide);
     void setShowIconNames(bool show);
     void setHighlightSearchTerm(const QString& term);
+    void setFavorites(const QStringList& favorites);
+    void setFilteredIcons(const QStringList& iconNames);  // Added for compatibility
+    void clearFilter();  // Added for compatibility
 
     QString iconNameAt(int index) const;
     QStringList iconNames() const;
@@ -126,6 +142,9 @@ signals:
     void iconSelectionChanged();
     void dataPreloaded(int start, int count);
     void cacheUpdated();
+    void favoritesUpdated();
+    void filteredIconsChanged();  // Added for compatibility
+    void filterCleared();  // Added for compatibility
 
 private:
     void updateSearchHighlights();
@@ -139,6 +158,12 @@ private:
     QString m_highlightTerm;
     IconMetadataManager* m_metadataManager;
     lucide::QtLucide* m_lucide;
+    FavoritesManager* m_favoritesManager;
+    QSet<QString> m_favorites;
+
+    // Filtering system
+    QStringList m_filteredIcons;  // Added for compatibility
+    bool m_isFiltered;  // Added for compatibility
 
     // Caching system
     mutable QCache<QString, QPixmap> m_pixmapCache;
@@ -172,6 +197,7 @@ public:
 
     // Enhanced custom methods
     void setIconSize(int size);
+    void setIconSize(const QSize& size);  // Added for compatibility
     void setShowIconNames(bool show);
     void setAnimationsEnabled(bool enabled);
     void setHighlightColor(const QColor& color);
@@ -302,6 +328,9 @@ public:
     void setLazyLoadingEnabled(bool enabled);
     void setCacheLimit(int limit);
     void preloadVisibleItems();
+    void setSpacing(int spacing);
+    void setMargin(int margin);
+    void setFilteredIcons(const QStringList& icons);
 
     // Getters
     QStringList iconNames() const;
@@ -329,6 +358,7 @@ public:
     void showContextMenu(const QPoint& position);
 
 public slots:
+    void refresh() { refreshIcons(); }  // Alias for refreshIcons
     void refreshIcons();
     void updateIconSizes();
     void updateFavorites();
@@ -348,12 +378,17 @@ signals:
     void selectionChanged(const QStringList& selectedIcons);
     void favoriteToggled(const QString& iconName, bool favorite);
     void iconSizeChanged(int size);
+    void filteredIconsChanged(int count);  // Added for compatibility
+    void filterCleared();  // Added for compatibility
     void viewModeChanged(ViewMode mode);
     void itemCountChanged(int count);
     void visibleItemCountChanged(int count);
     void loadingStarted();
     void loadingFinished();
     void performanceMetricsUpdated(const QVariantMap& metrics);
+    void favoritesUpdated(int count);
+    void scrollPositionChanged(int value, int maximum);
+    void nearBottomReached();
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
@@ -430,6 +465,8 @@ private:
     QLabel* m_emptyLabel;
     QProgressBar* m_loadingProgress;
     QLabel* m_statusLabel;
+    QWidget* m_gridView;  // Grid view widget
+    FavoritesManager* m_favoritesManager;  // Favorites manager
 
     // Model and delegate
     std::unique_ptr<IconGridModel> m_model;
@@ -437,6 +474,7 @@ private:
 
     // Enhanced settings and state
     int m_iconSize;
+    int m_margin;  // Added for compatibility
     ViewMode m_viewMode;
     SelectionMode m_selectionMode;
     ScrollMode m_scrollMode;
@@ -456,6 +494,7 @@ private:
     int m_columnsCount;
     QSize m_itemSize;
     QSize m_viewportSize;
+    int m_spacing;  // Grid spacing
 
     // Performance optimization
     QTimer* m_updateTimer;

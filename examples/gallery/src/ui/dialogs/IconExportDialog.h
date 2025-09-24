@@ -41,6 +41,7 @@
 #include <QToolButton>
 #include <QColorDialog>
 #include <QFontDialog>
+#include <QInputDialog>
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QPlainTextEdit>
@@ -71,10 +72,10 @@
 
 // Forward declarations
 class IconMetadataManager;
-class ExportWorker;
 
-// Include manager stubs
+// Include manager stubs and export worker
 #include "../../core/managers/ManagerStubs.h"
+#include "../../core/BatchExportManager.h"
 
 /**
  * @brief Enhanced export dialog with comprehensive export and import capabilities
@@ -118,7 +119,12 @@ public:
         Solid = 1,
         Gradient = 2,
         Pattern = 3,
-        Image = 4
+        Image = 4,
+        // Aliases for compatibility
+        TransparentBackground = Transparent,
+        SolidBackground = Solid,
+        GradientBackground = Gradient,
+        ImageBackground = Image
     };
     Q_ENUM(BackgroundType)
 
@@ -258,6 +264,7 @@ signals:
     void exportResumed();
     void exportProgress(int current, int total, const QString& currentIcon);
     void exportFinished(bool success, const QString& message, const QStringList& exportedFiles);
+    void exportFinished();  // Added for compatibility
     void exportCancelled();
     void previewReady(const QPixmap& preview);
     void validationResult(bool valid, const QStringList& errors);
@@ -265,6 +272,24 @@ signals:
     void presetLoaded(const QString& name);
     void cloudUploadProgress(int current, int total);
     void cloudUploadFinished(bool success, const QString& url);
+
+    // Additional signals for compatibility
+    void optionsReset();
+    void qualityChanged(int quality);
+    void backgroundTypeChanged(BackgroundType type);
+    void gradientColorsChanged(const QColor& start, const QColor& end);
+    void backgroundImageChanged(const QString& path);
+    void namingPatternChanged(const QString& pattern);
+    void advancedOptionsToggled(bool visible);
+    void presetChanged(const QString& name);
+    void presetDeleted(const QString& name);
+    void favoritesImported(int count);
+    void favoritesExported(int count);
+    void settingsImported();
+    void settingsExported();
+    void cloudProviderChanged(const QString& provider);
+    void cloudUploadRequested(const QString& provider);
+    void exportError(const QString& error);
 
 private slots:
     // Enhanced private slots
@@ -329,6 +354,10 @@ private:
     void validateExportOptions();
     void connectSignals();
     void disconnectSignals();
+    void updateUI();
+    void updateBackgroundControls();
+    void updateIconList();
+    QString generateFileName(const QString& iconName) const;
 
     // Export processing methods
     QString generateFilename(const QString& iconName, int size, const QString& format) const;
@@ -386,6 +415,7 @@ private:
     QComboBox* m_formatCombo;
     QComboBox* m_modeCombo;
     QSlider* m_qualitySlider;
+    QSpinBox* m_qualitySpinBox;  // Added for compatibility
     QLabel* m_qualityLabel;
 
     // Size options
@@ -407,6 +437,7 @@ private:
     QPushButton* m_gradientEndButton;
     QLineEdit* m_backgroundImageEdit;
     QPushButton* m_browseBackgroundButton;
+    QPushButton* m_backgroundImageButton;  // Added for compatibility
     QComboBox* m_backgroundPatternCombo;
 
     // Color options
@@ -421,7 +452,9 @@ private:
     QLineEdit* m_outputDirEdit;
     QPushButton* m_browseButton;
     QComboBox* m_namingPatternCombo;
+    QLineEdit* m_namingPatternEdit;  // Added for compatibility
     QLineEdit* m_customPatternEdit;
+    QLineEdit* m_outputDirectoryEdit;  // Added for compatibility
     QLineEdit* m_filenameTemplateEdit;  // Added for implementation compatibility
     QLabel* m_filenamePreviewLabel;
     QCheckBox* m_subfoldersCheck;
@@ -436,6 +469,8 @@ private:
     QWidget* m_advancedTab;
     QScrollArea* m_advancedScrollArea;
     QGroupBox* m_advancedGroup;  // Added for implementation compatibility
+    QGroupBox* m_advancedOptionsGroup;  // Added for compatibility
+    QPushButton* m_advancedOptionsButton;  // Added for compatibility
 
     // SVG specific options
     QGroupBox* m_svgGroup;
@@ -495,6 +530,17 @@ private:
     QLabel* m_estimatedSizeLabel;
     QPushButton* m_previewButton;
 
+    // Preset management
+    QComboBox* m_presetCombo;  // Added for compatibility
+
+    // Status and list components
+    QLabel* m_statusLabel;  // Added for compatibility
+    QListWidget* m_iconListWidget;  // Added for compatibility
+    QLabel* m_iconCountLabel;  // Added for compatibility
+
+    // Cloud upload components
+    QPushButton* m_uploadToCloudButton;  // Added for compatibility
+
     // Progress area
     QFrame* m_progressFrame;
     QProgressBar* m_progressBar;
@@ -521,6 +567,21 @@ private:
     QStringList m_exportQueue;
     QStringList m_exportedFiles;
     QStringList m_failedFiles;
+
+    // Convenience member variables for compatibility
+    int m_iconSize;
+    QString m_exportFormat;
+    int m_quality;
+    QColor m_backgroundColor;
+    BackgroundType m_backgroundType;
+    QString m_namingPattern;
+    QString m_outputDirectory;
+    QStringList m_selectedIcons;
+    QColor m_gradientStartColor;
+    QColor m_gradientEndColor;
+    QString m_backgroundImagePath;
+    bool m_exportInProgress;
+    bool m_exportPaused;
 
     // State flags
     bool m_exporting;

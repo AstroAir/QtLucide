@@ -493,8 +493,8 @@ void CategoryItemWidget::onThemeChanged()
     applyTheme();
 }
 
-// CategoryTreeWidget Implementation
-CategoryTreeWidget::CategoryTreeWidget(QWidget* parent)
+// ModernCategoryTreeWidget Implementation
+ModernCategoryTreeWidget::ModernCategoryTreeWidget(QWidget* parent)
     : QFrame(parent)
     , m_mainLayout(nullptr)
     , m_scrollArea(nullptr)
@@ -510,7 +510,7 @@ CategoryTreeWidget::CategoryTreeWidget(QWidget* parent)
     // Set up layout update timer
     m_layoutUpdateTimer->setSingleShot(true);
     m_layoutUpdateTimer->setInterval(LAYOUT_UPDATE_DELAY);
-    connect(m_layoutUpdateTimer, &QTimer::timeout, this, &CategoryTreeWidget::onLayoutUpdateTimer);
+    connect(m_layoutUpdateTimer, &QTimer::timeout, this, &ModernCategoryTreeWidget::onLayoutUpdateTimer);
 
     // Create theme-aware widget
     m_themeWidget = new ThemeAwareWidget(this);
@@ -519,7 +519,7 @@ CategoryTreeWidget::CategoryTreeWidget(QWidget* parent)
     applyTheme();
 }
 
-CategoryTreeWidget::~CategoryTreeWidget()
+ModernCategoryTreeWidget::~ModernCategoryTreeWidget()
 {
     // Clean up category items
     for (auto item : m_categoryItems) {
@@ -527,7 +527,7 @@ CategoryTreeWidget::~CategoryTreeWidget()
     }
 }
 
-void CategoryTreeWidget::setCategories(const QHash<QString, CategoryData>& categories)
+void ModernCategoryTreeWidget::setCategories(const QHash<QString, CategoryData>& categories)
 {
     // Simple check - just update if different size or keys
     bool needsUpdate = (m_categories.size() != categories.size());
@@ -547,7 +547,7 @@ void CategoryTreeWidget::setCategories(const QHash<QString, CategoryData>& categ
     scheduleLayoutUpdate();
 }
 
-void CategoryTreeWidget::addCategory(const QString& name, const CategoryData& data)
+void ModernCategoryTreeWidget::addCategory(const QString& name, const CategoryData& data)
 {
     if (m_categories.contains(name)) return;
 
@@ -561,9 +561,9 @@ void CategoryTreeWidget::addCategory(const QString& name, const CategoryData& da
     item->setExpanded(data.expanded);
 
     // Connect signals
-    connect(item, &CategoryItemWidget::clicked, this, &CategoryTreeWidget::onCategoryClicked);
-    connect(item, &CategoryItemWidget::expandToggled, this, &CategoryTreeWidget::onCategoryExpanded);
-    connect(item, &CategoryItemWidget::hoverEntered, this, &CategoryTreeWidget::onCategoryHovered);
+    connect(item, &CategoryItemWidget::clicked, this, &ModernCategoryTreeWidget::onCategoryClicked);
+    connect(item, &CategoryItemWidget::expandToggled, this, &ModernCategoryTreeWidget::onCategoryExpanded);
+    connect(item, &CategoryItemWidget::hoverEntered, this, &ModernCategoryTreeWidget::onCategoryHovered);
 
     m_categoryItems[name] = item;
     m_contentLayout->addWidget(item);
@@ -571,7 +571,7 @@ void CategoryTreeWidget::addCategory(const QString& name, const CategoryData& da
     scheduleLayoutUpdate();
 }
 
-void CategoryTreeWidget::removeCategory(const QString& name)
+void ModernCategoryTreeWidget::removeCategory(const QString& name)
 {
     if (!m_categories.contains(name)) return;
 
@@ -589,7 +589,7 @@ void CategoryTreeWidget::removeCategory(const QString& name)
     }
 }
 
-void CategoryTreeWidget::updateCategoryCount(const QString& name, int count)
+void ModernCategoryTreeWidget::updateCategoryCount(const QString& name, int count)
 {
     if (!m_categories.contains(name)) return;
 
@@ -603,7 +603,7 @@ void CategoryTreeWidget::updateCategoryCount(const QString& name, int count)
     emit categoryCountChanged(name, count);
 }
 
-void CategoryTreeWidget::setSelectedCategory(const QString& categoryName)
+void ModernCategoryTreeWidget::setSelectedCategory(const QString& categoryName)
 {
     if (m_selectedCategory == categoryName) return;
 
@@ -628,12 +628,12 @@ void CategoryTreeWidget::setSelectedCategory(const QString& categoryName)
     emit categorySelected(categoryName);
 }
 
-void CategoryTreeWidget::clearSelection()
+void ModernCategoryTreeWidget::clearSelection()
 {
     setSelectedCategory(QString());
 }
 
-void CategoryTreeWidget::setExpandedCategories(const QStringList& categories)
+void ModernCategoryTreeWidget::setExpandedCategories(const QStringList& categories)
 {
     for (auto it = m_categories.begin(); it != m_categories.end(); ++it) {
         bool shouldExpand = categories.contains(it.key());
@@ -648,7 +648,7 @@ void CategoryTreeWidget::setExpandedCategories(const QStringList& categories)
     }
 }
 
-QStringList CategoryTreeWidget::expandedCategories() const
+QStringList ModernCategoryTreeWidget::expandedCategories() const
 {
     QStringList expanded;
     for (auto it = m_categories.begin(); it != m_categories.end(); ++it) {
@@ -659,7 +659,7 @@ QStringList CategoryTreeWidget::expandedCategories() const
     return expanded;
 }
 
-void CategoryTreeWidget::expandCategory(const QString& categoryName, bool expanded)
+void ModernCategoryTreeWidget::expandCategory(const QString& categoryName, bool expanded)
 {
     if (!m_categories.contains(categoryName)) return;
 
@@ -675,21 +675,21 @@ void CategoryTreeWidget::expandCategory(const QString& categoryName, bool expand
     emit categoryExpanded(categoryName, expanded);
 }
 
-void CategoryTreeWidget::collapseAll()
+void ModernCategoryTreeWidget::collapseAll()
 {
     for (auto it = m_categories.begin(); it != m_categories.end(); ++it) {
         expandCategory(it.key(), false);
     }
 }
 
-void CategoryTreeWidget::expandAll()
+void ModernCategoryTreeWidget::expandAll()
 {
     for (auto it = m_categories.begin(); it != m_categories.end(); ++it) {
         expandCategory(it.key(), true);
     }
 }
 
-void CategoryTreeWidget::setAnimationsEnabled(bool enabled)
+void ModernCategoryTreeWidget::setAnimationsEnabled(bool enabled)
 {
     if (m_animationsEnabled == enabled) return;
 
@@ -701,7 +701,7 @@ void CategoryTreeWidget::setAnimationsEnabled(bool enabled)
     }
 }
 
-void CategoryTreeWidget::setShowItemCounts(bool show)
+void ModernCategoryTreeWidget::setShowItemCounts(bool show)
 {
     if (m_showItemCounts == show) return;
 
@@ -713,7 +713,7 @@ void CategoryTreeWidget::setShowItemCounts(bool show)
     }
 }
 
-void CategoryTreeWidget::setFilter(const QString& filter)
+void ModernCategoryTreeWidget::setFilter(const QString& filter)
 {
     if (m_filter == filter) return;
 
@@ -722,7 +722,7 @@ void CategoryTreeWidget::setFilter(const QString& filter)
     emit filterChanged(filter);
 }
 
-void CategoryTreeWidget::applyTheme()
+void ModernCategoryTreeWidget::applyTheme()
 {
     if (!ThemeManager::instance()) return;
 
@@ -744,13 +744,13 @@ void CategoryTreeWidget::applyTheme()
     }
 }
 
-void CategoryTreeWidget::refreshCategories()
+void ModernCategoryTreeWidget::refreshCategories()
 {
     createCategoryItems();
     updateLayout();
 }
 
-void CategoryTreeWidget::updateLayout()
+void ModernCategoryTreeWidget::updateLayout()
 {
     m_layoutUpdatePending = false;
 
@@ -766,7 +766,7 @@ void CategoryTreeWidget::updateLayout()
     }
 }
 
-void CategoryTreeWidget::setupUI()
+void ModernCategoryTreeWidget::setupUI()
 {
     setFrameStyle(QFrame::NoFrame);
 
@@ -793,7 +793,7 @@ void CategoryTreeWidget::setupUI()
     m_mainLayout->addWidget(m_scrollArea);
 }
 
-void CategoryTreeWidget::createCategoryItems()
+void ModernCategoryTreeWidget::createCategoryItems()
 {
     // Clear existing items
     for (auto item : m_categoryItems) {
@@ -814,9 +814,9 @@ void CategoryTreeWidget::createCategoryItems()
         item->setVisible(data.visible);
 
         // Connect signals
-        connect(item, &CategoryItemWidget::clicked, this, &CategoryTreeWidget::onCategoryClicked);
-        connect(item, &CategoryItemWidget::expandToggled, this, &CategoryTreeWidget::onCategoryExpanded);
-        connect(item, &CategoryItemWidget::hoverEntered, this, &CategoryTreeWidget::onCategoryHovered);
+        connect(item, &CategoryItemWidget::clicked, this, &ModernCategoryTreeWidget::onCategoryClicked);
+        connect(item, &CategoryItemWidget::expandToggled, this, &ModernCategoryTreeWidget::onCategoryExpanded);
+        connect(item, &CategoryItemWidget::hoverEntered, this, &ModernCategoryTreeWidget::onCategoryHovered);
 
         m_categoryItems[name] = item;
 
@@ -826,7 +826,7 @@ void CategoryTreeWidget::createCategoryItems()
     }
 }
 
-void CategoryTreeWidget::updateCategoryVisibility()
+void ModernCategoryTreeWidget::updateCategoryVisibility()
 {
     for (auto it = m_categoryItems.begin(); it != m_categoryItems.end(); ++it) {
         const QString& name = it.key();
@@ -844,13 +844,13 @@ void CategoryTreeWidget::updateCategoryVisibility()
     }
 }
 
-void CategoryTreeWidget::applyCategoryFilter()
+void ModernCategoryTreeWidget::applyCategoryFilter()
 {
     updateCategoryVisibility();
     scheduleLayoutUpdate();
 }
 
-void CategoryTreeWidget::scheduleLayoutUpdate()
+void ModernCategoryTreeWidget::scheduleLayoutUpdate()
 {
     if (!m_layoutUpdatePending) {
         m_layoutUpdatePending = true;
@@ -858,28 +858,28 @@ void CategoryTreeWidget::scheduleLayoutUpdate()
     }
 }
 
-void CategoryTreeWidget::onCategoryClicked(const QString& categoryName)
+void ModernCategoryTreeWidget::onCategoryClicked(const QString& categoryName)
 {
     setSelectedCategory(categoryName);
 }
 
-void CategoryTreeWidget::onCategoryExpanded(const QString& categoryName, bool expanded)
+void ModernCategoryTreeWidget::onCategoryExpanded(const QString& categoryName, bool expanded)
 {
     expandCategory(categoryName, expanded);
 }
 
-void CategoryTreeWidget::onCategoryHovered(const QString& categoryName)
+void ModernCategoryTreeWidget::onCategoryHovered(const QString& categoryName)
 {
     // Could be used for tooltips or other hover effects
     Q_UNUSED(categoryName)
 }
 
-void CategoryTreeWidget::onLayoutUpdateTimer()
+void ModernCategoryTreeWidget::onLayoutUpdateTimer()
 {
     updateLayout();
 }
 
-void CategoryTreeWidget::paintEvent(QPaintEvent* event)
+void ModernCategoryTreeWidget::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -891,19 +891,19 @@ void CategoryTreeWidget::paintEvent(QPaintEvent* event)
     QFrame::paintEvent(event);
 }
 
-void CategoryTreeWidget::resizeEvent(QResizeEvent* event)
+void ModernCategoryTreeWidget::resizeEvent(QResizeEvent* event)
 {
     QFrame::resizeEvent(event);
     scheduleLayoutUpdate();
 }
 
-void CategoryTreeWidget::wheelEvent(QWheelEvent* event)
+void ModernCategoryTreeWidget::wheelEvent(QWheelEvent* event)
 {
     // Let the scroll area handle wheel events
     QFrame::wheelEvent(event);
 }
 
-void CategoryTreeWidget::keyPressEvent(QKeyEvent* event)
+void ModernCategoryTreeWidget::keyPressEvent(QKeyEvent* event)
 {
     switch (event->key()) {
         case Qt::Key_Up:
@@ -922,4 +922,169 @@ void CategoryTreeWidget::keyPressEvent(QKeyEvent* event)
     }
 
     QFrame::keyPressEvent(event);
+}
+
+// Missing CategoryItemWidget method
+void CategoryItemWidget::resizeEvent(QResizeEvent* event)
+{
+    QFrame::resizeEvent(event);
+}
+
+// SidebarHeaderWidget Implementation
+SidebarHeaderWidget::SidebarHeaderWidget(QWidget* parent)
+    : QFrame(parent)
+    , m_layout(nullptr)
+    , m_titleLabel(nullptr)
+    , m_collapseButton(nullptr)
+    , m_settingsButton(nullptr)
+    , m_themeWidget(nullptr)
+{
+    setupUI();
+}
+
+SidebarHeaderWidget::~SidebarHeaderWidget() = default;
+
+void SidebarHeaderWidget::setupUI()
+{
+    m_layout = new QHBoxLayout(this);
+    m_layout->setContentsMargins(8, 4, 8, 4);
+
+    m_titleLabel = new QLabel("Categories", this);
+    m_collapseButton = new QPushButton("◀", this);
+    m_settingsButton = new QPushButton("⚙", this);
+
+    m_collapseButton->setFixedSize(24, 24);
+    m_settingsButton->setFixedSize(24, 24);
+
+    m_layout->addWidget(m_titleLabel);
+    m_layout->addStretch();
+    m_layout->addWidget(m_settingsButton);
+    m_layout->addWidget(m_collapseButton);
+
+    connect(m_collapseButton, &QPushButton::clicked, this, &SidebarHeaderWidget::onCollapseClicked);
+    connect(m_settingsButton, &QPushButton::clicked, this, &SidebarHeaderWidget::onSettingsClicked);
+}
+
+void SidebarHeaderWidget::onCollapseClicked()
+{
+    emit collapseToggled(!m_collapsed);
+}
+
+void SidebarHeaderWidget::onSettingsClicked()
+{
+    emit settingsClicked();
+}
+
+void SidebarHeaderWidget::paintEvent(QPaintEvent* event)
+{
+    QWidget::paintEvent(event);
+    QPainter painter(this);
+    painter.fillRect(rect(), QColor(248, 248, 248));
+}
+
+// ModernSidebarWidget Implementation
+ModernSidebarWidget::ModernSidebarWidget(QWidget* parent)
+    : QFrame(parent)
+    , m_mainLayout(nullptr)
+    , m_headerWidget(nullptr)
+    , m_categoryTree(nullptr)
+    , m_collapsed(false)
+    , m_animationsEnabled(true)
+    , m_expandedWidth(DEFAULT_EXPANDED_WIDTH)
+    , m_collapsedWidth(DEFAULT_COLLAPSED_WIDTH)
+    , m_collapseAnimation(nullptr)
+    , m_themeManager(nullptr)
+{
+    setupUI();
+}
+
+ModernSidebarWidget::~ModernSidebarWidget() = default;
+
+void ModernSidebarWidget::setupUI()
+{
+    m_mainLayout = new QVBoxLayout(this);
+    m_mainLayout->setContentsMargins(0, 0, 0, 0);
+    m_mainLayout->setSpacing(0);
+
+    // Create header
+    m_headerWidget = new SidebarHeaderWidget(this);
+    m_mainLayout->addWidget(m_headerWidget);
+
+    // Create category tree
+    m_categoryTree = new ModernCategoryTreeWidget(this);
+    m_mainLayout->addWidget(m_categoryTree);
+
+    setFixedWidth(m_expandedWidth);
+}
+
+
+
+// ModernSidebarWidget slot implementations
+void ModernSidebarWidget::toggleCollapsed()
+{
+    setCollapsed(!m_collapsed);
+}
+
+void ModernSidebarWidget::refreshCategories()
+{
+    if (m_categoryTree) {
+        m_categoryTree->refreshCategories();
+    }
+}
+
+void ModernSidebarWidget::onCategorySelected(const QString& category)
+{
+    emit categorySelected(category);
+}
+
+void ModernSidebarWidget::onCollapseToggled(bool collapsed)
+{
+    setCollapsed(collapsed);
+}
+
+void ModernSidebarWidget::onThemeChanged()
+{
+    applyTheme();
+}
+
+void ModernSidebarWidget::setCollapsed(bool collapsed, bool animated)
+{
+    Q_UNUSED(animated) // Animation not implemented yet
+    if (m_collapsed == collapsed) return;
+
+    m_collapsed = collapsed;
+
+    if (m_collapsed) {
+        setFixedWidth(m_collapsedWidth);
+        if (m_categoryTree) {
+            m_categoryTree->hide();
+        }
+    } else {
+        setFixedWidth(m_expandedWidth);
+        if (m_categoryTree) {
+            m_categoryTree->show();
+        }
+    }
+
+    emit collapsedChanged(m_collapsed);
+}
+
+void ModernSidebarWidget::applyTheme()
+{
+    if (m_themeManager) {
+        // Apply theme styling
+    }
+}
+
+// ModernSidebarWidget event handlers
+void ModernSidebarWidget::paintEvent(QPaintEvent* event)
+{
+    QWidget::paintEvent(event);
+    QPainter painter(this);
+    painter.fillRect(rect(), QColor(250, 250, 250));
+}
+
+void ModernSidebarWidget::resizeEvent(QResizeEvent* event)
+{
+    QWidget::resizeEvent(event);
 }

@@ -71,6 +71,9 @@
 
 #include <memory>
 
+// Include theme manager
+#include "../themes/ThemeManager.h"
+
 // Include manager stubs
 #include "../../core/managers/ManagerStubs.h"
 

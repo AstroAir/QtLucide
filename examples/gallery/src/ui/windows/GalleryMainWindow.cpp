@@ -75,21 +75,21 @@ GalleryMainWindow::GalleryMainWindow(QWidget *parent)
     , m_mainToolbar(nullptr)
     , m_viewToolbar(nullptr)
     , m_statusLabel(nullptr)
-    , m_progressBar(nullptr)
     , m_iconCountLabel(nullptr)
     , m_currentIconLabel(nullptr)
-    , m_exportDialogEnhanced(nullptr)
-    , m_viewModeGroup(nullptr)
-    , m_settingsDialog(nullptr)
-    , m_toggleFavoriteAction(nullptr)
+    , m_progressBar(nullptr)
     , m_fullscreenAction(nullptr)
+    , m_toggleFavoriteAction(nullptr)
+    , m_viewModeGroup(nullptr)
+    , m_settings(new QSettings(this))
+    , m_showTooltips(true)
+    , m_exportDialogEnhanced(nullptr)
+    , m_settingsDialog(nullptr)
     , m_themeGroup(nullptr)
     , m_currentViewModeEnum(SplitView)
     , m_currentTheme(SystemTheme)
     , m_thumbnailSize(64)
     , m_slideshowInterval(3000)
-    , m_showTooltips(true)
-    , m_settings(new QSettings(this))
     , m_autoSaveSettings(true)
     , m_statusUpdateTimer(new QTimer(this))
     , m_slideshowTimer(new QTimer(this))
@@ -852,8 +852,8 @@ void GalleryMainWindow::onExportIcons()
                                      .arg(currentIcon).arg(current + 1).arg(total));
             });
 
-    connect(&dialog, &IconExportDialog::exportFinished,
-            this, [this](bool success, const QString& message) {
+    connect(&dialog, static_cast<void(IconExportDialog::*)(bool, const QString&, const QStringList&)>(&IconExportDialog::exportFinished),
+            this, [this](bool success, const QString& message, const QStringList&) {
                 m_statusLabel->setText(message);
                 if (success) {
                     // Show success message briefly
@@ -1148,10 +1148,10 @@ void GalleryMainWindow::onImportSettings()
 
         // Import main settings
         if (importSettings.contains("MainWindow/geometry")) {
-            restoreGeometry(importSettings.value("MainWindow/geometry").toByteArray());
+            QMainWindow::restoreGeometry(importSettings.value("MainWindow/geometry").toByteArray());
         }
         if (importSettings.contains("MainWindow/windowState")) {
-            restoreState(importSettings.value("MainWindow/windowState").toByteArray());
+            QMainWindow::restoreState(importSettings.value("MainWindow/windowState").toByteArray());
         }
         if (importSettings.contains("MainWindow/theme")) {
             setTheme(static_cast<ThemeMode>(importSettings.value("MainWindow/theme").toInt()));
@@ -1178,8 +1178,8 @@ void GalleryMainWindow::onExportSettings()
         QSettings exportSettings(fileName, QSettings::IniFormat);
 
         // Export main settings
-        exportSettings.setValue("MainWindow/geometry", saveGeometry());
-        exportSettings.setValue("MainWindow/windowState", saveState());
+        exportSettings.setValue("MainWindow/geometry", QMainWindow::saveGeometry());
+        exportSettings.setValue("MainWindow/windowState", QMainWindow::saveState());
         exportSettings.setValue("MainWindow/theme", static_cast<int>(m_currentTheme));
         exportSettings.setValue("MainWindow/iconSize", m_thumbnailSize);
         exportSettings.setValue("MainWindow/viewMode", static_cast<int>(m_currentViewModeEnum));
@@ -1359,7 +1359,7 @@ void GalleryMainWindow::onIconHovered(const QString& iconName)
 
         // Update details panel if available
         if (m_detailsPanel) {
-            m_detailsPanel->showIcon(iconName);
+            m_detailsPanel->setIconName(iconName);
         }
 
         GALLERY_LOG_DEBUG(galleryUI, QString("Icon hovered: %1").arg(iconName));
@@ -1413,7 +1413,7 @@ void GalleryMainWindow::onIconContextMenu(const QString& iconName, const QPoint&
     detailsAction->setIcon(QIcon(":/icons/info.svg"));
     connect(detailsAction, &QAction::triggered, [this, iconName]() {
         if (m_detailsPanel) {
-            m_detailsPanel->showIcon(iconName);
+            m_detailsPanel->setIconName(iconName);
             m_detailsPanel->setVisible(true);
         }
     });
@@ -1918,7 +1918,7 @@ void GalleryMainWindow::onPerformanceMetricsUpdated(const QMap<QString, QVariant
     }
 
     // Update status or performance panel if available
-    GALLERY_LOG_DEBUG(galleryPerformance, QString("Performance metrics updated: %1 metrics").arg(metrics.size()));
+    GALLERY_LOG_DEBUG(galleryPerf, QString("Performance metrics updated: %1 metrics").arg(metrics.size()));
 }
 
 void GalleryMainWindow::onSystemTrayActivated(QSystemTrayIcon::ActivationReason reason)
@@ -2754,5 +2754,37 @@ void GalleryMainWindow::applyCurrentFilter()
     GALLERY_LOG_DEBUG(galleryUI, QString("Filter applied: %1 icons match").arg(filteredIcons.size()));
 }
 
-// Additional missing methods that are declared in header but not implemented
-// (Only adding methods that actually exist in the header file)
+// Missing GalleryMainWindow methods
+void GalleryMainWindow::setIconSize(int size)
+{
+    m_thumbnailSize = size;
+    if (m_iconGrid) {
+        m_iconGrid->setIconSize(size);
+    }
+
+    // Update size slider if it exists
+    // m_sizeSlider is not available in this class
+
+    // Store the current icon size
+    m_currentIconSize = size;
+}
+
+void GalleryMainWindow::setGalleryMode(bool galleryMode)
+{
+    // m_galleryMode is not available in this class
+    // Store the mode in a local variable or use existing member variables
+
+    // Update UI based on gallery mode
+    if (m_iconGrid) {
+        // Switch between icon grid and image gallery view
+        if (galleryMode) {
+            // Configure for image gallery mode
+            m_iconGrid->setViewMode(IconGridWidget::DetailedView);
+        } else {
+            // Configure for icon browser mode
+            m_iconGrid->setViewMode(IconGridWidget::GridView);
+        }
+    }
+
+    // Signal not available in this class
+}
