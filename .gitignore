@@ -1,6 +1,13 @@
 # QtLucide .gitignore
 
 # =============================================================================
+# Examples and Gallery Components
+# =============================================================================
+# NOTE: All example source files and gallery components should be tracked by Git.
+# This includes files in examples/gallery/src/ and all subdirectories.
+# Only build artifacts and temporary files should be ignored.
+
+# =============================================================================
 # Build directories and artifacts
 # =============================================================================
 build/
