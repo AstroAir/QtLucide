@@ -3,38 +3,35 @@
  */
 
 #include "ThemeManager.h"
-#include <QStandardPaths>
+#include <QCoreApplication>
 #include <QDebug>
 #include <QFile>
-#include <QTextStream>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QJsonValue>
-#include <QJsonArray>
 #include <QJsonParseError>
-#include <QCoreApplication>
+#include <QJsonValue>
+#include <QStandardPaths>
 #include <QStyleHints>
+#include <QTextStream>
 #include <QtLucide/QtLucide.h>
+
 
 // Static instance
 ThemeManager* ThemeManager::s_instance = nullptr;
 
-ThemeManager::ThemeManager(QObject *parent)
-    : QObject(parent)
-    , m_currentTheme(SystemTheme)
-    , m_settings(new QSettings(this))
-    , m_systemThemeTimer(new QTimer(this))
-    , m_lastSystemDarkMode(false)
-    , m_animationsEnabled(true)
-    , m_lucide(nullptr)
-{
+ThemeManager::ThemeManager(QObject* parent)
+    : QObject(parent), m_currentTheme(SystemTheme), m_settings(new QSettings(this)),
+      m_systemThemeTimer(new QTimer(this)), m_lastSystemDarkMode(false), m_animationsEnabled(true),
+      m_lucide(nullptr) {
     // Set up singleton
     if (!s_instance) {
         s_instance = this;
     }
 
     // Initialize paths
-    m_customThemesPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation) + "/themes";
+    m_customThemesPath =
+        QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation) + "/themes";
     QDir().mkpath(m_customThemesPath);
 
     // Initialize themes
@@ -47,22 +44,20 @@ ThemeManager::ThemeManager(QObject *parent)
     qDebug() << "ThemeManager initialized with theme:" << currentThemeName();
 }
 
-ThemeManager::~ThemeManager()
-{
+ThemeManager::~ThemeManager() {
     saveSettings();
     if (s_instance == this) {
         s_instance = nullptr;
     }
 }
 
-ThemeManager* ThemeManager::instance()
-{
+ThemeManager* ThemeManager::instance() {
     return s_instance;
 }
 
-void ThemeManager::setTheme(Theme theme)
-{
-    if (m_currentTheme == theme) return;
+void ThemeManager::setTheme(Theme theme) {
+    if (m_currentTheme == theme)
+        return;
 
     Theme oldTheme = m_currentTheme;
     m_currentTheme = theme;
@@ -86,39 +81,39 @@ void ThemeManager::setTheme(Theme theme)
     qDebug() << "Theme changed from" << oldTheme << "to" << theme;
 }
 
-QString ThemeManager::currentThemeName() const
-{
+QString ThemeManager::currentThemeName() const {
     switch (m_currentTheme) {
-        case SystemTheme: return "System";
-        case LightTheme: return "Light";
-        case DarkTheme: return "Dark";
-        case CustomTheme: return "Custom";
-        default: return "Unknown";
+        case SystemTheme:
+            return "System";
+        case LightTheme:
+            return "Light";
+        case DarkTheme:
+            return "Dark";
+        case CustomTheme:
+            return "Custom";
+        default:
+            return "Unknown";
     }
 }
 
-bool ThemeManager::isDarkTheme() const
-{
+bool ThemeManager::isDarkTheme() const {
     if (m_currentTheme == SystemTheme) {
         return isSystemDarkMode();
     }
     return m_currentColors.isDark;
 }
 
-bool ThemeManager::isSystemDarkMode() const
-{
+bool ThemeManager::isSystemDarkMode() const {
     // Check system dark mode
     QStyleHints* hints = QApplication::styleHints();
     return hints->colorScheme() == Qt::ColorScheme::Dark;
 }
 
-QColor ThemeManager::getColor(ColorRole role) const
-{
+QColor ThemeManager::getColor(ColorRole role) const {
     return m_currentColors.colors.value(role, QColor("#000000"));
 }
 
-void ThemeManager::setColor(ColorRole role, const QColor& color)
-{
+void ThemeManager::setColor(ColorRole role, const QColor& color) {
     // Only set the color if it's valid
     if (color.isValid()) {
         m_currentColors.colors[role] = color;
@@ -127,19 +122,17 @@ void ThemeManager::setColor(ColorRole role, const QColor& color)
     // If invalid color is provided, keep the existing color (no change)
 }
 
-ThemeManager::ThemeColors ThemeManager::getCurrentColors() const
-{
+ThemeManager::ThemeColors ThemeManager::getCurrentColors() const {
     return m_currentColors;
 }
 
-QString ThemeManager::getStyleSheet() const
-{
+QString ThemeManager::getStyleSheet() const {
     return m_currentStyleSheet;
 }
 
-void ThemeManager::applyThemeToWidget(QWidget* widget)
-{
-    if (!widget) return;
+void ThemeManager::applyThemeToWidget(QWidget* widget) {
+    if (!widget)
+        return;
 
     widget->setStyleSheet(m_currentStyleSheet);
 
@@ -148,17 +141,16 @@ void ThemeManager::applyThemeToWidget(QWidget* widget)
     }
 }
 
-void ThemeManager::applyThemeToApplication()
-{
+void ThemeManager::applyThemeToApplication() {
     if (QApplication* app = qobject_cast<QApplication*>(QApplication::instance())) {
         app->setStyleSheet(m_currentStyleSheet);
     }
     updateApplicationPalette();
 }
 
-void ThemeManager::animateThemeChange(QWidget* widget, int duration)
-{
-    if (!widget || !m_animationsEnabled) return;
+void ThemeManager::animateThemeChange(QWidget* widget, int duration) {
+    if (!widget || !m_animationsEnabled)
+        return;
 
     // Create opacity effect if needed
     if (!m_opacityEffects.contains(widget)) {
@@ -171,8 +163,7 @@ void ThemeManager::animateThemeChange(QWidget* widget, int duration)
     fadeWidget(widget, 0.7, 1.0, duration);
 }
 
-void ThemeManager::loadSettings()
-{
+void ThemeManager::loadSettings() {
     m_settings->beginGroup(SETTINGS_GROUP);
 
     int themeValue = m_settings->value(THEME_KEY, static_cast<int>(SystemTheme)).toInt();
@@ -184,8 +175,7 @@ void ThemeManager::loadSettings()
     setTheme(static_cast<Theme>(themeValue));
 }
 
-void ThemeManager::saveSettings()
-{
+void ThemeManager::saveSettings() {
     m_settings->beginGroup(SETTINGS_GROUP);
 
     m_settings->setValue(THEME_KEY, static_cast<int>(m_currentTheme));
@@ -195,8 +185,7 @@ void ThemeManager::saveSettings()
     m_settings->sync();
 }
 
-void ThemeManager::onSystemThemeChanged()
-{
+void ThemeManager::onSystemThemeChanged() {
     if (m_currentTheme == SystemTheme) {
         loadThemeColors(SystemTheme);
         loadThemeStyleSheet(SystemTheme);
@@ -206,8 +195,7 @@ void ThemeManager::onSystemThemeChanged()
     }
 }
 
-void ThemeManager::refreshTheme()
-{
+void ThemeManager::refreshTheme() {
     Theme current = m_currentTheme;
     // Force refresh by temporarily setting to a different theme
     Theme tempTheme = (current == SystemTheme) ? LightTheme : SystemTheme;
@@ -215,8 +203,7 @@ void ThemeManager::refreshTheme()
     setTheme(current);
 }
 
-void ThemeManager::checkSystemTheme()
-{
+void ThemeManager::checkSystemTheme() {
     bool currentSystemDark = isSystemDarkMode();
     if (currentSystemDark != m_lastSystemDarkMode) {
         m_lastSystemDarkMode = currentSystemDark;
@@ -228,8 +215,7 @@ void ThemeManager::checkSystemTheme()
     }
 }
 
-void ThemeManager::initializeThemes()
-{
+void ThemeManager::initializeThemes() {
     // Initialize built-in themes
     m_themeColors[LightTheme] = loadLightTheme();
     m_themeColors[DarkTheme] = loadDarkTheme();
@@ -238,20 +224,18 @@ void ThemeManager::initializeThemes()
     // Load stylesheets
     m_themeStyleSheets[LightTheme] = loadStyleSheetFromFile(":/styles/modern-theme.qss");
     m_themeStyleSheets[DarkTheme] = loadStyleSheetFromFile(":/styles/dark-theme.qss");
-    m_themeStyleSheets[SystemTheme] = isSystemDarkMode() ?
-        m_themeStyleSheets[DarkTheme] : m_themeStyleSheets[LightTheme];
+    m_themeStyleSheets[SystemTheme] =
+        isSystemDarkMode() ? m_themeStyleSheets[DarkTheme] : m_themeStyleSheets[LightTheme];
 }
 
-void ThemeManager::setupSystemThemeDetection()
-{
+void ThemeManager::setupSystemThemeDetection() {
     m_lastSystemDarkMode = isSystemDarkMode();
 
     connect(m_systemThemeTimer, &QTimer::timeout, this, &ThemeManager::checkSystemTheme);
     m_systemThemeTimer->start(SYSTEM_THEME_CHECK_INTERVAL);
 }
 
-void ThemeManager::loadThemeColors(Theme theme)
-{
+void ThemeManager::loadThemeColors(Theme theme) {
     if (m_themeColors.contains(theme)) {
         m_currentColors = m_themeColors[theme];
     } else {
@@ -260,8 +244,7 @@ void ThemeManager::loadThemeColors(Theme theme)
     }
 }
 
-void ThemeManager::loadThemeStyleSheet(Theme theme)
-{
+void ThemeManager::loadThemeStyleSheet(Theme theme) {
     if (theme == SystemTheme) {
         // Use appropriate theme based on system
         theme = isSystemDarkMode() ? DarkTheme : LightTheme;
@@ -277,8 +260,7 @@ void ThemeManager::loadThemeStyleSheet(Theme theme)
     m_currentStyleSheet = processStyleSheetVariables(m_currentStyleSheet);
 }
 
-ThemeManager::ThemeColors ThemeManager::loadLightTheme()
-{
+ThemeManager::ThemeColors ThemeManager::loadLightTheme() {
     ThemeColors colors;
     colors.name = "Light";
     colors.description = "Modern light theme";
@@ -322,8 +304,7 @@ ThemeManager::ThemeColors ThemeManager::loadLightTheme()
     return colors;
 }
 
-ThemeManager::ThemeColors ThemeManager::loadDarkTheme()
-{
+ThemeManager::ThemeColors ThemeManager::loadDarkTheme() {
     ThemeColors colors;
     colors.name = "Dark";
     colors.description = "Modern dark theme";
@@ -367,14 +348,12 @@ ThemeManager::ThemeColors ThemeManager::loadDarkTheme()
     return colors;
 }
 
-ThemeManager::ThemeColors ThemeManager::loadSystemTheme()
-{
+ThemeManager::ThemeColors ThemeManager::loadSystemTheme() {
     // Return appropriate theme based on system
     return isSystemDarkMode() ? loadDarkTheme() : loadLightTheme();
 }
 
-QString ThemeManager::loadStyleSheetFromFile(const QString& filePath)
-{
+QString ThemeManager::loadStyleSheetFromFile(const QString& filePath) {
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qWarning() << "Failed to load stylesheet from:" << filePath;
@@ -385,8 +364,7 @@ QString ThemeManager::loadStyleSheetFromFile(const QString& filePath)
     return stream.readAll();
 }
 
-QString ThemeManager::processStyleSheetVariables(const QString& styleSheet)
-{
+QString ThemeManager::processStyleSheetVariables(const QString& styleSheet) {
     QString processed = styleSheet;
 
     // Replace color variables with actual colors
@@ -395,34 +373,22 @@ QString ThemeManager::processStyleSheetVariables(const QString& styleSheet)
     return processed;
 }
 
-QString ThemeManager::replaceColorVariables(const QString& styleSheet, const ThemeColors& colors)
-{
+QString ThemeManager::replaceColorVariables(const QString& styleSheet, const ThemeColors& colors) {
     QString result = styleSheet;
 
     // Define color variable mappings
     QHash<QString, ColorRole> colorVars = {
-        {"@window-bg", WindowBackground},
-        {"@panel-bg", PanelBackground},
-        {"@sidebar-bg", SidebarBackground},
-        {"@content-bg", ContentBackground},
-        {"@primary-text", PrimaryText},
-        {"@secondary-text", SecondaryText},
-        {"@disabled-text", DisabledText},
-        {"@accent-color", AccentColor},
-        {"@accent-hover", AccentColorHover},
-        {"@accent-pressed", AccentColorPressed},
-        {"@border-color", BorderColor},
-        {"@border-hover", BorderColorHover},
-        {"@border-focus", BorderColorFocus},
-        {"@success-color", SuccessColor},
-        {"@warning-color", WarningColor},
-        {"@error-color", ErrorColor},
-        {"@info-color", InfoColor},
-        {"@selection-bg", SelectionBackground},
-        {"@selection-text", SelectionText},
-        {"@hover-bg", HoverBackground},
-        {"@hover-text", HoverText}
-    };
+        {"@window-bg", WindowBackground},    {"@panel-bg", PanelBackground},
+        {"@sidebar-bg", SidebarBackground},  {"@content-bg", ContentBackground},
+        {"@primary-text", PrimaryText},      {"@secondary-text", SecondaryText},
+        {"@disabled-text", DisabledText},    {"@accent-color", AccentColor},
+        {"@accent-hover", AccentColorHover}, {"@accent-pressed", AccentColorPressed},
+        {"@border-color", BorderColor},      {"@border-hover", BorderColorHover},
+        {"@border-focus", BorderColorFocus}, {"@success-color", SuccessColor},
+        {"@warning-color", WarningColor},    {"@error-color", ErrorColor},
+        {"@info-color", InfoColor},          {"@selection-bg", SelectionBackground},
+        {"@selection-text", SelectionText},  {"@hover-bg", HoverBackground},
+        {"@hover-text", HoverText}};
 
     // Replace variables with actual color values
     for (auto it = colorVars.begin(); it != colorVars.end(); ++it) {
@@ -433,8 +399,7 @@ QString ThemeManager::replaceColorVariables(const QString& styleSheet, const The
     return result;
 }
 
-void ThemeManager::updateApplicationPalette()
-{
+void ThemeManager::updateApplicationPalette() {
     QPalette palette;
 
     // Set palette colors based on current theme
@@ -458,8 +423,7 @@ void ThemeManager::updateApplicationPalette()
     QApplication::setPalette(palette);
 }
 
-void ThemeManager::updateIconTheme()
-{
+void ThemeManager::updateIconTheme() {
     // Update icon colors based on theme
     // This would integrate with QtLucide to set appropriate icon colors
     QString iconColor = isDarkTheme() ? "#e8e8e8" : "#2c3e50";
@@ -471,12 +435,13 @@ void ThemeManager::updateIconTheme()
     }
 }
 
-void ThemeManager::fadeWidget(QWidget* widget, qreal startOpacity, qreal endOpacity, int duration)
-{
-    if (!widget || !m_animationsEnabled) return;
+void ThemeManager::fadeWidget(QWidget* widget, qreal startOpacity, qreal endOpacity, int duration) {
+    if (!widget || !m_animationsEnabled)
+        return;
 
     QGraphicsOpacityEffect* effect = m_opacityEffects.value(widget);
-    if (!effect) return;
+    if (!effect)
+        return;
 
     QPropertyAnimation* animation = new QPropertyAnimation(effect, "opacity", this);
     animation->setDuration(duration);
@@ -490,10 +455,10 @@ void ThemeManager::fadeWidget(QWidget* widget, qreal startOpacity, qreal endOpac
     animation->start(QPropertyAnimation::DeleteWhenStopped);
 }
 
-void ThemeManager::onAnimationFinished()
-{
+void ThemeManager::onAnimationFinished() {
     QPropertyAnimation* animation = qobject_cast<QPropertyAnimation*>(sender());
-    if (!animation) return;
+    if (!animation)
+        return;
 
     // Remove from active animations
     for (auto it = m_activeAnimations.begin(); it != m_activeAnimations.end(); ++it) {
@@ -504,68 +469,64 @@ void ThemeManager::onAnimationFinished()
     }
 }
 
-QString ThemeManager::getThemeResourcePath(Theme theme)
-{
+QString ThemeManager::getThemeResourcePath(Theme theme) {
     switch (theme) {
-        case LightTheme: return ":/styles/modern-theme.qss";
-        case DarkTheme: return ":/styles/dark-theme.qss";
+        case LightTheme:
+            return ":/styles/modern-theme.qss";
+        case DarkTheme:
+            return ":/styles/dark-theme.qss";
         case SystemTheme: {
             // Check system dark mode statically
             QStyleHints* hints = QApplication::styleHints();
             bool isDark = hints->colorScheme() == Qt::ColorScheme::Dark;
             return isDark ? ":/styles/dark-theme.qss" : ":/styles/modern-theme.qss";
         }
-        default: return ":/styles/modern-theme.qss";
+        default:
+            return ":/styles/modern-theme.qss";
     }
 }
 
 // ThemeAwareWidget implementation
 ThemeAwareWidget::ThemeAwareWidget(QWidget* widget, QObject* parent)
-    : QObject(parent), m_widget(widget)
-{
+    : QObject(parent), m_widget(widget) {
     if (ThemeManager::instance()) {
-        connect(ThemeManager::instance(), &ThemeManager::themeChanged,
-                this, &ThemeAwareWidget::onThemeManagerChanged);
-        connect(ThemeManager::instance(), &ThemeManager::colorsChanged,
-                this, &ThemeAwareWidget::onColorsChanged);
+        connect(ThemeManager::instance(), &ThemeManager::themeChanged, this,
+                &ThemeAwareWidget::onThemeManagerChanged);
+        connect(ThemeManager::instance(), &ThemeManager::colorsChanged, this,
+                &ThemeAwareWidget::onColorsChanged);
     }
 }
 
 ThemeAwareWidget::~ThemeAwareWidget() = default;
 
-void ThemeAwareWidget::setThemeClass(const QString& themeClass)
-{
+void ThemeAwareWidget::setThemeClass(const QString& themeClass) {
     m_themeClass = themeClass;
     refreshTheme();
 }
 
-void ThemeAwareWidget::refreshTheme()
-{
-    if (!m_widget || !ThemeManager::instance()) return;
+void ThemeAwareWidget::refreshTheme() {
+    if (!m_widget || !ThemeManager::instance())
+        return;
 
     ThemeManager::instance()->applyThemeToWidget(m_widget);
     onThemeChanged();
     applyThemeColors();
 }
 
-void ThemeAwareWidget::onThemeManagerChanged()
-{
+void ThemeAwareWidget::onThemeManagerChanged() {
     refreshTheme();
 }
 
-void ThemeAwareWidget::onColorsChanged()
-{
+void ThemeAwareWidget::onColorsChanged() {
     applyThemeColors();
 }
 
-void ThemeAwareWidget::setCustomColors(const QHash<ThemeManager::ColorRole, QColor>& colors)
-{
+void ThemeAwareWidget::setCustomColors(const QHash<ThemeManager::ColorRole, QColor>& colors) {
     m_customColors = colors;
     applyThemeColors();
 }
 
-void ThemeManager::resetToDefaults()
-{
+void ThemeManager::resetToDefaults() {
     // Reset to system theme and clear customizations
     m_fonts.clear();
     m_customThemes.clear();
@@ -574,8 +535,7 @@ void ThemeManager::resetToDefaults()
 }
 
 // Missing method implementations
-bool ThemeManager::loadCustomTheme(const QString& filePath)
-{
+bool ThemeManager::loadCustomTheme(const QString& filePath) {
     if (!isValidThemeFile(filePath)) {
         return false;
     }
@@ -589,8 +549,7 @@ bool ThemeManager::loadCustomTheme(const QString& filePath)
     return true;
 }
 
-bool ThemeManager::saveCustomTheme(const QString& filePath, const ThemeColors& colors)
-{
+bool ThemeManager::saveCustomTheme(const QString& filePath, const ThemeColors& colors) {
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly)) {
         return false;
@@ -612,33 +571,28 @@ bool ThemeManager::saveCustomTheme(const QString& filePath, const ThemeColors& c
     return true;
 }
 
-QStringList ThemeManager::availableCustomThemes() const
-{
+QStringList ThemeManager::availableCustomThemes() const {
     return m_customThemes.keys();
 }
 
-void ThemeManager::setCustomColors(const ThemeColors& colors)
-{
+void ThemeManager::setCustomColors(const ThemeColors& colors) {
     m_currentColors = colors;
     emit colorsChanged();
 }
 
-QFont ThemeManager::getFont(const QString& role) const
-{
+QFont ThemeManager::getFont(const QString& role) const {
     if (m_fonts.contains(role)) {
         return m_fonts[role];
     }
     return QApplication::font(); // Default font
 }
 
-void ThemeManager::setFont(const QString& role, const QFont& font)
-{
+void ThemeManager::setFont(const QString& role, const QFont& font) {
     m_fonts[role] = font;
     emit fontsChanged();
 }
 
-QString ThemeManager::getWidgetStyleSheet(const QString& widgetClass) const
-{
+QString ThemeManager::getWidgetStyleSheet(const QString& widgetClass) const {
     // Return class-specific stylesheet
     QString classStyleSheet = m_currentStyleSheet;
 
@@ -651,8 +605,7 @@ QString ThemeManager::getWidgetStyleSheet(const QString& widgetClass) const
     return classStyleSheet;
 }
 
-bool ThemeManager::isValidThemeFile(const QString& filePath)
-{
+bool ThemeManager::isValidThemeFile(const QString& filePath) {
     QFileInfo fileInfo(filePath);
     if (!fileInfo.exists() || !fileInfo.isReadable()) {
         return false;
@@ -676,8 +629,7 @@ bool ThemeManager::isValidThemeFile(const QString& filePath)
 }
 
 // Missing ThemeManager method
-ThemeManager::ThemeColors ThemeManager::loadCustomThemeFromFile(const QString& filePath)
-{
+ThemeManager::ThemeColors ThemeManager::loadCustomThemeFromFile(const QString& filePath) {
     ThemeColors themeColors;
 
     QFile file(filePath);

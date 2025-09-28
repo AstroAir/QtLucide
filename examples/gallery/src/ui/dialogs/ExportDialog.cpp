@@ -5,40 +5,33 @@
 #include "ExportDialog.h"
 #include "../core/BatchExportManager.h"
 #include <QApplication>
-#include <QStyle>
-#include <QStyleOption>
-#include <QPainter>
-#include <QShowEvent>
+#include <QBuffer>
 #include <QCloseEvent>
-#include <QMessageBox>
+#include <QDebug>
 #include <QDesktopServices>
-#include <QUrl>
-#include <QStandardPaths>
 #include <QDir>
 #include <QFileInfo>
 #include <QImageWriter>
-#include <QSvgGenerator>
+#include <QMessageBox>
+#include <QPainter>
 #include <QPdfWriter>
-#include <QBuffer>
-#include <QDebug>
+#include <QShowEvent>
+#include <QStandardPaths>
+#include <QStyle>
+#include <QStyleOption>
+#include <QSvgGenerator>
+#include <QUrl>
 
 // Static constants for ExportOptionsWidget
 const QList<int> ExportOptionsWidget::PRESET_SIZES = {16, 32, 64, 128, 256, 512};
 const QStringList ExportOptionsWidget::TEMPLATE_VARIABLES = {
-    "{name}", "{size}", "{width}", "{height}", "{format}", "{date}", "{time}"
-};
+    "{name}", "{size}", "{width}", "{height}", "{format}", "{date}", "{time}"};
 
 // ExportOptionsWidget Implementation
 ExportOptionsWidget::ExportOptionsWidget(QWidget* parent)
-    : QWidget(parent)
-    , m_mainLayout(nullptr)
-    , m_tabWidget(nullptr)
-    , m_formatTab(nullptr)
-    , m_formatButtonGroup(nullptr)
-    , m_sizeTab(nullptr)
-    , m_colorTab(nullptr)
-    , m_outputTab(nullptr)
-    , m_advancedTab(nullptr)
+    : QWidget(parent), m_mainLayout(nullptr), m_tabWidget(nullptr), m_formatTab(nullptr),
+      m_formatButtonGroup(nullptr), m_sizeTab(nullptr), m_colorTab(nullptr), m_outputTab(nullptr),
+      m_advancedTab(nullptr)
 
 {
     setupUI();
@@ -53,14 +46,10 @@ ExportOptionsWidget::ExportOptionsWidget(QWidget* parent)
     applyTheme();
 }
 
-ExportOptionsWidget::~ExportOptionsWidget()
-{
-}
+ExportOptionsWidget::~ExportOptionsWidget() {}
 
-void ExportOptionsWidget::setExportConfig(const ExportConfig& config)
-{
-    if (m_config.format == config.format &&
-        m_config.sizes == config.sizes &&
+void ExportOptionsWidget::setExportConfig(const ExportConfig& config) {
+    if (m_config.format == config.format && m_config.sizes == config.sizes &&
         m_config.iconColor == config.iconColor &&
         m_config.outputDirectory == config.outputDirectory) {
         return; // No changes
@@ -77,20 +66,18 @@ void ExportOptionsWidget::setExportConfig(const ExportConfig& config)
     emit configChanged(m_config);
 }
 
-ExportConfig ExportOptionsWidget::exportConfig() const
-{
+ExportConfig ExportOptionsWidget::exportConfig() const {
     return m_config;
 }
 
-void ExportOptionsWidget::resetToDefaults()
-{
+void ExportOptionsWidget::resetToDefaults() {
     ExportConfig defaultConfig;
-    defaultConfig.outputDirectory = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    defaultConfig.outputDirectory =
+        QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
     setExportConfig(defaultConfig);
 }
 
-bool ExportOptionsWidget::validateConfig() const
-{
+bool ExportOptionsWidget::validateConfig() const {
     // Check if output directory is valid
     if (m_config.outputDirectory.isEmpty()) {
         return false;
@@ -116,8 +103,7 @@ bool ExportOptionsWidget::validateConfig() const
     return true;
 }
 
-QStringList ExportOptionsWidget::getValidationErrors() const
-{
+QStringList ExportOptionsWidget::getValidationErrors() const {
     QStringList errors;
 
     if (m_config.outputDirectory.isEmpty()) {
@@ -146,58 +132,52 @@ QStringList ExportOptionsWidget::getValidationErrors() const
     return errors;
 }
 
-void ExportOptionsWidget::applyTheme()
-{
-    if (!ThemeManager::instance()) return;
+void ExportOptionsWidget::applyTheme() {
+    if (!ThemeManager::instance())
+        return;
 
     // Apply theme to the options widget
-    QString optionsStyle = QString(
-        "ExportOptionsWidget { "
-        "    background-color: %1; "
-        "    border: none; "
-        "} "
-        "QTabWidget::pane { "
-        "    border: 1px solid %2; "
-        "    border-radius: 4px; "
-        "    background-color: %3; "
-        "} "
-        "QTabBar::tab { "
-        "    background-color: %4; "
-        "    border: 1px solid %5; "
-        "    padding: 8px 16px; "
-        "    margin-right: 2px; "
-        "} "
-        "QTabBar::tab:selected { "
-        "    background-color: %6; "
-        "    border-bottom-color: %6; "
-        "} "
-        "QGroupBox { "
-        "    font-weight: bold; "
-        "    border: 1px solid %7; "
-        "    border-radius: 4px; "
-        "    margin-top: 8px; "
-        "    padding-top: 4px; "
-        "} "
-        "QGroupBox::title { "
-        "    subcontrol-origin: margin; "
-        "    left: 8px; "
-        "    padding: 0 4px 0 4px; "
-        "}"
-    ).arg(
-        THEME_COLOR(WindowBackground).name(),
-        THEME_COLOR(BorderColor).name(),
-        THEME_COLOR(PanelBackground).name(),
-        THEME_COLOR(PanelBackground).name(),
-        THEME_COLOR(BorderColor).name(),
-        THEME_COLOR(WindowBackground).name(),
-        THEME_COLOR(BorderColor).name()
-    );
+    QString optionsStyle =
+        QString("ExportOptionsWidget { "
+                "    background-color: %1; "
+                "    border: none; "
+                "} "
+                "QTabWidget::pane { "
+                "    border: 1px solid %2; "
+                "    border-radius: 4px; "
+                "    background-color: %3; "
+                "} "
+                "QTabBar::tab { "
+                "    background-color: %4; "
+                "    border: 1px solid %5; "
+                "    padding: 8px 16px; "
+                "    margin-right: 2px; "
+                "} "
+                "QTabBar::tab:selected { "
+                "    background-color: %6; "
+                "    border-bottom-color: %6; "
+                "} "
+                "QGroupBox { "
+                "    font-weight: bold; "
+                "    border: 1px solid %7; "
+                "    border-radius: 4px; "
+                "    margin-top: 8px; "
+                "    padding-top: 4px; "
+                "} "
+                "QGroupBox::title { "
+                "    subcontrol-origin: margin; "
+                "    left: 8px; "
+                "    padding: 0 4px 0 4px; "
+                "}")
+            .arg(THEME_COLOR(WindowBackground).name(), THEME_COLOR(BorderColor).name(),
+                 THEME_COLOR(PanelBackground).name(), THEME_COLOR(PanelBackground).name(),
+                 THEME_COLOR(BorderColor).name(), THEME_COLOR(WindowBackground).name(),
+                 THEME_COLOR(BorderColor).name());
 
     setStyleSheet(optionsStyle);
 }
 
-void ExportOptionsWidget::setupUI()
-{
+void ExportOptionsWidget::setupUI() {
     // Create main layout
     m_mainLayout = new QVBoxLayout(this);
     m_mainLayout->setContentsMargins(8, 8, 8, 8);
@@ -215,8 +195,7 @@ void ExportOptionsWidget::setupUI()
     setupAdvancedSection();
 }
 
-void ExportOptionsWidget::setupFormatSection()
-{
+void ExportOptionsWidget::setupFormatSection() {
     m_formatTab = new QWidget();
     m_formatLayout = new QVBoxLayout(m_formatTab);
     m_formatLayout->setContentsMargins(12, 12, 12, 12);
@@ -259,14 +238,13 @@ void ExportOptionsWidget::setupFormatSection()
     m_formatLayout->addStretch();
 
     // Connect signals
-    connect(m_formatButtonGroup, &QButtonGroup::idClicked,
-            this, &ExportOptionsWidget::onFormatChanged);
+    connect(m_formatButtonGroup, &QButtonGroup::idClicked, this,
+            &ExportOptionsWidget::onFormatChanged);
 
     m_tabWidget->addTab(m_formatTab, "Format");
 }
 
-void ExportOptionsWidget::setupSizeSection()
-{
+void ExportOptionsWidget::setupSizeSection() {
     m_sizeTab = new QWidget();
     m_sizeLayout = new QVBoxLayout(m_sizeTab);
     m_sizeLayout->setContentsMargins(12, 12, 12, 12);
@@ -336,15 +314,17 @@ void ExportOptionsWidget::setupSizeSection()
     connect(m_size128, &QCheckBox::toggled, this, &ExportOptionsWidget::onSizeChanged);
     connect(m_size256, &QCheckBox::toggled, this, &ExportOptionsWidget::onSizeChanged);
     connect(m_size512, &QCheckBox::toggled, this, &ExportOptionsWidget::onSizeChanged);
-    connect(m_customSizeCheck, &QCheckBox::toggled, this, &ExportOptionsWidget::onCustomSizeToggled);
-    connect(m_customWidthSpin, QOverload<int>::of(&QSpinBox::valueChanged), this, &ExportOptionsWidget::onSizeChanged);
-    connect(m_customHeightSpin, QOverload<int>::of(&QSpinBox::valueChanged), this, &ExportOptionsWidget::onSizeChanged);
+    connect(m_customSizeCheck, &QCheckBox::toggled, this,
+            &ExportOptionsWidget::onCustomSizeToggled);
+    connect(m_customWidthSpin, QOverload<int>::of(&QSpinBox::valueChanged), this,
+            &ExportOptionsWidget::onSizeChanged);
+    connect(m_customHeightSpin, QOverload<int>::of(&QSpinBox::valueChanged), this,
+            &ExportOptionsWidget::onSizeChanged);
 
     m_tabWidget->addTab(m_sizeTab, "Size");
 }
 
-void ExportOptionsWidget::setupColorSection()
-{
+void ExportOptionsWidget::setupColorSection() {
     m_colorTab = new QWidget();
     m_colorLayout = new QVBoxLayout(m_colorTab);
     m_colorLayout->setContentsMargins(12, 12, 12, 12);
@@ -412,9 +392,12 @@ void ExportOptionsWidget::setupColorSection()
 
     // Connect signals
     connect(m_useCustomColorCheck, &QCheckBox::toggled, this, &ExportOptionsWidget::onColorChanged);
-    connect(m_colorPickerButton, &QPushButton::clicked, this, &ExportOptionsWidget::onColorPickerClicked);
-    connect(m_transparentBackgroundCheck, &QCheckBox::toggled, this, &ExportOptionsWidget::onColorChanged);
-    connect(m_backgroundColorButton, &QPushButton::clicked, this, &ExportOptionsWidget::onBackgroundColorPickerClicked);
+    connect(m_colorPickerButton, &QPushButton::clicked, this,
+            &ExportOptionsWidget::onColorPickerClicked);
+    connect(m_transparentBackgroundCheck, &QCheckBox::toggled, this,
+            &ExportOptionsWidget::onColorChanged);
+    connect(m_backgroundColorButton, &QPushButton::clicked, this,
+            &ExportOptionsWidget::onBackgroundColorPickerClicked);
     connect(m_opacitySlider, &QSlider::valueChanged, this, [this](int value) {
         m_opacityLabel->setText(QString("%1%").arg(value));
         onColorChanged();
@@ -423,8 +406,7 @@ void ExportOptionsWidget::setupColorSection()
     m_tabWidget->addTab(m_colorTab, "Color");
 }
 
-void ExportOptionsWidget::setupOutputSection()
-{
+void ExportOptionsWidget::setupOutputSection() {
     m_outputTab = new QWidget();
     m_outputLayout = new QVBoxLayout(m_outputTab);
     m_outputLayout->setContentsMargins(12, 12, 12, 12);
@@ -486,21 +468,25 @@ void ExportOptionsWidget::setupOutputSection()
     m_outputLayout->addStretch();
 
     // Connect signals
-    connect(m_browseButton, &QPushButton::clicked, this, &ExportOptionsWidget::onBrowseOutputDirectory);
-    connect(m_fileNameTemplateEdit, &QLineEdit::textChanged, this, &ExportOptionsWidget::onFileNameTemplateChanged);
-    connect(m_previewTemplateButton, &QPushButton::clicked, this, &ExportOptionsWidget::onPreviewTemplate);
+    connect(m_browseButton, &QPushButton::clicked, this,
+            &ExportOptionsWidget::onBrowseOutputDirectory);
+    connect(m_fileNameTemplateEdit, &QLineEdit::textChanged, this,
+            &ExportOptionsWidget::onFileNameTemplateChanged);
+    connect(m_previewTemplateButton, &QPushButton::clicked, this,
+            &ExportOptionsWidget::onPreviewTemplate);
     connect(m_createSubfoldersCheck, &QCheckBox::toggled, this, [this](bool checked) {
         m_subfolderTemplateEdit->setEnabled(checked);
         onOutputSettingsChanged();
     });
-    connect(m_subfolderTemplateEdit, &QLineEdit::textChanged, this, &ExportOptionsWidget::onOutputSettingsChanged);
-    connect(m_overwriteExistingCheck, &QCheckBox::toggled, this, &ExportOptionsWidget::onOutputSettingsChanged);
+    connect(m_subfolderTemplateEdit, &QLineEdit::textChanged, this,
+            &ExportOptionsWidget::onOutputSettingsChanged);
+    connect(m_overwriteExistingCheck, &QCheckBox::toggled, this,
+            &ExportOptionsWidget::onOutputSettingsChanged);
 
     m_tabWidget->addTab(m_outputTab, "Output");
 }
 
-void ExportOptionsWidget::setupAdvancedSection()
-{
+void ExportOptionsWidget::setupAdvancedSection() {
     m_advancedTab = new QWidget();
     m_advancedLayout = new QVBoxLayout(m_advancedTab);
     m_advancedLayout->setContentsMargins(12, 12, 12, 12);
@@ -554,9 +540,8 @@ void ExportOptionsWidget::setupAdvancedSection()
     m_advancedLayout->addStretch();
 
     // Connect signals
-    connect(m_jpegQualitySlider, &QSlider::valueChanged, this, [this](int value) {
-        m_jpegQualityLabel->setText(QString("%1%").arg(value));
-    });
+    connect(m_jpegQualitySlider, &QSlider::valueChanged, this,
+            [this](int value) { m_jpegQualityLabel->setText(QString("%1%").arg(value)); });
     connect(m_includeMetadataCheck, &QCheckBox::toggled, this, [this](bool checked) {
         m_authorEdit->setEnabled(checked);
         m_descriptionEdit->setEnabled(checked);
@@ -567,14 +552,24 @@ void ExportOptionsWidget::setupAdvancedSection()
 }
 
 // Minimal stub implementations for ExportOptionsWidget slots
-void ExportOptionsWidget::onFormatChanged() { emit configChanged(m_config); }
-void ExportOptionsWidget::onSizeChanged() { emit configChanged(m_config); }
-void ExportOptionsWidget::onCustomSizeToggled() { emit configChanged(m_config); }
-void ExportOptionsWidget::onColorChanged() { emit configChanged(m_config); }
+void ExportOptionsWidget::onFormatChanged() {
+    emit configChanged(m_config);
+}
+void ExportOptionsWidget::onSizeChanged() {
+    emit configChanged(m_config);
+}
+void ExportOptionsWidget::onCustomSizeToggled() {
+    emit configChanged(m_config);
+}
+void ExportOptionsWidget::onColorChanged() {
+    emit configChanged(m_config);
+}
 void ExportOptionsWidget::onColorPickerClicked() {}
 void ExportOptionsWidget::onBackgroundColorPickerClicked() {}
 void ExportOptionsWidget::onBrowseOutputDirectory() {}
-void ExportOptionsWidget::onFileNameTemplateChanged() { emit configChanged(m_config); }
+void ExportOptionsWidget::onFileNameTemplateChanged() {
+    emit configChanged(m_config);
+}
 void ExportOptionsWidget::onPreviewTemplate() {}
 void ExportOptionsWidget::updatePreview() {}
 
@@ -604,9 +599,7 @@ void ExportOptionsWidget::showEvent(QShowEvent* event) {
 }
 
 // ExportPreviewWidget Implementation
-ExportPreviewWidget::ExportPreviewWidget(QWidget* parent)
-    : QWidget(parent)
-{
+ExportPreviewWidget::ExportPreviewWidget(QWidget* parent) : QWidget(parent) {
     setupUI();
 }
 
@@ -645,31 +638,14 @@ void ExportPreviewWidget::mouseDoubleClickEvent(QMouseEvent* event) {
     QWidget::mouseDoubleClickEvent(event);
 }
 
-
-
 // ExportDialog Implementation
 ExportDialog::ExportDialog(QWidget* parent)
-    : QDialog(parent)
-    , m_mainLayout(nullptr)
-    , m_contentLayout(nullptr)
-    , m_leftLayout(nullptr)
-    , m_rightLayout(nullptr)
-    , m_titleLabel(nullptr)
-    , m_iconCountLabel(nullptr)
-    , m_optionsWidget(nullptr)
-    , m_previewWidget(nullptr)
-    , m_progressWidget(nullptr)
-    , m_buttonLayout(nullptr)
-    , m_exportButton(nullptr)
-    , m_cancelButton(nullptr)
-    , m_closeButton(nullptr)
-    , m_exportInProgress(false)
-    , m_exportSuccessful(false)
-    , m_lucide(nullptr)
-    , m_themeManager(nullptr)
-    , m_exportManager(nullptr)
-    , m_themeWidget(nullptr)
-{
+    : QDialog(parent), m_mainLayout(nullptr), m_contentLayout(nullptr), m_leftLayout(nullptr),
+      m_rightLayout(nullptr), m_titleLabel(nullptr), m_iconCountLabel(nullptr),
+      m_optionsWidget(nullptr), m_previewWidget(nullptr), m_progressWidget(nullptr),
+      m_buttonLayout(nullptr), m_exportButton(nullptr), m_cancelButton(nullptr),
+      m_closeButton(nullptr), m_exportInProgress(false), m_exportSuccessful(false),
+      m_lucide(nullptr), m_themeManager(nullptr), m_exportManager(nullptr), m_themeWidget(nullptr) {
     setupUI();
     setupLayout();
     setupConnections();
@@ -734,8 +710,8 @@ void ExportDialog::setupConnections() {
     connect(m_closeButton, &QPushButton::clicked, this, &QDialog::reject);
 
     if (m_optionsWidget) {
-        connect(m_optionsWidget, &ExportOptionsWidget::configChanged,
-                this, &ExportDialog::onConfigChanged);
+        connect(m_optionsWidget, &ExportOptionsWidget::configChanged, this,
+                &ExportDialog::onConfigChanged);
     }
 }
 
@@ -806,9 +782,7 @@ void ExportDialog::startExport() {
     emit exportStarted();
 
     // Simulate export completion for now
-    QTimer::singleShot(1000, this, [this]() {
-        onExportFinished(true);
-    });
+    QTimer::singleShot(1000, this, [this]() { onExportFinished(true); });
 }
 
 void ExportDialog::cancelExport() {

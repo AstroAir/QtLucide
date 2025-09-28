@@ -19,55 +19,55 @@
 #ifndef PREFERENCESDIALOG_H
 #define PREFERENCESDIALOG_H
 
-#include <QDialog>
-#include <QTabWidget>
-#include <QStackedWidget>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGridLayout>
-#include <QFormLayout>
-#include <QSplitter>
-#include <QScrollArea>
-#include <QGroupBox>
-#include <QFrame>
-#include <QLabel>
-#include <QComboBox>
-#include <QSpinBox>
-#include <QDoubleSpinBox>
-#include <QSlider>
-#include <QCheckBox>
-#include <QRadioButton>
 #include <QButtonGroup>
-#include <QPushButton>
-#include <QToolButton>
+#include <QCheckBox>
 #include <QColorDialog>
+#include <QComboBox>
+#include <QDialog>
+#include <QDir>
+#include <QDoubleSpinBox>
+#include <QFileDialog>
 #include <QFontComboBox>
 #include <QFontDialog>
-#include <QLineEdit>
-#include <QTextEdit>
-#include <QPlainTextEdit>
-#include <QListWidget>
-#include <QTreeWidget>
-#include <QTableWidget>
-#include <QProgressBar>
-#include <QSettings>
-#include <QStandardPaths>
-#include <QDir>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QTimer>
-#include <QPropertyAnimation>
+#include <QFormLayout>
+#include <QFrame>
 #include <QGraphicsOpacityEffect>
+#include <QGridLayout>
+#include <QGroupBox>
+#include <QHBoxLayout>
 #include <QKeySequenceEdit>
+#include <QLabel>
+#include <QLineEdit>
+#include <QListWidget>
+#include <QMessageBox>
+#include <QPlainTextEdit>
+#include <QProgressBar>
+#include <QPropertyAnimation>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QScrollArea>
+#include <QSettings>
 #include <QShortcut>
+#include <QSlider>
+#include <QSpinBox>
+#include <QSplitter>
+#include <QStackedWidget>
+#include <QStandardPaths>
 #include <QSystemTrayIcon>
+#include <QTabWidget>
+#include <QTableWidget>
+#include <QTextEdit>
+#include <QTimer>
+#include <QToolButton>
+#include <QTreeWidget>
+#include <QVBoxLayout>
 #ifdef QTLUCIDE_HAS_NETWORK
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
+    #include <QNetworkAccessManager>
+    #include <QNetworkReply>
 #endif
+#include <QElapsedTimer>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QElapsedTimer>
 
 #include <memory>
 
@@ -80,12 +80,11 @@
 /**
  * @brief Enhanced preferences dialog with comprehensive customization options
  */
-class PreferencesDialog : public QDialog
-{
+class PreferencesDialog : public QDialog {
     Q_OBJECT
 
 public:
-    explicit PreferencesDialog(QWidget *parent = nullptr);
+    explicit PreferencesDialog(QWidget* parent = nullptr);
     ~PreferencesDialog();
 
     // Enhanced settings structures
@@ -96,14 +95,14 @@ public:
         bool enableTelemetry = false;
         bool showStatusBar = true;
         bool showToolBar = true;
-        QString language = "en";  // Added for implementation compatibility
+        QString language = "en"; // Added for implementation compatibility
     };
 
     struct AppearanceSettings {
-        QString theme = "system";           // system, light, dark, custom
-        QString customThemePath = "";       // Path to custom theme file
-        int iconSize = 64;                  // 16, 24, 32, 48, 64, 96, 128, 256
-        QString viewMode = "grid";          // grid, list, compact, detailed
+        QString theme = "system";     // system, light, dark, custom
+        QString customThemePath = ""; // Path to custom theme file
+        int iconSize = 64;            // 16, 24, 32, 48, 64, 96, 128, 256
+        QString viewMode = "grid";    // grid, list, compact, detailed
         bool showIconNames = true;
         bool showTooltips = true;
         bool useAnimations = true;
@@ -114,12 +113,12 @@ public:
         QString fontFamily = "system";
         int fontSize = 9;
         bool useSystemFont = true;
-        double uiScale = 1.0;               // UI scaling factor
+        double uiScale = 1.0; // UI scaling factor
         bool compactMode = false;
         bool showStatusBar = true;
         bool showToolBar = true;
         bool showSidebar = true;
-        QString iconStyle = "filled";       // filled, outlined, rounded
+        QString iconStyle = "filled"; // filled, outlined, rounded
     };
 
     struct SearchSettings {
@@ -134,7 +133,7 @@ public:
         bool useRegex = false;
         bool searchHistory = true;
         int maxHistorySize = 100;
-        int searchDelay = 300;              // Milliseconds
+        int searchDelay = 300; // Milliseconds
         bool instantSearch = true;
         bool searchInDescription = true;
         bool searchInAliases = true;
@@ -142,28 +141,28 @@ public:
 
     struct PerformanceSettings {
         bool enableLazyLoading = true;
-        int cacheSize = 2000;               // Number of icons to cache
+        int cacheSize = 2000; // Number of icons to cache
         bool preloadFavorites = true;
         bool enableVirtualization = true;
-        int renderThreads = 0;              // 0 = auto-detect
+        int renderThreads = 0; // 0 = auto-detect
         bool enableGPUAcceleration = false;
         bool enableMultisampling = true;
         int maxFPS = 60;
         bool enableVSync = true;
         bool optimizeMemory = true;
         bool enableProfiling = false;
-        int gcInterval = 30000;             // Garbage collection interval (ms)
+        int gcInterval = 30000; // Garbage collection interval (ms)
         bool enableBackgroundProcessing = true;
     };
 
     struct ExportSettings {
-        QString defaultFormat = "PNG";      // PNG, SVG, ICO, PDF, WEBP
-        int defaultSize = 256;              // Export size in pixels
-        QString defaultPath = "";           // Default export directory
+        QString defaultFormat = "PNG"; // PNG, SVG, ICO, PDF, WEBP
+        int defaultSize = 256;         // Export size in pixels
+        QString defaultPath = "";      // Default export directory
         bool preserveAspectRatio = true;
         bool includeMetadata = false;
         QColor backgroundColor = Qt::transparent;
-        int quality = 95;                   // JPEG/WEBP quality
+        int quality = 95; // JPEG/WEBP quality
         bool embedColorProfile = false;
         QString namingPattern = "{name}_{size}"; // File naming pattern
         bool createSubfolders = false;
@@ -188,19 +187,19 @@ public:
         double textScale = 1.0;
         bool enableMagnifier = false;
         bool enableColorBlindSupport = false;
-        QString colorBlindType = "none";    // none, protanopia, deuteranopia, tritanopia
+        QString colorBlindType = "none"; // none, protanopia, deuteranopia, tritanopia
     };
 
     struct NetworkSettings {
         bool enableAutoUpdates = true;
         bool enableTelemetry = false;
         bool enableCloudSync = false;
-        QString proxyType = "none";         // none, http, socks5
+        QString proxyType = "none"; // none, http, socks5
         QString proxyHost = "";
         int proxyPort = 0;
         QString proxyUsername = "";
         QString proxyPassword = "";
-        int connectionTimeout = 30000;     // Milliseconds
+        int connectionTimeout = 30000; // Milliseconds
         bool enableSSLVerification = true;
     };
 
@@ -209,7 +208,7 @@ public:
         bool showPerformanceOverlay = false;
         bool enableConsoleLogging = true;
         bool enableFileLogging = false;
-        QString logLevel = "Info";          // Trace, Debug, Info, Warning, Error, Critical
+        QString logLevel = "Info"; // Trace, Debug, Info, Warning, Error, Critical
         bool enableHotReload = false;
         bool showMemoryUsage = false;
         bool enableApiAccess = false;
@@ -383,7 +382,7 @@ private:
     QCheckBox* m_enableTelemetryCheck;
     QCheckBox* m_showStatusBarCheck;
     QCheckBox* m_showToolBarCheck;
-    QComboBox* m_languageCombo;  // Added for implementation compatibility
+    QComboBox* m_languageCombo; // Added for implementation compatibility
 
     // Appearance Tab
     QWidget* m_appearanceTab;
@@ -587,9 +586,9 @@ private:
 #endif
 
     // Constants
-    static constexpr int PREVIEW_UPDATE_DELAY = 500;  // ms
-    static constexpr int PERFORMANCE_UPDATE_INTERVAL = 1000;  // ms
-    static constexpr int ANIMATION_DURATION = 250;  // ms
+    static constexpr int PREVIEW_UPDATE_DELAY = 500;         // ms
+    static constexpr int PERFORMANCE_UPDATE_INTERVAL = 1000; // ms
+    static constexpr int ANIMATION_DURATION = 250;           // ms
     static constexpr const char* SETTINGS_GROUP = "PreferencesDialog";
     static constexpr const char* BACKUP_SUFFIX = ".backup";
 };

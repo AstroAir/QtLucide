@@ -3,74 +3,70 @@
  */
 
 #include "IconDetailsPanel.h"
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGridLayout>
-#include <QHeaderView>
 #include <QApplication>
 #include <QClipboard>
-#include <QTimer>
 #include <QDebug>
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QTimer>
+#include <QVBoxLayout>
 
 // CodeSyntaxHighlighter Implementation
-CodeSyntaxHighlighter::CodeSyntaxHighlighter(Language language, QTextDocument *parent)
-    : QSyntaxHighlighter(parent)
-    , m_language(language)
-{
+CodeSyntaxHighlighter::CodeSyntaxHighlighter(Language language, QTextDocument* parent)
+    : QSyntaxHighlighter(parent), m_language(language) {
     setLanguage(language);
 }
 
-void CodeSyntaxHighlighter::setLanguage(Language language)
-{
+void CodeSyntaxHighlighter::setLanguage(Language language) {
     m_language = language;
     m_highlightingRules.clear();
 
     switch (language) {
-    case CPlusPlus:
-        setupCppRules();
-        break;
-    case JavaScript:
-        setupJavaScriptRules();
-        break;
-    case HTML:
-        setupHtmlRules();
-        break;
-    case CSS:
-        setupCssRules();
-        break;
-    case TypeScript:
-    case React:
-    case Vue:
-    case Angular:
-    case SCSS:
-    case Python:
-    case CSharp:
-    case Java:
-    case Swift:
-    case Kotlin:
-    case Dart:
-    case XML:
-    case JSON:
-        // TODO: Implement syntax highlighting for these languages
-        // For now, use basic highlighting
-        setupCppRules();
-        break;
+        case CPlusPlus:
+            setupCppRules();
+            break;
+        case JavaScript:
+            setupJavaScriptRules();
+            break;
+        case HTML:
+            setupHtmlRules();
+            break;
+        case CSS:
+            setupCssRules();
+            break;
+        case TypeScript:
+        case React:
+        case Vue:
+        case Angular:
+        case SCSS:
+        case Python:
+        case CSharp:
+        case Java:
+        case Swift:
+        case Kotlin:
+        case Dart:
+        case XML:
+        case JSON:
+            // TODO: Implement syntax highlighting for these languages
+            // For now, use basic highlighting
+            setupCppRules();
+            break;
     }
 }
 
-void CodeSyntaxHighlighter::highlightBlock(const QString &text)
-{
-    foreach (const HighlightingRule &rule, m_highlightingRules) {
+void CodeSyntaxHighlighter::highlightBlock(const QString& text) {
+    foreach (const HighlightingRule& rule, m_highlightingRules) {
         QRegularExpressionMatchIterator matchIterator = rule.pattern.globalMatch(text);
         while (matchIterator.hasNext()) {
             QRegularExpressionMatch match = matchIterator.next();
-            setFormat(static_cast<int>(match.capturedStart()), static_cast<int>(match.capturedLength()), rule.format);
+            setFormat(static_cast<int>(match.capturedStart()),
+                      static_cast<int>(match.capturedLength()), rule.format);
         }
     }
 }
 
-void CodeSyntaxHighlighter::setupCppRules()
-{
+void CodeSyntaxHighlighter::setupCppRules() {
     HighlightingRule rule;
 
     // Keywords
@@ -81,7 +77,7 @@ void CodeSyntaxHighlighter::setupCppRules()
     keywordPatterns << "\\bclass\\b" << "\\bnamespace\\b" << "\\bpublic\\b" << "\\bprivate\\b"
                     << "\\bprotected\\b" << "\\bvirtual\\b" << "\\bstatic\\b" << "\\bconst\\b";
 
-    foreach (const QString &pattern, keywordPatterns) {
+    foreach (const QString& pattern, keywordPatterns) {
         rule.pattern = QRegularExpression(pattern);
         rule.format = keywordFormat;
         m_highlightingRules.append(rule);
@@ -95,14 +91,12 @@ void CodeSyntaxHighlighter::setupCppRules()
     m_highlightingRules.append(rule);
 }
 
-void CodeSyntaxHighlighter::setupJavaScriptRules()
-{
+void CodeSyntaxHighlighter::setupJavaScriptRules() {
     // Similar to C++ but with JavaScript keywords
     setupCppRules();
 }
 
-void CodeSyntaxHighlighter::setupHtmlRules()
-{
+void CodeSyntaxHighlighter::setupHtmlRules() {
     // HTML tag highlighting
     HighlightingRule rule;
     QTextCharFormat htmlElementFormat;
@@ -112,8 +106,7 @@ void CodeSyntaxHighlighter::setupHtmlRules()
     m_highlightingRules.append(rule);
 }
 
-void CodeSyntaxHighlighter::setupCssRules()
-{
+void CodeSyntaxHighlighter::setupCssRules() {
     // CSS property highlighting
     HighlightingRule rule;
     QTextCharFormat cssPropertyFormat;
@@ -124,17 +117,12 @@ void CodeSyntaxHighlighter::setupCssRules()
 }
 
 // IconPreviewWidget Implementation
-IconPreviewWidget::IconPreviewWidget(lucide::QtLucide* lucide, QWidget *parent)
-    : QFrame(parent)
-    , m_lucide(lucide)
-    , m_iconSize(DEFAULT_PREVIEW_SIZE)
-    , m_iconColor(Qt::black)
-{
+IconPreviewWidget::IconPreviewWidget(lucide::QtLucide* lucide, QWidget* parent)
+    : QFrame(parent), m_lucide(lucide), m_iconSize(DEFAULT_PREVIEW_SIZE), m_iconColor(Qt::black) {
     setupUI();
 }
 
-void IconPreviewWidget::setupUI()
-{
+void IconPreviewWidget::setupUI() {
     setFrameStyle(QFrame::StyledPanel);
     m_layout = new QVBoxLayout(this);
 
@@ -174,20 +162,18 @@ void IconPreviewWidget::setupUI()
 
     // Connect signals
     connect(m_sizeSlider, &QSlider::valueChanged, this, &IconPreviewWidget::onSizeSliderChanged);
-    connect(m_sizeSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),
-            this, &IconPreviewWidget::onSizeSpinBoxChanged);
+    connect(m_sizeSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this,
+            &IconPreviewWidget::onSizeSpinBoxChanged);
     connect(m_colorButton, &QPushButton::clicked, this, &IconPreviewWidget::onColorButtonClicked);
     connect(m_copyIconButton, &QToolButton::clicked, this, &IconPreviewWidget::onCopyIconClicked);
 }
 
-void IconPreviewWidget::setIconName(const QString& iconName)
-{
+void IconPreviewWidget::setIconName(const QString& iconName) {
     m_iconName = iconName;
     updatePreview();
 }
 
-void IconPreviewWidget::setIconSize(int size)
-{
+void IconPreviewWidget::setIconSize(int size) {
     size = qBound(MIN_PREVIEW_SIZE, size, MAX_PREVIEW_SIZE);
     if (m_iconSize != size) {
         m_iconSize = size;
@@ -197,8 +183,7 @@ void IconPreviewWidget::setIconSize(int size)
     }
 }
 
-void IconPreviewWidget::setIconColor(const QColor& color)
-{
+void IconPreviewWidget::setIconColor(const QColor& color) {
     if (m_iconColor != color) {
         m_iconColor = color;
         updatePreview();
@@ -206,8 +191,7 @@ void IconPreviewWidget::setIconColor(const QColor& color)
     }
 }
 
-void IconPreviewWidget::updatePreview()
-{
+void IconPreviewWidget::updatePreview() {
     if (!m_lucide || m_iconName.isEmpty()) {
         m_iconLabel->clear();
         return;
@@ -223,8 +207,7 @@ void IconPreviewWidget::updatePreview()
     }
 }
 
-void IconPreviewWidget::updateSizeControls()
-{
+void IconPreviewWidget::updateSizeControls() {
     m_sizeSlider->blockSignals(true);
     m_sizeSpinBox->blockSignals(true);
 
@@ -235,47 +218,37 @@ void IconPreviewWidget::updateSizeControls()
     m_sizeSpinBox->blockSignals(false);
 }
 
-void IconPreviewWidget::onSizeSliderChanged(int value)
-{
+void IconPreviewWidget::onSizeSliderChanged(int value) {
     setIconSize(value);
 }
 
-void IconPreviewWidget::onSizeSpinBoxChanged(int value)
-{
+void IconPreviewWidget::onSizeSpinBoxChanged(int value) {
     setIconSize(value);
 }
 
-void IconPreviewWidget::onColorButtonClicked()
-{
+void IconPreviewWidget::onColorButtonClicked() {
     // TODO: Implement color picker dialog
 }
 
-void IconPreviewWidget::onCopyIconClicked()
-{
+void IconPreviewWidget::onCopyIconClicked() {
     emit copyRequested("icon");
 }
 
-void IconPreviewWidget::refreshPreview()
-{
+void IconPreviewWidget::refreshPreview() {
     updatePreview();
 }
 
-void IconPreviewWidget::resetToDefaults()
-{
+void IconPreviewWidget::resetToDefaults() {
     setIconSize(DEFAULT_PREVIEW_SIZE);
     setIconColor(Qt::black);
 }
 
 // CodeExampleWidget Implementation
-CodeExampleWidget::CodeExampleWidget(QWidget *parent)
-    : QWidget(parent)
-    , m_highlighter(nullptr)
-{
+CodeExampleWidget::CodeExampleWidget(QWidget* parent) : QWidget(parent), m_highlighter(nullptr) {
     setupUI();
 }
 
-void CodeExampleWidget::setupUI()
-{
+void CodeExampleWidget::setupUI() {
     m_layout = new QVBoxLayout(this);
 
     // Header
@@ -300,21 +273,20 @@ void CodeExampleWidget::setupUI()
     m_layout->addWidget(m_codeEdit, 1);
 
     // Setup syntax highlighting
-    m_highlighter = new CodeSyntaxHighlighter(CodeSyntaxHighlighter::CPlusPlus, m_codeEdit->document());
+    m_highlighter =
+        new CodeSyntaxHighlighter(CodeSyntaxHighlighter::CPlusPlus, m_codeEdit->document());
 
-    connect(m_languageCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &CodeExampleWidget::onLanguageChanged);
+    connect(m_languageCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+            &CodeExampleWidget::onLanguageChanged);
     connect(m_copyButton, &QToolButton::clicked, this, &CodeExampleWidget::onCopyCodeClicked);
 }
 
-void CodeExampleWidget::setIconName(const QString& iconName)
-{
+void CodeExampleWidget::setIconName(const QString& iconName) {
     m_iconName = iconName;
     updateExamples();
 }
 
-void CodeExampleWidget::updateExamples()
-{
+void CodeExampleWidget::updateExamples() {
     if (m_iconName.isEmpty()) {
         m_codeEdit->clear();
         return;
@@ -322,84 +294,82 @@ void CodeExampleWidget::updateExamples()
 
     int languageIndex = m_languageCombo->currentIndex();
     switch (languageIndex) {
-    case 0: generateCppExample(); break;
-    case 1: generateJavaScriptExample(); break;
-    case 2: generateHtmlExample(); break;
-    case 3: generateCssExample(); break;
+        case 0:
+            generateCppExample();
+            break;
+        case 1:
+            generateJavaScriptExample();
+            break;
+        case 2:
+            generateHtmlExample();
+            break;
+        case 3:
+            generateCssExample();
+            break;
     }
 }
 
-void CodeExampleWidget::generateCppExample()
-{
-    QString code = QString(
-        "// Using QtLucide in C++\n"
-        "#include <QtLucide/QtLucide.h>\n\n"
-        "lucide::QtLucide* lucide = new lucide::QtLucide(this);\n"
-        "lucide->initLucide();\n\n"
-        "// Get icon\n"
-        "QIcon icon = lucide->icon(\"%1\");\n\n"
-        "// Use in button\n"
-        "QPushButton* button = new QPushButton(this);\n"
-        "button->setIcon(icon);\n\n"
-        "// Use in label\n"
-        "QLabel* label = new QLabel(this);\n"
-        "label->setPixmap(icon.pixmap(32, 32));"
-    ).arg(m_iconName);
+void CodeExampleWidget::generateCppExample() {
+    QString code = QString("// Using QtLucide in C++\n"
+                           "#include <QtLucide/QtLucide.h>\n\n"
+                           "lucide::QtLucide* lucide = new lucide::QtLucide(this);\n"
+                           "lucide->initLucide();\n\n"
+                           "// Get icon\n"
+                           "QIcon icon = lucide->icon(\"%1\");\n\n"
+                           "// Use in button\n"
+                           "QPushButton* button = new QPushButton(this);\n"
+                           "button->setIcon(icon);\n\n"
+                           "// Use in label\n"
+                           "QLabel* label = new QLabel(this);\n"
+                           "label->setPixmap(icon.pixmap(32, 32));")
+                       .arg(m_iconName);
 
     m_codeEdit->setPlainText(code);
 }
 
-void CodeExampleWidget::generateJavaScriptExample()
-{
-    QString code = QString(
-        "// Using icon in web context\n"
-        "const iconName = '%1';\n"
-        "const iconElement = document.createElement('i');\n"
-        "iconElement.className = `lucide-${iconName}`;\n"
-        "document.body.appendChild(iconElement);"
-    ).arg(m_iconName);
+void CodeExampleWidget::generateJavaScriptExample() {
+    QString code = QString("// Using icon in web context\n"
+                           "const iconName = '%1';\n"
+                           "const iconElement = document.createElement('i');\n"
+                           "iconElement.className = `lucide-${iconName}`;\n"
+                           "document.body.appendChild(iconElement);")
+                       .arg(m_iconName);
 
     m_codeEdit->setPlainText(code);
 }
 
-void CodeExampleWidget::generateHtmlExample()
-{
-    QString code = QString(
-        "<!-- HTML usage -->\n"
-        "<i class=\"lucide-%1\"></i>\n\n"
-        "<!-- With custom size -->\n"
-        "<i class=\"lucide-%1\" style=\"width: 24px; height: 24px;\"></i>"
-    ).arg(m_iconName);
+void CodeExampleWidget::generateHtmlExample() {
+    QString code = QString("<!-- HTML usage -->\n"
+                           "<i class=\"lucide-%1\"></i>\n\n"
+                           "<!-- With custom size -->\n"
+                           "<i class=\"lucide-%1\" style=\"width: 24px; height: 24px;\"></i>")
+                       .arg(m_iconName);
 
     m_codeEdit->setPlainText(code);
 }
 
-void CodeExampleWidget::generateCssExample()
-{
-    QString code = QString(
-        "/* CSS styling for %1 icon */\n"
-        ".lucide-%1 {\n"
-        "    width: 24px;\n"
-        "    height: 24px;\n"
-        "    color: #333;\n"
-        "}\n\n"
-        ".lucide-%1:hover {\n"
-        "    color: #007bff;\n"
-        "}"
-    ).arg(m_iconName);
+void CodeExampleWidget::generateCssExample() {
+    QString code = QString("/* CSS styling for %1 icon */\n"
+                           ".lucide-%1 {\n"
+                           "    width: 24px;\n"
+                           "    height: 24px;\n"
+                           "    color: #333;\n"
+                           "}\n\n"
+                           ".lucide-%1:hover {\n"
+                           "    color: #007bff;\n"
+                           "}")
+                       .arg(m_iconName);
 
     m_codeEdit->setPlainText(code);
 }
 
-void CodeExampleWidget::onLanguageChanged(int index)
-{
+void CodeExampleWidget::onLanguageChanged(int index) {
     CodeSyntaxHighlighter::Language language = static_cast<CodeSyntaxHighlighter::Language>(index);
     m_highlighter->setLanguage(language);
     updateExamples();
 }
 
-void CodeExampleWidget::onCopyCodeClicked()
-{
+void CodeExampleWidget::onCopyCodeClicked() {
     QString code = m_codeEdit->toPlainText();
     QString language = m_languageCombo->currentText();
 
@@ -408,14 +378,10 @@ void CodeExampleWidget::onCopyCodeClicked()
 }
 
 // IconDetailsPanel Implementation
-IconDetailsPanel::IconDetailsPanel(lucide::QtLucide* lucide,
-                                 IconMetadataManager* metadataManager,
-                                 QWidget *parent)
-    : QWidget(parent)
-    , m_lucide(lucide)
-    , m_metadataManager(metadataManager)
-    , m_updateTimer(new QTimer(this))
-{
+IconDetailsPanel::IconDetailsPanel(lucide::QtLucide* lucide, IconMetadataManager* metadataManager,
+                                   QWidget* parent)
+    : QWidget(parent), m_lucide(lucide), m_metadataManager(metadataManager),
+      m_updateTimer(new QTimer(this)) {
     setupUI();
 
     m_updateTimer->setSingleShot(true);
@@ -423,12 +389,9 @@ IconDetailsPanel::IconDetailsPanel(lucide::QtLucide* lucide,
     connect(m_updateTimer, &QTimer::timeout, this, &IconDetailsPanel::refreshDetails);
 }
 
-IconDetailsPanel::~IconDetailsPanel()
-{
-}
+IconDetailsPanel::~IconDetailsPanel() {}
 
-void IconDetailsPanel::setupUI()
-{
+void IconDetailsPanel::setupUI() {
     m_layout = new QVBoxLayout(this);
     m_layout->setContentsMargins(4, 4, 4, 4);
 
@@ -447,8 +410,7 @@ void IconDetailsPanel::setupUI()
     m_layout->addWidget(m_scrollArea);
 }
 
-void IconDetailsPanel::setupHeaderSection()
-{
+void IconDetailsPanel::setupHeaderSection() {
     m_headerFrame = new QFrame(m_contentWidget);
     m_headerFrame->setFrameStyle(QFrame::StyledPanel);
 
@@ -469,11 +431,11 @@ void IconDetailsPanel::setupHeaderSection()
     m_headerLayout->addWidget(m_nameLabel, 1);
     m_headerLayout->addWidget(m_favoriteButton);
 
-    connect(m_favoriteButton, &QToolButton::clicked, this, &IconDetailsPanel::onFavoriteButtonClicked);
+    connect(m_favoriteButton, &QToolButton::clicked, this,
+            &IconDetailsPanel::onFavoriteButtonClicked);
 }
 
-void IconDetailsPanel::setupTabWidget()
-{
+void IconDetailsPanel::setupTabWidget() {
     m_tabWidget = new QTabWidget(m_contentWidget);
 
     setupMetadataTab();
@@ -483,8 +445,7 @@ void IconDetailsPanel::setupTabWidget()
     connect(m_tabWidget, &QTabWidget::currentChanged, this, &IconDetailsPanel::onTabChanged);
 }
 
-void IconDetailsPanel::setupMetadataTab()
-{
+void IconDetailsPanel::setupMetadataTab() {
     m_metadataTab = new QWidget();
     QVBoxLayout* layout = new QVBoxLayout(m_metadataTab);
 
@@ -496,8 +457,7 @@ void IconDetailsPanel::setupMetadataTab()
     m_tabWidget->addTab(m_metadataTab, "Details");
 }
 
-void IconDetailsPanel::setupPreviewTab()
-{
+void IconDetailsPanel::setupPreviewTab() {
     m_previewTab = new QWidget();
     QVBoxLayout* layout = new QVBoxLayout(m_previewTab);
 
@@ -507,8 +467,7 @@ void IconDetailsPanel::setupPreviewTab()
     m_tabWidget->addTab(m_previewTab, "Preview");
 }
 
-void IconDetailsPanel::setupCodeTab()
-{
+void IconDetailsPanel::setupCodeTab() {
     m_codeTab = new QWidget();
     QVBoxLayout* layout = new QVBoxLayout(m_codeTab);
 
@@ -518,16 +477,14 @@ void IconDetailsPanel::setupCodeTab()
     m_tabWidget->addTab(m_codeTab, "Code");
 }
 
-void IconDetailsPanel::setIconName(const QString& iconName)
-{
+void IconDetailsPanel::setIconName(const QString& iconName) {
     if (m_currentIconName != iconName) {
         m_currentIconName = iconName;
         m_updateTimer->start();
     }
 }
 
-void IconDetailsPanel::clear()
-{
+void IconDetailsPanel::clear() {
     m_currentIconName.clear();
     m_nameLabel->setText("No icon selected");
     m_iconLabel->clear();
@@ -535,8 +492,7 @@ void IconDetailsPanel::clear()
     m_favoriteButton->setChecked(false);
 }
 
-void IconDetailsPanel::refreshDetails()
-{
+void IconDetailsPanel::refreshDetails() {
     if (m_currentIconName.isEmpty()) {
         clear();
         return;
@@ -548,9 +504,9 @@ void IconDetailsPanel::refreshDetails()
     updateCodeExamples();
 }
 
-void IconDetailsPanel::updateHeader()
-{
-    if (!m_lucide || m_currentIconName.isEmpty()) return;
+void IconDetailsPanel::updateHeader() {
+    if (!m_lucide || m_currentIconName.isEmpty())
+        return;
 
     // Update icon
     QIcon icon = m_lucide->icon(m_currentIconName);
@@ -567,9 +523,9 @@ void IconDetailsPanel::updateHeader()
     updateFavoriteStatus();
 }
 
-void IconDetailsPanel::updateMetadata()
-{
-    if (!m_metadataManager) return;
+void IconDetailsPanel::updateMetadata() {
+    if (!m_metadataManager)
+        return;
 
     IconMetadata metadata = m_metadataManager->getIconMetadata(m_currentIconName);
 
@@ -580,8 +536,7 @@ void IconDetailsPanel::updateMetadata()
     }
 }
 
-void IconDetailsPanel::populateMetadataTable()
-{
+void IconDetailsPanel::populateMetadataTable() {
     IconMetadata metadata = m_metadataManager->getIconMetadata(m_currentIconName);
 
     auto addRow = [this](const QString& property, const QString& value) {
@@ -603,22 +558,19 @@ void IconDetailsPanel::populateMetadataTable()
     }
 }
 
-void IconDetailsPanel::updatePreview()
-{
+void IconDetailsPanel::updatePreview() {
     if (m_previewWidget) {
         m_previewWidget->setIconName(m_currentIconName);
     }
 }
 
-void IconDetailsPanel::updateCodeExamples()
-{
+void IconDetailsPanel::updateCodeExamples() {
     if (m_codeWidget) {
         m_codeWidget->setIconName(m_currentIconName);
     }
 }
 
-void IconDetailsPanel::updateFavoriteStatus()
-{
+void IconDetailsPanel::updateFavoriteStatus() {
     if (m_metadataManager && !m_currentIconName.isEmpty()) {
         bool isFavorite = m_metadataManager->isFavorite(m_currentIconName);
         m_favoriteButton->setChecked(isFavorite);
@@ -626,9 +578,9 @@ void IconDetailsPanel::updateFavoriteStatus()
     }
 }
 
-void IconDetailsPanel::onFavoriteButtonClicked()
-{
-    if (!m_metadataManager || m_currentIconName.isEmpty()) return;
+void IconDetailsPanel::onFavoriteButtonClicked() {
+    if (!m_metadataManager || m_currentIconName.isEmpty())
+        return;
 
     bool isFavorite = m_favoriteButton->isChecked();
 
@@ -641,16 +593,14 @@ void IconDetailsPanel::onFavoriteButtonClicked()
     emit favoriteToggled(m_currentIconName, isFavorite);
 }
 
-void IconDetailsPanel::onTabChanged(int index)
-{
+void IconDetailsPanel::onTabChanged(int index) {
     Q_UNUSED(index)
     // Refresh content when tab changes
     m_updateTimer->start();
 }
 
 // Copy functionality implementations
-void IconDetailsPanel::onCopyNameClicked()
-{
+void IconDetailsPanel::onCopyNameClicked() {
     if (!m_currentIconName.isEmpty()) {
         QClipboard* clipboard = QApplication::clipboard();
         clipboard->setText(m_currentIconName);
@@ -671,8 +621,7 @@ void IconDetailsPanel::onCopyNameClicked()
     }
 }
 
-void IconDetailsPanel::onCopyCodeClicked()
-{
+void IconDetailsPanel::onCopyCodeClicked() {
     if (!m_currentIconName.isEmpty()) {
         QString codeSnippet = QString("lucide.icon(\"%1\")").arg(m_currentIconName);
 
@@ -684,8 +633,7 @@ void IconDetailsPanel::onCopyCodeClicked()
     }
 }
 
-void IconDetailsPanel::onCopySvgClicked()
-{
+void IconDetailsPanel::onCopySvgClicked() {
     if (!m_currentIconName.isEmpty() && m_lucide) {
         QByteArray svgData = m_lucide->svgData(m_currentIconName);
         if (!svgData.isEmpty()) {
@@ -699,19 +647,28 @@ void IconDetailsPanel::onCopySvgClicked()
         }
     }
 }
-void IconDetailsPanel::onPreviewSizeChanged(int size) { Q_UNUSED(size) }
-void IconDetailsPanel::onPreviewColorChanged(const QColor& color) { Q_UNUSED(color) }
-void IconDetailsPanel::onCodeCopyRequested(const QString& code, const QString& language) { Q_UNUSED(code) Q_UNUSED(language) }
+void IconDetailsPanel::onPreviewSizeChanged(int size) {
+    Q_UNUSED(size)
+}
+void IconDetailsPanel::onPreviewColorChanged(const QColor& color) {
+    Q_UNUSED(color)
+}
+void IconDetailsPanel::onCodeCopyRequested(const QString& code, const QString& language) {
+    Q_UNUSED(code)
+    Q_UNUSED(language)
+}
 
 // IconPreviewWidget missing methods
-void IconPreviewWidget::onCopyCodeClicked() { emit copyRequested("code"); }
-void IconPreviewWidget::onCopySvgClicked() { emit copyRequested("svg"); }
+void IconPreviewWidget::onCopyCodeClicked() {
+    emit copyRequested("code");
+}
+void IconPreviewWidget::onCopySvgClicked() {
+    emit copyRequested("svg");
+}
 
 // CodeSyntaxHighlighter missing constructor
-CodeSyntaxHighlighter::CodeSyntaxHighlighter(QTextDocument *parent)
-    : QSyntaxHighlighter(parent)
-    , m_language(CPlusPlus)
-{
+CodeSyntaxHighlighter::CodeSyntaxHighlighter(QTextDocument* parent)
+    : QSyntaxHighlighter(parent), m_language(CPlusPlus) {
     setLanguage(m_language);
 }
 
@@ -724,7 +681,9 @@ void IconPreviewWidget::zoomIn() { /* TODO */ }
 void IconPreviewWidget::zoomOut() { /* TODO */ }
 void IconPreviewWidget::zoomToFit() { /* TODO */ }
 void IconPreviewWidget::resetZoom() { /* TODO */ }
-void IconPreviewWidget::onZoomSliderChanged(int value) { Q_UNUSED(value) /* TODO */ }
+void IconPreviewWidget::onZoomSliderChanged(int value) {
+    Q_UNUSED(value) /* TODO */
+}
 void IconPreviewWidget::onBackgroundChanged() { /* TODO */ }
 void IconPreviewWidget::onPreviewModeChanged() { /* TODO */ }
 void IconPreviewWidget::onExportClicked() { /* TODO */ }
@@ -740,7 +699,12 @@ void IconDetailsPanel::expandAll() { /* TODO */ }
 void IconDetailsPanel::collapseAll() { /* TODO */ }
 void IconDetailsPanel::onExportClicked() { /* TODO */ }
 void IconDetailsPanel::onShareClicked() { /* TODO */ }
-void IconDetailsPanel::onCodeExportRequested(const QString& code, const QString& language, const QString& format) { Q_UNUSED(code) Q_UNUSED(language) Q_UNUSED(format) /* TODO */ }
+void IconDetailsPanel::onCodeExportRequested(const QString& code, const QString& language,
+                                             const QString& format) {
+    Q_UNUSED(code)
+    Q_UNUSED(language)
+    Q_UNUSED(format) /* TODO */
+}
 void IconDetailsPanel::onViewModeChanged() { /* TODO */ }
 void IconDetailsPanel::onMetadataEdited() { /* TODO */ }
 void IconDetailsPanel::onRefreshTimer() { /* TODO */ }

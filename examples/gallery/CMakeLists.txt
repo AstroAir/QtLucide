@@ -20,41 +20,6 @@ find_package(Qt6 REQUIRED COMPONENTS
     Network
 )
 
-# Find QtLucide library
-find_path(QTLUCIDE_INCLUDE_DIR QtLucide/QtLucide.h
-    PATHS
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../include
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../../include
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../build_cmake/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../../build_cmake/include
-    NO_DEFAULT_PATH
-)
-
-find_library(QTLUCIDE_LIBRARY
-    NAMES QtLucide libQtLucide
-    PATHS
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../build_cmake/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../../build_cmake/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../build/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../../build/src
-        ${CMAKE_CURRENT_BINARY_DIR}/../../src
-        ${CMAKE_CURRENT_BINARY_DIR}/../../../src
-    PATH_SUFFIXES
-        lib
-        Release
-        Debug
-    NO_DEFAULT_PATH
-)
-
-if(NOT QTLUCIDE_INCLUDE_DIR OR NOT QTLUCIDE_LIBRARY)
-    message(WARNING "QtLucide library not found. Some features may not work.")
-    set(QTLUCIDE_FOUND FALSE)
-else()
-    set(QTLUCIDE_FOUND TRUE)
-    message(STATUS "QtLucide found:")
-    message(STATUS "  Include: ${QTLUCIDE_INCLUDE_DIR}")
-    message(STATUS "  Library: ${QTLUCIDE_LIBRARY}")
-endif()
 
 # Enable Qt's MOC, UIC, and RCC
 set(CMAKE_AUTOMOC ON)
@@ -67,6 +32,7 @@ set(GALLERY_SOURCES
     src/config/LayoutConfig.h
 
     # Core functionality
+    src/core/GalleryTypes.h
     src/core/BatchExportManager.h
     src/core/BatchExportManager.cpp
     src/core/ExportProgressWidget.cpp
@@ -106,8 +72,6 @@ set(GALLERY_SOURCES
     src/ui/widgets/grids/IconGridWidget.cpp
     src/ui/widgets/grids/IconThumbnailGridWidget.h
     src/ui/widgets/grids/IconThumbnailGridWidget.cpp
-    src/ui/widgets/grids/ModernIconGridWidget.h
-    src/ui/widgets/grids/ModernIconGridWidget.cpp
 
     # UI widgets - search
     src/ui/widgets/search/SearchWidget.h
@@ -116,8 +80,6 @@ set(GALLERY_SOURCES
     src/ui/widgets/search/IconSearchWidget.cpp
     src/ui/widgets/search/CategoryFilterWidget.h
     src/ui/widgets/search/CategoryFilterWidget.cpp
-    src/ui/widgets/search/ModernSearchWidget.h
-    src/ui/widgets/search/ModernSearchWidget.cpp
 
     # UI widgets - panels
     src/ui/widgets/panels/CategorySidebarWidget.h
@@ -126,8 +88,6 @@ set(GALLERY_SOURCES
     src/ui/widgets/panels/IconDetailsPanel.cpp
     src/ui/widgets/panels/FileBrowserWidget.h
     src/ui/widgets/panels/FileBrowserWidget.cpp
-    src/ui/widgets/panels/ModernSidebarWidget.h
-    src/ui/widgets/panels/ModernSidebarWidget.cpp
 
     # UI widgets - viewers
     src/ui/widgets/viewers/ImageViewerWidget.h
@@ -198,10 +158,6 @@ target_include_directories(QtLucideGallery PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/config
 )
 
-# Include QtLucide headers (using target interface)
-target_include_directories(QtLucideGallery PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../include
-)
 
 # Link Qt libraries
 target_link_libraries(QtLucideGallery
@@ -265,9 +221,5 @@ message(STATUS "  - Image gallery with metadata: ✓")
 message(STATUS "  - Theme switching: ✓")
 message(STATUS "  - Export/import functionality: ✓")
 message(STATUS "  - Responsive layout system: ✓")
-if(QTLUCIDE_FOUND)
-    message(STATUS "  - QtLucide integration: ✓")
-else()
-    message(STATUS "  - QtLucide integration: ✗ (library not found)")
-endif()
+message(STATUS "  - QtLucide integration: ✓ (linked QtLucide target)")
 message(STATUS "  - Build target: QtLucideGallery")

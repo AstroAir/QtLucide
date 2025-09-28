@@ -4,34 +4,29 @@
 
 #include "ImportDialog.h"
 #include <QApplication>
-#include <QStyle>
-#include <QStyleOption>
-#include <QPainter>
-#include <QShowEvent>
 #include <QCloseEvent>
-#include <QMessageBox>
-#include <QDesktopServices>
-#include <QUrl>
-#include <QStandardPaths>
-#include <QDir>
-#include <QFileInfo>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
 #include <QCryptographicHash>
 #include <QDebug>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QMessageBox>
+#include <QPainter>
+#include <QShowEvent>
+#include <QStandardPaths>
+#include <QStyle>
+#include <QStyleOption>
+#include <QUrl>
 
 // Static constants are defined in ManagerStubs.cpp
 
 // ImportOptionsWidget Implementation
 ImportOptionsWidget::ImportOptionsWidget(QWidget* parent)
-    : QWidget(parent)
-    , m_mainLayout(nullptr)
-    , m_tabWidget(nullptr)
-    , m_fileTab(nullptr)
-    , m_dataTab(nullptr)
-    , m_optionsTab(nullptr)
-{
+    : QWidget(parent), m_mainLayout(nullptr), m_tabWidget(nullptr), m_fileTab(nullptr),
+      m_dataTab(nullptr), m_optionsTab(nullptr) {
     setupUI();
 
     // Create theme-aware widget
@@ -47,14 +42,10 @@ ImportOptionsWidget::ImportOptionsWidget(QWidget* parent)
     setAcceptDrops(true);
 }
 
-ImportOptionsWidget::~ImportOptionsWidget()
-{
-}
+ImportOptionsWidget::~ImportOptionsWidget() {}
 
-void ImportOptionsWidget::setImportConfig(const ImportConfig& config)
-{
-    if (m_config.sourceFile == config.sourceFile &&
-        m_config.dataTypes == config.dataTypes &&
+void ImportOptionsWidget::setImportConfig(const ImportConfig& config) {
+    if (m_config.sourceFile == config.sourceFile && m_config.dataTypes == config.dataTypes &&
         m_config.conflictResolution == config.conflictResolution) {
         return; // No changes
     }
@@ -69,21 +60,20 @@ void ImportOptionsWidget::setImportConfig(const ImportConfig& config)
     emit configChanged(m_config);
 }
 
-ImportConfig ImportOptionsWidget::importConfig() const
-{
+ImportConfig ImportOptionsWidget::importConfig() const {
     return m_config;
 }
 
-void ImportOptionsWidget::resetToDefaults()
-{
+void ImportOptionsWidget::resetToDefaults() {
     ImportConfig defaultConfig;
-    defaultConfig.backupDirectory = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/QtLucide/Backups";
+    defaultConfig.backupDirectory =
+        QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/QtLucide/Backups";
     setImportConfig(defaultConfig);
 }
 
-void ImportOptionsWidget::setSourceFile(const QString& filePath)
-{
-    if (m_config.sourceFile == filePath) return;
+void ImportOptionsWidget::setSourceFile(const QString& filePath) {
+    if (m_config.sourceFile == filePath)
+        return;
 
     m_config.sourceFile = filePath;
     m_sourceFileEdit->setText(filePath);
@@ -92,9 +82,9 @@ void ImportOptionsWidget::setSourceFile(const QString& filePath)
     QFileInfo fileInfo(filePath);
     if (fileInfo.exists()) {
         QString info = QString("File: %1\nSize: %2 bytes\nModified: %3")
-                      .arg(fileInfo.fileName())
-                      .arg(fileInfo.size())
-                      .arg(fileInfo.lastModified().toString());
+                           .arg(fileInfo.fileName())
+                           .arg(fileInfo.size())
+                           .arg(fileInfo.lastModified().toString());
         m_fileInfoLabel->setText(info);
     } else {
         m_fileInfoLabel->setText("File not found");
@@ -104,13 +94,11 @@ void ImportOptionsWidget::setSourceFile(const QString& filePath)
     emit configChanged(m_config);
 }
 
-QString ImportOptionsWidget::sourceFile() const
-{
+QString ImportOptionsWidget::sourceFile() const {
     return m_config.sourceFile;
 }
 
-bool ImportOptionsWidget::validateConfig() const
-{
+bool ImportOptionsWidget::validateConfig() const {
     // Check if source file is valid
     if (m_config.sourceFile.isEmpty()) {
         return false;
@@ -141,8 +129,7 @@ bool ImportOptionsWidget::validateConfig() const
     return true;
 }
 
-QStringList ImportOptionsWidget::getValidationErrors() const
-{
+QStringList ImportOptionsWidget::getValidationErrors() const {
     QStringList errors;
 
     if (m_config.sourceFile.isEmpty()) {
@@ -174,64 +161,59 @@ QStringList ImportOptionsWidget::getValidationErrors() const
     return errors;
 }
 
-void ImportOptionsWidget::applyTheme()
-{
-    if (!ThemeManager::instance()) return;
+void ImportOptionsWidget::applyTheme() {
+    if (!ThemeManager::instance())
+        return;
 
     // Apply theme to the options widget
-    QString optionsStyle = QString(
-        "ImportOptionsWidget { "
-        "    background-color: %1; "
-        "    border: none; "
-        "} "
-        "QTabWidget::pane { "
-        "    border: 1px solid %2; "
-        "    border-radius: 4px; "
-        "    background-color: %3; "
-        "} "
-        "QTabBar::tab { "
-        "    background-color: %4; "
-        "    border: 1px solid %5; "
-        "    padding: 8px 16px; "
-        "    margin-right: 2px; "
-        "} "
-        "QTabBar::tab:selected { "
-        "    background-color: %6; "
-        "    border-bottom-color: %6; "
-        "} "
-        "QGroupBox { "
-        "    font-weight: bold; "
-        "    border: 1px solid %7; "
-        "    border-radius: 4px; "
-        "    margin-top: 8px; "
-        "    padding-top: 4px; "
-        "} "
-        "QGroupBox::title { "
-        "    subcontrol-origin: margin; "
-        "    left: 8px; "
-        "    padding: 0 4px 0 4px; "
-        "}"
-    ).arg(
-        THEME_COLOR(WindowBackground).name(),
-        THEME_COLOR(BorderColor).name(),
-        THEME_COLOR(PanelBackground).name(),
-        THEME_COLOR(PanelBackground).name(),
-        THEME_COLOR(BorderColor).name(),
-        THEME_COLOR(WindowBackground).name(),
-        THEME_COLOR(BorderColor).name()
-    );
+    QString optionsStyle =
+        QString("ImportOptionsWidget { "
+                "    background-color: %1; "
+                "    border: none; "
+                "} "
+                "QTabWidget::pane { "
+                "    border: 1px solid %2; "
+                "    border-radius: 4px; "
+                "    background-color: %3; "
+                "} "
+                "QTabBar::tab { "
+                "    background-color: %4; "
+                "    border: 1px solid %5; "
+                "    padding: 8px 16px; "
+                "    margin-right: 2px; "
+                "} "
+                "QTabBar::tab:selected { "
+                "    background-color: %6; "
+                "    border-bottom-color: %6; "
+                "} "
+                "QGroupBox { "
+                "    font-weight: bold; "
+                "    border: 1px solid %7; "
+                "    border-radius: 4px; "
+                "    margin-top: 8px; "
+                "    padding-top: 4px; "
+                "} "
+                "QGroupBox::title { "
+                "    subcontrol-origin: margin; "
+                "    left: 8px; "
+                "    padding: 0 4px 0 4px; "
+                "}")
+            .arg(THEME_COLOR(WindowBackground).name(), THEME_COLOR(BorderColor).name(),
+                 THEME_COLOR(PanelBackground).name(), THEME_COLOR(PanelBackground).name(),
+                 THEME_COLOR(BorderColor).name(), THEME_COLOR(WindowBackground).name(),
+                 THEME_COLOR(BorderColor).name());
 
     setStyleSheet(optionsStyle);
 }
 
-void ImportOptionsWidget::dragEnterEvent(QDragEnterEvent* event)
-{
+void ImportOptionsWidget::dragEnterEvent(QDragEnterEvent* event) {
     if (event->mimeData()->hasUrls()) {
         QList<QUrl> urls = event->mimeData()->urls();
         if (!urls.isEmpty()) {
             QString filePath = urls.first().toLocalFile();
             QFileInfo fileInfo(filePath);
-            if (fileInfo.suffix().toLower() == "json" || fileInfo.suffix().toLower() == "qtlucide") {
+            if (fileInfo.suffix().toLower() == "json" ||
+                fileInfo.suffix().toLower() == "qtlucide") {
                 event->acceptProposedAction();
                 return;
             }
@@ -240,8 +222,7 @@ void ImportOptionsWidget::dragEnterEvent(QDragEnterEvent* event)
     event->ignore();
 }
 
-void ImportOptionsWidget::dropEvent(QDropEvent* event)
-{
+void ImportOptionsWidget::dropEvent(QDropEvent* event) {
     if (event->mimeData()->hasUrls()) {
         QList<QUrl> urls = event->mimeData()->urls();
         if (!urls.isEmpty()) {
@@ -254,49 +235,49 @@ void ImportOptionsWidget::dropEvent(QDropEvent* event)
     event->ignore();
 }
 
-void ImportOptionsWidget::onBrowseSourceFile()
-{
+void ImportOptionsWidget::onBrowseSourceFile() {
     QString filePath = QFileDialog::getOpenFileName(
-        this,
-        "Select Import File",
+        this, "Select Import File",
         QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
-        "QtLucide Settings (*.qtlucide);;JSON Files (*.json);;All Files (*.*)"
-    );
+        "QtLucide Settings (*.qtlucide);;JSON Files (*.json);;All Files (*.*)");
 
     if (!filePath.isEmpty()) {
         setSourceFile(filePath);
     }
 }
 
-void ImportOptionsWidget::onDataTypeChanged()
-{
+void ImportOptionsWidget::onDataTypeChanged() {
     // Update config based on checkboxes
     m_config.dataTypes.clear();
 
     if (m_allDataCheck->isChecked()) {
         m_config.dataTypes << ImportDataType::All;
     } else {
-        if (m_settingsCheck->isChecked()) m_config.dataTypes << ImportDataType::Settings;
-        if (m_themesCheck->isChecked()) m_config.dataTypes << ImportDataType::Themes;
-        if (m_favoritesCheck->isChecked()) m_config.dataTypes << ImportDataType::Favorites;
-        if (m_searchHistoryCheck->isChecked()) m_config.dataTypes << ImportDataType::SearchHistory;
-        if (m_windowLayoutCheck->isChecked()) m_config.dataTypes << ImportDataType::WindowLayout;
-        if (m_userPreferencesCheck->isChecked()) m_config.dataTypes << ImportDataType::UserPreferences;
+        if (m_settingsCheck->isChecked())
+            m_config.dataTypes << ImportDataType::Settings;
+        if (m_themesCheck->isChecked())
+            m_config.dataTypes << ImportDataType::Themes;
+        if (m_favoritesCheck->isChecked())
+            m_config.dataTypes << ImportDataType::Favorites;
+        if (m_searchHistoryCheck->isChecked())
+            m_config.dataTypes << ImportDataType::SearchHistory;
+        if (m_windowLayoutCheck->isChecked())
+            m_config.dataTypes << ImportDataType::WindowLayout;
+        if (m_userPreferencesCheck->isChecked())
+            m_config.dataTypes << ImportDataType::UserPreferences;
     }
 
     emit dataTypesChanged(m_config.dataTypes);
     emit configChanged(m_config);
 }
 
-void ImportOptionsWidget::onConflictResolutionChanged()
-{
+void ImportOptionsWidget::onConflictResolutionChanged() {
     int checkedId = m_conflictButtonGroup->checkedId();
     m_config.conflictResolution = static_cast<ImportConfig::ConflictResolution>(checkedId);
     emit configChanged(m_config);
 }
 
-void ImportOptionsWidget::onBackupSettingsChanged()
-{
+void ImportOptionsWidget::onBackupSettingsChanged() {
     m_config.createBackup = m_createBackupCheck->isChecked();
     m_config.backupDirectory = m_backupDirectoryEdit->text();
 
@@ -306,8 +287,7 @@ void ImportOptionsWidget::onBackupSettingsChanged()
     emit configChanged(m_config);
 }
 
-void ImportOptionsWidget::onValidationSettingsChanged()
-{
+void ImportOptionsWidget::onValidationSettingsChanged() {
     m_config.validateBeforeImport = m_validateBeforeImportCheck->isChecked();
     m_config.strictValidation = m_strictValidationCheck->isChecked();
     m_config.skipInvalidEntries = m_skipInvalidEntriesCheck->isChecked();
@@ -318,8 +298,7 @@ void ImportOptionsWidget::onValidationSettingsChanged()
     emit configChanged(m_config);
 }
 
-void ImportOptionsWidget::setupUI()
-{
+void ImportOptionsWidget::setupUI() {
     // Create main layout
     m_mainLayout = new QVBoxLayout(this);
     m_mainLayout->setContentsMargins(8, 8, 8, 8);
@@ -335,8 +314,7 @@ void ImportOptionsWidget::setupUI()
     setupOptionsSection();
 }
 
-void ImportOptionsWidget::setupFileSection()
-{
+void ImportOptionsWidget::setupFileSection() {
     m_fileTab = new QWidget();
     m_fileLayout = new QVBoxLayout(m_fileTab);
     m_fileLayout->setContentsMargins(12, 12, 12, 12);
@@ -370,8 +348,7 @@ void ImportOptionsWidget::setupFileSection()
     m_tabWidget->addTab(m_fileTab, "File");
 }
 
-void ImportOptionsWidget::setupDataTypeSection()
-{
+void ImportOptionsWidget::setupDataTypeSection() {
     m_dataTab = new QWidget();
     m_dataLayout = new QVBoxLayout(m_dataTab);
     m_dataLayout->setContentsMargins(12, 12, 12, 12);
@@ -427,15 +404,17 @@ void ImportOptionsWidget::setupDataTypeSection()
     connect(m_settingsCheck, &QCheckBox::toggled, this, &ImportOptionsWidget::onDataTypeChanged);
     connect(m_themesCheck, &QCheckBox::toggled, this, &ImportOptionsWidget::onDataTypeChanged);
     connect(m_favoritesCheck, &QCheckBox::toggled, this, &ImportOptionsWidget::onDataTypeChanged);
-    connect(m_searchHistoryCheck, &QCheckBox::toggled, this, &ImportOptionsWidget::onDataTypeChanged);
-    connect(m_windowLayoutCheck, &QCheckBox::toggled, this, &ImportOptionsWidget::onDataTypeChanged);
-    connect(m_userPreferencesCheck, &QCheckBox::toggled, this, &ImportOptionsWidget::onDataTypeChanged);
+    connect(m_searchHistoryCheck, &QCheckBox::toggled, this,
+            &ImportOptionsWidget::onDataTypeChanged);
+    connect(m_windowLayoutCheck, &QCheckBox::toggled, this,
+            &ImportOptionsWidget::onDataTypeChanged);
+    connect(m_userPreferencesCheck, &QCheckBox::toggled, this,
+            &ImportOptionsWidget::onDataTypeChanged);
 
     m_tabWidget->addTab(m_dataTab, "Data Types");
 }
 
-void ImportOptionsWidget::setupOptionsSection()
-{
+void ImportOptionsWidget::setupOptionsSection() {
     m_optionsTab = new QWidget();
     m_optionsLayout = new QVBoxLayout(m_optionsTab);
     m_optionsLayout->setContentsMargins(12, 12, 12, 12);
@@ -454,8 +433,10 @@ void ImportOptionsWidget::setupOptionsSection()
     m_mergeRadio = new QRadioButton("Merge data when possible", m_conflictGroup);
 
     m_conflictButtonGroup->addButton(m_askRadio, static_cast<int>(ImportConfig::Ask));
-    m_conflictButtonGroup->addButton(m_overwriteRadio, static_cast<int>(ImportConfig::OverwriteExisting));
-    m_conflictButtonGroup->addButton(m_keepExistingRadio, static_cast<int>(ImportConfig::KeepExisting));
+    m_conflictButtonGroup->addButton(m_overwriteRadio,
+                                     static_cast<int>(ImportConfig::OverwriteExisting));
+    m_conflictButtonGroup->addButton(m_keepExistingRadio,
+                                     static_cast<int>(ImportConfig::KeepExisting));
     m_conflictButtonGroup->addButton(m_mergeRadio, static_cast<int>(ImportConfig::MergeData));
 
     conflictLayout->addWidget(m_askRadio);
@@ -503,25 +484,30 @@ void ImportOptionsWidget::setupOptionsSection()
     m_optionsLayout->addStretch();
 
     // Connect signals
-    connect(m_conflictButtonGroup, &QButtonGroup::idClicked,
-            this, &ImportOptionsWidget::onConflictResolutionChanged);
-    connect(m_createBackupCheck, &QCheckBox::toggled, this, &ImportOptionsWidget::onBackupSettingsChanged);
-    connect(m_backupDirectoryEdit, &QLineEdit::textChanged, this, &ImportOptionsWidget::onBackupSettingsChanged);
+    connect(m_conflictButtonGroup, &QButtonGroup::idClicked, this,
+            &ImportOptionsWidget::onConflictResolutionChanged);
+    connect(m_createBackupCheck, &QCheckBox::toggled, this,
+            &ImportOptionsWidget::onBackupSettingsChanged);
+    connect(m_backupDirectoryEdit, &QLineEdit::textChanged, this,
+            &ImportOptionsWidget::onBackupSettingsChanged);
     connect(m_browseBackupButton, &QPushButton::clicked, this, [this]() {
-        QString dir = QFileDialog::getExistingDirectory(this, "Select Backup Directory", m_backupDirectoryEdit->text());
+        QString dir = QFileDialog::getExistingDirectory(this, "Select Backup Directory",
+                                                        m_backupDirectoryEdit->text());
         if (!dir.isEmpty()) {
             m_backupDirectoryEdit->setText(dir);
         }
     });
-    connect(m_validateBeforeImportCheck, &QCheckBox::toggled, this, &ImportOptionsWidget::onValidationSettingsChanged);
-    connect(m_strictValidationCheck, &QCheckBox::toggled, this, &ImportOptionsWidget::onValidationSettingsChanged);
-    connect(m_skipInvalidEntriesCheck, &QCheckBox::toggled, this, &ImportOptionsWidget::onValidationSettingsChanged);
+    connect(m_validateBeforeImportCheck, &QCheckBox::toggled, this,
+            &ImportOptionsWidget::onValidationSettingsChanged);
+    connect(m_strictValidationCheck, &QCheckBox::toggled, this,
+            &ImportOptionsWidget::onValidationSettingsChanged);
+    connect(m_skipInvalidEntriesCheck, &QCheckBox::toggled, this,
+            &ImportOptionsWidget::onValidationSettingsChanged);
 
     m_tabWidget->addTab(m_optionsTab, "Options");
 }
 
-void ImportOptionsWidget::updateDataTypeOptions()
-{
+void ImportOptionsWidget::updateDataTypeOptions() {
     // Update checkboxes based on config
     bool hasAll = m_config.dataTypes.contains(ImportDataType::All);
     m_allDataCheck->setChecked(hasAll);
@@ -530,22 +516,23 @@ void ImportOptionsWidget::updateDataTypeOptions()
         m_settingsCheck->setChecked(m_config.dataTypes.contains(ImportDataType::Settings));
         m_themesCheck->setChecked(m_config.dataTypes.contains(ImportDataType::Themes));
         m_favoritesCheck->setChecked(m_config.dataTypes.contains(ImportDataType::Favorites));
-        m_searchHistoryCheck->setChecked(m_config.dataTypes.contains(ImportDataType::SearchHistory));
+        m_searchHistoryCheck->setChecked(
+            m_config.dataTypes.contains(ImportDataType::SearchHistory));
         m_windowLayoutCheck->setChecked(m_config.dataTypes.contains(ImportDataType::WindowLayout));
-        m_userPreferencesCheck->setChecked(m_config.dataTypes.contains(ImportDataType::UserPreferences));
+        m_userPreferencesCheck->setChecked(
+            m_config.dataTypes.contains(ImportDataType::UserPreferences));
     }
 }
 
-void ImportOptionsWidget::updateConflictOptions()
-{
-    QAbstractButton* button = m_conflictButtonGroup->button(static_cast<int>(m_config.conflictResolution));
+void ImportOptionsWidget::updateConflictOptions() {
+    QAbstractButton* button =
+        m_conflictButtonGroup->button(static_cast<int>(m_config.conflictResolution));
     if (button) {
         button->setChecked(true);
     }
 }
 
-void ImportOptionsWidget::updateBackupOptions()
-{
+void ImportOptionsWidget::updateBackupOptions() {
     m_createBackupCheck->setChecked(m_config.createBackup);
     m_backupDirectoryEdit->setText(m_config.backupDirectory);
     m_backupDirectoryEdit->setEnabled(m_config.createBackup);
@@ -553,9 +540,7 @@ void ImportOptionsWidget::updateBackupOptions()
 }
 
 // ImportPreviewWidget Implementation
-ImportPreviewWidget::ImportPreviewWidget(QWidget* parent)
-    : QWidget(parent)
-{
+ImportPreviewWidget::ImportPreviewWidget(QWidget* parent) : QWidget(parent) {
     setupUI();
 }
 
@@ -584,34 +569,18 @@ void ImportPreviewWidget::paintEvent(QPaintEvent* event) {
 }
 
 // ImportSettingsManager Implementation
-ImportSettingsManager::ImportSettingsManager(QObject* parent)
-    : QObject(parent)
-{
-}
+ImportSettingsManager::ImportSettingsManager(QObject* parent) : QObject(parent) {}
 
 ImportSettingsManager::~ImportSettingsManager() = default;
 
 // ImportDialog Implementation
 ImportDialog::ImportDialog(QWidget* parent)
-    : QDialog(parent)
-    , m_mainLayout(nullptr)
-    , m_contentLayout(nullptr)
-    , m_leftLayout(nullptr)
-    , m_rightLayout(nullptr)
-    , m_titleLabel(nullptr)
-    , m_sourceLabel(nullptr)
-    , m_optionsWidget(nullptr)
-    , m_previewWidget(nullptr)
-    , m_buttonLayout(nullptr)
-    , m_importButton(nullptr)
-    , m_cancelButton(nullptr)
-    , m_closeButton(nullptr)
-    , m_importInProgress(false)
-    , m_importSuccessful(false)
-    , m_themeManager(nullptr)
-    , m_settingsManager(nullptr)
-    , m_themeWidget(nullptr)
-{
+    : QDialog(parent), m_mainLayout(nullptr), m_contentLayout(nullptr), m_leftLayout(nullptr),
+      m_rightLayout(nullptr), m_titleLabel(nullptr), m_sourceLabel(nullptr),
+      m_optionsWidget(nullptr), m_previewWidget(nullptr), m_buttonLayout(nullptr),
+      m_importButton(nullptr), m_cancelButton(nullptr), m_closeButton(nullptr),
+      m_importInProgress(false), m_importSuccessful(false), m_themeManager(nullptr),
+      m_settingsManager(nullptr), m_themeWidget(nullptr) {
     setupUI();
     setupLayout();
     setupConnections();
@@ -675,10 +644,10 @@ void ImportDialog::setupConnections() {
     connect(m_closeButton, &QPushButton::clicked, this, &QDialog::reject);
 
     if (m_optionsWidget) {
-        connect(m_optionsWidget, &ImportOptionsWidget::configChanged,
-                this, &ImportDialog::onConfigChanged);
-        connect(m_optionsWidget, &ImportOptionsWidget::sourceFileChanged,
-                this, &ImportDialog::onSourceFileChanged);
+        connect(m_optionsWidget, &ImportOptionsWidget::configChanged, this,
+                &ImportDialog::onConfigChanged);
+        connect(m_optionsWidget, &ImportOptionsWidget::sourceFileChanged, this,
+                &ImportDialog::onSourceFileChanged);
     }
 }
 

@@ -18,54 +18,55 @@
 #ifndef ICONEXPORTDIALOG_H
 #define ICONEXPORTDIALOG_H
 
-#include <QDialog>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGridLayout>
-#include <QFormLayout>
-#include <QStackedLayout>
-#include <QGroupBox>
-#include <QFrame>
-#include <QSplitter>
-#include <QScrollArea>
-#include <QTabWidget>
-#include <QLabel>
-#include <QComboBox>
-#include <QSpinBox>
-#include <QDoubleSpinBox>
-#include <QSlider>
-#include <QCheckBox>
-#include <QRadioButton>
 #include <QButtonGroup>
-#include <QPushButton>
-#include <QToolButton>
+#include <QCheckBox>
 #include <QColorDialog>
-#include <QFontDialog>
-#include <QInputDialog>
-#include <QLineEdit>
-#include <QTextEdit>
-#include <QPlainTextEdit>
-#include <QListWidget>
-#include <QTreeWidget>
-#include <QTableWidget>
-#include <QProgressBar>
-#include <QFileDialog>
-#include <QStandardPaths>
+#include <QComboBox>
+#include <QDialog>
 #include <QDir>
-#include <QThread>
-#include <QThreadPool>
-#include <QMutex>
-#include <QTimer>
-#include <QElapsedTimer>
-#include <QSettings>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QMimeData>
+#include <QDoubleSpinBox>
 #include <QDragEnterEvent>
 #include <QDropEvent>
-#include <QPropertyAnimation>
+#include <QElapsedTimer>
+#include <QFileDialog>
+#include <QFontDialog>
+#include <QFormLayout>
+#include <QFrame>
 #include <QGraphicsOpacityEffect>
+#include <QGridLayout>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QInputDialog>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QLabel>
+#include <QLineEdit>
+#include <QListWidget>
+#include <QMimeData>
+#include <QMutex>
+#include <QPlainTextEdit>
+#include <QProgressBar>
+#include <QPropertyAnimation>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QScrollArea>
+#include <QSettings>
+#include <QSlider>
+#include <QSpinBox>
+#include <QSplitter>
+#include <QStackedLayout>
+#include <QStandardPaths>
+#include <QTabWidget>
+#include <QTableWidget>
+#include <QTextEdit>
+#include <QThread>
+#include <QThreadPool>
+#include <QTimer>
+#include <QToolButton>
+#include <QTreeWidget>
+#include <QVBoxLayout>
+
 
 #include <QtLucide/QtLucide.h>
 #include <memory>
@@ -74,14 +75,14 @@
 class IconMetadataManager;
 
 // Include manager stubs and export worker
-#include "../../core/managers/ManagerStubs.h"
 #include "../../core/BatchExportManager.h"
+#include "../../core/managers/ManagerStubs.h"
+
 
 /**
  * @brief Enhanced export dialog with comprehensive export and import capabilities
  */
-class IconExportDialog : public QDialog
-{
+class IconExportDialog : public QDialog {
     Q_OBJECT
 
 public:
@@ -89,7 +90,7 @@ public:
         PNG = 0,
         SVG = 1,
         ICO = 2,
-        ICNS = 3,  // Added for implementation compatibility
+        ICNS = 3, // Added for implementation compatibility
         PDF = 4,
         WEBP = 5,
         TIFF = 6,
@@ -104,11 +105,11 @@ public:
     enum ExportMode {
         SingleIcon = 0,
         MultipleIcons = 1,
-        SelectedIcons = 2,  // Added for implementation compatibility
+        SelectedIcons = 2, // Added for implementation compatibility
         AllIcons = 3,
-        FavoriteIcons = 4,  // Added for implementation compatibility
+        FavoriteIcons = 4, // Added for implementation compatibility
         FavoritesOnly = 5,
-        CategoryIcons = 6,  // Added for implementation compatibility
+        CategoryIcons = 6, // Added for implementation compatibility
         CategoryBased = 7,
         CustomSelection = 8
     };
@@ -146,12 +147,12 @@ public:
         ExportMode mode = SingleIcon;
         QStringList iconNames;
         QString outputDirectory;
-        QString filenameTemplate = "{name}_{size}";  // {name}, {size}, {format}, {category}, {index}
+        QString filenameTemplate = "{name}_{size}"; // {name}, {size}, {format}, {category}, {index}
 
         // Size and quality options
         QList<int> sizes = {256};
         bool maintainAspectRatio = true;
-        int quality = 95;  // For JPEG/WEBP
+        int quality = 95; // For JPEG/WEBP
         bool antialiasing = true;
         bool highQualityScaling = true;
 
@@ -190,7 +191,7 @@ public:
         bool overwriteExisting = false;
         bool includeMetadata = false;
         bool createManifest = false;
-        QString manifestFormat = "JSON";  // JSON, XML, CSV
+        QString manifestFormat = "JSON"; // JSON, XML, CSV
 
         // Advanced options
         QString category;
@@ -202,9 +203,9 @@ public:
         QString copyright;
 
         // Performance options
-        int maxThreads = 0;  // 0 = auto-detect
+        int maxThreads = 0; // 0 = auto-detect
         bool enableParallelProcessing = true;
-        int memoryLimit = 1024;  // MB
+        int memoryLimit = 1024; // MB
         bool enableProgressReporting = true;
 
         // Cloud and sharing options
@@ -215,9 +216,8 @@ public:
         QString shareDescription;
     };
 
-    explicit IconExportDialog(lucide::QtLucide* lucide,
-                             IconMetadataManager* metadataManager,
-                             QWidget *parent = nullptr);
+    explicit IconExportDialog(lucide::QtLucide* lucide, IconMetadataManager* metadataManager,
+                              QWidget* parent = nullptr);
     ~IconExportDialog();
 
     // Enhanced export parameters
@@ -264,7 +264,7 @@ signals:
     void exportResumed();
     void exportProgress(int current, int total, const QString& currentIcon);
     void exportFinished(bool success, const QString& message, const QStringList& exportedFiles);
-    void exportFinished();  // Added for compatibility
+    void exportFinished(); // Added for compatibility
     void exportCancelled();
     void previewReady(const QPixmap& preview);
     void validationResult(bool valid, const QStringList& errors);
@@ -335,7 +335,7 @@ private:
     void setupBackgroundOptions();
     void setupColorOptions();
     void setupOutputOptions();
-    void setupAdvancedOptions();  // Added for implementation compatibility
+    void setupAdvancedOptions(); // Added for implementation compatibility
     void setupNamingOptions();
     void setupBatchOptions();
     void setupCloudOptions();
@@ -361,11 +361,13 @@ private:
 
     // Export processing methods
     QString generateFilename(const QString& iconName, int size, const QString& format) const;
-    QString processNamingPattern(const QString& pattern, const QString& iconName, int size, const QString& format, int index = 0) const;
+    QString processNamingPattern(const QString& pattern, const QString& iconName, int size,
+                                 const QString& format, int index = 0) const;
     QPixmap renderIcon(const QString& iconName, int size, const ExportOptions& options) const;
     QPixmap applyBackground(const QPixmap& icon, const ExportOptions& options) const;
     bool exportIcon(const QString& iconName, const ExportOptions& options);
-    bool exportToFormat(const QPixmap& pixmap, const QString& filePath, ExportFormat format, const ExportOptions& options);
+    bool exportToFormat(const QPixmap& pixmap, const QString& filePath, ExportFormat format,
+                        const ExportOptions& options);
 
     // Batch processing methods
     void startBatchExport();
@@ -404,7 +406,7 @@ private:
 
     // Enhanced UI Components
     QVBoxLayout* m_mainLayout;
-    QHBoxLayout* m_contentLayout;  // Added for implementation compatibility
+    QHBoxLayout* m_contentLayout; // Added for implementation compatibility
     QSplitter* m_mainSplitter;
     QTabWidget* m_tabWidget;
 
@@ -415,7 +417,7 @@ private:
     QComboBox* m_formatCombo;
     QComboBox* m_modeCombo;
     QSlider* m_qualitySlider;
-    QSpinBox* m_qualitySpinBox;  // Added for compatibility
+    QSpinBox* m_qualitySpinBox; // Added for compatibility
     QLabel* m_qualityLabel;
 
     // Size options
@@ -427,7 +429,7 @@ private:
     QPushButton* m_presetSizesButton;
     QCheckBox* m_aspectRatioCheck;
     QCheckBox* m_highQualityScalingCheck;
-    QCheckBox* m_antialiasingCheck;  // Added for implementation compatibility
+    QCheckBox* m_antialiasingCheck; // Added for implementation compatibility
 
     // Background options
     QGroupBox* m_backgroundGroup;
@@ -437,7 +439,7 @@ private:
     QPushButton* m_gradientEndButton;
     QLineEdit* m_backgroundImageEdit;
     QPushButton* m_browseBackgroundButton;
-    QPushButton* m_backgroundImageButton;  // Added for compatibility
+    QPushButton* m_backgroundImageButton; // Added for compatibility
     QComboBox* m_backgroundPatternCombo;
 
     // Color options
@@ -452,10 +454,10 @@ private:
     QLineEdit* m_outputDirEdit;
     QPushButton* m_browseButton;
     QComboBox* m_namingPatternCombo;
-    QLineEdit* m_namingPatternEdit;  // Added for compatibility
+    QLineEdit* m_namingPatternEdit; // Added for compatibility
     QLineEdit* m_customPatternEdit;
     QLineEdit* m_outputDirectoryEdit;  // Added for compatibility
-    QLineEdit* m_filenameTemplateEdit;  // Added for implementation compatibility
+    QLineEdit* m_filenameTemplateEdit; // Added for implementation compatibility
     QLabel* m_filenamePreviewLabel;
     QCheckBox* m_subfoldersCheck;
     QCheckBox* m_organizeByCategoryCheck;
@@ -468,9 +470,9 @@ private:
     // Advanced tab
     QWidget* m_advancedTab;
     QScrollArea* m_advancedScrollArea;
-    QGroupBox* m_advancedGroup;  // Added for implementation compatibility
-    QGroupBox* m_advancedOptionsGroup;  // Added for compatibility
-    QPushButton* m_advancedOptionsButton;  // Added for compatibility
+    QGroupBox* m_advancedGroup;           // Added for implementation compatibility
+    QGroupBox* m_advancedOptionsGroup;    // Added for compatibility
+    QPushButton* m_advancedOptionsButton; // Added for compatibility
 
     // SVG specific options
     QGroupBox* m_svgGroup;
@@ -531,15 +533,15 @@ private:
     QPushButton* m_previewButton;
 
     // Preset management
-    QComboBox* m_presetCombo;  // Added for compatibility
+    QComboBox* m_presetCombo; // Added for compatibility
 
     // Status and list components
-    QLabel* m_statusLabel;  // Added for compatibility
-    QListWidget* m_iconListWidget;  // Added for compatibility
-    QLabel* m_iconCountLabel;  // Added for compatibility
+    QLabel* m_statusLabel;         // Added for compatibility
+    QListWidget* m_iconListWidget; // Added for compatibility
+    QLabel* m_iconCountLabel;      // Added for compatibility
 
     // Cloud upload components
-    QPushButton* m_uploadToCloudButton;  // Added for compatibility
+    QPushButton* m_uploadToCloudButton; // Added for compatibility
 
     // Progress area
     QFrame* m_progressFrame;
@@ -558,12 +560,12 @@ private:
     QPushButton* m_previewMainButton;
     QPushButton* m_validateButton;
     QPushButton* m_resetButton;
-    QPushButton* m_cancelButton;  // Added for implementation compatibility
+    QPushButton* m_cancelButton; // Added for implementation compatibility
     QPushButton* m_closeButton;
 
     // Enhanced export state and management
     ExportOptions m_options;
-    ExportOptions m_backupOptions;  // For cancel/reset functionality
+    ExportOptions m_backupOptions; // For cancel/reset functionality
     QStringList m_exportQueue;
     QStringList m_exportedFiles;
     QStringList m_failedFiles;
@@ -628,10 +630,10 @@ private:
     QGraphicsOpacityEffect* m_opacityEffect;
 
     // Constants
-    static constexpr int PREVIEW_UPDATE_DELAY = 300;  // ms
-    static constexpr int PROGRESS_UPDATE_INTERVAL = 100;  // ms
+    static constexpr int PREVIEW_UPDATE_DELAY = 300;     // ms
+    static constexpr int PROGRESS_UPDATE_INTERVAL = 100; // ms
     static constexpr int MAX_CONCURRENT_EXPORTS = 4;
-    static constexpr qint64 DEFAULT_MEMORY_LIMIT = 1024 * 1024 * 1024;  // 1GB
+    static constexpr qint64 DEFAULT_MEMORY_LIMIT = 1024 * 1024 * 1024; // 1GB
     static constexpr const char* SETTINGS_GROUP = "IconExportDialog";
     static constexpr const char* PRESETS_GROUP = "ExportPresets";
 };

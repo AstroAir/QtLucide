@@ -3,31 +3,31 @@
  */
 
 #include "IconThumbnailGridWidget.h"
-#include "../../core/managers/ContentManager.h"
-#include "../../core/managers/IconMetadataManager.h"
-#include "../../core/managers/FavoritesManager.h"
-#include "../../core/utils/GalleryLogger.h"
 #include "../../config/LayoutConfig.h"
+#include "../../core/managers/ContentManager.h"
+#include "../../core/managers/FavoritesManager.h"
+#include "../../core/managers/IconMetadataManager.h"
+#include "../../core/utils/GalleryLogger.h"
 
-#include <QScrollArea>
-#include <QScrollBar>
-#include <QGridLayout>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QPushButton>
-#include <QPainter>
-#include <QTimer>
-#include <QPropertyAnimation>
-#include <QToolTip>
-#include <QMenu>
-#include <QContextMenuEvent>
-#include <QKeyEvent>
-#include <QMouseEvent>
-#include <QWheelEvent>
-#include <QResizeEvent>
 #include <QApplication>
 #include <QClipboard>
+#include <QContextMenuEvent>
 #include <QDebug>
+#include <QGridLayout>
+#include <QKeyEvent>
+#include <QLabel>
+#include <QMenu>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QPropertyAnimation>
+#include <QPushButton>
+#include <QResizeEvent>
+#include <QScrollArea>
+#include <QScrollBar>
+#include <QTimer>
+#include <QToolTip>
+#include <QVBoxLayout>
+#include <QWheelEvent>
 
 // Static constant definitions (required for ODR-used constants)
 const int IconThumbnailGridWidget::MIN_THUMBNAIL_SIZE;
@@ -39,17 +39,11 @@ const int IconThumbnailGridWidget::UPDATE_DELAY_MS;
 
 // IconThumbnailItem implementation
 IconThumbnailItem::IconThumbnailItem(const QString& iconName, QWidget* parent)
-    : QWidget(parent)
-    , m_iconName(iconName)
-    , m_thumbnailSize(DEFAULT_THUMBNAIL_SIZE)
-    , m_selected(false)
-    , m_favorite(false)
-    , m_hovered(false)
-    , m_contentManager(nullptr)
-    , m_iconMetadataManager(nullptr)
-    , m_hoverAnimation(new QPropertyAnimation(this, "geometry", this))
-    , m_tooltipTimer(new QTimer(this))
-{
+    : QWidget(parent), m_iconName(iconName), m_thumbnailSize(DEFAULT_THUMBNAIL_SIZE),
+      m_selected(false), m_favorite(false), m_hovered(false), m_contentManager(nullptr),
+      m_iconMetadataManager(nullptr),
+      m_hoverAnimation(new QPropertyAnimation(this, "geometry", this)),
+      m_tooltipTimer(new QTimer(this)) {
     setFixedSize(m_thumbnailSize + 16, m_thumbnailSize + 16);
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
@@ -57,8 +51,8 @@ IconThumbnailItem::IconThumbnailItem(const QString& iconName, QWidget* parent)
     // Setup hover animation
     m_hoverAnimation->setDuration(150);
     m_hoverAnimation->setEasingCurve(QEasingCurve::OutCubic);
-    connect(m_hoverAnimation, &QPropertyAnimation::finished,
-            this, &IconThumbnailItem::onHoverAnimationFinished);
+    connect(m_hoverAnimation, &QPropertyAnimation::finished, this,
+            &IconThumbnailItem::onHoverAnimationFinished);
 
     // Setup tooltip timer
     m_tooltipTimer->setSingleShot(true);
@@ -68,8 +62,7 @@ IconThumbnailItem::IconThumbnailItem(const QString& iconName, QWidget* parent)
     updateThumbnail();
 }
 
-void IconThumbnailItem::setIconName(const QString& iconName)
-{
+void IconThumbnailItem::setIconName(const QString& iconName) {
     if (m_iconName != iconName) {
         m_iconName = iconName;
         updateThumbnail();
@@ -77,8 +70,7 @@ void IconThumbnailItem::setIconName(const QString& iconName)
     }
 }
 
-void IconThumbnailItem::setThumbnailSize(int size)
-{
+void IconThumbnailItem::setThumbnailSize(int size) {
     if (m_thumbnailSize != size) {
         m_thumbnailSize = size;
         setFixedSize(size + 16, size + 16);
@@ -87,8 +79,7 @@ void IconThumbnailItem::setThumbnailSize(int size)
     }
 }
 
-void IconThumbnailItem::setSelected(bool selected)
-{
+void IconThumbnailItem::setSelected(bool selected) {
     if (m_selected != selected) {
         m_selected = selected;
         updateAppearance();
@@ -96,16 +87,14 @@ void IconThumbnailItem::setSelected(bool selected)
     }
 }
 
-void IconThumbnailItem::setFavorite(bool favorite)
-{
+void IconThumbnailItem::setFavorite(bool favorite) {
     if (m_favorite != favorite) {
         m_favorite = favorite;
         update();
     }
 }
 
-void IconThumbnailItem::updateThumbnail()
-{
+void IconThumbnailItem::updateThumbnail() {
     if (!m_contentManager || m_iconName.isEmpty()) {
         return;
     }
@@ -117,8 +106,7 @@ void IconThumbnailItem::updateThumbnail()
     update();
 }
 
-void IconThumbnailItem::paintEvent(QPaintEvent* event)
-{
+void IconThumbnailItem::paintEvent(QPaintEvent* event) {
     Q_UNUSED(event)
 
     QPainter painter(this);
@@ -190,12 +178,11 @@ void IconThumbnailItem::paintEvent(QPaintEvent* event)
 
     // Enhanced favorite indicator with better positioning
     if (m_favorite) {
-        QRect favoriteRect(contentRect.right() - FAVORITE_ICON_SIZE - 4,
-                          contentRect.top() + 4,
-                          FAVORITE_ICON_SIZE, FAVORITE_ICON_SIZE);
+        QRect favoriteRect(contentRect.right() - FAVORITE_ICON_SIZE - 4, contentRect.top() + 4,
+                           FAVORITE_ICON_SIZE, FAVORITE_ICON_SIZE);
 
         // Gold background with gradient
-        QRadialGradient gradient(favoriteRect.center(), FAVORITE_ICON_SIZE / 2);
+        QRadialGradient gradient(favoriteRect.center(), FAVORITE_ICON_SIZE / 2.0);
         gradient.setColorAt(0, QColor(255, 215, 0));
         gradient.setColorAt(1, QColor(218, 165, 32));
 
@@ -210,37 +197,32 @@ void IconThumbnailItem::paintEvent(QPaintEvent* event)
     }
 }
 
-void IconThumbnailItem::mousePressEvent(QMouseEvent* event)
-{
+void IconThumbnailItem::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         emit clicked(m_iconName);
     }
     QWidget::mousePressEvent(event);
 }
 
-void IconThumbnailItem::mouseDoubleClickEvent(QMouseEvent* event)
-{
+void IconThumbnailItem::mouseDoubleClickEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         emit doubleClicked(m_iconName);
     }
     QWidget::mouseDoubleClickEvent(event);
 }
 
-void IconThumbnailItem::contextMenuEvent(QContextMenuEvent* event)
-{
+void IconThumbnailItem::contextMenuEvent(QContextMenuEvent* event) {
     emit rightClicked(m_iconName, event->globalPos());
 }
 
-void IconThumbnailItem::enterEvent(QEnterEvent* event)
-{
+void IconThumbnailItem::enterEvent(QEnterEvent* event) {
     Q_UNUSED(event)
     m_hovered = true;
     m_tooltipTimer->start();
     update();
 }
 
-void IconThumbnailItem::leaveEvent(QEvent* event)
-{
+void IconThumbnailItem::leaveEvent(QEvent* event) {
     Q_UNUSED(event)
     m_hovered = false;
     m_tooltipTimer->stop();
@@ -248,34 +230,30 @@ void IconThumbnailItem::leaveEvent(QEvent* event)
     update();
 }
 
-void IconThumbnailItem::keyPressEvent(QKeyEvent* event)
-{
+void IconThumbnailItem::keyPressEvent(QKeyEvent* event) {
     switch (event->key()) {
-    case Qt::Key_Return:
-    case Qt::Key_Enter:
-        emit doubleClicked(m_iconName);
-        break;
-    case Qt::Key_Space:
-        emit clicked(m_iconName);
-        break;
-    default:
-        QWidget::keyPressEvent(event);
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+            emit doubleClicked(m_iconName);
+            break;
+        case Qt::Key_Space:
+            emit clicked(m_iconName);
+            break;
+        default:
+            QWidget::keyPressEvent(event);
     }
 }
 
-void IconThumbnailItem::onHoverAnimationFinished()
-{
+void IconThumbnailItem::onHoverAnimationFinished() {
     // Animation completed
 }
 
-void IconThumbnailItem::updateAppearance()
-{
+void IconThumbnailItem::updateAppearance() {
     // Update visual appearance based on state
     update();
 }
 
-void IconThumbnailItem::showTooltip()
-{
+void IconThumbnailItem::showTooltip() {
     if (!m_iconMetadataManager || m_iconName.isEmpty()) {
         return;
     }
@@ -302,29 +280,18 @@ void IconThumbnailItem::showTooltip()
     QToolTip::showText(mapToGlobal(rect().center()), tooltipText, this);
 }
 
-void IconThumbnailItem::hideTooltip()
-{
+void IconThumbnailItem::hideTooltip() {
     QToolTip::hideText();
 }
 
 // IconThumbnailGridWidget implementation
 IconThumbnailGridWidget::IconThumbnailGridWidget(QWidget* parent)
-    : QWidget(parent)
-    , m_contentManager(nullptr)
-    , m_iconMetadataManager(nullptr)
-    , m_favoritesManager(nullptr)
-    , m_scrollArea(nullptr)
-    , m_scrollContent(nullptr)
-    , m_gridLayout(nullptr)
-    , m_firstVisibleIndex(0)
-    , m_lastVisibleIndex(-1)
-    , m_thumbnailSize(DEFAULT_THUMBNAIL_SIZE)
-    , m_columnsPerRow(0)
-    , m_itemSpacing(DEFAULT_ITEM_SPACING)
-    , m_contentMargin(DEFAULT_CONTENT_MARGIN)
-    , m_updateTimer(new QTimer(this))
-    , m_needsUpdate(false)
-{
+    : QWidget(parent), m_contentManager(nullptr), m_iconMetadataManager(nullptr),
+      m_favoritesManager(nullptr), m_scrollArea(nullptr), m_scrollContent(nullptr),
+      m_gridLayout(nullptr), m_firstVisibleIndex(0), m_lastVisibleIndex(-1),
+      m_thumbnailSize(DEFAULT_THUMBNAIL_SIZE), m_columnsPerRow(0),
+      m_itemSpacing(DEFAULT_ITEM_SPACING), m_contentMargin(DEFAULT_CONTENT_MARGIN),
+      m_updateTimer(new QTimer(this)), m_needsUpdate(false) {
     GALLERY_LOG_INFO(galleryInit, "IconThumbnailGridWidget constructor started");
 
     setupUI();
@@ -337,8 +304,7 @@ IconThumbnailGridWidget::IconThumbnailGridWidget(QWidget* parent)
     GALLERY_LOG_INFO(galleryInit, "IconThumbnailGridWidget initialized successfully");
 }
 
-IconThumbnailGridWidget::~IconThumbnailGridWidget()
-{
+IconThumbnailGridWidget::~IconThumbnailGridWidget() {
     // Cleanup visible items
     for (auto it = m_visibleItems.begin(); it != m_visibleItems.end(); ++it) {
         delete it.value();
@@ -346,28 +312,24 @@ IconThumbnailGridWidget::~IconThumbnailGridWidget()
     m_visibleItems.clear();
 }
 
-void IconThumbnailGridWidget::setContentManager(ContentManager* manager)
-{
+void IconThumbnailGridWidget::setContentManager(ContentManager* manager) {
     m_contentManager = manager;
     refreshThumbnails();
 }
 
-void IconThumbnailGridWidget::setIconMetadataManager(IconMetadataManager* manager)
-{
+void IconThumbnailGridWidget::setIconMetadataManager(IconMetadataManager* manager) {
     m_iconMetadataManager = manager;
 }
 
-void IconThumbnailGridWidget::setFavoritesManager(FavoritesManager* manager)
-{
+void IconThumbnailGridWidget::setFavoritesManager(FavoritesManager* manager) {
     m_favoritesManager = manager;
     if (manager) {
-        connect(manager, &FavoritesManager::favoriteToggled,
-                this, &IconThumbnailGridWidget::onFavoriteToggled);
+        connect(manager, &FavoritesManager::favoriteToggled, this,
+                &IconThumbnailGridWidget::onFavoriteToggled);
     }
 }
 
-void IconThumbnailGridWidget::setIconList(const QStringList& icons)
-{
+void IconThumbnailGridWidget::setIconList(const QStringList& icons) {
     m_iconList = icons;
     m_selectedIcons.clear();
     m_currentIcon.clear();
@@ -381,8 +343,7 @@ void IconThumbnailGridWidget::setIconList(const QStringList& icons)
     }
 }
 
-void IconThumbnailGridWidget::setCurrentIcon(const QString& iconName)
-{
+void IconThumbnailGridWidget::setCurrentIcon(const QString& iconName) {
     if (m_currentIcon != iconName && m_iconList.contains(iconName)) {
         m_currentIcon = iconName;
 
@@ -403,13 +364,11 @@ void IconThumbnailGridWidget::setCurrentIcon(const QString& iconName)
     }
 }
 
-QStringList IconThumbnailGridWidget::selectedIcons() const
-{
+QStringList IconThumbnailGridWidget::selectedIcons() const {
     return m_selectedIcons;
 }
 
-void IconThumbnailGridWidget::clearSelection()
-{
+void IconThumbnailGridWidget::clearSelection() {
     m_selectedIcons.clear();
     m_currentIcon.clear();
 
@@ -420,8 +379,7 @@ void IconThumbnailGridWidget::clearSelection()
     emit selectionChanged(m_selectedIcons);
 }
 
-void IconThumbnailGridWidget::selectAll()
-{
+void IconThumbnailGridWidget::selectAll() {
     m_selectedIcons = m_iconList;
 
     for (auto it = m_visibleItems.begin(); it != m_visibleItems.end(); ++it) {
@@ -431,8 +389,7 @@ void IconThumbnailGridWidget::selectAll()
     emit selectionChanged(m_selectedIcons);
 }
 
-void IconThumbnailGridWidget::setThumbnailSize(int size)
-{
+void IconThumbnailGridWidget::setThumbnailSize(int size) {
     size = qBound(MIN_THUMBNAIL_SIZE, size, MAX_THUMBNAIL_SIZE);
 
     if (m_thumbnailSize != size) {
@@ -449,28 +406,24 @@ void IconThumbnailGridWidget::setThumbnailSize(int size)
     }
 }
 
-void IconThumbnailGridWidget::scrollToIcon(const QString& iconName)
-{
+void IconThumbnailGridWidget::scrollToIcon(const QString& iconName) {
     int index = getIconIndex(iconName);
     if (index >= 0) {
         QRect itemRect = getItemRect(index);
         m_scrollArea->ensureVisible(itemRect.center().x(), itemRect.center().y(),
-                                   itemRect.width() / 2, itemRect.height() / 2);
+                                    itemRect.width() / 2, itemRect.height() / 2);
     }
 }
 
-void IconThumbnailGridWidget::scrollToTop()
-{
+void IconThumbnailGridWidget::scrollToTop() {
     m_scrollArea->verticalScrollBar()->setValue(0);
 }
 
-void IconThumbnailGridWidget::scrollToBottom()
-{
+void IconThumbnailGridWidget::scrollToBottom() {
     m_scrollArea->verticalScrollBar()->setValue(m_scrollArea->verticalScrollBar()->maximum());
 }
 
-void IconThumbnailGridWidget::updateVisibleItems()
-{
+void IconThumbnailGridWidget::updateVisibleItems() {
     if (m_iconList.isEmpty() || !m_scrollArea) {
         return;
     }
@@ -499,10 +452,14 @@ void IconThumbnailGridWidget::updateVisibleItems()
                 item->setFavorite(m_favoritesManager->isFavorite(iconName));
             }
 
-            connect(item, &IconThumbnailItem::clicked, this, &IconThumbnailGridWidget::onItemClicked);
-            connect(item, &IconThumbnailItem::doubleClicked, this, &IconThumbnailGridWidget::onItemDoubleClicked);
-            connect(item, &IconThumbnailItem::rightClicked, this, &IconThumbnailGridWidget::onItemRightClicked);
-            connect(item, &IconThumbnailItem::favoriteToggled, this, &IconThumbnailGridWidget::onFavoriteToggled);
+            connect(item, &IconThumbnailItem::clicked, this,
+                    &IconThumbnailGridWidget::onItemClicked);
+            connect(item, &IconThumbnailItem::doubleClicked, this,
+                    &IconThumbnailGridWidget::onItemDoubleClicked);
+            connect(item, &IconThumbnailItem::rightClicked, this,
+                    &IconThumbnailGridWidget::onItemRightClicked);
+            connect(item, &IconThumbnailItem::favoriteToggled, this,
+                    &IconThumbnailGridWidget::onFavoriteToggled);
 
             // Position the item
             QRect itemRect = getItemRect(i);
@@ -518,15 +475,13 @@ void IconThumbnailGridWidget::updateVisibleItems()
     m_needsUpdate = false;
 }
 
-void IconThumbnailGridWidget::refreshThumbnails()
-{
+void IconThumbnailGridWidget::refreshThumbnails() {
     for (auto it = m_visibleItems.begin(); it != m_visibleItems.end(); ++it) {
         it.value()->updateThumbnail();
     }
 }
 
-void IconThumbnailGridWidget::setupUI()
-{
+void IconThumbnailGridWidget::setupUI() {
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
@@ -534,8 +489,7 @@ void IconThumbnailGridWidget::setupUI()
     mainLayout->addWidget(m_scrollArea);
 }
 
-void IconThumbnailGridWidget::setupScrollArea()
-{
+void IconThumbnailGridWidget::setupScrollArea() {
     m_scrollArea = new QScrollArea;
     m_scrollArea->setWidgetResizable(true);
     m_scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -546,12 +500,11 @@ void IconThumbnailGridWidget::setupScrollArea()
 
     m_scrollArea->setWidget(m_scrollContent);
 
-    connect(m_scrollArea->verticalScrollBar(), &QScrollBar::valueChanged,
-            this, &IconThumbnailGridWidget::onScrollValueChanged);
+    connect(m_scrollArea->verticalScrollBar(), &QScrollBar::valueChanged, this,
+            &IconThumbnailGridWidget::onScrollValueChanged);
 }
 
-void IconThumbnailGridWidget::calculateLayout()
-{
+void IconThumbnailGridWidget::calculateLayout() {
     if (!m_scrollArea || m_iconList.isEmpty()) {
         return;
     }
@@ -559,8 +512,7 @@ void IconThumbnailGridWidget::calculateLayout()
     // Get responsive screen size and adjust thumbnail size accordingly
     GalleryLayout::ResponsiveLayout::ScreenSize screenSize =
         GalleryLayout::ResponsiveLayout::getScreenSize(this);
-    int responsiveThumbnailSize =
-        GalleryLayout::ResponsiveLayout::getThumbnailSize(screenSize);
+    int responsiveThumbnailSize = GalleryLayout::ResponsiveLayout::getThumbnailSize(screenSize);
 
     // Update thumbnail size if it differs significantly from current
     if (qAbs(m_thumbnailSize - responsiveThumbnailSize) > 16) {
@@ -587,7 +539,8 @@ void IconThumbnailGridWidget::calculateLayout()
 
         // Calculate optimal spacing, but keep within reasonable bounds
         int optimalSpacing = remainingWidth / spacingSlots;
-        itemSpacing = qBound(GalleryLayout::Spacing::TINY, optimalSpacing, GalleryLayout::Spacing::LARGE);
+        itemSpacing =
+            qBound(GalleryLayout::Spacing::TINY, optimalSpacing, GalleryLayout::Spacing::LARGE);
 
         // If spacing becomes too large, reduce columns
         if (itemSpacing > GalleryLayout::Spacing::LARGE) {
@@ -596,9 +549,8 @@ void IconThumbnailGridWidget::calculateLayout()
             totalItemsWidth = idealColumns * itemWidth;
             remainingWidth = availableWidth - totalItemsWidth;
             spacingSlots = idealColumns + 1;
-            itemSpacing = qBound(GalleryLayout::Spacing::SMALL,
-                               remainingWidth / spacingSlots,
-                               GalleryLayout::Spacing::LARGE);
+            itemSpacing = qBound(GalleryLayout::Spacing::SMALL, remainingWidth / spacingSlots,
+                                 GalleryLayout::Spacing::LARGE);
         }
     }
 
@@ -611,9 +563,8 @@ void IconThumbnailGridWidget::calculateLayout()
     int contentHeight = totalRows * rowHeight + 2 * GalleryLayout::Margins::CONTENT_MARGIN;
 
     // Ensure minimum content width for proper scrollbar behavior
-    int contentWidth = qMax(viewportWidth,
-                           m_columnsPerRow * (itemWidth + m_itemSpacing) +
-                           2 * GalleryLayout::Margins::CONTENT_MARGIN);
+    int contentWidth = qMax(viewportWidth, m_columnsPerRow * (itemWidth + m_itemSpacing) +
+                                               2 * GalleryLayout::Margins::CONTENT_MARGIN);
 
     m_scrollContent->setMinimumSize(contentWidth, contentHeight);
 
@@ -621,18 +572,15 @@ void IconThumbnailGridWidget::calculateLayout()
     m_contentMargin = GalleryLayout::Margins::CONTENT_MARGIN;
 }
 
-void IconThumbnailGridWidget::updateScrollArea()
-{
+void IconThumbnailGridWidget::updateScrollArea() {
     calculateLayout();
 }
 
-void IconThumbnailGridWidget::createVisibleItems()
-{
+void IconThumbnailGridWidget::createVisibleItems() {
     // This is handled by updateVisibleItems()
 }
 
-void IconThumbnailGridWidget::destroyInvisibleItems()
-{
+void IconThumbnailGridWidget::destroyInvisibleItems() {
     QStringList toRemove;
 
     for (auto it = m_visibleItems.begin(); it != m_visibleItems.end(); ++it) {
@@ -647,21 +595,18 @@ void IconThumbnailGridWidget::destroyInvisibleItems()
     }
 }
 
-int IconThumbnailGridWidget::getIconIndex(const QString& iconName) const
-{
-    return m_iconList.indexOf(iconName);
+int IconThumbnailGridWidget::getIconIndex(const QString& iconName) const {
+    return static_cast<int>(m_iconList.indexOf(iconName));
 }
 
-QString IconThumbnailGridWidget::getIconAt(int index) const
-{
+QString IconThumbnailGridWidget::getIconAt(int index) const {
     if (index >= 0 && index < m_iconList.size()) {
         return m_iconList[index];
     }
     return QString();
 }
 
-void IconThumbnailGridWidget::selectIcon(const QString& iconName, bool multiSelect)
-{
+void IconThumbnailGridWidget::selectIcon(const QString& iconName, bool multiSelect) {
     if (!multiSelect) {
         m_selectedIcons.clear();
     }
@@ -680,8 +625,7 @@ void IconThumbnailGridWidget::selectIcon(const QString& iconName, bool multiSele
     emit selectionChanged(m_selectedIcons);
 }
 
-void IconThumbnailGridWidget::navigateToIcon(int direction)
-{
+void IconThumbnailGridWidget::navigateToIcon(int direction) {
     int currentIndex = getIconIndex(m_currentIcon);
     int newIndex = currentIndex + direction;
 
@@ -690,8 +634,7 @@ void IconThumbnailGridWidget::navigateToIcon(int direction)
     }
 }
 
-int IconThumbnailGridWidget::getFirstVisibleIndex() const
-{
+int IconThumbnailGridWidget::getFirstVisibleIndex() const {
     if (!m_scrollArea || m_columnsPerRow <= 0) {
         return 0;
     }
@@ -703,10 +646,9 @@ int IconThumbnailGridWidget::getFirstVisibleIndex() const
     return visibleRow * m_columnsPerRow;
 }
 
-int IconThumbnailGridWidget::getLastVisibleIndex() const
-{
+int IconThumbnailGridWidget::getLastVisibleIndex() const {
     if (!m_scrollArea || m_columnsPerRow <= 0) {
-        return qMin(50, m_iconList.size() - 1); // Show at least 50 items
+        return qMin(50, static_cast<int>(m_iconList.size()) - 1); // Show at least 50 items
     }
 
     int scrollValue = m_scrollArea->verticalScrollBar()->value();
@@ -717,24 +659,22 @@ int IconThumbnailGridWidget::getLastVisibleIndex() const
     int visibleRows = (viewportHeight / itemHeight) + 2; // Add buffer
     int lastVisibleRow = firstVisibleRow + visibleRows;
 
-    return qMin((lastVisibleRow + 1) * m_columnsPerRow - 1, m_iconList.size() - 1);
+    return qMin((lastVisibleRow + 1) * m_columnsPerRow - 1,
+                static_cast<int>(m_iconList.size()) - 1);
 }
 
-int IconThumbnailGridWidget::getItemsPerRow() const
-{
+int IconThumbnailGridWidget::getItemsPerRow() const {
     return m_columnsPerRow;
 }
 
-int IconThumbnailGridWidget::getTotalRows() const
-{
+int IconThumbnailGridWidget::getTotalRows() const {
     if (m_columnsPerRow <= 0) {
         return 0;
     }
-    return (m_iconList.size() + m_columnsPerRow - 1) / m_columnsPerRow;
+    return (static_cast<int>(m_iconList.size()) + m_columnsPerRow - 1) / m_columnsPerRow;
 }
 
-QRect IconThumbnailGridWidget::getItemRect(int index) const
-{
+QRect IconThumbnailGridWidget::getItemRect(int index) const {
     if (m_columnsPerRow <= 0 || index < 0) {
         return QRect();
     }
@@ -749,7 +689,8 @@ QRect IconThumbnailGridWidget::getItemRect(int index) const
 
     // Improved positioning with better spacing distribution
     int totalItemsWidth = m_columnsPerRow * itemWidth;
-    int totalSpacingWidth = m_scrollArea->viewport()->width() - 2 * m_contentMargin - totalItemsWidth;
+    int totalSpacingWidth =
+        m_scrollArea->viewport()->width() - 2 * m_contentMargin - totalItemsWidth;
     int spacingBetweenItems = (m_columnsPerRow > 1) ? totalSpacingWidth / (m_columnsPerRow - 1) : 0;
     spacingBetweenItems = qMax(m_itemSpacing, qMin(spacingBetweenItems, m_itemSpacing * 2));
 
@@ -760,8 +701,7 @@ QRect IconThumbnailGridWidget::getItemRect(int index) const
 }
 
 // Event handlers
-void IconThumbnailGridWidget::resizeEvent(QResizeEvent* event)
-{
+void IconThumbnailGridWidget::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);
 
     if (!m_updateTimer->isActive()) {
@@ -770,44 +710,42 @@ void IconThumbnailGridWidget::resizeEvent(QResizeEvent* event)
     m_needsUpdate = true;
 }
 
-void IconThumbnailGridWidget::keyPressEvent(QKeyEvent* event)
-{
+void IconThumbnailGridWidget::keyPressEvent(QKeyEvent* event) {
     switch (event->key()) {
-    case Qt::Key_Left:
-        navigateToIcon(-1);
-        break;
-    case Qt::Key_Right:
-        navigateToIcon(1);
-        break;
-    case Qt::Key_Up:
-        navigateToIcon(-m_columnsPerRow);
-        break;
-    case Qt::Key_Down:
-        navigateToIcon(m_columnsPerRow);
-        break;
-    case Qt::Key_Home:
-        if (!m_iconList.isEmpty()) {
-            setCurrentIcon(m_iconList.first());
-        }
-        break;
-    case Qt::Key_End:
-        if (!m_iconList.isEmpty()) {
-            setCurrentIcon(m_iconList.last());
-        }
-        break;
-    case Qt::Key_PageUp:
-        navigateToIcon(-m_columnsPerRow * 5);
-        break;
-    case Qt::Key_PageDown:
-        navigateToIcon(m_columnsPerRow * 5);
-        break;
-    default:
-        QWidget::keyPressEvent(event);
+        case Qt::Key_Left:
+            navigateToIcon(-1);
+            break;
+        case Qt::Key_Right:
+            navigateToIcon(1);
+            break;
+        case Qt::Key_Up:
+            navigateToIcon(-m_columnsPerRow);
+            break;
+        case Qt::Key_Down:
+            navigateToIcon(m_columnsPerRow);
+            break;
+        case Qt::Key_Home:
+            if (!m_iconList.isEmpty()) {
+                setCurrentIcon(m_iconList.first());
+            }
+            break;
+        case Qt::Key_End:
+            if (!m_iconList.isEmpty()) {
+                setCurrentIcon(m_iconList.last());
+            }
+            break;
+        case Qt::Key_PageUp:
+            navigateToIcon(-m_columnsPerRow * 5);
+            break;
+        case Qt::Key_PageDown:
+            navigateToIcon(m_columnsPerRow * 5);
+            break;
+        default:
+            QWidget::keyPressEvent(event);
     }
 }
 
-void IconThumbnailGridWidget::wheelEvent(QWheelEvent* event)
-{
+void IconThumbnailGridWidget::wheelEvent(QWheelEvent* event) {
     // Handle zoom with Ctrl+Wheel
     if (event->modifiers() & Qt::ControlModifier) {
         int delta = event->angleDelta().y();
@@ -823,8 +761,7 @@ void IconThumbnailGridWidget::wheelEvent(QWheelEvent* event)
 }
 
 // Slot implementations
-void IconThumbnailGridWidget::onScrollValueChanged(int value)
-{
+void IconThumbnailGridWidget::onScrollValueChanged(int value) {
     Q_UNUSED(value)
 
     if (!m_updateTimer->isActive()) {
@@ -833,24 +770,20 @@ void IconThumbnailGridWidget::onScrollValueChanged(int value)
     m_needsUpdate = true;
 }
 
-void IconThumbnailGridWidget::onItemClicked(const QString& iconName)
-{
+void IconThumbnailGridWidget::onItemClicked(const QString& iconName) {
     selectIcon(iconName, QApplication::keyboardModifiers() & Qt::ControlModifier);
     emit iconSelected(iconName);
 }
 
-void IconThumbnailGridWidget::onItemDoubleClicked(const QString& iconName)
-{
+void IconThumbnailGridWidget::onItemDoubleClicked(const QString& iconName) {
     emit iconDoubleClicked(iconName);
 }
 
-void IconThumbnailGridWidget::onItemRightClicked(const QString& iconName, const QPoint& globalPos)
-{
+void IconThumbnailGridWidget::onItemRightClicked(const QString& iconName, const QPoint& globalPos) {
     emit contextMenuRequested(iconName, globalPos);
 }
 
-void IconThumbnailGridWidget::onFavoriteToggled(const QString& iconName, bool favorite)
-{
+void IconThumbnailGridWidget::onFavoriteToggled(const QString& iconName, bool favorite) {
     if (m_visibleItems.contains(iconName)) {
         m_visibleItems[iconName]->setFavorite(favorite);
     }

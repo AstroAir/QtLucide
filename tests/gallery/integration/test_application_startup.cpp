@@ -273,4 +273,4 @@ void TestApplicationStartup::testSettingsSave()
     settings.remove("test_save_key");
 }
 
-#include "test_application_startup.moc"
+// MOC include removed - no Q_OBJECT macro in this file

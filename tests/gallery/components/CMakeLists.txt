@@ -6,15 +6,11 @@ set(COMPONENT_TEST_SOURCES
     # Core component tests
     core/test_theme_manager.cpp
 
-    # Widget component tests
-    widgets/test_modern_search_widget.cpp
-
     # Main test runner
     component_test_runner.cpp
 
     # Concrete implementation sources needed for tests
     ../../../examples/gallery/src/ui/themes/ThemeManager.cpp
-    ../../../examples/gallery/src/ui/widgets/search/ModernSearchWidget.cpp
     ../../../examples/gallery/src/core/managers/IconMetadataManager.cpp
     ../../../examples/gallery/src/core/BatchExportManager.cpp
     ../../../examples/gallery/src/core/ExportProgressWidget.cpp
@@ -43,12 +39,8 @@ set(COMPONENT_TEST_HEADERS
     core/test_theme_manager.h
     core/test_batch_export_manager.h
 
-    # Widget component headers
-    widgets/test_modern_search_widget.h
-
     # Concrete implementation headers needed for tests
     ../../../examples/gallery/src/ui/themes/ThemeManager.h
-    ../../../examples/gallery/src/ui/widgets/search/ModernSearchWidget.h
     ../../../examples/gallery/src/core/managers/IconMetadataManager.h
     ../../../examples/gallery/src/core/BatchExportManager.h
     ../../../examples/gallery/src/core/utils/GalleryLogger.h

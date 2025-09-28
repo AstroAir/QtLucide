@@ -14,41 +14,36 @@
 #ifndef THEMEMANAGER_H
 #define THEMEMANAGER_H
 
-#include <QObject>
 #include <QApplication>
-#include <QWidget>
-#include <QSettings>
-#include <QTimer>
-#include <QPropertyAnimation>
-#include <QGraphicsOpacityEffect>
 #include <QColor>
-#include <QFont>
-#include <QPalette>
-#include <QStyleFactory>
 #include <QDir>
 #include <QFileInfo>
+#include <QFont>
+#include <QGraphicsOpacityEffect>
 #include <QHash>
+#include <QObject>
+#include <QPalette>
+#include <QPropertyAnimation>
+#include <QSettings>
+#include <QStyleFactory>
+#include <QTimer>
 #include <QVariant>
+#include <QWidget>
+
 
 // Forward declarations
 namespace lucide {
-    class QtLucide;
+class QtLucide;
 }
 
 /**
  * @brief Comprehensive theme management for the Gallery application
  */
-class ThemeManager : public QObject
-{
+class ThemeManager : public QObject {
     Q_OBJECT
 
 public:
-    enum Theme {
-        SystemTheme = 0,
-        LightTheme = 1,
-        DarkTheme = 2,
-        CustomTheme = 3
-    };
+    enum Theme { SystemTheme = 0, LightTheme = 1, DarkTheme = 2, CustomTheme = 3 };
     Q_ENUM(Theme)
 
     enum ColorRole {
@@ -96,7 +91,7 @@ public:
         bool isDark;
     };
 
-    explicit ThemeManager(QObject *parent = nullptr);
+    explicit ThemeManager(QObject* parent = nullptr);
     ~ThemeManager();
 
     // Theme management
@@ -227,8 +222,7 @@ private:
 /**
  * @brief Helper class for theme-aware widgets
  */
-class ThemeAwareWidget : public QObject
-{
+class ThemeAwareWidget : public QObject {
     Q_OBJECT
 
 public:

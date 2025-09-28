@@ -17,58 +17,60 @@
 #ifndef ICONDETAILSPANEL_H
 #define ICONDETAILSPANEL_H
 
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGridLayout>
-#include <QFormLayout>
-#include <QStackedLayout>
-#include <QLabel>
-#include <QPushButton>
-#include <QToolButton>
-#include <QTextEdit>
-#include <QPlainTextEdit>
-#include <QLineEdit>
-#include <QScrollArea>
-#include <QFrame>
-#include <QGroupBox>
-#include <QTabWidget>
-#include <QSlider>
-#include <QSpinBox>
-#include <QDoubleSpinBox>
-#include <QComboBox>
-#include <QCheckBox>
-#include <QRadioButton>
-#include <QButtonGroup>
-#include <QListWidget>
-#include <QTableWidget>
-#include <QTreeWidget>
-#include <QSplitter>
-#include <QProgressBar>
-#include <QTimer>
-#include <QPropertyAnimation>
-#include <QGraphicsOpacityEffect>
-#include <QGraphicsView>
-#include <QGraphicsScene>
-#include <QGraphicsPixmapItem>
-#include <QClipboard>
-#include <QApplication>
-#include <QMimeData>
-#include <QSyntaxHighlighter>
-#include <QTextDocument>
-#include <QFileDialog>
-#include <QColorDialog>
-#include <QFontDialog>
-#include <QMenu>
 #include <QAction>
 #include <QActionGroup>
-#include <QSettings>
+#include <QApplication>
+#include <QButtonGroup>
+#include <QCheckBox>
+#include <QClipboard>
+#include <QColorDialog>
+#include <QComboBox>
+#include <QDoubleSpinBox>
 #include <QElapsedTimer>
+#include <QFileDialog>
+#include <QFontDialog>
+#include <QFormLayout>
+#include <QFrame>
+#include <QGraphicsOpacityEffect>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QGridLayout>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QListWidget>
+#include <QMenu>
+#include <QMimeData>
 #include <QPixmapCache>
+#include <QPlainTextEdit>
+#include <QProgressBar>
+#include <QPropertyAnimation>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QScrollArea>
+#include <QSettings>
+#include <QSlider>
+#include <QSpinBox>
+#include <QSplitter>
+#include <QStackedLayout>
+#include <QSyntaxHighlighter>
+#include <QTabWidget>
+#include <QTableWidget>
+#include <QTextDocument>
+#include <QTextEdit>
+#include <QTimer>
+#include <QToolButton>
+#include <QTreeWidget>
+#include <QVBoxLayout>
+#include <QWidget>
 
-#include <QtLucide/QtLucide.h>
+
 #include "IconMetadataManager.h"
+#include <QtLucide/QtLucide.h>
 #include <memory>
+
 
 // Forward declarations
 class IconPreviewWidget;
@@ -80,8 +82,7 @@ class IconUsageAnalyzer;
 /**
  * @brief Enhanced syntax highlighter for multiple programming languages
  */
-class CodeSyntaxHighlighter : public QSyntaxHighlighter
-{
+class CodeSyntaxHighlighter : public QSyntaxHighlighter {
     Q_OBJECT
 
 public:
@@ -106,15 +107,15 @@ public:
     };
     Q_ENUM(Language)
 
-    explicit CodeSyntaxHighlighter(QTextDocument *parent = nullptr);
-    explicit CodeSyntaxHighlighter(Language language, QTextDocument *parent = nullptr);
+    explicit CodeSyntaxHighlighter(QTextDocument* parent = nullptr);
+    explicit CodeSyntaxHighlighter(Language language, QTextDocument* parent = nullptr);
 
     void setLanguage(Language language);
     void setTheme(const QString& themeName);
     void setCustomColors(const QHash<QString, QColor>& colors);
 
 protected:
-    void highlightBlock(const QString &text) override;
+    void highlightBlock(const QString& text) override;
 
 private:
     void setupRules();
@@ -138,8 +139,7 @@ private:
 /**
  * @brief Enhanced widget for high-quality icon preview with advanced controls
  */
-class IconPreviewWidget : public QFrame
-{
+class IconPreviewWidget : public QFrame {
     Q_OBJECT
 
 public:
@@ -161,7 +161,7 @@ public:
     };
     Q_ENUM(BackgroundType)
 
-    explicit IconPreviewWidget(lucide::QtLucide* lucide, QWidget *parent = nullptr);
+    explicit IconPreviewWidget(lucide::QtLucide* lucide, QWidget* parent = nullptr);
     ~IconPreviewWidget();
 
     // Icon management
@@ -254,7 +254,7 @@ private:
     lucide::QtLucide* m_lucide;
 
     // Enhanced UI components
-    QVBoxLayout* m_layout;  // Used by implementation
+    QVBoxLayout* m_layout; // Used by implementation
     QVBoxLayout* m_mainLayout;
     QHBoxLayout* m_previewLayout;
     QHBoxLayout* m_controlsLayout;
@@ -330,12 +330,11 @@ private:
 /**
  * @brief Enhanced widget for displaying comprehensive code examples and usage instructions
  */
-class CodeExampleWidget : public QWidget
-{
+class CodeExampleWidget : public QWidget {
     Q_OBJECT
 
 public:
-    explicit CodeExampleWidget(QWidget *parent = nullptr);
+    explicit CodeExampleWidget(QWidget* parent = nullptr);
     ~CodeExampleWidget();
 
     void setIconName(const QString& iconName);
@@ -392,7 +391,7 @@ private:
     QColor m_iconColor;
 
     // Enhanced UI components
-    QVBoxLayout* m_layout;  // Used by implementation
+    QVBoxLayout* m_layout; // Used by implementation
     QVBoxLayout* m_mainLayout;
     QHBoxLayout* m_headerLayout;
     QHBoxLayout* m_toolbarLayout;
@@ -420,22 +419,15 @@ private:
 /**
  * @brief Enhanced main details panel widget with comprehensive icon information
  */
-class IconDetailsPanel : public QWidget
-{
+class IconDetailsPanel : public QWidget {
     Q_OBJECT
 
 public:
-    enum ViewMode {
-        CompactView = 0,
-        DetailedView = 1,
-        DeveloperView = 2,
-        DesignerView = 3
-    };
+    enum ViewMode { CompactView = 0, DetailedView = 1, DeveloperView = 2, DesignerView = 3 };
     Q_ENUM(ViewMode)
 
-    explicit IconDetailsPanel(lucide::QtLucide* lucide,
-                             IconMetadataManager* metadataManager,
-                             QWidget *parent = nullptr);
+    explicit IconDetailsPanel(lucide::QtLucide* lucide, IconMetadataManager* metadataManager,
+                              QWidget* parent = nullptr);
     ~IconDetailsPanel();
 
     // Icon management
@@ -487,7 +479,8 @@ private slots:
     void onPreviewSizeChanged(int size);
     void onPreviewColorChanged(const QColor& color);
     void onCodeCopyRequested(const QString& code, const QString& language);
-    void onCodeExportRequested(const QString& code, const QString& language, const QString& filePath);
+    void onCodeExportRequested(const QString& code, const QString& language,
+                               const QString& filePath);
     void onTabChanged(int index);
     void onViewModeChanged();
     void onMetadataEdited();
@@ -543,7 +536,7 @@ private:
     IconMetadataManager* m_metadataManager;
 
     // Enhanced UI components
-    QVBoxLayout* m_layout;  // Used by implementation
+    QVBoxLayout* m_layout; // Used by implementation
     QVBoxLayout* m_mainLayout;
     QScrollArea* m_scrollArea;
     QWidget* m_contentWidget;
@@ -552,8 +545,8 @@ private:
     // Header section
     QFrame* m_headerFrame;
     QHBoxLayout* m_headerLayout;
-    QLabel* m_iconLabel;  // Used by implementation for icon display
-    QLabel* m_nameLabel;  // Used by implementation for icon name
+    QLabel* m_iconLabel; // Used by implementation for icon display
+    QLabel* m_nameLabel; // Used by implementation for icon name
     QLabel* m_iconNameLabel;
     QLabel* m_iconSizeLabel;
     QToolButton* m_favoriteButton;
@@ -621,7 +614,7 @@ private:
 
     // Performance and caching
     QTimer* m_refreshTimer;
-    QTimer* m_updateTimer;  // Changed from QElapsedTimer to match implementation
+    QTimer* m_updateTimer; // Changed from QElapsedTimer to match implementation
     QPixmapCache* m_iconCache;
 
     // Settings
@@ -632,8 +625,8 @@ private:
     QPropertyAnimation* m_fadeAnimation;
 
     // Constants
-    static constexpr int REFRESH_INTERVAL = 5000;  // 5 seconds
-    static constexpr int UPDATE_DELAY = 500;  // 500ms delay for updates
+    static constexpr int REFRESH_INTERVAL = 5000; // 5 seconds
+    static constexpr int UPDATE_DELAY = 500;      // 500ms delay for updates
     static constexpr int ANIMATION_DURATION = 300;
     static constexpr const char* SETTINGS_GROUP = "IconDetailsPanel";
 };

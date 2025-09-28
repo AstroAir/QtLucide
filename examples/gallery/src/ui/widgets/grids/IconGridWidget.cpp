@@ -4,129 +4,131 @@
 
 #include "IconGridWidget.h"
 #include "IconItem.h"
-#include <QVBoxLayout>
-#include <QGridLayout>
-#include <QScrollArea>
-#include <QLabel>
 #include <QApplication>
-#include <QDebug>
-#include <QMouseEvent>
-#include <QFocusEvent>
-#include <QPaintEvent>
 #include <QContextMenuEvent>
+#include <QDebug>
 #include <QDragEnterEvent>
 #include <QDragMoveEvent>
 #include <QDropEvent>
+#include <QFocusEvent>
+#include <QGridLayout>
+#include <QLabel>
+#include <QMouseEvent>
+#include <QPaintEvent>
+#include <QScrollArea>
+#include <QVBoxLayout>
+
 
 // IconGridModel Implementation
-IconGridModel::IconGridModel(QObject *parent)
-    : QAbstractListModel(parent)
-    , m_iconSize(64)
-    , m_metadataManager(nullptr)
-    , m_lucide(nullptr)
-{
+IconGridModel::IconGridModel(QObject* parent)
+    : QAbstractListModel(parent), m_iconSize(64), m_showIconNames(true), m_metadataManager(nullptr),
+      m_lucide(nullptr), m_favoritesManager(nullptr), m_isFiltered(false), m_cacheLimit(1000) {
+    // Initialize cache with reasonable limits
+    m_pixmapCache.setMaxCost(m_cacheLimit);
 }
 
-int IconGridModel::rowCount(const QModelIndex &parent) const
-{
+int IconGridModel::rowCount(const QModelIndex& parent) const {
     Q_UNUSED(parent)
     return static_cast<int>(m_iconNames.size());
 }
 
-QVariant IconGridModel::data(const QModelIndex &index, int role) const
-{
-    if (!index.isValid() || index.row() >= m_iconNames.size()) {
+QVariant IconGridModel::data(const QModelIndex& index, int role) const {
+    if (!index.isValid() || index.row() >= static_cast<int>(m_iconNames.size())) {
         return QVariant();
     }
 
-    const QString iconName = m_iconNames.at(index.row());
+    try {
+        const QString iconName = m_iconNames.at(index.row());
 
-    switch (role) {
-    case Qt::DisplayRole:
-        return iconName;
-    case Qt::DecorationRole:
-        if (m_lucide) {
-            return m_lucide->icon(iconName);
+        switch (role) {
+            case Qt::DisplayRole:
+                return iconName;
+            case Qt::DecorationRole:
+                if (m_lucide) {
+                    // Check cache first for performance
+                    QString cacheKey = createCacheKey(iconName, m_iconSize);
+                    if (m_pixmapCache.contains(cacheKey)) {
+                        return QIcon(*m_pixmapCache.object(cacheKey));
+                    }
+
+                    // Generate icon and cache it
+                    QIcon icon = m_lucide->icon(iconName);
+                    if (!icon.isNull()) {
+                        QPixmap pixmap = icon.pixmap(QSize(m_iconSize, m_iconSize));
+                        m_pixmapCache.insert(cacheKey, new QPixmap(pixmap));
+                        return icon;
+                    }
+                }
+                break;
+            case IconNameRole:
+                return iconName;
+            case IsFavoriteRole:
+                if (m_metadataManager) {
+                    return m_metadataManager->isFavorite(iconName);
+                }
+                break;
         }
-        break;
-    case IconNameRole:
-        return iconName;
-    case IsFavoriteRole:
-        if (m_metadataManager) {
-            return m_metadataManager->isFavorite(iconName);
-        }
-        break;
+    } catch (const std::exception& e) {
+        qWarning() << "Exception in IconGridModel::data:" << e.what();
+        return QVariant();
+    } catch (...) {
+        qWarning() << "Unknown exception in IconGridModel::data for index:" << index.row();
+        return QVariant();
     }
 
     return QVariant();
 }
 
-Qt::ItemFlags IconGridModel::flags(const QModelIndex &index) const
-{
+Qt::ItemFlags IconGridModel::flags(const QModelIndex& index) const {
     if (!index.isValid()) {
         return Qt::NoItemFlags;
     }
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-void IconGridModel::setIconNames(const QStringList& iconNames)
-{
+void IconGridModel::setIconNames(const QStringList& iconNames) {
     beginResetModel();
     m_iconNames = iconNames;
     endResetModel();
 }
 
-void IconGridModel::setIconSize(int size)
-{
+void IconGridModel::setIconSize(int size) {
     m_iconSize = size;
 }
 
-void IconGridModel::setMetadataManager(IconMetadataManager* manager)
-{
+void IconGridModel::setMetadataManager(IconMetadataManager* manager) {
     m_metadataManager = manager;
 }
 
-void IconGridModel::setLucide(lucide::QtLucide* lucide)
-{
+void IconGridModel::setLucide(lucide::QtLucide* lucide) {
     m_lucide = lucide;
 }
 
-QString IconGridModel::iconNameAt(int index) const
-{
-    if (index >= 0 && index < m_iconNames.size()) {
+QString IconGridModel::iconNameAt(int index) const {
+    if (index >= 0 && index < static_cast<int>(m_iconNames.size())) {
         return m_iconNames.at(index);
     }
     return QString();
 }
 
-QStringList IconGridModel::iconNames() const
-{
+QStringList IconGridModel::iconNames() const {
     return m_iconNames;
 }
 
-void IconGridModel::refreshData()
-{
+void IconGridModel::refreshData() {
     beginResetModel();
     endResetModel();
 }
 
 // IconGridDelegate Implementation
-IconGridDelegate::IconGridDelegate(QObject *parent)
-    : QStyledItemDelegate(parent)
-    , m_iconSize(64)
-    , m_showIconNames(true)
-    , m_animationsEnabled(true)
-    , m_hoverEffectsEnabled(true)
-    , m_dropShadowEnabled(true)
-    , m_highlightColor(QColor(100, 149, 237))
-    , m_selectionColor(QColor(70, 130, 180))
-    , m_displayMode(IconItem::GridMode)
-{
-}
+IconGridDelegate::IconGridDelegate(QObject* parent)
+    : QStyledItemDelegate(parent), m_iconSize(64), m_showIconNames(true), m_animationsEnabled(true),
+      m_hoverEffectsEnabled(true), m_dropShadowEnabled(true),
+      m_highlightColor(QColor(100, 149, 237)), m_selectionColor(QColor(70, 130, 180)),
+      m_displayMode(IconItem::GridMode) {}
 
-void IconGridDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
-                           const QModelIndex &index) const
-{
+void IconGridDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option,
+                             const QModelIndex& index) const {
     if (!index.isValid()) {
         return;
     }
@@ -155,7 +157,8 @@ void IconGridDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     // Draw icon name
     if (m_showIconNames) {
         QRect nameRect = getTextRect(rect);
-        painter->setPen(selected ? option.palette.highlightedText().color() : option.palette.text().color());
+        painter->setPen(selected ? option.palette.highlightedText().color()
+                                 : option.palette.text().color());
         painter->drawText(nameRect, Qt::AlignCenter | Qt::TextWordWrap, iconName);
     }
 
@@ -169,9 +172,8 @@ void IconGridDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     painter->restore();
 }
 
-QSize IconGridDelegate::sizeHint(const QStyleOptionViewItem &option,
-                               const QModelIndex &index) const
-{
+QSize IconGridDelegate::sizeHint(const QStyleOptionViewItem& option,
+                                 const QModelIndex& index) const {
     Q_UNUSED(option)
     Q_UNUSED(index)
 
@@ -185,53 +187,40 @@ QSize IconGridDelegate::sizeHint(const QStyleOptionViewItem &option,
     return QSize(width, height);
 }
 
-void IconGridDelegate::setIconSize(int size)
-{
+void IconGridDelegate::setIconSize(int size) {
     m_iconSize = size;
 }
 
-void IconGridDelegate::setDisplayMode(IconItem::DisplayMode mode)
-{
+void IconGridDelegate::setDisplayMode(IconItem::DisplayMode mode) {
     m_displayMode = mode;
 }
 
-void IconGridDelegate::setShowIconNames(bool show)
-{
+void IconGridDelegate::setShowIconNames(bool show) {
     m_showIconNames = show;
 }
 
-QRect IconGridDelegate::getIconRect(const QRect &itemRect) const
-{
+QRect IconGridDelegate::getIconRect(const QRect& itemRect) const {
     int x = itemRect.x() + (itemRect.width() - m_iconSize) / 2;
     int y = itemRect.y() + PADDING;
     return QRect(x, y, m_iconSize, m_iconSize);
 }
 
-QRect IconGridDelegate::getTextRect(const QRect &itemRect) const
-{
+QRect IconGridDelegate::getTextRect(const QRect& itemRect) const {
     int y = itemRect.y() + PADDING + m_iconSize;
-    return QRect(itemRect.x() + PADDING, y,
-                 itemRect.width() - 2 * PADDING, TEXT_HEIGHT);
+    return QRect(itemRect.x() + PADDING, y, itemRect.width() - 2 * PADDING, TEXT_HEIGHT);
 }
 
-QRect IconGridDelegate::getFavoriteButtonRect(const QRect &itemRect) const
-{
+QRect IconGridDelegate::getFavoriteButtonRect(const QRect& itemRect) const {
     int x = itemRect.right() - FAVORITE_BUTTON_SIZE - PADDING;
     int y = itemRect.y() + PADDING;
     return QRect(x, y, FAVORITE_BUTTON_SIZE, FAVORITE_BUTTON_SIZE);
 }
 
 // IconGridWidget Implementation
-IconGridWidget::IconGridWidget(QWidget *parent)
-    : QWidget(parent)
-    , m_lucide(nullptr)
-    , m_metadataManager(nullptr)
-    , m_iconSize(DEFAULT_ICON_SIZE)
-    , m_viewMode(GridView)
-    , m_showIconNames(true)
-    , m_updateTimer(new QTimer(this))
-    , m_needsUpdate(false)
-{
+IconGridWidget::IconGridWidget(QWidget* parent)
+    : QWidget(parent), m_lucide(nullptr), m_metadataManager(nullptr), m_iconSize(DEFAULT_ICON_SIZE),
+      m_viewMode(GridView), m_showIconNames(true), m_updateTimer(new QTimer(this)),
+      m_needsUpdate(false) {
     setupUI();
     setupModel();
     setupView();
@@ -241,12 +230,9 @@ IconGridWidget::IconGridWidget(QWidget *parent)
     connect(m_updateTimer, &QTimer::timeout, this, &IconGridWidget::updateVisibleItems);
 }
 
-IconGridWidget::~IconGridWidget()
-{
-}
+IconGridWidget::~IconGridWidget() {}
 
-void IconGridWidget::setupUI()
-{
+void IconGridWidget::setupUI() {
     m_layout = new QVBoxLayout(this);
     m_layout->setContentsMargins(0, 0, 0, 0);
 
@@ -264,16 +250,14 @@ void IconGridWidget::setupUI()
     m_layout->addWidget(m_emptyLabel);
 }
 
-void IconGridWidget::setupModel()
-{
+void IconGridWidget::setupModel() {
     m_model = std::make_unique<IconGridModel>(this);
     m_model->setLucide(m_lucide);
     m_model->setMetadataManager(m_metadataManager);
     m_model->setIconSize(m_iconSize);
 }
 
-void IconGridWidget::setupView()
-{
+void IconGridWidget::setupView() {
     m_delegate = std::make_unique<IconGridDelegate>(this);
     m_delegate->setIconSize(m_iconSize);
     m_delegate->setShowIconNames(m_showIconNames);
@@ -281,19 +265,17 @@ void IconGridWidget::setupView()
     m_listView->setModel(m_model.get());
     m_listView->setItemDelegate(m_delegate.get());
 
-    connect(m_listView->selectionModel(), &QItemSelectionModel::currentChanged,
-            this, &IconGridWidget::onSelectionChanged);
-    connect(m_listView, &QListView::doubleClicked,
-            this, [this](const QModelIndex& index) {
-                QString iconName = m_model->iconNameAt(index.row());
-                if (!iconName.isEmpty()) {
-                    emit iconDoubleClicked(iconName);
-                }
-            });
+    connect(m_listView->selectionModel(), &QItemSelectionModel::currentChanged, this,
+            &IconGridWidget::onSelectionChanged);
+    connect(m_listView, &QListView::doubleClicked, this, [this](const QModelIndex& index) {
+        QString iconName = m_model->iconNameAt(index.row());
+        if (!iconName.isEmpty()) {
+            emit iconDoubleClicked(iconName);
+        }
+    });
 }
 
-void IconGridWidget::setIconNames(const QStringList& iconNames)
-{
+void IconGridWidget::setIconNames(const QStringList& iconNames) {
     m_model->setIconNames(iconNames);
     m_emptyLabel->setVisible(iconNames.isEmpty());
     m_listView->setVisible(!iconNames.isEmpty());
@@ -303,13 +285,11 @@ void IconGridWidget::setIconNames(const QStringList& iconNames)
     }
 }
 
-QStringList IconGridWidget::iconNames() const
-{
+QStringList IconGridWidget::iconNames() const {
     return m_model->iconNames();
 }
 
-void IconGridWidget::setIconSize(int size)
-{
+void IconGridWidget::setIconSize(int size) {
     size = qBound(MIN_ICON_SIZE, size, MAX_ICON_SIZE);
     if (m_iconSize != size) {
         m_iconSize = size;
@@ -320,8 +300,7 @@ void IconGridWidget::setIconSize(int size)
     }
 }
 
-void IconGridWidget::setViewMode(ViewMode mode)
-{
+void IconGridWidget::setViewMode(ViewMode mode) {
     if (mode != m_viewMode) {
         m_viewMode = mode;
         updateViewSettings();
@@ -329,8 +308,7 @@ void IconGridWidget::setViewMode(ViewMode mode)
     }
 }
 
-void IconGridWidget::setShowIconNames(bool show)
-{
+void IconGridWidget::setShowIconNames(bool show) {
     if (m_showIconNames != show) {
         m_showIconNames = show;
         m_delegate->setShowIconNames(show);
@@ -338,8 +316,7 @@ void IconGridWidget::setShowIconNames(bool show)
     }
 }
 
-void IconGridWidget::selectIcon(const QString& iconName)
-{
+void IconGridWidget::selectIcon(const QString& iconName) {
     // Find and select the icon
     for (int i = 0; i < m_model->rowCount(); ++i) {
         if (m_model->iconNameAt(i) == iconName) {
@@ -351,16 +328,14 @@ void IconGridWidget::selectIcon(const QString& iconName)
     }
 }
 
-void IconGridWidget::clearSelection()
-{
+void IconGridWidget::clearSelection() {
     if (m_listView && m_listView->selectionModel()) {
         m_listView->selectionModel()->clearSelection();
         m_listView->clearSelection();
     }
 }
 
-QString IconGridWidget::currentIcon() const
-{
+QString IconGridWidget::currentIcon() const {
     QModelIndex current = m_listView->currentIndex();
     if (current.isValid()) {
         return m_model->iconNameAt(current.row());
@@ -368,33 +343,61 @@ QString IconGridWidget::currentIcon() const
     return QString();
 }
 
-void IconGridWidget::refreshIcons()
-{
+void IconGridWidget::refreshIcons() {
     m_model->refreshData();
 }
 
-void IconGridWidget::onSelectionChanged()
-{
+void IconGridWidget::onSelectionChanged() {
     QString iconName = currentIcon();
     if (!iconName.isEmpty()) {
         emit iconSelected(iconName);
     }
 }
 
-void IconGridWidget::updateItemSize()
-{
+void IconGridWidget::updateItemSize() {
     m_listView->update();
 }
 
-void IconGridWidget::updateVisibleItems()
-{
+void IconGridWidget::updateVisibleItems() {
     m_needsUpdate = false;
-    // Update visible items if needed
+
+    if (!m_listView || !m_model) {
+        return;
+    }
+
+    // Get visible range
+    QRect visibleRect = m_listView->viewport()->rect();
+    QModelIndex topLeft = m_listView->indexAt(visibleRect.topLeft());
+    QModelIndex bottomRight = m_listView->indexAt(visibleRect.bottomRight());
+
+    if (!topLeft.isValid() || !bottomRight.isValid()) {
+        return;
+    }
+
+    int startIndex = topLeft.row();
+    int endIndex = bottomRight.row();
+    int visibleCount = endIndex - startIndex + 1;
+
+    // Preload buffer around visible items for smooth scrolling
+    int bufferSize = qMin(PRELOAD_BUFFER, m_model->rowCount() / 10);
+    int preloadStart = qMax(0, startIndex - bufferSize);
+    int preloadEnd = qMin(m_model->rowCount() - 1, endIndex + bufferSize);
+
+    // Preload visible range plus buffer
+    if (m_model) {
+        m_model->preloadRange(preloadStart, preloadEnd - preloadStart + 1);
+    }
+
+    // Update performance metrics
+    m_performanceMetrics["visibleItems"] = visibleCount;
+    m_performanceMetrics["preloadedItems"] = preloadEnd - preloadStart + 1;
+
+    // Emit signal for monitoring
+    emit visibleRangeChanged(startIndex, endIndex);
 }
 
 // Missing method implementations
-void IconGridWidget::updateIconSizes()
-{
+void IconGridWidget::updateIconSizes() {
     if (m_model) {
         m_model->setIconSize(m_iconSize);
     }
@@ -414,8 +417,7 @@ void IconGridWidget::updateIconSizes()
     emit iconSizeChanged(m_iconSize);
 }
 
-void IconGridWidget::updateFavorites()
-{
+void IconGridWidget::updateFavorites() {
     if (m_model) {
         // For now, use empty favorites list until FavoritesManager is implemented
         QStringList favorites; // Empty list for now
@@ -426,23 +428,32 @@ void IconGridWidget::updateFavorites()
             m_listView->update();
         }
 
-        emit favoritesUpdated(favorites.size());
+        emit favoritesUpdated(static_cast<int>(favorites.size()));
     }
 }
-void IconGridWidget::zoomIn() { setIconSize(m_iconSize + ZOOM_STEP); }
-void IconGridWidget::zoomOut() { setIconSize(m_iconSize - ZOOM_STEP); }
-void IconGridWidget::resetZoom() { setIconSize(DEFAULT_ICON_SIZE); }
+void IconGridWidget::zoomIn() {
+    setIconSize(m_iconSize + ZOOM_STEP);
+}
+void IconGridWidget::zoomOut() {
+    setIconSize(m_iconSize - ZOOM_STEP);
+}
+void IconGridWidget::resetZoom() {
+    setIconSize(DEFAULT_ICON_SIZE);
+}
 void IconGridWidget::onIconClicked(const QString& iconName, const QPoint& position) {
     Q_UNUSED(position);
     emit iconSelected(iconName);
 }
-void IconGridWidget::onIconDoubleClicked(const QString& iconName) { emit iconDoubleClicked(iconName); }
-void IconGridWidget::onFavoriteToggled(const QString& iconName) { emit favoriteToggled(iconName, true); }
-void IconGridWidget::onScrollValueChanged()
-{
+void IconGridWidget::onIconDoubleClicked(const QString& iconName) {
+    emit iconDoubleClicked(iconName);
+}
+void IconGridWidget::onFavoriteToggled(const QString& iconName) {
+    emit favoriteToggled(iconName, true);
+}
+void IconGridWidget::onScrollValueChanged() {
     if (m_listView) {
         QScrollBar* vScrollBar = m_listView->verticalScrollBar();
-        QScrollBar* hScrollBar = m_listView->horizontalScrollBar();
+        Q_UNUSED(m_listView->horizontalScrollBar()); // Not used in current implementation
 
         if (vScrollBar) {
             int value = vScrollBar->value();
@@ -461,13 +472,19 @@ void IconGridWidget::onScrollValueChanged()
         updateVisibleItems();
     }
 }
-void IconGridWidget::keyPressEvent(QKeyEvent *event) { QWidget::keyPressEvent(event); }
-void IconGridWidget::wheelEvent(QWheelEvent *event) { QWidget::wheelEvent(event); }
-void IconGridWidget::resizeEvent(QResizeEvent *event) { QWidget::resizeEvent(event); }
+void IconGridWidget::keyPressEvent(QKeyEvent* event) {
+    QWidget::keyPressEvent(event);
+}
+void IconGridWidget::wheelEvent(QWheelEvent* event) {
+    QWidget::wheelEvent(event);
+}
+void IconGridWidget::resizeEvent(QResizeEvent* event) {
+    QWidget::resizeEvent(event);
+}
 
-void IconGridWidget::updateViewSettings()
-{
-    if (!m_listView) return;
+void IconGridWidget::updateViewSettings() {
+    if (!m_listView)
+        return;
 
     switch (m_viewMode) {
         case GridView:
@@ -525,16 +542,14 @@ void IconGridWidget::updateViewSettings()
 }
 
 // IconGridModel missing methods
-void IconGridModel::setFavorites(const QStringList& favorites)
-{
+void IconGridModel::setFavorites(const QStringList& favorites) {
     m_favorites = QSet<QString>(favorites.begin(), favorites.end());
     // Update all items to reflect favorite status changes
     emit dataChanged(index(0), index(rowCount() - 1), {Qt::DecorationRole, Qt::UserRole});
     emit favoritesUpdated();
 }
 
-void IconGridModel::updateFavorites()
-{
+void IconGridModel::updateFavorites() {
     // For now, use empty favorites until FavoritesManager is implemented
     m_favorites.clear();
 
@@ -551,16 +566,90 @@ void IconGridModel::updateSelection() {
 
 void IconGridModel::invalidateCache() {
     // Clear any cached data
+    m_pixmapCache.clear();
+    m_metadataCache.clear();
     beginResetModel();
     endResetModel();
+}
+
+void IconGridModel::preloadRange(int start, int count) {
+    if (!m_lucide || start < 0 || count <= 0) {
+        qWarning() << "IconGridModel::preloadRange: Invalid parameters - lucide:" << (m_lucide ? "OK" : "NULL")
+                   << "start:" << start << "count:" << count;
+        return;
+    }
+
+    try {
+        int end = qMin(start + count, static_cast<int>(m_iconNames.size()));
+        int successCount = 0;
+        int errorCount = 0;
+
+        for (int i = start; i < end; ++i) {
+            try {
+                const QString& iconName = m_iconNames.at(i);
+                QString cacheKey = createCacheKey(iconName, m_iconSize);
+
+                // Only preload if not already cached
+                if (!m_pixmapCache.contains(cacheKey)) {
+                    QIcon icon = m_lucide->icon(iconName);
+                    if (!icon.isNull()) {
+                        QPixmap pixmap = icon.pixmap(QSize(m_iconSize, m_iconSize));
+                        if (!pixmap.isNull()) {
+                            m_pixmapCache.insert(cacheKey, new QPixmap(pixmap));
+                            successCount++;
+                        } else {
+                            qWarning() << "Failed to create pixmap for icon:" << iconName;
+                            errorCount++;
+                        }
+                    } else {
+                        qWarning() << "Failed to load icon:" << iconName;
+                        errorCount++;
+                    }
+                }
+            } catch (const std::exception& e) {
+                qWarning() << "Exception preloading icon at index" << i << ":" << e.what();
+                errorCount++;
+            } catch (...) {
+                qWarning() << "Unknown exception preloading icon at index:" << i;
+                errorCount++;
+            }
+        }
+
+        if (errorCount > 0) {
+            qWarning() << "IconGridModel::preloadRange completed with" << errorCount << "errors and" << successCount << "successes";
+        }
+
+        emit dataPreloaded(start, successCount);
+    } catch (const std::exception& e) {
+        qCritical() << "Critical exception in IconGridModel::preloadRange:" << e.what();
+    } catch (...) {
+        qCritical() << "Unknown critical exception in IconGridModel::preloadRange";
+    }
+}
+
+void IconGridModel::clearCache() {
+    m_pixmapCache.clear();
+    m_metadataCache.clear();
+    emit cacheUpdated();
+}
+
+void IconGridModel::setCacheLimit(int limit) {
+    m_cacheLimit = limit;
+    m_pixmapCache.setMaxCost(limit);
+}
+
+QString IconGridModel::createCacheKey(const QString& iconName, int size) const {
+    return QString("%1_%2").arg(iconName).arg(size);
 }
 
 IconGridModel::~IconGridModel() {
     // Destructor implementation
 }
 
-bool IconGridModel::setData(const QModelIndex &index, const QVariant &value, int role) {
-    Q_UNUSED(index) Q_UNUSED(value) Q_UNUSED(role)
+bool IconGridModel::setData(const QModelIndex& index, const QVariant& value, int role) {
+    Q_UNUSED(index)
+    Q_UNUSED(value)
+    Q_UNUSED(role)
     return false;
 }
 
@@ -577,10 +666,12 @@ void IconGridDelegate::updateHoverState() {
     // Update hover visual state
 }
 
-bool IconGridDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
-                                 const QStyleOptionViewItem &option,
-                                 const QModelIndex &index) {
-    Q_UNUSED(event) Q_UNUSED(model) Q_UNUSED(option) Q_UNUSED(index)
+bool IconGridDelegate::editorEvent(QEvent* event, QAbstractItemModel* model,
+                                   const QStyleOptionViewItem& option, const QModelIndex& index) {
+    Q_UNUSED(event)
+    Q_UNUSED(model)
+    Q_UNUSED(option)
+    Q_UNUSED(index)
     return false;
 }
 
@@ -632,54 +723,53 @@ void IconGridWidget::updatePerformanceMetrics() {
 }
 
 // Event handlers
-void IconGridWidget::mousePressEvent(QMouseEvent *event) {
+void IconGridWidget::mousePressEvent(QMouseEvent* event) {
     QWidget::mousePressEvent(event);
 }
 
-void IconGridWidget::mouseReleaseEvent(QMouseEvent *event) {
+void IconGridWidget::mouseReleaseEvent(QMouseEvent* event) {
     QWidget::mouseReleaseEvent(event);
 }
 
-void IconGridWidget::mouseDoubleClickEvent(QMouseEvent *event) {
+void IconGridWidget::mouseDoubleClickEvent(QMouseEvent* event) {
     QWidget::mouseDoubleClickEvent(event);
 }
 
-void IconGridWidget::mouseMoveEvent(QMouseEvent *event) {
+void IconGridWidget::mouseMoveEvent(QMouseEvent* event) {
     QWidget::mouseMoveEvent(event);
 }
 
-void IconGridWidget::focusInEvent(QFocusEvent *event) {
+void IconGridWidget::focusInEvent(QFocusEvent* event) {
     QWidget::focusInEvent(event);
 }
 
-void IconGridWidget::focusOutEvent(QFocusEvent *event) {
+void IconGridWidget::focusOutEvent(QFocusEvent* event) {
     QWidget::focusOutEvent(event);
 }
 
-void IconGridWidget::paintEvent(QPaintEvent *event) {
+void IconGridWidget::paintEvent(QPaintEvent* event) {
     QWidget::paintEvent(event);
 }
 
-void IconGridWidget::contextMenuEvent(QContextMenuEvent *event) {
+void IconGridWidget::contextMenuEvent(QContextMenuEvent* event) {
     QWidget::contextMenuEvent(event);
 }
 
-void IconGridWidget::dragEnterEvent(QDragEnterEvent *event) {
+void IconGridWidget::dragEnterEvent(QDragEnterEvent* event) {
     QWidget::dragEnterEvent(event);
 }
 
-void IconGridWidget::dragMoveEvent(QDragMoveEvent *event) {
+void IconGridWidget::dragMoveEvent(QDragMoveEvent* event) {
     QWidget::dragMoveEvent(event);
 }
 
-void IconGridWidget::dropEvent(QDropEvent *event) {
+void IconGridWidget::dropEvent(QDropEvent* event) {
     QWidget::dropEvent(event);
 }
 
 // Helper method implementations - removed duplicate updateVisibleItems
 
-void IconGridWidget::setAnimationsEnabled(bool enabled)
-{
+void IconGridWidget::setAnimationsEnabled(bool enabled) {
     m_animationsEnabled = enabled;
 
     if (m_delegate) {
@@ -691,8 +781,53 @@ void IconGridWidget::setAnimationsEnabled(bool enabled)
     setProperty("animationDuration", duration);
 }
 
-void IconGridWidget::setSpacing(int spacing)
-{
+void IconGridWidget::preloadVisibleItems() {
+    if (!m_listView || !m_model) {
+        return;
+    }
+
+    // Get visible range
+    QRect visibleRect = m_listView->viewport()->rect();
+    QModelIndex topLeft = m_listView->indexAt(visibleRect.topLeft());
+    QModelIndex bottomRight = m_listView->indexAt(visibleRect.bottomRight());
+
+    if (topLeft.isValid() && bottomRight.isValid()) {
+        int startIndex = topLeft.row();
+        int endIndex = bottomRight.row();
+        int count = endIndex - startIndex + 1;
+
+        // Preload visible items plus buffer
+        int bufferSize = qMin(PRELOAD_BUFFER, m_model->rowCount() / 10);
+        int preloadStart = qMax(0, startIndex - bufferSize);
+        int preloadCount = qMin(count + 2 * bufferSize, m_model->rowCount() - preloadStart);
+
+        m_model->preloadRange(preloadStart, preloadCount);
+    }
+}
+
+void IconGridWidget::setCacheLimit(int limit) {
+    if (m_model) {
+        m_model->setCacheLimit(limit);
+    }
+}
+
+void IconGridWidget::setLazyLoadingEnabled(bool enabled) {
+    m_lazyLoadingEnabled = enabled;
+
+    if (enabled) {
+        // Enable lazy loading optimizations
+        if (m_updateTimer) {
+            m_updateTimer->setInterval(UPDATE_DELAY);
+        }
+    } else {
+        // Disable lazy loading, load everything immediately
+        if (m_model) {
+            m_model->preloadRange(0, m_model->rowCount());
+        }
+    }
+}
+
+void IconGridWidget::setSpacing(int spacing) {
     m_spacing = spacing;
     if (m_gridView && m_gridView->layout()) {
         if (auto* gridLayout = qobject_cast<QGridLayout*>(m_gridView->layout())) {
@@ -702,8 +837,7 @@ void IconGridWidget::setSpacing(int spacing)
     update();
 }
 
-void IconGridWidget::setMargin(int margin)
-{
+void IconGridWidget::setMargin(int margin) {
     m_margin = margin;
     if (m_gridView) {
         m_gridView->setContentsMargins(margin, margin, margin, margin);
@@ -711,16 +845,14 @@ void IconGridWidget::setMargin(int margin)
     update();
 }
 
-void IconGridWidget::setFilteredIcons(const QStringList& icons)
-{
+void IconGridWidget::setFilteredIcons(const QStringList& icons) {
     if (m_model) {
         m_model->setFilteredIcons(icons);
     }
-    emit filteredIconsChanged(icons.size());
+    emit filteredIconsChanged(static_cast<int>(icons.size()));
 }
 
-void IconGridWidget::clearFilter()
-{
+void IconGridWidget::clearFilter() {
     if (m_model) {
         m_model->clearFilter();
     }
@@ -743,24 +875,19 @@ void IconGridWidget::setMetadataManager(IconMetadataManager* manager) {
 }
 
 // IconGridModel helper methods
-void IconGridModel::setIconSize(const QSize& size)
-{
-    m_iconSize = size.width();  // Use width as the icon size
+void IconGridModel::setIconSize(const QSize& size) {
+    m_iconSize = size.width(); // Use width as the icon size
     emit dataChanged(index(0), index(rowCount() - 1), {Qt::SizeHintRole});
 }
 
-
-
-void IconGridModel::setFilteredIcons(const QStringList& icons)
-{
+void IconGridModel::setFilteredIcons(const QStringList& icons) {
     beginResetModel();
     m_filteredIcons = icons;
     m_isFiltered = true;
     endResetModel();
 }
 
-void IconGridModel::clearFilter()
-{
+void IconGridModel::clearFilter() {
     beginResetModel();
     m_filteredIcons.clear();
     m_isFiltered = false;
@@ -768,13 +895,11 @@ void IconGridModel::clearFilter()
 }
 
 // IconGridDelegate helper methods
-void IconGridDelegate::setIconSize(const QSize& size)
-{
-    m_iconSize = size.width();  // Use width as the icon size
+void IconGridDelegate::setIconSize(const QSize& size) {
+    m_iconSize = size.width(); // Use width as the icon size
 }
 
-void IconGridDelegate::setAnimationsEnabled(bool enabled)
-{
+void IconGridDelegate::setAnimationsEnabled(bool enabled) {
     m_animationsEnabled = enabled;
 }
 
@@ -787,8 +912,7 @@ IconGridWidget::ViewMode IconGridWidget::viewMode() const {
 }
 
 // Missing IconGridWidget methods
-void IconGridWidget::selectAll()
-{
+void IconGridWidget::selectAll() {
     if (m_listView && m_listView->selectionModel()) {
         m_listView->selectAll();
     }

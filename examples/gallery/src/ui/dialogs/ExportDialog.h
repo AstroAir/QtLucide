@@ -15,55 +15,54 @@
 #ifndef EXPORTDIALOG_H
 #define EXPORTDIALOG_H
 
-#include <QDialog>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGridLayout>
-#include <QFormLayout>
-#include <QLabel>
-#include <QPushButton>
-#include <QCheckBox>
-#include <QRadioButton>
-#include <QButtonGroup>
-#include <QComboBox>
-#include <QSpinBox>
-#include <QLineEdit>
-#include <QTextEdit>
-#include <QGroupBox>
-#include <QTabWidget>
-#include <QListWidget>
-#include <QListWidgetItem>
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
-#include <QProgressBar>
-#include <QSlider>
-#include <QColorDialog>
-#include <QFileDialog>
-#include <QStandardPaths>
-#include <QDir>
-#include <QTimer>
-#include <QThread>
-#include <QMutex>
-#include <QFuture>
-#include <QFutureWatcher>
-#include <QtConcurrent>
-#include <QJsonObject>
-#include <QJsonDocument>
-#include <QJsonArray>
-#include <QPixmap>
-#include <QPainter>
-#include <QSvgRenderer>
-#include <QSvgGenerator>
-#include <QPdfWriter>
 #include <QBuffer>
-#include <QMimeData>
+#include <QButtonGroup>
+#include <QCheckBox>
+#include <QColorDialog>
+#include <QComboBox>
+#include <QDialog>
+#include <QDir>
 #include <QDragEnterEvent>
 #include <QDropEvent>
-#include <QScrollArea>
+#include <QFileDialog>
 #include <QFormLayout>
+#include <QFuture>
+#include <QFutureWatcher>
+#include <QGridLayout>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QLabel>
+#include <QLineEdit>
+#include <QListWidget>
+#include <QListWidgetItem>
+#include <QMimeData>
+#include <QMutex>
+#include <QPainter>
+#include <QPdfWriter>
+#include <QPixmap>
+#include <QProgressBar>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QScrollArea>
+#include <QSlider>
+#include <QSpinBox>
+#include <QStandardPaths>
+#include <QSvgGenerator>
+#include <QSvgRenderer>
+#include <QTabWidget>
+#include <QTextEdit>
+#include <QThread>
+#include <QTimer>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+#include <QVBoxLayout>
+#include <QtConcurrent>
 
 #ifdef QTLUCIDE_AVAILABLE
-#include <QtLucide/QtLucide.h>
+    #include <QtLucide/QtLucide.h>
 #endif
 #include "../themes/ThemeManager.h"
 
@@ -76,13 +75,7 @@ class BatchExportManager;
 /**
  * @brief Export format enumeration
  */
-enum class ExportFormat {
-    PNG = 0,
-    SVG = 1,
-    ICO = 2,
-    PDF = 3,
-    JPEG = 4
-};
+enum class ExportFormat { PNG = 0, SVG = 1, ICO = 2, PDF = 3, JPEG = 4 };
 
 /**
  * @brief Export configuration structure
@@ -125,8 +118,7 @@ struct ExportConfig {
 /**
  * @brief Export options widget with comprehensive settings
  */
-class ExportOptionsWidget : public QWidget
-{
+class ExportOptionsWidget : public QWidget {
     Q_OBJECT
 
 public:
@@ -264,8 +256,7 @@ private:
 /**
  * @brief Export preview widget showing icon previews
  */
-class ExportPreviewWidget : public QWidget
-{
+class ExportPreviewWidget : public QWidget {
     Q_OBJECT
 
 public:
@@ -336,8 +327,7 @@ private:
 /**
  * @brief Main export dialog
  */
-class ExportDialog : public QDialog
-{
+class ExportDialog : public QDialog {
     Q_OBJECT
 
 public:

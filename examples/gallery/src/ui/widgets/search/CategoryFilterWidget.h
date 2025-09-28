@@ -16,40 +16,40 @@
 #ifndef CATEGORYFILTERWIDGET_H
 #define CATEGORYFILTERWIDGET_H
 
-#include <QWidget>
+#include <QAction>
+#include <QButtonGroup>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QContextMenuEvent>
+#include <QDrag>
+#include <QElapsedTimer>
+#include <QFrame>
+#include <QGraphicsOpacityEffect>
+#include <QGridLayout>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QListWidget>
+#include <QListWidgetItem>
+#include <QMenu>
+#include <QMimeData>
+#include <QProgressBar>
+#include <QPropertyAnimation>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QScrollArea>
+#include <QSettings>
+#include <QSlider>
+#include <QSplitter>
+#include <QStackedWidget>
+#include <QTabWidget>
+#include <QTimer>
+#include <QToolButton>
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGridLayout>
-#include <QLabel>
-#include <QToolButton>
-#include <QPushButton>
-#include <QLineEdit>
-#include <QCheckBox>
-#include <QGroupBox>
-#include <QScrollArea>
-#include <QFrame>
-#include <QSplitter>
-#include <QListWidget>
-#include <QListWidgetItem>
-#include <QButtonGroup>
-#include <QRadioButton>
-#include <QTimer>
-#include <QPropertyAnimation>
-#include <QGraphicsOpacityEffect>
-#include <QContextMenuEvent>
-#include <QMenu>
-#include <QAction>
-#include <QTabWidget>
-#include <QStackedWidget>
-#include <QComboBox>
-#include <QSlider>
-#include <QProgressBar>
-#include <QElapsedTimer>
-#include <QSettings>
-#include <QMimeData>
-#include <QDrag>
+#include <QWidget>
 
 #include "IconMetadataManager.h"
 
@@ -60,8 +60,7 @@ class CategoryStatisticsWidget;
 /**
  * @brief Enhanced tree widget item for category display with advanced features
  */
-class CategoryTreeItem : public QTreeWidgetItem
-{
+class CategoryTreeItem : public QTreeWidgetItem {
 public:
     enum ItemType {
         CategoryItem = QTreeWidgetItem::UserType + 1,
@@ -71,8 +70,10 @@ public:
         StatisticsItem = QTreeWidgetItem::UserType + 5
     };
 
-    CategoryTreeItem(QTreeWidget *parent, const QString& category, int iconCount, ItemType type = CategoryItem);
-    CategoryTreeItem(CategoryTreeItem *parent, const QString& name, int iconCount, ItemType type = TagItem);
+    CategoryTreeItem(QTreeWidget* parent, const QString& category, int iconCount,
+                     ItemType type = CategoryItem);
+    CategoryTreeItem(CategoryTreeItem* parent, const QString& name, int iconCount,
+                     ItemType type = TagItem);
 
     // Enhanced functionality
     QString getName() const { return m_name; }
@@ -108,12 +109,11 @@ private:
 /**
  * @brief Tree widget for displaying categories and tags hierarchically
  */
-class CategoryTreeWidget : public QTreeWidget
-{
+class CategoryTreeWidget : public QTreeWidget {
     Q_OBJECT
 
 public:
-    explicit CategoryTreeWidget(QWidget *parent = nullptr);
+    explicit CategoryTreeWidget(QWidget* parent = nullptr);
 
     void setMetadataManager(IconMetadataManager* manager);
     void updateCategories();
@@ -131,11 +131,11 @@ signals:
     void selectionChanged();
 
 protected:
-    void contextMenuEvent(QContextMenuEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent* event) override;
 
 private slots:
-    void onItemChanged(QTreeWidgetItem *item, int column);
-    void onItemClicked(QTreeWidgetItem *item, int column);
+    void onItemChanged(QTreeWidgetItem* item, int column);
+    void onItemClicked(QTreeWidgetItem* item, int column);
     void onExpandAll();
     void onCollapseAll();
     void onSelectAll();
@@ -162,12 +162,11 @@ private:
 /**
  * @brief Compact list widget for quick category selection
  */
-class CategoryListWidget : public QListWidget
-{
+class CategoryListWidget : public QListWidget {
     Q_OBJECT
 
 public:
-    explicit CategoryListWidget(QWidget *parent = nullptr);
+    explicit CategoryListWidget(QWidget* parent = nullptr);
 
     void setMetadataManager(IconMetadataManager* manager);
     void updateCategories();
@@ -179,7 +178,7 @@ signals:
     void categorySelectionChanged(const QStringList& categories);
 
 private slots:
-    void onItemChanged(QListWidgetItem *item);
+    void onItemChanged(QListWidgetItem* item);
 
 private:
     void populateList();
@@ -192,28 +191,27 @@ private:
 /**
  * @brief Enhanced main category filter widget with comprehensive filtering capabilities
  */
-class CategoryFilterWidget : public QWidget
-{
+class CategoryFilterWidget : public QWidget {
     Q_OBJECT
 
 public:
     enum ViewMode {
-        TreeView = 0,       // Hierarchical tree with categories and tags
-        ListView = 1,       // Simple list of categories
-        CompactView = 2,    // Horizontal button bar
-        TagCloudView = 3,   // Tag cloud visualization
-        StatisticsView = 4  // Statistics and analytics view
+        TreeView = 0,      // Hierarchical tree with categories and tags
+        ListView = 1,      // Simple list of categories
+        CompactView = 2,   // Horizontal button bar
+        TagCloudView = 3,  // Tag cloud visualization
+        StatisticsView = 4 // Statistics and analytics view
     };
     Q_ENUM(ViewMode)
 
     enum FilterMode {
-        InclusiveFilter = 0,  // Show icons that match ANY selected category/tag
-        ExclusiveFilter = 1,  // Show icons that match ALL selected categories/tags
-        ExcludeFilter = 2     // Hide icons that match selected categories/tags
+        InclusiveFilter = 0, // Show icons that match ANY selected category/tag
+        ExclusiveFilter = 1, // Show icons that match ALL selected categories/tags
+        ExcludeFilter = 2    // Hide icons that match selected categories/tags
     };
     Q_ENUM(FilterMode)
 
-    explicit CategoryFilterWidget(IconMetadataManager* metadataManager, QWidget *parent = nullptr);
+    explicit CategoryFilterWidget(IconMetadataManager* metadataManager, QWidget* parent = nullptr);
     ~CategoryFilterWidget();
 
     // Enhanced selection management
@@ -389,7 +387,7 @@ private:
 
     // Constants
     static constexpr int ANIMATION_DURATION = 250;
-    static constexpr int STATISTICS_UPDATE_INTERVAL = 2000;  // 2 seconds
+    static constexpr int STATISTICS_UPDATE_INTERVAL = 2000; // 2 seconds
     static constexpr int DEFAULT_MIN_ICON_COUNT = 1;
     static constexpr const char* SETTINGS_GROUP = "CategoryFilterWidget";
 };

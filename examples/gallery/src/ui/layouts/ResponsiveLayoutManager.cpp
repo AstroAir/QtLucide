@@ -4,32 +4,26 @@
 
 #include "ResponsiveLayoutManager.h"
 #include <QDebug>
-#include <QWindow>
-#include <QGuiApplication>
-#include <QScreen>
-#include <QGridLayout>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QSplitterHandle>
-#include <QParallelAnimationGroup>
-#include <QSequentialAnimationGroup>
-#include <QPropertyAnimation>
-#include <QGraphicsOpacityEffect>
 #include <QEasingCurve>
+#include <QGraphicsOpacityEffect>
+#include <QGridLayout>
+#include <QGuiApplication>
+#include <QHBoxLayout>
+#include <QParallelAnimationGroup>
+#include <QPropertyAnimation>
+#include <QScreen>
+#include <QSequentialAnimationGroup>
+#include <QSplitterHandle>
+#include <QVBoxLayout>
+#include <QWindow>
+
 
 ResponsiveLayoutManager::ResponsiveLayoutManager(QWidget* mainWidget, QObject* parent)
-    : QObject(parent)
-    , m_mainWidget(mainWidget)
-    , m_gridWidget(nullptr)
-    , m_currentScreenSize(Desktop)
-    , m_currentLayoutMode(StandardMode)
-    , m_adaptiveMode(true)
-    , m_animationsEnabled(true)
-    , m_animationDuration(DEFAULT_ANIMATION_DURATION)
-    , m_layoutAnimationGroup(new QParallelAnimationGroup(this))
-    , m_screenCheckTimer(new QTimer(this))
-    , m_currentHistoryIndex(-1)
-{
+    : QObject(parent), m_mainWidget(mainWidget), m_gridWidget(nullptr),
+      m_currentScreenSize(Desktop), m_currentLayoutMode(StandardMode), m_adaptiveMode(true),
+      m_animationsEnabled(true), m_animationDuration(DEFAULT_ANIMATION_DURATION),
+      m_layoutAnimationGroup(new QParallelAnimationGroup(this)),
+      m_screenCheckTimer(new QTimer(this)), m_currentHistoryIndex(-1) {
     // Initialize screen monitoring
     m_lastScreenSize = currentScreenResolution();
     m_currentScreenSize = detectScreenSize();
@@ -41,10 +35,10 @@ ResponsiveLayoutManager::ResponsiveLayoutManager(QWidget* mainWidget, QObject* p
 
     // Connect to application screen changes
     if (auto* guiApp = qobject_cast<QGuiApplication*>(QGuiApplication::instance())) {
-        connect(guiApp, &QGuiApplication::screenAdded,
-                this, &ResponsiveLayoutManager::onScreenSizeChanged);
-        connect(guiApp, &QGuiApplication::screenRemoved,
-                this, &ResponsiveLayoutManager::onScreenSizeChanged);
+        connect(guiApp, &QGuiApplication::screenAdded, this,
+                &ResponsiveLayoutManager::onScreenSizeChanged);
+        connect(guiApp, &QGuiApplication::screenRemoved, this,
+                &ResponsiveLayoutManager::onScreenSizeChanged);
     }
 
     // Install event filter on main widget
@@ -53,14 +47,13 @@ ResponsiveLayoutManager::ResponsiveLayoutManager(QWidget* mainWidget, QObject* p
     }
 
     // Connect animation group
-    connect(m_layoutAnimationGroup, &QParallelAnimationGroup::finished,
-            this, &ResponsiveLayoutManager::onAnimationFinished);
+    connect(m_layoutAnimationGroup, &QParallelAnimationGroup::finished, this,
+            &ResponsiveLayoutManager::onAnimationFinished);
 
     qDebug() << "ResponsiveLayoutManager initialized for screen size:" << m_currentScreenSize;
 }
 
-ResponsiveLayoutManager::~ResponsiveLayoutManager()
-{
+ResponsiveLayoutManager::~ResponsiveLayoutManager() {
     // Clean up animations
     m_layoutAnimationGroup->stop();
     for (auto animation : m_activeAnimations) {
@@ -69,8 +62,7 @@ ResponsiveLayoutManager::~ResponsiveLayoutManager()
     }
 }
 
-QSize ResponsiveLayoutManager::currentScreenResolution() const
-{
+QSize ResponsiveLayoutManager::currentScreenResolution() const {
     if (m_mainWidget && m_mainWidget->window()) {
         QScreen* screen = m_mainWidget->window()->screen();
         if (screen) {
@@ -82,9 +74,9 @@ QSize ResponsiveLayoutManager::currentScreenResolution() const
     return primaryScreen ? primaryScreen->availableGeometry().size() : QSize(1920, 1080);
 }
 
-void ResponsiveLayoutManager::setLayoutMode(LayoutMode mode)
-{
-    if (m_currentLayoutMode == mode) return;
+void ResponsiveLayoutManager::setLayoutMode(LayoutMode mode) {
+    if (m_currentLayoutMode == mode)
+        return;
 
     LayoutMode oldMode = m_currentLayoutMode;
     m_currentLayoutMode = mode;
@@ -99,17 +91,17 @@ void ResponsiveLayoutManager::setLayoutMode(LayoutMode mode)
     qDebug() << "Layout mode changed from" << oldMode << "to" << mode;
 }
 
-void ResponsiveLayoutManager::setGridWidget(QWidget* gridWidget)
-{
+void ResponsiveLayoutManager::setGridWidget(QWidget* gridWidget) {
     m_gridWidget = gridWidget;
     if (m_gridWidget) {
         updateGridLayout();
     }
 }
 
-int ResponsiveLayoutManager::calculateOptimalColumns(int containerWidth, int itemWidth, int spacing) const
-{
-    if (itemWidth <= 0 || containerWidth <= 0) return 1;
+int ResponsiveLayoutManager::calculateOptimalColumns(int containerWidth, int itemWidth,
+                                                     int spacing) const {
+    if (itemWidth <= 0 || containerWidth <= 0)
+        return 1;
 
     // Calculate how many items can fit with spacing
     int availableWidth = containerWidth - (2 * getOptimalMargins().left());
@@ -133,9 +125,9 @@ int ResponsiveLayoutManager::calculateOptimalColumns(int containerWidth, int ite
     return columns;
 }
 
-void ResponsiveLayoutManager::setOptimalColumns(int itemWidth, int minColumns, int maxColumns)
-{
-    if (!m_gridWidget) return;
+void ResponsiveLayoutManager::setOptimalColumns(int itemWidth, int minColumns, int maxColumns) {
+    if (!m_gridWidget)
+        return;
 
     int containerWidth = m_gridWidget->width();
     int optimalColumns = calculateOptimalColumns(containerWidth, itemWidth, getOptimalSpacing());
@@ -154,17 +146,17 @@ void ResponsiveLayoutManager::setOptimalColumns(int itemWidth, int minColumns, i
     }
 }
 
-void ResponsiveLayoutManager::updateGridLayout()
-{
-    if (!m_gridWidget) return;
+void ResponsiveLayoutManager::updateGridLayout() {
+    if (!m_gridWidget)
+        return;
 
     applyGridLayout();
     emit layoutUpdated();
 }
 
-void ResponsiveLayoutManager::addSplitter(const QString& name, QSplitter* splitter)
-{
-    if (!splitter) return;
+void ResponsiveLayoutManager::addSplitter(const QString& name, QSplitter* splitter) {
+    if (!splitter)
+        return;
 
     m_splitters[name] = splitter;
 
@@ -175,10 +167,10 @@ void ResponsiveLayoutManager::addSplitter(const QString& name, QSplitter* splitt
     applySplitterLayout();
 }
 
-void ResponsiveLayoutManager::setSplitterSizes(const QString& name, const QList<int>& sizes)
-{
+void ResponsiveLayoutManager::setSplitterSizes(const QString& name, const QList<int>& sizes) {
     QSplitter* splitter = m_splitters.value(name);
-    if (!splitter || sizes.isEmpty()) return;
+    if (!splitter || sizes.isEmpty())
+        return;
 
     m_splitterSizes[name] = sizes;
 
@@ -191,15 +183,15 @@ void ResponsiveLayoutManager::setSplitterSizes(const QString& name, const QList<
     emit splitterSizesChanged(name, sizes);
 }
 
-QList<int> ResponsiveLayoutManager::getSplitterSizes(const QString& name) const
-{
+QList<int> ResponsiveLayoutManager::getSplitterSizes(const QString& name) const {
     QSplitter* splitter = m_splitters.value(name);
     return splitter ? splitter->sizes() : QList<int>();
 }
 
-void ResponsiveLayoutManager::addPanel(const QString& name, QWidget* panel, PanelState initialState)
-{
-    if (!panel) return;
+void ResponsiveLayoutManager::addPanel(const QString& name, QWidget* panel,
+                                       PanelState initialState) {
+    if (!panel)
+        return;
 
     m_panels[name] = panel;
     m_panelStates[name] = initialState;
@@ -208,13 +200,14 @@ void ResponsiveLayoutManager::addPanel(const QString& name, QWidget* panel, Pane
     setPanelState(name, initialState, false);
 }
 
-void ResponsiveLayoutManager::setPanelState(const QString& name, PanelState state, bool animated)
-{
+void ResponsiveLayoutManager::setPanelState(const QString& name, PanelState state, bool animated) {
     QWidget* panel = m_panels.value(name);
-    if (!panel) return;
+    if (!panel)
+        return;
 
     PanelState oldState = m_panelStates.value(name, Visible);
-    if (oldState == state) return;
+    if (oldState == state)
+        return;
 
     m_panelStates[name] = state;
 
@@ -246,20 +239,18 @@ void ResponsiveLayoutManager::setPanelState(const QString& name, PanelState stat
     emit panelStateChanged(name, state);
 }
 
-ResponsiveLayoutManager::PanelState ResponsiveLayoutManager::getPanelState(const QString& name) const
-{
+ResponsiveLayoutManager::PanelState
+ResponsiveLayoutManager::getPanelState(const QString& name) const {
     return m_panelStates.value(name, Visible);
 }
 
-void ResponsiveLayoutManager::togglePanel(const QString& name, bool animated)
-{
+void ResponsiveLayoutManager::togglePanel(const QString& name, bool animated) {
     PanelState currentState = getPanelState(name);
     PanelState newState = (currentState == Hidden) ? Visible : Hidden;
     setPanelState(name, newState, animated);
 }
 
-QMargins ResponsiveLayoutManager::getOptimalMargins() const
-{
+QMargins ResponsiveLayoutManager::getOptimalMargins() const {
     switch (m_currentScreenSize) {
         case Mobile:
             return QMargins(8, 8, 8, 8);
@@ -275,8 +266,7 @@ QMargins ResponsiveLayoutManager::getOptimalMargins() const
     return QMargins(16, 16, 16, 16);
 }
 
-int ResponsiveLayoutManager::getOptimalSpacing() const
-{
+int ResponsiveLayoutManager::getOptimalSpacing() const {
     switch (m_currentScreenSize) {
         case Mobile:
             return MOBILE_SPACING;
@@ -292,8 +282,7 @@ int ResponsiveLayoutManager::getOptimalSpacing() const
     return DEFAULT_SPACING;
 }
 
-int ResponsiveLayoutManager::getOptimalItemSize() const
-{
+int ResponsiveLayoutManager::getOptimalItemSize() const {
     switch (m_currentScreenSize) {
         case Mobile:
             return 80;
@@ -309,28 +298,25 @@ int ResponsiveLayoutManager::getOptimalItemSize() const
     return 128;
 }
 
-QSize ResponsiveLayoutManager::getOptimalThumbnailSize() const
-{
+QSize ResponsiveLayoutManager::getOptimalThumbnailSize() const {
     int size = getOptimalItemSize();
     return QSize(size, size);
 }
 
-void ResponsiveLayoutManager::onScreenSizeChanged()
-{
+void ResponsiveLayoutManager::onScreenSizeChanged() {
     checkScreenSize();
 }
 
-void ResponsiveLayoutManager::onWindowResized(const QSize& newSize)
-{
+void ResponsiveLayoutManager::onWindowResized(const QSize& newSize) {
     Q_UNUSED(newSize)
 
     // Delay layout update to avoid too frequent updates during resize
     QTimer::singleShot(100, this, &ResponsiveLayoutManager::updateLayout);
 }
 
-void ResponsiveLayoutManager::updateLayout()
-{
-    if (!m_adaptiveMode) return;
+void ResponsiveLayoutManager::updateLayout() {
+    if (!m_adaptiveMode)
+        return;
 
     // Detect current screen size
     ScreenSize newScreenSize = detectScreenSize();
@@ -363,8 +349,7 @@ void ResponsiveLayoutManager::updateLayout()
     }
 }
 
-void ResponsiveLayoutManager::optimizeForCurrentScreen()
-{
+void ResponsiveLayoutManager::optimizeForCurrentScreen() {
     updateLayout();
 
     // Additional optimizations based on screen size
@@ -383,8 +368,7 @@ void ResponsiveLayoutManager::optimizeForCurrentScreen()
     }
 }
 
-bool ResponsiveLayoutManager::eventFilter(QObject* watched, QEvent* event)
-{
+bool ResponsiveLayoutManager::eventFilter(QObject* watched, QEvent* event) {
     if (watched == m_mainWidget && event->type() == QEvent::Resize) {
         QResizeEvent* resizeEvent = static_cast<QResizeEvent*>(event);
         onWindowResized(resizeEvent->size());
@@ -392,8 +376,7 @@ bool ResponsiveLayoutManager::eventFilter(QObject* watched, QEvent* event)
     return QObject::eventFilter(watched, event);
 }
 
-void ResponsiveLayoutManager::checkScreenSize()
-{
+void ResponsiveLayoutManager::checkScreenSize() {
     QSize currentSize = currentScreenResolution();
     if (currentSize != m_lastScreenSize) {
         m_lastScreenSize = currentSize;
@@ -401,8 +384,7 @@ void ResponsiveLayoutManager::checkScreenSize()
     }
 }
 
-ResponsiveLayoutManager::ScreenSize ResponsiveLayoutManager::detectScreenSize() const
-{
+ResponsiveLayoutManager::ScreenSize ResponsiveLayoutManager::detectScreenSize() const {
     QSize screenSize = currentScreenResolution();
     int width = screenSize.width();
 
@@ -419,8 +401,7 @@ ResponsiveLayoutManager::ScreenSize ResponsiveLayoutManager::detectScreenSize() 
     }
 }
 
-ResponsiveLayoutManager::LayoutMode ResponsiveLayoutManager::calculateOptimalLayoutMode() const
-{
+ResponsiveLayoutManager::LayoutMode ResponsiveLayoutManager::calculateOptimalLayoutMode() const {
     switch (m_currentScreenSize) {
         case Mobile:
             return CompactMode;
@@ -436,8 +417,7 @@ ResponsiveLayoutManager::LayoutMode ResponsiveLayoutManager::calculateOptimalLay
     return StandardMode;
 }
 
-ResponsiveLayoutManager::LayoutConfig ResponsiveLayoutManager::createLayoutConfig() const
-{
+ResponsiveLayoutManager::LayoutConfig ResponsiveLayoutManager::createLayoutConfig() const {
     LayoutConfig config;
     config.screenSize = m_currentScreenSize;
     config.layoutMode = m_currentLayoutMode;
@@ -489,8 +469,8 @@ ResponsiveLayoutManager::LayoutConfig ResponsiveLayoutManager::createLayoutConfi
     return config;
 }
 
-void ResponsiveLayoutManager::applyLayoutConfig(const LayoutConfig& config)
-{
+void ResponsiveLayoutManager::applyLayoutConfig(const LayoutConfig& config) {
+    Q_UNUSED(config)
     // Apply grid layout
     applyGridLayout();
 
@@ -509,12 +489,13 @@ void ResponsiveLayoutManager::applyLayoutConfig(const LayoutConfig& config)
     }
 }
 
-void ResponsiveLayoutManager::applyGridLayout()
-{
-    if (!m_gridWidget) return;
+void ResponsiveLayoutManager::applyGridLayout() {
+    if (!m_gridWidget)
+        return;
 
     QLayout* layout = m_gridWidget->layout();
-    if (!layout) return;
+    if (!layout)
+        return;
 
     // Apply optimal spacing
     layout->setSpacing(getOptimalSpacing());
@@ -530,11 +511,11 @@ void ResponsiveLayoutManager::applyGridLayout()
     }
 }
 
-void ResponsiveLayoutManager::applySplitterLayout()
-{
+void ResponsiveLayoutManager::applySplitterLayout() {
     for (auto it = m_splitters.begin(); it != m_splitters.end(); ++it) {
         QSplitter* splitter = it.value();
-        if (!splitter) continue;
+        if (!splitter)
+            continue;
 
         // Apply responsive splitter sizes
         QList<int> sizes = m_currentConfig.splitterSizes;
@@ -544,8 +525,7 @@ void ResponsiveLayoutManager::applySplitterLayout()
     }
 }
 
-void ResponsiveLayoutManager::applyPanelLayout()
-{
+void ResponsiveLayoutManager::applyPanelLayout() {
     // Apply sidebar state
     if (m_panels.contains("sidebar")) {
         setPanelState("sidebar", m_currentConfig.sidebarState, m_animationsEnabled);
@@ -557,9 +537,9 @@ void ResponsiveLayoutManager::applyPanelLayout()
     }
 }
 
-void ResponsiveLayoutManager::applySpacingAndMargins()
-{
-    if (!m_mainWidget) return;
+void ResponsiveLayoutManager::applySpacingAndMargins() {
+    if (!m_mainWidget)
+        return;
 
     QLayout* mainLayout = m_mainWidget->layout();
     if (mainLayout) {
@@ -569,24 +549,22 @@ void ResponsiveLayoutManager::applySpacingAndMargins()
 }
 
 // Missing ResponsiveLayoutManager methods
-void ResponsiveLayoutManager::resetToDefaults()
-{
+void ResponsiveLayoutManager::resetToDefaults() {
     // Reset to default configuration
     m_currentConfig = LayoutConfig();
     applyLayoutConfig(m_currentConfig);
     emit layoutUpdated();
 }
 
-void ResponsiveLayoutManager::onAnimationFinished()
-{
+void ResponsiveLayoutManager::onAnimationFinished() {
     // Handle animation completion
     emit layoutUpdated();
 }
 
-void ResponsiveLayoutManager::onSplitterMoved()
-{
+void ResponsiveLayoutManager::onSplitterMoved() {
     QSplitter* splitter = qobject_cast<QSplitter*>(sender());
-    if (!splitter) return;
+    if (!splitter)
+        return;
 
     // Find the splitter name and update sizes
     for (auto it = m_splitters.begin(); it != m_splitters.end(); ++it) {
@@ -598,8 +576,7 @@ void ResponsiveLayoutManager::onSplitterMoved()
     }
 }
 
-void ResponsiveLayoutManager::animateSplitterResize(QSplitter* splitter, const QList<int>& sizes)
-{
+void ResponsiveLayoutManager::animateSplitterResize(QSplitter* splitter, const QList<int>& sizes) {
     if (!splitter || !m_animationsEnabled) {
         splitter->setSizes(sizes);
         return;
@@ -615,8 +592,9 @@ void ResponsiveLayoutManager::animateSplitterResize(QSplitter* splitter, const Q
     m_layoutAnimationGroup->start();
 }
 
-void ResponsiveLayoutManager::animatePanelTransition(QWidget* panel, PanelState fromState, PanelState toState)
-{
+void ResponsiveLayoutManager::animatePanelTransition(QWidget* panel, PanelState fromState,
+                                                     PanelState toState) {
+    Q_UNUSED(fromState)
     if (!panel || !m_animationsEnabled) {
         // Apply state immediately
         switch (toState) {
@@ -667,9 +645,9 @@ void ResponsiveLayoutManager::animatePanelTransition(QWidget* panel, PanelState 
     m_layoutAnimationGroup->start();
 }
 
-void ResponsiveLayoutManager::animateLayoutTransition()
-{
-    if (!m_animationsEnabled) return;
+void ResponsiveLayoutManager::animateLayoutTransition() {
+    if (!m_animationsEnabled)
+        return;
 
     // Start the layout animation group
     if (m_layoutAnimationGroup->animationCount() > 0) {
@@ -678,21 +656,19 @@ void ResponsiveLayoutManager::animateLayoutTransition()
 }
 
 // ResponsiveWidget Implementation
-ResponsiveWidget::ResponsiveWidget(QWidget* widget, ResponsiveLayoutManager* manager, QObject* parent)
-    : QObject(parent)
-    , m_widget(widget)
-    , m_manager(manager)
-{
+ResponsiveWidget::ResponsiveWidget(QWidget* widget, ResponsiveLayoutManager* manager,
+                                   QObject* parent)
+    : QObject(parent), m_widget(widget), m_manager(manager) {
     if (m_manager) {
-        connect(m_manager, &ResponsiveLayoutManager::screenSizeChanged,
-                this, &ResponsiveWidget::onScreenSizeChanged);
+        connect(m_manager, &ResponsiveLayoutManager::screenSizeChanged, this,
+                &ResponsiveWidget::onScreenSizeChanged);
     }
 }
 
 ResponsiveWidget::~ResponsiveWidget() = default;
 
-void ResponsiveWidget::onScreenSizeChanged(ResponsiveLayoutManager::ScreenSize oldSize, ResponsiveLayoutManager::ScreenSize newSize)
-{
+void ResponsiveWidget::onScreenSizeChanged(ResponsiveLayoutManager::ScreenSize oldSize,
+                                           ResponsiveLayoutManager::ScreenSize newSize) {
     Q_UNUSED(oldSize)
     Q_UNUSED(newSize)
     // Handle screen size change

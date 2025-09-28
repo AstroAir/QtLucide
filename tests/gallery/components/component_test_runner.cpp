@@ -14,7 +14,7 @@
 
 // Include component test classes
 #include "core/test_theme_manager.h"
-#include "widgets/test_modern_search_widget.h"
+// #include "widgets/test_modern_search_widget.h"  // Not implemented yet
 // Note: Additional component test includes can be added here as they are implemented
 // #include "core/test_batch_export_manager.h"
 // #include "widgets/test_modern_icon_grid_widget.h"
@@ -78,9 +78,8 @@ int main(int argc, char *argv[])
     
     // Execute Widget Component Tests
     qDebug() << "\n🎨 === WIDGET COMPONENT TESTS ===";
-    results.append(executeComponentTest<TestModernSearchWidget>("ModernSearchWidget", "Widget", argc, argv));
-    // Note: Additional widget component tests can be added here
-    // results.append(executeComponentTest<TestModernIconGridWidget>("ModernIconGridWidget", "Widget", argc, argv));
+    // Note: Widget component tests can be added here
+    // results.append(executeComponentTest<TestIconGridWidget>("IconGridWidget", "Widget", argc, argv));
     
     // Execute Dialog Component Tests
     qDebug() << "\n💬 === DIALOG COMPONENT TESTS ===";

@@ -14,57 +14,51 @@
 #ifndef RESPONSIVELAYOUTMANAGER_H
 #define RESPONSIVELAYOUTMANAGER_H
 
-#include <QObject>
-#include <QWidget>
-#include <QSplitter>
-#include <QGridLayout>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QScrollArea>
-#include <QPropertyAnimation>
-#include <QParallelAnimationGroup>
-#include <QSequentialAnimationGroup>
-#include <QEasingCurve>
-#include <QTimer>
-#include <QScreen>
 #include <QApplication>
-#include <QResizeEvent>
+#include <QEasingCurve>
+#include <QGridLayout>
+#include <QHBoxLayout>
 #include <QHash>
-#include <QVariant>
 #include <QMargins>
+#include <QObject>
+#include <QParallelAnimationGroup>
+#include <QPropertyAnimation>
+#include <QResizeEvent>
+#include <QScreen>
+#include <QScrollArea>
+#include <QSequentialAnimationGroup>
 #include <QSize>
+#include <QSplitter>
+#include <QTimer>
+#include <QVBoxLayout>
+#include <QVariant>
+#include <QWidget>
 
 /**
  * @brief Advanced responsive layout management for the Gallery application
  */
-class ResponsiveLayoutManager : public QObject
-{
+class ResponsiveLayoutManager : public QObject {
     Q_OBJECT
 
 public:
     enum ScreenSize {
-        Mobile = 0,     // < 768px width
-        Tablet = 1,     // 768-1024px width
-        Desktop = 2,    // 1024-1440px width
-        Large = 3,      // 1440-1920px width
-        XLarge = 4      // > 1920px width
+        Mobile = 0,  // < 768px width
+        Tablet = 1,  // 768-1024px width
+        Desktop = 2, // 1024-1440px width
+        Large = 3,   // 1440-1920px width
+        XLarge = 4   // > 1920px width
     };
     Q_ENUM(ScreenSize)
 
     enum LayoutMode {
-        CompactMode = 0,    // Single column, minimal spacing
-        StandardMode = 1,   // Two columns, standard spacing
-        WideMode = 2,       // Three columns, generous spacing
-        UltraWideMode = 3   // Four+ columns, maximum spacing
+        CompactMode = 0,  // Single column, minimal spacing
+        StandardMode = 1, // Two columns, standard spacing
+        WideMode = 2,     // Three columns, generous spacing
+        UltraWideMode = 3 // Four+ columns, maximum spacing
     };
     Q_ENUM(LayoutMode)
 
-    enum PanelState {
-        Hidden = 0,
-        Collapsed = 1,
-        Visible = 2,
-        Expanded = 3
-    };
+    enum PanelState { Hidden = 0, Collapsed = 1, Visible = 2, Expanded = 3 };
     Q_ENUM(PanelState)
 
     struct LayoutConfig {
@@ -96,7 +90,7 @@ public:
     void setLayoutMode(LayoutMode mode);
     void setAdaptiveMode(bool enabled) { m_adaptiveMode = enabled; }
     bool adaptiveMode() const { return m_adaptiveMode; }
-    
+
     // Grid layout management
     void setGridWidget(QWidget* gridWidget);
     void setOptimalColumns(int itemWidth, int minColumns = 1, int maxColumns = 10);
@@ -181,33 +175,33 @@ private:
     // Core components
     QWidget* m_mainWidget;
     QWidget* m_gridWidget;
-    
+
     // Layout state
     ScreenSize m_currentScreenSize;
     LayoutMode m_currentLayoutMode;
     LayoutConfig m_currentConfig;
     bool m_adaptiveMode;
-    
+
     // Managed components
     QHash<QString, QSplitter*> m_splitters;
     QHash<QString, QWidget*> m_panels;
     QHash<QString, PanelState> m_panelStates;
     QHash<QString, QList<int>> m_splitterSizes;
-    
+
     // Animation system
     bool m_animationsEnabled;
     int m_animationDuration;
     QHash<QWidget*, QPropertyAnimation*> m_activeAnimations;
     QParallelAnimationGroup* m_layoutAnimationGroup;
-    
+
     // Screen monitoring
     QTimer* m_screenCheckTimer;
     QSize m_lastScreenSize;
-    
+
     // Layout history for undo/redo
     QList<LayoutConfig> m_layoutHistory;
     int m_currentHistoryIndex;
-    
+
     // Constants
     static constexpr int DEFAULT_ANIMATION_DURATION = 300;
     static constexpr int SCREEN_CHECK_INTERVAL = 1000; // 1 second
@@ -221,21 +215,21 @@ private:
 /**
  * @brief Helper class for responsive widgets
  */
-class ResponsiveWidget : public QObject
-{
+class ResponsiveWidget : public QObject {
     Q_OBJECT
 
 public:
-    explicit ResponsiveWidget(QWidget* widget, ResponsiveLayoutManager* manager, QObject* parent = nullptr);
+    explicit ResponsiveWidget(QWidget* widget, ResponsiveLayoutManager* manager,
+                              QObject* parent = nullptr);
     ~ResponsiveWidget();
 
-    void setBreakpointBehavior(ResponsiveLayoutManager::ScreenSize breakpoint, 
-                              const QVariantMap& properties);
+    void setBreakpointBehavior(ResponsiveLayoutManager::ScreenSize breakpoint,
+                               const QVariantMap& properties);
     void setAdaptiveProperty(const QString& property, const QVariantMap& values);
 
 private slots:
-    void onScreenSizeChanged(ResponsiveLayoutManager::ScreenSize newSize, 
-                           ResponsiveLayoutManager::ScreenSize oldSize);
+    void onScreenSizeChanged(ResponsiveLayoutManager::ScreenSize newSize,
+                             ResponsiveLayoutManager::ScreenSize oldSize);
 
 private:
     void applyPropertiesForScreenSize(ResponsiveLayoutManager::ScreenSize screenSize);

@@ -4,25 +4,19 @@
 
 #include "PreferencesDialog.h"
 #include <QApplication>
-#include <QMessageBox>
-#include <QFileDialog>
 #include <QColorDialog>
-#include <QStandardPaths>
+#include <QDebug>
 #include <QDir>
+#include <QFileDialog>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QDebug>
+#include <QMessageBox>
+#include <QStandardPaths>
 
-PreferencesDialog::PreferencesDialog(QWidget *parent)
-    : QDialog(parent)
-    , m_mainSplitter(nullptr)
-    , m_mainLayout(nullptr)
-    , m_categoryList(nullptr)
-    , m_searchEdit(nullptr)
-    , m_tabWidget(nullptr)
-    , m_settings(new QSettings(this))
-    , m_settingsChanged(false)
-{
+PreferencesDialog::PreferencesDialog(QWidget* parent)
+    : QDialog(parent), m_mainSplitter(nullptr), m_mainLayout(nullptr), m_categoryList(nullptr),
+      m_searchEdit(nullptr), m_tabWidget(nullptr), m_settings(new QSettings(this)),
+      m_settingsChanged(false) {
     setWindowTitle("Preferences");
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setModal(true);
@@ -33,12 +27,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     connectSignals();
 }
 
-PreferencesDialog::~PreferencesDialog()
-{
-}
+PreferencesDialog::~PreferencesDialog() {}
 
-void PreferencesDialog::setupUI()
-{
+void PreferencesDialog::setupUI() {
     m_mainLayout = new QVBoxLayout(this);
 
     // Create tab widget
@@ -57,8 +48,7 @@ void PreferencesDialog::setupUI()
     setupButtonBox();
 }
 
-void PreferencesDialog::setupAppearanceTab()
-{
+void PreferencesDialog::setupAppearanceTab() {
     m_appearanceTab = new QWidget();
     QVBoxLayout* layout = new QVBoxLayout(m_appearanceTab);
 
@@ -126,8 +116,7 @@ void PreferencesDialog::setupAppearanceTab()
     m_tabWidget->addTab(m_appearanceTab, "Appearance");
 }
 
-void PreferencesDialog::setupSearchTab()
-{
+void PreferencesDialog::setupSearchTab() {
     m_searchTab = new QWidget();
     QVBoxLayout* layout = new QVBoxLayout(m_searchTab);
 
@@ -164,8 +153,7 @@ void PreferencesDialog::setupSearchTab()
     m_tabWidget->addTab(m_searchTab, "Search");
 }
 
-void PreferencesDialog::setupPerformanceTab()
-{
+void PreferencesDialog::setupPerformanceTab() {
     m_performanceTab = new QWidget();
     QVBoxLayout* layout = new QVBoxLayout(m_performanceTab);
 
@@ -199,8 +187,7 @@ void PreferencesDialog::setupPerformanceTab()
     m_tabWidget->addTab(m_performanceTab, "Performance");
 }
 
-void PreferencesDialog::setupExportTab()
-{
+void PreferencesDialog::setupExportTab() {
     m_exportTab = new QWidget();
     QVBoxLayout* layout = new QVBoxLayout(m_exportTab);
 
@@ -240,8 +227,7 @@ void PreferencesDialog::setupExportTab()
     m_tabWidget->addTab(m_exportTab, "Export");
 }
 
-void PreferencesDialog::setupGeneralTab()
-{
+void PreferencesDialog::setupGeneralTab() {
     m_generalTab = new QWidget();
     QVBoxLayout* layout = new QVBoxLayout(m_generalTab);
 
@@ -277,8 +263,7 @@ void PreferencesDialog::setupGeneralTab()
     m_tabWidget->addTab(m_generalTab, "General");
 }
 
-void PreferencesDialog::setupButtonBox()
-{
+void PreferencesDialog::setupButtonBox() {
     QHBoxLayout* buttonLayout = new QHBoxLayout();
 
     m_importButton = new QPushButton("Import...");
@@ -302,26 +287,24 @@ void PreferencesDialog::setupButtonBox()
     m_mainLayout->addLayout(buttonLayout);
 }
 
-void PreferencesDialog::connectSignals()
-{
+void PreferencesDialog::connectSignals() {
     // Appearance signals
-    connect(m_themeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &PreferencesDialog::onThemeChanged);
-    connect(m_iconSizeSlider, &QSlider::valueChanged,
-            this, &PreferencesDialog::onIconSizeChanged);
-    connect(m_viewModeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &PreferencesDialog::onViewModeChanged);
-    connect(m_accentColorButton, &QPushButton::clicked,
-            this, &PreferencesDialog::onAccentColorChanged);
-    connect(m_fontCombo, &QFontComboBox::currentFontChanged,
-            this, &PreferencesDialog::onFontChanged);
-    connect(m_fontSizeSpin, QOverload<int>::of(&QSpinBox::valueChanged),
-            this, &PreferencesDialog::onFontChanged);
+    connect(m_themeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+            &PreferencesDialog::onThemeChanged);
+    connect(m_iconSizeSlider, &QSlider::valueChanged, this, &PreferencesDialog::onIconSizeChanged);
+    connect(m_viewModeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+            &PreferencesDialog::onViewModeChanged);
+    connect(m_accentColorButton, &QPushButton::clicked, this,
+            &PreferencesDialog::onAccentColorChanged);
+    connect(m_fontCombo, &QFontComboBox::currentFontChanged, this,
+            &PreferencesDialog::onFontChanged);
+    connect(m_fontSizeSpin, QOverload<int>::of(&QSpinBox::valueChanged), this,
+            &PreferencesDialog::onFontChanged);
 
     // Export signals
     connect(m_browsePathButton, &QPushButton::clicked, [this]() {
         QString dir = QFileDialog::getExistingDirectory(this, "Choose Export Directory",
-                                                       m_defaultPathEdit->text());
+                                                        m_defaultPathEdit->text());
         if (!dir.isEmpty()) {
             m_defaultPathEdit->setText(dir);
         }
@@ -329,7 +312,7 @@ void PreferencesDialog::connectSignals()
 
     connect(m_backgroundColorButton, &QPushButton::clicked, [this]() {
         QColor color = QColorDialog::getColor(m_exportSettings.backgroundColor, this,
-                                            "Choose Background Color");
+                                              "Choose Background Color");
         if (color.isValid()) {
             m_exportSettings.backgroundColor = color;
             updateBackgroundColorButton();
@@ -345,8 +328,7 @@ void PreferencesDialog::connectSignals()
     connect(m_exportButton, &QPushButton::clicked, this, &PreferencesDialog::exportSettings);
 }
 
-void PreferencesDialog::loadSettings()
-{
+void PreferencesDialog::loadSettings() {
     m_settings->beginGroup("Appearance");
     m_appearanceSettings.theme = m_settings->value("theme", "system").toString();
     m_appearanceSettings.iconSize = m_settings->value("iconSize", 64).toInt();
@@ -354,7 +336,8 @@ void PreferencesDialog::loadSettings()
     m_appearanceSettings.showIconNames = m_settings->value("showIconNames", true).toBool();
     m_appearanceSettings.showTooltips = m_settings->value("showTooltips", true).toBool();
     m_appearanceSettings.useAnimations = m_settings->value("useAnimations", true).toBool();
-    m_appearanceSettings.accentColor = m_settings->value("accentColor", QColor("#007ACC")).value<QColor>();
+    m_appearanceSettings.accentColor =
+        m_settings->value("accentColor", QColor("#007ACC")).value<QColor>();
     m_appearanceSettings.fontFamily = m_settings->value("fontFamily", "system").toString();
     m_appearanceSettings.fontSize = m_settings->value("fontSize", 9).toInt();
     m_settings->endGroup();
@@ -363,7 +346,8 @@ void PreferencesDialog::loadSettings()
     m_searchSettings.enableFuzzySearch = m_settings->value("enableFuzzySearch", true).toBool();
     m_searchSettings.searchInTags = m_settings->value("searchInTags", true).toBool();
     m_searchSettings.searchInCategories = m_settings->value("searchInCategories", true).toBool();
-    m_searchSettings.showSearchSuggestions = m_settings->value("showSearchSuggestions", true).toBool();
+    m_searchSettings.showSearchSuggestions =
+        m_settings->value("showSearchSuggestions", true).toBool();
     m_searchSettings.maxSuggestions = m_settings->value("maxSuggestions", 10).toInt();
     m_searchSettings.highlightMatches = m_settings->value("highlightMatches", true).toBool();
     m_searchSettings.caseSensitive = m_settings->value("caseSensitive", false).toBool();
@@ -373,19 +357,25 @@ void PreferencesDialog::loadSettings()
     m_performanceSettings.enableLazyLoading = m_settings->value("enableLazyLoading", true).toBool();
     m_performanceSettings.cacheSize = m_settings->value("cacheSize", 1000).toInt();
     m_performanceSettings.preloadFavorites = m_settings->value("preloadFavorites", true).toBool();
-    m_performanceSettings.enableVirtualization = m_settings->value("enableVirtualization", true).toBool();
+    m_performanceSettings.enableVirtualization =
+        m_settings->value("enableVirtualization", true).toBool();
     m_performanceSettings.renderThreads = m_settings->value("renderThreads", 4).toInt();
-    m_performanceSettings.enableGPUAcceleration = m_settings->value("enableGPUAcceleration", false).toBool();
+    m_performanceSettings.enableGPUAcceleration =
+        m_settings->value("enableGPUAcceleration", false).toBool();
     m_settings->endGroup();
 
     m_settings->beginGroup("Export");
     m_exportSettings.defaultFormat = m_settings->value("defaultFormat", "PNG").toString();
     m_exportSettings.defaultSize = m_settings->value("defaultSize", 256).toInt();
-    m_exportSettings.defaultPath = m_settings->value("defaultPath",
-        QStandardPaths::writableLocation(QStandardPaths::PicturesLocation)).toString();
+    m_exportSettings.defaultPath =
+        m_settings
+            ->value("defaultPath",
+                    QStandardPaths::writableLocation(QStandardPaths::PicturesLocation))
+            .toString();
     m_exportSettings.preserveAspectRatio = m_settings->value("preserveAspectRatio", true).toBool();
     m_exportSettings.includeMetadata = m_settings->value("includeMetadata", false).toBool();
-    m_exportSettings.backgroundColor = m_settings->value("backgroundColor", QColor(Qt::transparent)).value<QColor>();
+    m_exportSettings.backgroundColor =
+        m_settings->value("backgroundColor", QColor(Qt::transparent)).value<QColor>();
     m_settings->endGroup();
 
     m_settings->beginGroup("General");
@@ -402,20 +392,23 @@ void PreferencesDialog::loadSettings()
     updateUIFromSettings();
 }
 
-void PreferencesDialog::updateUIFromSettings()
-{
+void PreferencesDialog::updateUIFromSettings() {
     // Appearance
     int themeIndex = 0;
-    if (m_appearanceSettings.theme == "light") themeIndex = 1;
-    else if (m_appearanceSettings.theme == "dark") themeIndex = 2;
+    if (m_appearanceSettings.theme == "light")
+        themeIndex = 1;
+    else if (m_appearanceSettings.theme == "dark")
+        themeIndex = 2;
     m_themeCombo->setCurrentIndex(themeIndex);
 
     m_iconSizeSlider->setValue(m_appearanceSettings.iconSize);
     m_iconSizeLabel->setText(QString("%1px").arg(m_appearanceSettings.iconSize));
 
     int viewIndex = 0;
-    if (m_appearanceSettings.viewMode == "list") viewIndex = 1;
-    else if (m_appearanceSettings.viewMode == "compact") viewIndex = 2;
+    if (m_appearanceSettings.viewMode == "list")
+        viewIndex = 1;
+    else if (m_appearanceSettings.viewMode == "compact")
+        viewIndex = 2;
     m_viewModeCombo->setCurrentIndex(viewIndex);
 
     m_showIconNamesCheck->setChecked(m_appearanceSettings.showIconNames);
@@ -461,16 +454,14 @@ void PreferencesDialog::updateUIFromSettings()
     m_showToolBarCheck->setChecked(m_generalSettings.showToolBar);
 }
 
-void PreferencesDialog::updateBackgroundColorButton()
-{
+void PreferencesDialog::updateBackgroundColorButton() {
     QString colorName = m_exportSettings.backgroundColor.name();
     QString style = QString("QPushButton { background-color: %1; }").arg(colorName);
     m_backgroundColorButton->setStyleSheet(style);
     m_backgroundColorButton->setText(colorName);
 }
 
-void PreferencesDialog::saveSettings()
-{
+void PreferencesDialog::saveSettings() {
     // Update settings from UI
     updateSettingsFromUI();
 
@@ -527,8 +518,7 @@ void PreferencesDialog::saveSettings()
     m_settings->sync();
 }
 
-void PreferencesDialog::updateSettingsFromUI()
-{
+void PreferencesDialog::updateSettingsFromUI() {
     // Appearance
     QStringList themes = {"system", "light", "dark"};
     m_appearanceSettings.theme = themes[m_themeCombo->currentIndex()];
@@ -577,16 +567,14 @@ void PreferencesDialog::updateSettingsFromUI()
 }
 
 // Slot implementations
-void PreferencesDialog::onThemeChanged()
-{
+void PreferencesDialog::onThemeChanged() {
     QStringList themes = {"system", "light", "dark"};
     m_appearanceSettings.theme = themes[m_themeCombo->currentIndex()];
     emit themeChanged(m_appearanceSettings.theme);
     m_settingsChanged = true;
 }
 
-void PreferencesDialog::onIconSizeChanged()
-{
+void PreferencesDialog::onIconSizeChanged() {
     int size = m_iconSizeSlider->value();
     m_iconSizeLabel->setText(QString("%1px").arg(size));
     m_appearanceSettings.iconSize = size;
@@ -594,18 +582,16 @@ void PreferencesDialog::onIconSizeChanged()
     m_settingsChanged = true;
 }
 
-void PreferencesDialog::onViewModeChanged()
-{
+void PreferencesDialog::onViewModeChanged() {
     QStringList viewModes = {"grid", "list", "compact"};
     m_appearanceSettings.viewMode = viewModes[m_viewModeCombo->currentIndex()];
     emit viewModeChanged(m_appearanceSettings.viewMode);
     m_settingsChanged = true;
 }
 
-void PreferencesDialog::onAccentColorChanged()
-{
-    QColor color = QColorDialog::getColor(m_appearanceSettings.accentColor, this,
-                                        "Choose Accent Color");
+void PreferencesDialog::onAccentColorChanged() {
+    QColor color =
+        QColorDialog::getColor(m_appearanceSettings.accentColor, this, "Choose Accent Color");
     if (color.isValid()) {
         m_appearanceSettings.accentColor = color;
         QString style = QString("QPushButton { background-color: %1; }").arg(color.name());
@@ -615,26 +601,23 @@ void PreferencesDialog::onAccentColorChanged()
     }
 }
 
-void PreferencesDialog::onFontChanged()
-{
+void PreferencesDialog::onFontChanged() {
     m_appearanceSettings.fontFamily = m_fontCombo->currentFont().family();
     m_appearanceSettings.fontSize = m_fontSizeSpin->value();
     m_settingsChanged = true;
 }
 
-void PreferencesDialog::onPreviewSettings()
-{
+void PreferencesDialog::onPreviewSettings() {
     // Apply current settings temporarily for preview
     updateSettingsFromUI();
     updatePreview();
 }
 
-void PreferencesDialog::onRestoreDefaults()
-{
-    int ret = QMessageBox::question(this, "Restore Defaults",
-                                   "Are you sure you want to restore all settings to their default values?",
-                                   QMessageBox::Yes | QMessageBox::No,
-                                   QMessageBox::No);
+void PreferencesDialog::onRestoreDefaults() {
+    int ret = QMessageBox::question(
+        this, "Restore Defaults",
+        "Are you sure you want to restore all settings to their default values?",
+        QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
     if (ret == QMessageBox::Yes) {
         // Reset to default settings
@@ -650,17 +633,16 @@ void PreferencesDialog::onRestoreDefaults()
     }
 }
 
-void PreferencesDialog::updatePreview()
-{
+void PreferencesDialog::updatePreview() {
     if (!m_previewWidget || !m_previewLabel) {
         return;
     }
 
     // Update preview widget with current settings
     QString previewText = QString("Theme: %1\nIcon Size: %2px\nView Mode: %3")
-                         .arg(m_appearanceSettings.theme)
-                         .arg(m_appearanceSettings.iconSize)
-                         .arg(m_appearanceSettings.viewMode);
+                              .arg(m_appearanceSettings.theme)
+                              .arg(m_appearanceSettings.iconSize)
+                              .arg(m_appearanceSettings.viewMode);
 
     m_previewLabel->setText(previewText);
 
@@ -677,21 +659,18 @@ void PreferencesDialog::updatePreview()
     m_previewWidget->setStyleSheet(style);
 }
 
-void PreferencesDialog::accept()
-{
+void PreferencesDialog::accept() {
     saveSettings();
     applySettings();
     emit settingsChanged();
     QDialog::accept();
 }
 
-void PreferencesDialog::reject()
-{
+void PreferencesDialog::reject() {
     if (m_settingsChanged) {
         int ret = QMessageBox::question(this, "Discard Changes",
-                                      "You have unsaved changes. Discard them?",
-                                      QMessageBox::Yes | QMessageBox::No,
-                                      QMessageBox::No);
+                                        "You have unsaved changes. Discard them?",
+                                        QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
         if (ret == QMessageBox::No) {
             return;
         }
@@ -699,19 +678,17 @@ void PreferencesDialog::reject()
     QDialog::reject();
 }
 
-void PreferencesDialog::applySettings()
-{
+void PreferencesDialog::applySettings() {
     saveSettings();
     emit settingsChanged();
     m_settingsChanged = false;
 }
 
-void PreferencesDialog::resetToDefaults()
-{
-    int ret = QMessageBox::question(this, "Reset to Defaults",
-                                  "This will reset all settings to their default values. Continue?",
-                                  QMessageBox::Yes | QMessageBox::No,
-                                  QMessageBox::No);
+void PreferencesDialog::resetToDefaults() {
+    int ret =
+        QMessageBox::question(this, "Reset to Defaults",
+                              "This will reset all settings to their default values. Continue?",
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
     if (ret == QMessageBox::Yes) {
         // Reset to default values
         m_appearanceSettings = AppearanceSettings();
@@ -725,12 +702,9 @@ void PreferencesDialog::resetToDefaults()
     }
 }
 
-void PreferencesDialog::importSettings()
-{
-    QString fileName = QFileDialog::getOpenFileName(this,
-                                                  "Import Settings",
-                                                  QString(),
-                                                  "JSON Files (*.json)");
+void PreferencesDialog::importSettings() {
+    QString fileName =
+        QFileDialog::getOpenFileName(this, "Import Settings", QString(), "JSON Files (*.json)");
     if (!fileName.isEmpty()) {
         QFile file(fileName);
         if (file.open(QIODevice::ReadOnly)) {
@@ -738,62 +712,50 @@ void PreferencesDialog::importSettings()
             if (!doc.isNull()) {
                 // TODO: Implement settings import from JSON
                 QMessageBox::information(this, "Import Settings",
-                                       "Settings imported successfully.");
+                                         "Settings imported successfully.");
             } else {
-                QMessageBox::warning(this, "Import Error",
-                                   "Failed to parse settings file.");
+                QMessageBox::warning(this, "Import Error", "Failed to parse settings file.");
             }
         } else {
-            QMessageBox::warning(this, "Import Error",
-                               "Failed to open settings file.");
+            QMessageBox::warning(this, "Import Error", "Failed to open settings file.");
         }
     }
 }
 
-void PreferencesDialog::exportSettings()
-{
-    QString fileName = QFileDialog::getSaveFileName(this,
-                                                  "Export Settings",
-                                                  "qtlucide-settings.json",
-                                                  "JSON Files (*.json)");
+void PreferencesDialog::exportSettings() {
+    QString fileName = QFileDialog::getSaveFileName(
+        this, "Export Settings", "qtlucide-settings.json", "JSON Files (*.json)");
     if (!fileName.isEmpty()) {
         QFile file(fileName);
         if (file.open(QIODevice::WriteOnly)) {
             // TODO: Implement settings export to JSON
             QJsonDocument doc;
             file.write(doc.toJson());
-            QMessageBox::information(this, "Export Settings",
-                                   "Settings exported successfully.");
+            QMessageBox::information(this, "Export Settings", "Settings exported successfully.");
         } else {
-            QMessageBox::warning(this, "Export Error",
-                               "Failed to create settings file.");
+            QMessageBox::warning(this, "Export Error", "Failed to create settings file.");
         }
     }
 }
 
 // Getter methods
-PreferencesDialog::AppearanceSettings PreferencesDialog::getAppearanceSettings() const
-{
+PreferencesDialog::AppearanceSettings PreferencesDialog::getAppearanceSettings() const {
     return m_appearanceSettings;
 }
 
-PreferencesDialog::SearchSettings PreferencesDialog::getSearchSettings() const
-{
+PreferencesDialog::SearchSettings PreferencesDialog::getSearchSettings() const {
     return m_searchSettings;
 }
 
-PreferencesDialog::PerformanceSettings PreferencesDialog::getPerformanceSettings() const
-{
+PreferencesDialog::PerformanceSettings PreferencesDialog::getPerformanceSettings() const {
     return m_performanceSettings;
 }
 
-PreferencesDialog::ExportSettings PreferencesDialog::getExportSettings() const
-{
+PreferencesDialog::ExportSettings PreferencesDialog::getExportSettings() const {
     return m_exportSettings;
 }
 
-PreferencesDialog::GeneralSettings PreferencesDialog::getGeneralSettings() const
-{
+PreferencesDialog::GeneralSettings PreferencesDialog::getGeneralSettings() const {
     return m_generalSettings;
 }
 
@@ -832,9 +794,15 @@ void PreferencesDialog::onShortcutChanged() { /* TODO */ }
 void PreferencesDialog::onAccessibilityChanged() { /* TODO */ }
 void PreferencesDialog::onNetworkSettingsChanged() { /* TODO */ }
 void PreferencesDialog::onDeveloperSettingsChanged() { /* TODO */ }
-void PreferencesDialog::onCategoryChanged(int index) { Q_UNUSED(index) /* TODO */ }
-void PreferencesDialog::onSearchTextChanged(const QString& text) { Q_UNUSED(text) /* TODO */ }
-void PreferencesDialog::onLivePreviewToggled(bool enabled) { Q_UNUSED(enabled) /* TODO */ }
+void PreferencesDialog::onCategoryChanged(int index) {
+    Q_UNUSED(index) /* TODO */
+}
+void PreferencesDialog::onSearchTextChanged(const QString& text) {
+    Q_UNUSED(text) /* TODO */
+}
+void PreferencesDialog::onLivePreviewToggled(bool enabled) {
+    Q_UNUSED(enabled) /* TODO */
+}
 void PreferencesDialog::onImportTheme() { /* TODO */ }
 void PreferencesDialog::onExportTheme() { /* TODO */ }
 void PreferencesDialog::onCreateCustomTheme() { /* TODO */ }

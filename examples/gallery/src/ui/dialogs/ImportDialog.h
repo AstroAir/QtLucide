@@ -15,43 +15,43 @@
 #ifndef IMPORTDIALOG_H
 #define IMPORTDIALOG_H
 
-#include <QDialog>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGridLayout>
-#include <QFormLayout>
-#include <QLabel>
-#include <QPushButton>
-#include <QCheckBox>
-#include <QRadioButton>
 #include <QButtonGroup>
+#include <QCheckBox>
 #include <QComboBox>
-#include <QLineEdit>
-#include <QTextEdit>
-#include <QPlainTextEdit>
-#include <QGroupBox>
-#include <QTabWidget>
-#include <QListWidget>
-#include <QListWidgetItem>
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
-#include <QProgressBar>
-#include <QFileDialog>
-#include <QStandardPaths>
-#include <QDir>
-#include <QTimer>
-#include <QJsonObject>
-#include <QJsonDocument>
-#include <QJsonArray>
-#include <QSettings>
 #include <QDateTime>
-#include <QFileInfo>
-#include <QMimeData>
+#include <QDialog>
+#include <QDir>
 #include <QDragEnterEvent>
 #include <QDropEvent>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QFormLayout>
+#include <QGridLayout>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QLabel>
+#include <QLineEdit>
+#include <QListWidget>
+#include <QListWidgetItem>
+#include <QMimeData>
+#include <QPlainTextEdit>
+#include <QProgressBar>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QSettings>
+#include <QStandardPaths>
+#include <QTabWidget>
+#include <QTextEdit>
+#include <QTimer>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+#include <QVBoxLayout>
 
-#include "../themes/ThemeManager.h"
 #include "../../core/managers/ManagerStubs.h"
+#include "../themes/ThemeManager.h"
 
 // Forward declarations
 class ImportOptionsWidget;
@@ -80,7 +80,7 @@ struct ImportConfig {
     bool createBackup = true;
     bool validateBeforeImport = true;
     QString backupDirectory;
-    
+
     // Conflict resolution
     enum ConflictResolution {
         Ask = 0,
@@ -88,7 +88,7 @@ struct ImportConfig {
         KeepExisting = 2,
         MergeData = 3
     } conflictResolution = Ask;
-    
+
     // Validation options
     bool strictValidation = false;
     bool skipInvalidEntries = true;
@@ -101,7 +101,7 @@ struct ImportData {
     QString version;
     QDateTime exportedAt;
     QString exportedFrom;
-    
+
     // Data sections
     QJsonObject settings;
     QJsonObject themes;
@@ -109,7 +109,7 @@ struct ImportData {
     QJsonArray searchHistory;
     QJsonObject windowLayout;
     QJsonObject userPreferences;
-    
+
     // Metadata
     QJsonObject metadata;
     QString checksum;
@@ -120,8 +120,7 @@ struct ImportData {
 /**
  * @brief Import options widget
  */
-class ImportOptionsWidget : public QWidget
-{
+class ImportOptionsWidget : public QWidget {
     Q_OBJECT
 
 public:
@@ -172,7 +171,7 @@ private:
     // UI components
     QVBoxLayout* m_mainLayout;
     QTabWidget* m_tabWidget;
-    
+
     // File tab
     QWidget* m_fileTab;
     QVBoxLayout* m_fileLayout;
@@ -180,7 +179,7 @@ private:
     QLineEdit* m_sourceFileEdit;
     QPushButton* m_browseButton;
     QLabel* m_fileInfoLabel;
-    
+
     // Data types tab
     QWidget* m_dataTab;
     QVBoxLayout* m_dataLayout;
@@ -192,7 +191,7 @@ private:
     QCheckBox* m_searchHistoryCheck;
     QCheckBox* m_windowLayoutCheck;
     QCheckBox* m_userPreferencesCheck;
-    
+
     // Options tab
     QWidget* m_optionsTab;
     QVBoxLayout* m_optionsLayout;
@@ -213,7 +212,7 @@ private:
 
     // Data
     ImportConfig m_config;
-    
+
     // Theme
     ThemeAwareWidget* m_themeWidget;
 };
@@ -221,8 +220,7 @@ private:
 /**
  * @brief Import preview widget
  */
-class ImportPreviewWidget : public QWidget
-{
+class ImportPreviewWidget : public QWidget {
     Q_OBJECT
 
 public:
@@ -267,11 +265,11 @@ private:
     QTreeWidget* m_previewTree;
     QTextEdit* m_detailsText;
     QLabel* m_statusLabel;
-    
+
     // Data
     ImportData m_importData;
     bool m_showDetails;
-    
+
     // Theme
     ThemeAwareWidget* m_themeWidget;
 };
@@ -279,8 +277,7 @@ private:
 /**
  * @brief Main import dialog
  */
-class ImportDialog : public QDialog
-{
+class ImportDialog : public QDialog {
     Q_OBJECT
 
 public:
@@ -344,7 +341,7 @@ private:
     QHBoxLayout* m_contentLayout;
     QVBoxLayout* m_leftLayout;
     QVBoxLayout* m_rightLayout;
-    
+
     QLabel* m_titleLabel;
     QLabel* m_sourceLabel;
     ImportOptionsWidget* m_optionsWidget;
@@ -362,11 +359,11 @@ private:
     bool m_importInProgress;
     bool m_importSuccessful;
     QStringList m_importedDataTypes;
-    
+
     // Integration
     ThemeManager* m_themeManager;
     SettingsManager* m_settingsManager;
-    
+
     // Theme
     ThemeAwareWidget* m_themeWidget;
 };
@@ -374,8 +371,7 @@ private:
 /**
  * @brief Settings manager for handling import/export
  */
-class ImportSettingsManager : public QObject
-{
+class ImportSettingsManager : public QObject {
     Q_OBJECT
 
 public:
@@ -428,7 +424,7 @@ private:
     // Integration
     ThemeManager* m_themeManager;
     QSettings* m_settings;
-    
+
     // Constants
     static const QString EXPORT_VERSION;
     static const QString EXPORT_FORMAT_VERSION;

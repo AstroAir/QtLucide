@@ -15,46 +15,47 @@
 #ifndef SEARCHWIDGET_H
 #define SEARCHWIDGET_H
 
-#include <QWidget>
-#include <QLineEdit>
-#include <QCompleter>
-#include <QStringListModel>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGridLayout>
-#include <QFormLayout>
-#include <QToolButton>
-#include <QPushButton>
-#include <QLabel>
-#include <QFrame>
-#include <QListWidget>
-#include <QTreeWidget>
-#include <QCheckBox>
-#include <QComboBox>
-#include <QSlider>
-#include <QSpinBox>
-#include <QDoubleSpinBox>
-#include <QGroupBox>
-#include <QButtonGroup>
-#include <QRadioButton>
-#include <QTimer>
-#include <QPropertyAnimation>
-#include <QGraphicsOpacityEffect>
-#include <QKeyEvent>
-#include <QFocusEvent>
-#include <QShowEvent>
-#include <QHideEvent>
-#include <QMenu>
 #include <QAction>
 #include <QActionGroup>
-#include <QSplitter>
-#include <QTabWidget>
-#include <QScrollArea>
-#include <QProgressBar>
+#include <QButtonGroup>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QCompleter>
+#include <QDoubleSpinBox>
 #include <QElapsedTimer>
-#include <QRegularExpression>
-#include <QSettings>
+#include <QFocusEvent>
+#include <QFormLayout>
+#include <QFrame>
+#include <QGraphicsOpacityEffect>
+#include <QGridLayout>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QHideEvent>
 #include <QInputDialog>
+#include <QKeyEvent>
+#include <QLabel>
+#include <QLineEdit>
+#include <QListWidget>
+#include <QMenu>
+#include <QProgressBar>
+#include <QPropertyAnimation>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QRegularExpression>
+#include <QScrollArea>
+#include <QSettings>
+#include <QShowEvent>
+#include <QSlider>
+#include <QSpinBox>
+#include <QSplitter>
+#include <QStringListModel>
+#include <QTabWidget>
+#include <QTimer>
+#include <QToolButton>
+#include <QTreeWidget>
+#include <QVBoxLayout>
+#include <QWidget>
+
 
 #include "IconMetadataManager.h"
 #include "core/GalleryTypes.h"
@@ -67,12 +68,11 @@ class SearchHistoryWidget;
 /**
  * @brief Enhanced search line edit with intelligent autocomplete and suggestions
  */
-class SearchLineEdit : public QLineEdit
-{
+class SearchLineEdit : public QLineEdit {
     Q_OBJECT
 
 public:
-    explicit SearchLineEdit(QWidget *parent = nullptr);
+    explicit SearchLineEdit(QWidget* parent = nullptr);
     ~SearchLineEdit();
 
     void setMetadataManager(IconMetadataManager* manager);
@@ -113,10 +113,10 @@ signals:
     void historyCleared();
 
 protected:
-    void keyPressEvent(QKeyEvent *event) override;
-    void focusInEvent(QFocusEvent *event) override;
-    void focusOutEvent(QFocusEvent *event) override;
-    void contextMenuEvent(QContextMenuEvent *event) override;
+    void keyPressEvent(QKeyEvent* event) override;
+    void focusInEvent(QFocusEvent* event) override;
+    void focusOutEvent(QFocusEvent* event) override;
+    void contextMenuEvent(QContextMenuEvent* event) override;
 
 private slots:
     void onTextChanged(const QString& text);
@@ -133,7 +133,8 @@ private:
     void performSearch();
 
     IconMetadataManager* m_metadataManager;
-    // std::unique_ptr<SearchSuggestionPopup> m_suggestionPopup; // Commented out - class not defined
+    // std::unique_ptr<SearchSuggestionPopup> m_suggestionPopup; // Commented out - class not
+    // defined
     QCompleter* m_completer;
     QStringListModel* m_completerModel;
     QTimer* m_searchTimer;
@@ -164,12 +165,11 @@ private:
 /**
  * @brief Enhanced widget for advanced search options and comprehensive filtering
  */
-class AdvancedSearchPanel : public QFrame
-{
+class AdvancedSearchPanel : public QFrame {
     Q_OBJECT
 
 public:
-    explicit AdvancedSearchPanel(QWidget *parent = nullptr);
+    explicit AdvancedSearchPanel(QWidget* parent = nullptr);
     ~AdvancedSearchPanel();
 
     void setMetadataManager(IconMetadataManager* manager);
@@ -319,12 +319,11 @@ private:
 /**
  * @brief Enhanced main search widget with comprehensive search and filtering capabilities
  */
-class SearchWidget : public QWidget
-{
+class SearchWidget : public QWidget {
     Q_OBJECT
 
 public:
-    explicit SearchWidget(IconMetadataManager* metadataManager, QWidget *parent = nullptr);
+    explicit SearchWidget(IconMetadataManager* metadataManager, QWidget* parent = nullptr);
     ~SearchWidget();
 
     // Core search functionality
@@ -388,9 +387,9 @@ signals:
     void statisticsUpdated(int totalSearches, int currentSearch);
 
 protected:
-    void showEvent(QShowEvent *event) override;
-    void hideEvent(QHideEvent *event) override;
-    void resizeEvent(QResizeEvent *event) override;
+    void showEvent(QShowEvent* event) override;
+    void hideEvent(QHideEvent* event) override;
+    void resizeEvent(QResizeEvent* event) override;
 
 private slots:
     void onSearchTextChanged(const QString& text);
@@ -473,7 +472,7 @@ private:
     static constexpr int DEFAULT_SEARCH_DELAY = 300;
     static constexpr int DEFAULT_MIN_SEARCH_LENGTH = 1;
     static constexpr int DEFAULT_MAX_RESULTS = 1000;
-    static constexpr int STATISTICS_UPDATE_INTERVAL = 5000;  // 5 seconds
+    static constexpr int STATISTICS_UPDATE_INTERVAL = 5000; // 5 seconds
     static constexpr int MAX_SEARCH_HISTORY = 100;
     static constexpr const char* SETTINGS_GROUP = "SearchWidget";
 };

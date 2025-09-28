@@ -4,20 +4,17 @@
 
 #include "SearchWidget.h"
 #include "../../../core/utils/ErrorHandler.h"
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QDebug>
+#include <QHBoxLayout>
 #include <QInputDialog>
+#include <QVBoxLayout>
+
 
 // SearchLineEdit Implementation
-SearchLineEdit::SearchLineEdit(QWidget *parent)
-    : QLineEdit(parent)
-    , m_metadataManager(nullptr)
-    , m_completer(nullptr)
-    , m_completerModel(new QStringListModel(this))
-    , m_searchTimer(new QTimer(this))
-    , m_suggestionLimit(DEFAULT_SUGGESTION_LIMIT)
-{
+SearchLineEdit::SearchLineEdit(QWidget* parent)
+    : QLineEdit(parent), m_metadataManager(nullptr), m_completer(nullptr),
+      m_completerModel(new QStringListModel(this)), m_searchTimer(new QTimer(this)),
+      m_suggestionLimit(DEFAULT_SUGGESTION_LIMIT) {
     setPlaceholderText("Search icons...");
     setupCompleter();
 
@@ -28,37 +25,33 @@ SearchLineEdit::SearchLineEdit(QWidget *parent)
     connect(m_searchTimer, &QTimer::timeout, this, &SearchLineEdit::updateSuggestions);
 }
 
-void SearchLineEdit::setupCompleter()
-{
+void SearchLineEdit::setupCompleter() {
     m_completer = new QCompleter(m_completerModel, this);
     m_completer->setCaseSensitivity(Qt::CaseInsensitive);
     m_completer->setFilterMode(Qt::MatchContains);
     setCompleter(m_completer);
 
-    connect(m_completer, QOverload<const QString&>::of(&QCompleter::activated),
-            this, &SearchLineEdit::onSuggestionActivated);
+    connect(m_completer, QOverload<const QString&>::of(&QCompleter::activated), this,
+            &SearchLineEdit::onSuggestionActivated);
 }
 
-void SearchLineEdit::setMetadataManager(IconMetadataManager* manager)
-{
+void SearchLineEdit::setMetadataManager(IconMetadataManager* manager) {
     m_metadataManager = manager;
     updateCompleterModel();
 }
 
-void SearchLineEdit::onTextChanged(const QString& text)
-{
+void SearchLineEdit::onTextChanged(const QString& text) {
     emit searchTextChanged(text);
     m_searchTimer->start();
 }
 
-void SearchLineEdit::onSuggestionActivated(const QString& text)
-{
+void SearchLineEdit::onSuggestionActivated(const QString& text) {
     emit suggestionSelected(text);
 }
 
-void SearchLineEdit::updateSuggestions()
-{
-    if (!m_metadataManager) return;
+void SearchLineEdit::updateSuggestions() {
+    if (!m_metadataManager)
+        return;
 
     QString text = this->text();
     if (text.length() >= 2) {
@@ -67,39 +60,33 @@ void SearchLineEdit::updateSuggestions()
     }
 }
 
-void SearchLineEdit::updateCompleterModel()
-{
-    if (!m_metadataManager) return;
+void SearchLineEdit::updateCompleterModel() {
+    if (!m_metadataManager)
+        return;
 
     QStringList allIcons = m_metadataManager->getAllIconNames();
     m_completerModel->setStringList(allIcons);
 }
 
-void SearchLineEdit::clearSearch()
-{
+void SearchLineEdit::clearSearch() {
     clear();
     emit searchCleared();
 }
 
-void SearchLineEdit::focusSearch()
-{
+void SearchLineEdit::focusSearch() {
     setFocus();
     selectAll();
 }
 
 // AdvancedSearchPanel Implementation
-AdvancedSearchPanel::AdvancedSearchPanel(QWidget *parent)
-    : QFrame(parent)
-    , m_metadataManager(nullptr)
-    , m_isExpanded(false)
-{
+AdvancedSearchPanel::AdvancedSearchPanel(QWidget* parent)
+    : QFrame(parent), m_metadataManager(nullptr), m_isExpanded(false) {
     setFrameStyle(QFrame::StyledPanel);
     setVisible(false);
     setupUI();
 }
 
-void AdvancedSearchPanel::setupUI()
-{
+void AdvancedSearchPanel::setupUI() {
     m_mainLayout = new QVBoxLayout(this);
 
     // Category filter
@@ -147,23 +134,23 @@ void AdvancedSearchPanel::setupUI()
 
     // Connect signals
     connect(m_clearButton, &QToolButton::clicked, this, &AdvancedSearchPanel::onClearFilters);
-    connect(m_sortCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &AdvancedSearchPanel::onSortOrderChanged);
+    connect(m_sortCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+            &AdvancedSearchPanel::onSortOrderChanged);
     connect(m_sortAscending, &QCheckBox::toggled, this, &AdvancedSearchPanel::onSortOrderChanged);
-    connect(m_favoritesOnly, &QCheckBox::toggled, this, &AdvancedSearchPanel::onFilterOptionsChanged);
+    connect(m_favoritesOnly, &QCheckBox::toggled, this,
+            &AdvancedSearchPanel::onFilterOptionsChanged);
     connect(m_recentOnly, &QCheckBox::toggled, this, &AdvancedSearchPanel::onFilterOptionsChanged);
 }
 
-void AdvancedSearchPanel::setMetadataManager(IconMetadataManager* manager)
-{
+void AdvancedSearchPanel::setMetadataManager(IconMetadataManager* manager) {
     m_metadataManager = manager;
     updateCategoryList();
     updateTagList();
 }
 
-void AdvancedSearchPanel::updateCategoryList()
-{
-    if (!m_metadataManager) return;
+void AdvancedSearchPanel::updateCategoryList() {
+    if (!m_metadataManager)
+        return;
 
     m_categoryList->clear();
     QStringList categories = m_metadataManager->getAllCategories();
@@ -174,9 +161,9 @@ void AdvancedSearchPanel::updateCategoryList()
     }
 }
 
-void AdvancedSearchPanel::updateTagList()
-{
-    if (!m_metadataManager) return;
+void AdvancedSearchPanel::updateTagList() {
+    if (!m_metadataManager)
+        return;
 
     m_tagList->clear();
     QStringList tags = m_metadataManager->getAllTags();
@@ -189,8 +176,7 @@ void AdvancedSearchPanel::updateTagList()
     }
 }
 
-IconFilterCriteria AdvancedSearchPanel::getFilterCriteria() const
-{
+IconFilterCriteria AdvancedSearchPanel::getFilterCriteria() const {
     IconFilterCriteria criteria;
 
     // Get selected categories
@@ -220,8 +206,7 @@ IconFilterCriteria AdvancedSearchPanel::getFilterCriteria() const
     return criteria;
 }
 
-void AdvancedSearchPanel::clearFilters()
-{
+void AdvancedSearchPanel::clearFilters() {
     // Clear category selections
     for (int i = 0; i < m_categoryList->count(); ++i) {
         m_categoryList->item(i)->setCheckState(Qt::Unchecked);
@@ -241,40 +226,33 @@ void AdvancedSearchPanel::clearFilters()
     emit filtersCleared();
 }
 
-void AdvancedSearchPanel::onClearFilters()
-{
+void AdvancedSearchPanel::onClearFilters() {
     clearFilters();
 }
 
-void AdvancedSearchPanel::onSortOrderChanged()
-{
+void AdvancedSearchPanel::onSortOrderChanged() {
     emitFiltersChanged();
 }
 
-void AdvancedSearchPanel::onFilterOptionsChanged()
-{
+void AdvancedSearchPanel::onFilterOptionsChanged() {
     emitFiltersChanged();
 }
 
-void AdvancedSearchPanel::emitFiltersChanged()
-{
+void AdvancedSearchPanel::emitFiltersChanged() {
     emit filtersChanged(getFilterCriteria());
 }
 
-void AdvancedSearchPanel::showPanel()
-{
+void AdvancedSearchPanel::showPanel() {
     setVisible(true);
     m_isExpanded = true;
 }
 
-void AdvancedSearchPanel::hidePanel()
-{
+void AdvancedSearchPanel::hidePanel() {
     setVisible(false);
     m_isExpanded = false;
 }
 
-void AdvancedSearchPanel::togglePanel()
-{
+void AdvancedSearchPanel::togglePanel() {
     if (m_isExpanded) {
         hidePanel();
     } else {
@@ -283,28 +261,21 @@ void AdvancedSearchPanel::togglePanel()
 }
 
 // SearchWidget Implementation
-SearchWidget::SearchWidget(IconMetadataManager* metadataManager, QWidget *parent)
-    : QWidget(parent)
-    , m_metadataManager(metadataManager)
-{
+SearchWidget::SearchWidget(IconMetadataManager* metadataManager, QWidget* parent)
+    : QWidget(parent), m_metadataManager(metadataManager) {
     setupUI();
 
-    connect(m_searchEdit, &SearchLineEdit::searchTextChanged,
-            this, &SearchWidget::onSearchTextChanged);
-    connect(m_clearButton, &QToolButton::clicked,
-            this, &SearchWidget::onSearchCleared);
-    connect(m_advancedButton, &QToolButton::clicked,
-            this, &SearchWidget::onToggleAdvanced);
-    connect(m_advancedPanel, &AdvancedSearchPanel::filtersChanged,
-            this, &SearchWidget::onAdvancedFiltersChanged);
+    connect(m_searchEdit, &SearchLineEdit::searchTextChanged, this,
+            &SearchWidget::onSearchTextChanged);
+    connect(m_clearButton, &QToolButton::clicked, this, &SearchWidget::onSearchCleared);
+    connect(m_advancedButton, &QToolButton::clicked, this, &SearchWidget::onToggleAdvanced);
+    connect(m_advancedPanel, &AdvancedSearchPanel::filtersChanged, this,
+            &SearchWidget::onAdvancedFiltersChanged);
 }
 
-SearchWidget::~SearchWidget()
-{
-}
+SearchWidget::~SearchWidget() {}
 
-void SearchWidget::setupUI()
-{
+void SearchWidget::setupUI() {
     m_mainLayout = new QVBoxLayout(this);
     m_mainLayout->setContentsMargins(4, 4, 4, 4);
 
@@ -333,75 +304,91 @@ void SearchWidget::setupUI()
     m_mainLayout->addWidget(m_advancedPanel);
 }
 
-QString SearchWidget::searchText() const
-{
+QString SearchWidget::searchText() const {
     return m_searchEdit->text();
 }
 
-IconFilterCriteria SearchWidget::getFilterCriteria() const
-{
+IconFilterCriteria SearchWidget::getFilterCriteria() const {
     IconFilterCriteria criteria = m_advancedPanel->getFilterCriteria();
     criteria.searchText = searchText();
     return criteria;
 }
 
-void SearchWidget::clearSearch()
-{
+void SearchWidget::clearSearch() {
     m_searchEdit->clearSearch();
 }
 
-void SearchWidget::clearAllFilters()
-{
+void SearchWidget::clearAllFilters() {
     clearSearch();
     m_advancedPanel->clearFilters();
     emit filtersCleared();
 }
 
-void SearchWidget::onSearchTextChanged(const QString& text)
-{
+void SearchWidget::onSearchTextChanged(const QString& text) {
     m_currentCriteria.searchText = text;
     emit searchChanged(text);
     emit filtersChanged(m_currentCriteria);
 }
 
-void SearchWidget::onSearchCleared()
-{
+void SearchWidget::onSearchCleared() {
     emit searchCleared();
 }
 
-void SearchWidget::onToggleAdvanced()
-{
+void SearchWidget::onToggleAdvanced() {
     m_advancedPanel->togglePanel();
 }
 
-void SearchWidget::onAdvancedFiltersChanged(const IconFilterCriteria& criteria)
-{
+void SearchWidget::onAdvancedFiltersChanged(const IconFilterCriteria& criteria) {
     m_currentCriteria = criteria;
     m_currentCriteria.searchText = searchText();
     emit filtersChanged(m_currentCriteria);
 }
 
 // Missing method implementations
-void SearchWidget::focusSearchInput() { m_searchEdit->setFocus(); }
-void SearchWidget::showAdvancedOptions() { m_advancedPanel->showPanel(); }
-void SearchWidget::hideAdvancedOptions() { m_advancedPanel->hidePanel(); }
-void SearchWidget::toggleAdvancedOptions() { m_advancedPanel->togglePanel(); }
-void SearchWidget::onFiltersCleared() { emit filtersCleared(); }
-void SearchWidget::showEvent(QShowEvent *event) { QWidget::showEvent(event); }
-void SearchWidget::hideEvent(QHideEvent *event) { QWidget::hideEvent(event); }
+void SearchWidget::focusSearchInput() {
+    m_searchEdit->setFocus();
+}
+void SearchWidget::showAdvancedOptions() {
+    m_advancedPanel->showPanel();
+}
+void SearchWidget::hideAdvancedOptions() {
+    m_advancedPanel->hidePanel();
+}
+void SearchWidget::toggleAdvancedOptions() {
+    m_advancedPanel->togglePanel();
+}
+void SearchWidget::onFiltersCleared() {
+    emit filtersCleared();
+}
+void SearchWidget::showEvent(QShowEvent* event) {
+    QWidget::showEvent(event);
+}
+void SearchWidget::hideEvent(QHideEvent* event) {
+    QWidget::hideEvent(event);
+}
 
 bool SearchWidget::isAdvancedPanelVisible() const {
     return m_advancedPanel && m_advancedPanel->isVisible();
 }
 
 // SearchLineEdit missing methods
-void SearchLineEdit::keyPressEvent(QKeyEvent *event) { QLineEdit::keyPressEvent(event); }
-void SearchLineEdit::focusInEvent(QFocusEvent *event) { QLineEdit::focusInEvent(event); }
-void SearchLineEdit::focusOutEvent(QFocusEvent *event) { QLineEdit::focusOutEvent(event); }
+void SearchLineEdit::keyPressEvent(QKeyEvent* event) {
+    QLineEdit::keyPressEvent(event);
+}
+void SearchLineEdit::focusInEvent(QFocusEvent* event) {
+    QLineEdit::focusInEvent(event);
+}
+void SearchLineEdit::focusOutEvent(QFocusEvent* event) {
+    QLineEdit::focusOutEvent(event);
+}
 
 // AdvancedSearchPanel missing methods
-void AdvancedSearchPanel::onCategorySelectionChanged() { emitFiltersChanged(); }
-void AdvancedSearchPanel::onTagSelectionChanged() { emitFiltersChanged(); }
+void AdvancedSearchPanel::onCategorySelectionChanged() {
+    emitFiltersChanged();
+}
+void AdvancedSearchPanel::onTagSelectionChanged() {
+    emitFiltersChanged();
+}
 
 // QuickFilterWidget implementation removed - class not defined in header
 
@@ -417,8 +404,7 @@ SearchLineEdit::~SearchLineEdit() = default;
 AdvancedSearchPanel::~AdvancedSearchPanel() = default;
 
 // Missing methods declared in headers but not implemented
-void SearchLineEdit::onSearchTimer()
-{
+void SearchLineEdit::onSearchTimer() {
     QString searchText = text().trimmed();
     if (!searchText.isEmpty()) {
         // Add to search history if not already present
@@ -436,8 +422,7 @@ void SearchLineEdit::onSearchTimer()
     }
 }
 
-void SearchLineEdit::onHistoryAction()
-{
+void SearchLineEdit::onHistoryAction() {
     QAction* action = qobject_cast<QAction*>(sender());
     if (action) {
         QString searchText = action->data().toString();
@@ -446,15 +431,13 @@ void SearchLineEdit::onHistoryAction()
     }
 }
 
-void SearchLineEdit::onClearHistoryAction()
-{
+void SearchLineEdit::onClearHistoryAction() {
     m_searchHistory.clear();
     updateCompleter();
     emit historyCleared();
 }
 
-void SearchLineEdit::contextMenuEvent(QContextMenuEvent *event)
-{
+void SearchLineEdit::contextMenuEvent(QContextMenuEvent* event) {
     QMenu* menu = createStandardContextMenu();
 
     if (!m_searchHistory.isEmpty()) {
@@ -470,15 +453,15 @@ void SearchLineEdit::contextMenuEvent(QContextMenuEvent *event)
 
         historyMenu->addSeparator();
         QAction* clearHistoryAction = historyMenu->addAction(tr("Clear History"));
-        connect(clearHistoryAction, &QAction::triggered, this, &SearchLineEdit::onClearHistoryAction);
+        connect(clearHistoryAction, &QAction::triggered, this,
+                &SearchLineEdit::onClearHistoryAction);
     }
 
     menu->exec(event->globalPos());
     delete menu;
 }
 
-void AdvancedSearchPanel::expandPanel()
-{
+void AdvancedSearchPanel::expandPanel() {
     if (!m_expanded) {
         m_expanded = true;
 
@@ -489,15 +472,15 @@ void AdvancedSearchPanel::expandPanel()
         animation->setEndValue(m_expandedHeight);
         animation->setEasingCurve(QEasingCurve::OutCubic);
 
-        connect(animation, &QPropertyAnimation::finished, this, &AdvancedSearchPanel::onAnimationFinished);
+        connect(animation, &QPropertyAnimation::finished, this,
+                &AdvancedSearchPanel::onAnimationFinished);
         animation->start(QAbstractAnimation::DeleteWhenStopped);
 
         emit panelExpanded();
     }
 }
 
-void AdvancedSearchPanel::collapsePanel()
-{
+void AdvancedSearchPanel::collapsePanel() {
     if (m_expanded) {
         m_expanded = false;
 
@@ -508,15 +491,15 @@ void AdvancedSearchPanel::collapsePanel()
         animation->setEndValue(m_collapsedHeight);
         animation->setEasingCurve(QEasingCurve::InCubic);
 
-        connect(animation, &QPropertyAnimation::finished, this, &AdvancedSearchPanel::onAnimationFinished);
+        connect(animation, &QPropertyAnimation::finished, this,
+                &AdvancedSearchPanel::onAnimationFinished);
         animation->start(QAbstractAnimation::DeleteWhenStopped);
 
         emit panelCollapsed();
     }
 }
 
-void AdvancedSearchPanel::onContributorSelectionChanged()
-{
+void AdvancedSearchPanel::onContributorSelectionChanged() {
     QStringList selectedContributors;
 
     // Collect selected contributors from UI controls
@@ -527,8 +510,7 @@ void AdvancedSearchPanel::onContributorSelectionChanged()
     emitFiltersChanged();
 }
 
-void AdvancedSearchPanel::onDateRangeChanged()
-{
+void AdvancedSearchPanel::onDateRangeChanged() {
     // Handle date range changes
     QDate startDate = QDate::currentDate().addYears(-1); // Default to last year
     QDate endDate = QDate::currentDate();
@@ -542,8 +524,7 @@ void AdvancedSearchPanel::onDateRangeChanged()
     emitFiltersChanged();
 }
 
-void AdvancedSearchPanel::onUsageRangeChanged()
-{
+void AdvancedSearchPanel::onUsageRangeChanged() {
     // Handle usage frequency range changes
     int minUsage = 0;
     int maxUsage = 100;
@@ -553,17 +534,11 @@ void AdvancedSearchPanel::onUsageRangeChanged()
     emitFiltersChanged();
 }
 
-void AdvancedSearchPanel::onSavePreset()
-{
+void AdvancedSearchPanel::onSavePreset() {
     bool ok;
-    QString presetName = QInputDialog::getText(
-        this,
-        tr("Save Search Preset"),
-        tr("Enter preset name:"),
-        QLineEdit::Normal,
-        QString(),
-        &ok
-    );
+    QString presetName =
+        QInputDialog::getText(this, tr("Save Search Preset"), tr("Enter preset name:"),
+                              QLineEdit::Normal, QString(), &ok);
 
     if (ok && !presetName.isEmpty()) {
         // Save current search criteria as preset
@@ -583,8 +558,7 @@ void AdvancedSearchPanel::onSavePreset()
     }
 }
 
-void AdvancedSearchPanel::onLoadPreset()
-{
+void AdvancedSearchPanel::onLoadPreset() {
     QSettings settings;
     settings.beginGroup("SearchPresets");
     QStringList presetNames = settings.childGroups();
@@ -597,14 +571,7 @@ void AdvancedSearchPanel::onLoadPreset()
 
     bool ok;
     QString selectedPreset = QInputDialog::getItem(
-        this,
-        tr("Load Search Preset"),
-        tr("Select preset to load:"),
-        presetNames,
-        0,
-        false,
-        &ok
-    );
+        this, tr("Load Search Preset"), tr("Select preset to load:"), presetNames, 0, false, &ok);
 
     if (ok && !selectedPreset.isEmpty()) {
         // Load preset from settings
@@ -622,8 +589,7 @@ void AdvancedSearchPanel::onLoadPreset()
     }
 }
 
-void AdvancedSearchPanel::onDeletePreset()
-{
+void AdvancedSearchPanel::onDeletePreset() {
     QSettings settings;
     settings.beginGroup("SearchPresets");
     QStringList presetNames = settings.childGroups();
@@ -635,24 +601,15 @@ void AdvancedSearchPanel::onDeletePreset()
     }
 
     bool ok;
-    QString selectedPreset = QInputDialog::getItem(
-        this,
-        tr("Delete Search Preset"),
-        tr("Select preset to delete:"),
-        presetNames,
-        0,
-        false,
-        &ok
-    );
+    QString selectedPreset =
+        QInputDialog::getItem(this, tr("Delete Search Preset"), tr("Select preset to delete:"),
+                              presetNames, 0, false, &ok);
 
     if (ok && !selectedPreset.isEmpty()) {
         int ret = QMessageBox::question(
-            this,
-            tr("Delete Preset"),
+            this, tr("Delete Preset"),
             tr("Are you sure you want to delete the preset '%1'?").arg(selectedPreset),
-            QMessageBox::Yes | QMessageBox::No,
-            QMessageBox::No
-        );
+            QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
         if (ret == QMessageBox::Yes) {
             // Remove from settings
@@ -668,14 +625,12 @@ void AdvancedSearchPanel::onDeletePreset()
     }
 }
 
-void AdvancedSearchPanel::onAnimationFinished()
-{
+void AdvancedSearchPanel::onAnimationFinished() {
     // Animation completed - update UI state if needed
     update();
 }
 
-void SearchWidget::performSearch()
-{
+void SearchWidget::performSearch() {
     QString searchText = m_searchEdit->text().trimmed();
 
     if (searchText.isEmpty()) {
@@ -704,22 +659,15 @@ void SearchWidget::performSearch()
     onUpdateStatistics();
 }
 
-void SearchWidget::saveCurrentSearch()
-{
+void SearchWidget::saveCurrentSearch() {
     QString searchText = m_searchEdit->text().trimmed();
     if (searchText.isEmpty()) {
         return;
     }
 
     bool ok;
-    QString searchName = QInputDialog::getText(
-        this,
-        tr("Save Search"),
-        tr("Enter search name:"),
-        QLineEdit::Normal,
-        searchText,
-        &ok
-    );
+    QString searchName = QInputDialog::getText(this, tr("Save Search"), tr("Enter search name:"),
+                                               QLineEdit::Normal, searchText, &ok);
 
     if (ok && !searchName.isEmpty()) {
         // Save current search criteria
@@ -736,8 +684,7 @@ void SearchWidget::saveCurrentSearch()
     }
 }
 
-void SearchWidget::loadSavedSearch(const QString& name)
-{
+void SearchWidget::loadSavedSearch(const QString& name) {
     if (name.isEmpty()) {
         return;
     }
@@ -773,14 +720,12 @@ void SearchWidget::loadSavedSearch(const QString& name)
     emit searchLoaded(name);
 }
 
-void SearchWidget::onSearchTimer()
-{
+void SearchWidget::onSearchTimer() {
     // Delayed search execution
     performSearch();
 }
 
-void SearchWidget::onUpdateStatistics()
-{
+void SearchWidget::onUpdateStatistics() {
     // Update search statistics
     int totalSearches = static_cast<int>(m_searchHistory.size());
     QString currentSearchText = m_searchEdit->text().trimmed();
@@ -793,8 +738,7 @@ void SearchWidget::onUpdateStatistics()
     emit statisticsUpdated(totalSearches, currentSearchIndex);
 }
 
-void SearchWidget::resizeEvent(QResizeEvent *event)
-{
+void SearchWidget::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);
 
     // Adjust layout based on new size
@@ -807,31 +751,27 @@ void SearchWidget::resizeEvent(QResizeEvent *event)
 }
 
 // Helper method implementations
-void SearchLineEdit::updateCompleter()
-{
+void SearchLineEdit::updateCompleter() {
     if (m_completer && m_completerModel) {
         m_completerModel->setStringList(m_searchHistory);
         m_completer->setModel(m_completerModel);
     }
 }
 
-SearchCriteria AdvancedSearchPanel::getCurrentCriteria() const
-{
+SearchCriteria AdvancedSearchPanel::getCurrentCriteria() const {
     SearchCriteria criteria;
     // This would collect criteria from actual UI controls
     // For now, return empty criteria
     return criteria;
 }
 
-void AdvancedSearchPanel::applyCriteria(const SearchCriteria& criteria)
-{
+void AdvancedSearchPanel::applyCriteria(const SearchCriteria& criteria) {
     // This would apply criteria to actual UI controls
     // For now, just store the criteria
     Q_UNUSED(criteria)
 }
 
-void SearchWidget::updateSearchHistory()
-{
+void SearchWidget::updateSearchHistory() {
     // Update search history in UI if there's a history widget
     // This would update a dropdown or list widget showing recent searches
 }

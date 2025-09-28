@@ -2,7 +2,8 @@
  * QtLucide Gallery Application - Category Sidebar Widget
  *
  * Sidebar widget for category-based filtering with:
- * - 9 icon categories (business, communication, editing, files, general, media, navigation, social, system)
+ * - 9 icon categories (business, communication, editing, files, general, media, navigation, social,
+ * system)
  * - Icon count per category
  * - Keyboard shortcuts (Ctrl+1-9)
  * - Favorites category
@@ -13,21 +14,21 @@
 #ifndef CATEGORYSIDEBARWIDGET_H
 #define CATEGORYSIDEBARWIDGET_H
 
-#include <QWidget>
-#include <QVBoxLayout>
+#include <QFrame>
+#include <QGraphicsOpacityEffect>
+#include <QGroupBox>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QListWidget>
 #include <QListWidgetItem>
-#include <QLabel>
-#include <QPushButton>
-#include <QToolButton>
-#include <QGroupBox>
-#include <QScrollArea>
-#include <QFrame>
-#include <QPropertyAnimation>
-#include <QGraphicsOpacityEffect>
-#include <QTimer>
 #include <QMenu>
+#include <QPropertyAnimation>
+#include <QPushButton>
+#include <QScrollArea>
+#include <QTimer>
+#include <QToolButton>
+#include <QVBoxLayout>
+#include <QWidget>
 
 #include "../../config/LayoutConfig.h"
 #include <QAction>
@@ -40,13 +41,12 @@ class FavoritesManager;
 /**
  * @brief Individual category item widget
  */
-class CategoryItem : public QWidget
-{
+class CategoryItem : public QWidget {
     Q_OBJECT
 
 public:
     explicit CategoryItem(const QString& categoryName, const QString& displayName,
-                         int iconCount = 0, QWidget* parent = nullptr);
+                          int iconCount = 0, QWidget* parent = nullptr);
 
     void setCategoryName(const QString& name) { m_categoryName = name; }
     QString categoryName() const { return m_categoryName; }
@@ -95,8 +95,7 @@ private:
 /**
  * @brief Category sidebar widget with filtering capabilities
  */
-class CategorySidebarWidget : public QWidget
-{
+class CategorySidebarWidget : public QWidget {
     Q_OBJECT
 
 public:
@@ -149,8 +148,8 @@ private:
     void setupSpecialCategories();
     void setupMainCategories();
     void setupRecentCategories();
-    void createCategoryItem(const QString& categoryName, const QString& displayName,
-                           int iconCount, const QString& shortcut = QString());
+    void createCategoryItem(const QString& categoryName, const QString& displayName, int iconCount,
+                            const QString& shortcut = QString());
     void updateCategoryCounts();
     void selectCategory(const QString& category);
 

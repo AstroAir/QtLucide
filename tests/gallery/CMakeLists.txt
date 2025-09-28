@@ -56,14 +56,8 @@ set(GALLERY_COMMON_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/../../examples/gallery/src/ui/layouts/ResponsiveLayoutManager.cpp
 
     # UI Widgets
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../examples/gallery/src/ui/widgets/search/ModernSearchWidget.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../examples/gallery/src/ui/widgets/search/ModernSearchWidget.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../examples/gallery/src/ui/widgets/panels/ModernSidebarWidget.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../examples/gallery/src/ui/widgets/panels/ModernSidebarWidget.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../../examples/gallery/src/ui/widgets/panels/FileBrowserWidget.h
     ${CMAKE_CURRENT_SOURCE_DIR}/../../examples/gallery/src/ui/widgets/panels/FileBrowserWidget.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../examples/gallery/src/ui/widgets/grids/ModernIconGridWidget.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../examples/gallery/src/ui/widgets/grids/ModernIconGridWidget.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../../examples/gallery/src/ui/widgets/grids/IconGridWidget.h
     ${CMAKE_CURRENT_SOURCE_DIR}/../../examples/gallery/src/ui/widgets/grids/IconGridWidget.cpp
 
@@ -138,7 +132,14 @@ endfunction()
 # Include test category subdirectories
 add_subdirectory(basic)
 add_subdirectory(components)
-add_subdirectory(integration)
+
+# Enable/disable GUI-heavy integration tests (disabled by default; enable explicitly when a GUI is available)
+option(QTLUCIDE_GALLERY_ENABLE_INTEGRATION_TESTS "Enable GUI-heavy gallery integration tests" OFF)
+if(QTLUCIDE_GALLERY_ENABLE_INTEGRATION_TESTS)
+    add_subdirectory(integration)
+else()
+    message(STATUS "Gallery integration tests disabled by default; enable with -DQTLUCIDE_GALLERY_ENABLE_INTEGRATION_TESTS=ON")
+endif()
 # Note: Additional test categories (end_to_end, performance) can be added later
 # add_subdirectory(end_to_end)
 # add_subdirectory(performance)
@@ -149,6 +150,10 @@ set(GALLERY_TEST_SOURCES
 )
 
 create_gallery_test_executable(QtLucideGalleryTests "${GALLERY_TEST_SOURCES}" "")
+
+# Smoke test: run the built gallery in headless mode to validate runtime wiring
+add_test(NAME QtLucideGallerySmoke COMMAND $<TARGET_FILE:QtLucideGallery> --smoke)
+set_tests_properties(QtLucideGallerySmoke PROPERTIES LABELS "gallery;smoke")
 
 # Set test properties for main gallery tests
 set_tests_properties(QtLucideGalleryTests PROPERTIES LABELS "gallery;main")
@@ -166,7 +171,8 @@ message(STATUS "  - Basic Tests: QtLucideGalleryBasicTests")
 message(STATUS "  - Component Tests: QtLucideGalleryComponentTests")
 message(STATUS "  - Integration Tests: QtLucideGalleryIntegrationTests")
 message(STATUS "  - Main Gallery Tests: QtLucideGalleryTests")
-message(STATUS "  - Test Labels: gallery, basic, components, integration, main")
+message(STATUS "  - Smoke Test: QtLucideGallerySmoke")
+message(STATUS "  - Test Labels: gallery, basic, components, integration, smoke, main")
 message(STATUS "  - Run specific category: ctest -L gallery.basic")
 message(STATUS "  - Run all gallery tests: ctest -L gallery")
 message(STATUS "  - Additional test categories (end_to_end, performance) can be added later")

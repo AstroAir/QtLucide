@@ -24,37 +24,38 @@
 #ifndef GALLERYMAINWINDOW_H
 #define GALLERYMAINWINDOW_H
 
-#include <QMainWindow>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QSplitter>
-#include <QToolBar>
-#include <QMenuBar>
-#include <QStatusBar>
-#include <QLabel>
-#include <QProgressBar>
-#include <QSettings>
-#include <QCloseEvent>
-#include <QResizeEvent>
-#include <QKeyEvent>
-#include <QTimer>
 #include <QActionGroup>
-#include <QDockWidget>
-#include <QStackedWidget>
-#include <QTabWidget>
-#include <QSlider>
-#include <QSpinBox>
-#include <QComboBox>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QCheckBox>
 #include <QButtonGroup>
-#include <QPropertyAnimation>
-#include <QGraphicsOpacityEffect>
-#include <QSystemTrayIcon>
-#include <QShortcut>
+#include <QCheckBox>
+#include <QCloseEvent>
+#include <QComboBox>
+#include <QDockWidget>
 #include <QDragEnterEvent>
 #include <QDropEvent>
+#include <QGraphicsOpacityEffect>
+#include <QHBoxLayout>
+#include <QKeyEvent>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMainWindow>
+#include <QMenuBar>
+#include <QProgressBar>
+#include <QPropertyAnimation>
+#include <QPushButton>
+#include <QResizeEvent>
+#include <QSettings>
+#include <QShortcut>
+#include <QSlider>
+#include <QSpinBox>
+#include <QSplitter>
+#include <QStackedWidget>
+#include <QStatusBar>
+#include <QSystemTrayIcon>
+#include <QTabWidget>
+#include <QTimer>
+#include <QToolBar>
+#include <QVBoxLayout>
+
 
 #include <QtLucide/QtLucide.h>
 #include <memory>
@@ -81,27 +82,18 @@ class FavoritesManager;
 /**
  * @brief Consolidated main window class with comprehensive gallery features
  */
-class GalleryMainWindow : public QMainWindow
-{
+class GalleryMainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit GalleryMainWindow(QWidget *parent = nullptr);
+    explicit GalleryMainWindow(QWidget* parent = nullptr);
     ~GalleryMainWindow();
 
     // View modes (from EnhancedGalleryMainWindow)
-    enum ViewMode {
-        GridView,
-        DetailView,
-        SplitView
-    };
+    enum ViewMode { GridView, DetailView, SplitView };
 
     // Theme modes (from EnhancedGalleryMainWindow)
-    enum ThemeMode {
-        LightTheme,
-        DarkTheme,
-        SystemTheme
-    };
+    enum ThemeMode { LightTheme, DarkTheme, SystemTheme };
 
     // Public interface for external control
     void showIcon(const QString& iconName);
@@ -116,14 +108,14 @@ public:
     void setTheme(ThemeMode theme);
 
 protected:
-    void closeEvent(QCloseEvent *event) override;
-    void resizeEvent(QResizeEvent *event) override;
-    void keyPressEvent(QKeyEvent *event) override;
-    void contextMenuEvent(QContextMenuEvent *event) override;
-    void changeEvent(QEvent *event) override;
-    void showEvent(QShowEvent *event) override;
-    void dragEnterEvent(QDragEnterEvent *event) override;
-    void dropEvent(QDropEvent *event) override;
+    void closeEvent(QCloseEvent* event) override;
+    void resizeEvent(QResizeEvent* event) override;
+    void keyPressEvent(QKeyEvent* event) override;
+    void contextMenuEvent(QContextMenuEvent* event) override;
+    void changeEvent(QEvent* event) override;
+    void showEvent(QShowEvent* event) override;
+    void dragEnterEvent(QDragEnterEvent* event) override;
+    void dropEvent(QDropEvent* event) override;
 
 private slots:
     // Enhanced menu and toolbar actions
@@ -369,9 +361,9 @@ private:
     // Menu and toolbar system
     QMenuBar* m_menuBar;
     QToolBar* m_mainToolBar;
-    QToolBar* m_mainToolbar;  // From Enhanced version
+    QToolBar* m_mainToolbar; // From Enhanced version
     QToolBar* m_viewToolBar;
-    QToolBar* m_viewToolbar;  // From Enhanced version
+    QToolBar* m_viewToolbar; // From Enhanced version
     QToolBar* m_searchToolBar;
     QToolBar* m_quickAccessToolBar;
     QStatusBar* m_statusBar;
@@ -379,7 +371,7 @@ private:
     // Enhanced status bar widgets
     QLabel* m_statusLabel;
     QLabel* m_iconCountLabel;
-    QLabel* m_currentIconLabel;  // From Enhanced version
+    QLabel* m_currentIconLabel; // From Enhanced version
     QLabel* m_filterStatusLabel;
     QLabel* m_performanceLabel;
     QProgressBar* m_progressBar;
@@ -387,7 +379,7 @@ private:
     QPushButton* m_performanceButton;
 
     // Enhanced action system
-    QHash<QString, QAction*> m_actions;  // For dynamic action management
+    QHash<QString, QAction*> m_actions; // For dynamic action management
 
     // File menu actions
     QAction* m_newWindowAction;
@@ -441,37 +433,30 @@ private:
     // Action groups (unified from both classes)
     QActionGroup* m_gridSizeActionGroup;
     QActionGroup* m_viewModeActionGroup;
-    QActionGroup* m_viewModeGroup;  // From Enhanced version
+    QActionGroup* m_viewModeGroup; // From Enhanced version
     QActionGroup* m_themeActionGroup;
-    QActionGroup* m_themeGroup;     // From Enhanced version
     QActionGroup* m_languageActionGroup;
 
     // Enhanced settings and state management
     QSettings* m_settings;
+    QActionGroup* m_themeGroup; // From Enhanced version
     QString m_currentIconName;
-    QString m_currentIcon;      // From Enhanced version
+    QString m_currentIcon; // From Enhanced version
     QString m_currentSearchText;
     QStringList m_currentCategories;
     QStringList m_currentTags;
-    QStringList m_filteredIcons;  // From Enhanced version
-    QStringList m_recentIcons;    // From Enhanced version
+    QStringList m_filteredIcons; // From Enhanced version
+    QStringList m_recentIcons;   // From Enhanced version
     int m_currentViewMode;
-    ViewMode m_currentViewModeEnum;  // From Enhanced version
-    ThemeMode m_currentTheme;        // From Enhanced version
     int m_currentIconSize;
-    int m_thumbnailSize;        // From Enhanced version
-    int m_slideshowInterval;    // From Enhanced version
     bool m_compactMode;
     bool m_animationsEnabled;
-    bool m_showTooltips;        // From Enhanced version
-    bool m_autoSaveSettings;    // From Enhanced version
+    bool m_showTooltips; // From Enhanced version
 
     // Timers and automation
-    QTimer* m_statusUpdateTimer;
     QTimer* m_autoSaveTimer;
     QTimer* m_backupTimer;
     QTimer* m_performanceTimer;
-    QTimer* m_slideshowTimer;   // From Enhanced version
 
     // System integration
     QSystemTrayIcon* m_systemTrayIcon;
@@ -482,15 +467,24 @@ private:
     QPropertyAnimation* m_slideAnimation;
     QGraphicsOpacityEffect* m_opacityEffect;
 
-    // Dialogs (lazy-loaded and from Enhanced version)
+    // Dialogs (lazy-loaded and from Enhanced version) - order matches constructor
     std::unique_ptr<PreferencesDialog> m_preferencesDialog;
     std::unique_ptr<IconExportDialog> m_exportDialog;
-    ExportDialog* m_exportDialogEnhanced;    // From Enhanced version
-    SettingsDialog* m_settingsDialog;        // From Enhanced version
+    ExportDialog* m_exportDialogEnhanced; // From Enhanced version
+    SettingsDialog* m_settingsDialog;     // From Enhanced version
+
+    // View and theme modes (moved to match constructor order)
+    ViewMode m_currentViewModeEnum; // From Enhanced version
+    ThemeMode m_currentTheme;       // From Enhanced version
+    int m_thumbnailSize;            // From Enhanced version
+    int m_slideshowInterval;        // From Enhanced version
+    bool m_autoSaveSettings;        // From Enhanced version
+    QTimer* m_statusUpdateTimer;
+    QTimer* m_slideshowTimer; // From Enhanced version
 
     // Keyboard shortcuts
     QHash<QString, QShortcut*> m_shortcuts;
-    QList<QShortcut*> m_categoryShortcuts;  // From Enhanced version (Ctrl+1-9)
+    QList<QShortcut*> m_categoryShortcuts; // From Enhanced version (Ctrl+1-9)
 
     // Performance monitoring
     QElapsedTimer m_performanceTimer_internal;
@@ -512,10 +506,10 @@ private:
     static constexpr int MIN_GRID_SIZE = 24;
     static constexpr int MAX_GRID_SIZE = 256;
     static constexpr int GRID_SIZE_STEP = 8;
-    static constexpr int DEFAULT_VIEW_MODE = 0;  // Grid view
-    static constexpr int AUTO_SAVE_INTERVAL = 30000;  // 30 seconds
-    static constexpr int BACKUP_INTERVAL = 300000;    // 5 minutes
-    static constexpr int PERFORMANCE_UPDATE_INTERVAL = 1000;  // 1 second
+    static constexpr int DEFAULT_VIEW_MODE = 0;              // Grid view
+    static constexpr int AUTO_SAVE_INTERVAL = 30000;         // 30 seconds
+    static constexpr int BACKUP_INTERVAL = 300000;           // 5 minutes
+    static constexpr int PERFORMANCE_UPDATE_INTERVAL = 1000; // 1 second
     static constexpr const char* SETTINGS_GROUP = "MainWindow";
     static constexpr const char* GEOMETRY_KEY = "geometry";
     static constexpr const char* STATE_KEY = "windowState";

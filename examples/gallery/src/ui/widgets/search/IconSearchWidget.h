@@ -13,29 +13,29 @@
 #ifndef ICONSEARCHWIDGET_H
 #define ICONSEARCHWIDGET_H
 
-#include <QWidget>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QLineEdit>
-#include <QToolButton>
-#include <QPushButton>
-#include <QLabel>
+#include <QAction>
 #include <QCompleter>
-#include <QStringListModel>
+#include <QFocusEvent>
+#include <QFrame>
+#include <QGraphicsOpacityEffect>
+#include <QHBoxLayout>
+#include <QHideEvent>
+#include <QKeyEvent>
+#include <QLabel>
+#include <QLineEdit>
 #include <QListWidget>
 #include <QListWidgetItem>
-#include <QFrame>
-#include <QPropertyAnimation>
-#include <QGraphicsOpacityEffect>
-#include <QTimer>
 #include <QMenu>
-#include <QAction>
-#include <QShortcut>
-#include <QKeyEvent>
-#include <QFocusEvent>
-#include <QShowEvent>
-#include <QHideEvent>
 #include <QMouseEvent>
+#include <QPropertyAnimation>
+#include <QPushButton>
+#include <QShortcut>
+#include <QShowEvent>
+#include <QStringListModel>
+#include <QTimer>
+#include <QToolButton>
+#include <QVBoxLayout>
+#include <QWidget>
 
 // Forward declarations
 class IconMetadataManager;
@@ -43,8 +43,7 @@ class IconMetadataManager;
 /**
  * @brief Search suggestions popup widget
  */
-class SearchSuggestionsWidget : public QFrame
-{
+class SearchSuggestionsWidget : public QFrame {
     Q_OBJECT
 
 public:
@@ -89,8 +88,7 @@ private:
 /**
  * @brief Enhanced search widget with real-time filtering
  */
-class IconSearchWidget : public QWidget
-{
+class IconSearchWidget : public QWidget {
     Q_OBJECT
 
 public:
@@ -108,10 +106,10 @@ public:
 
     // Search modes
     enum SearchMode {
-        SimpleSearch,    // Basic text matching
-        TagSearch,       // Tag-based filtering
-        RegexSearch,     // Regular expression
-        AdvancedSearch   // Multiple criteria
+        SimpleSearch,  // Basic text matching
+        TagSearch,     // Tag-based filtering
+        RegexSearch,   // Regular expression
+        AdvancedSearch // Multiple criteria
     };
 
     void setSearchMode(SearchMode mode);
@@ -179,6 +177,9 @@ private:
     QToolButton* m_modeButton;
     QToolButton* m_historyButton;
 
+    // Managers (moved to match constructor order)
+    IconMetadataManager* m_iconMetadataManager;
+
     // Search suggestions
     SearchSuggestionsWidget* m_suggestionsWidget;
     bool m_suggestionsVisible;
@@ -197,9 +198,6 @@ private:
 
     // Advanced search dialog (to be implemented later)
     // AdvancedSearchDialog* m_advancedDialog;
-
-    // Managers
-    IconMetadataManager* m_iconMetadataManager;
 
     // State
     SearchMode m_searchMode;

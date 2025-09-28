@@ -3,41 +3,34 @@
  */
 
 #include "ImageViewerWidget.h"
-#include "GalleryLogger.h"
+#include "../../../core/utils/GalleryLogger.h"
 
-#include <QApplication>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QToolBar>
 #include <QAction>
-#include <QSlider>
-#include <QLabel>
-#include <QProgressBar>
-#include <QTimer>
-#include <QPropertyAnimation>
-#include <QGraphicsOpacityEffect>
-#include <QWheelEvent>
-#include <QMouseEvent>
-#include <QKeyEvent>
-#include <QResizeEvent>
-#include <QFileInfo>
-#include <QPixmap>
-#include <QMovie>
-#include <QMimeDatabase>
+#include <QApplication>
 #include <QDebug>
+#include <QFileInfo>
+#include <QGraphicsOpacityEffect>
+#include <QHBoxLayout>
+#include <QKeyEvent>
+#include <QLabel>
+#include <QMimeDatabase>
+#include <QMouseEvent>
+#include <QMovie>
+#include <QPixmap>
+#include <QProgressBar>
+#include <QPropertyAnimation>
+#include <QResizeEvent>
+#include <QSlider>
+#include <QTimer>
+#include <QToolBar>
+#include <QVBoxLayout>
+#include <QWheelEvent>
 
 // ImageGraphicsView Implementation
-ImageGraphicsView::ImageGraphicsView(QWidget *parent)
-    : QGraphicsView(parent)
-    , m_scene(new QGraphicsScene(this))
-    , m_pixmapItem(nullptr)
-    , m_zoomFactor(1.0)
-    , m_rotation(0)
-    , m_flippedHorizontal(false)
-    , m_flippedVertical(false)
-    , m_panning(false)
-    , m_zoomAnimation(new QPropertyAnimation(this))
-{
+ImageGraphicsView::ImageGraphicsView(QWidget* parent)
+    : QGraphicsView(parent), m_scene(new QGraphicsScene(this)), m_pixmapItem(nullptr),
+      m_zoomFactor(1.0), m_rotation(0), m_flippedHorizontal(false), m_flippedVertical(false),
+      m_panning(false), m_zoomAnimation(new QPropertyAnimation(this)) {
     setScene(m_scene);
     setDragMode(QGraphicsView::RubberBandDrag);
     setRenderHint(QPainter::Antialiasing);
@@ -54,8 +47,7 @@ ImageGraphicsView::ImageGraphicsView(QWidget *parent)
     setBackgroundBrush(QBrush(QColor(64, 64, 64)));
 }
 
-void ImageGraphicsView::setPixmap(const QPixmap& pixmap)
-{
+void ImageGraphicsView::setPixmap(const QPixmap& pixmap) {
     m_scene->clear();
     m_pixmapItem = nullptr;
 
@@ -66,18 +58,18 @@ void ImageGraphicsView::setPixmap(const QPixmap& pixmap)
     }
 }
 
-void ImageGraphicsView::setZoomFactor(double factor)
-{
-    if (factor <= 0.0) return;
+void ImageGraphicsView::setZoomFactor(double factor) {
+    if (factor <= 0.0)
+        return;
 
     m_zoomFactor = factor;
     updateTransform();
     emit zoomChanged(m_zoomFactor);
 }
 
-void ImageGraphicsView::fitToWindow()
-{
-    if (!m_pixmapItem) return;
+void ImageGraphicsView::fitToWindow() {
+    if (!m_pixmapItem)
+        return;
 
     fitInView(m_pixmapItem, Qt::KeepAspectRatio);
     QTransform transform = this->transform();
@@ -85,9 +77,9 @@ void ImageGraphicsView::fitToWindow()
     emit zoomChanged(m_zoomFactor);
 }
 
-void ImageGraphicsView::fitToWidth()
-{
-    if (!m_pixmapItem) return;
+void ImageGraphicsView::fitToWidth() {
+    if (!m_pixmapItem)
+        return;
 
     QRectF itemRect = m_pixmapItem->boundingRect();
     QRectF viewRect = viewport()->rect();
@@ -96,9 +88,9 @@ void ImageGraphicsView::fitToWidth()
     setZoomFactor(scale);
 }
 
-void ImageGraphicsView::fitToHeight()
-{
-    if (!m_pixmapItem) return;
+void ImageGraphicsView::fitToHeight() {
+    if (!m_pixmapItem)
+        return;
 
     QRectF itemRect = m_pixmapItem->boundingRect();
     QRectF viewRect = viewport()->rect();
@@ -107,55 +99,49 @@ void ImageGraphicsView::fitToHeight()
     setZoomFactor(scale);
 }
 
-void ImageGraphicsView::actualSize()
-{
+void ImageGraphicsView::actualSize() {
     setZoomFactor(1.0);
 }
 
-void ImageGraphicsView::zoomIn()
-{
+void ImageGraphicsView::zoomIn() {
     setZoomFactor(m_zoomFactor * 1.25);
 }
 
-void ImageGraphicsView::zoomOut()
-{
+void ImageGraphicsView::zoomOut() {
     setZoomFactor(m_zoomFactor / 1.25);
 }
 
-void ImageGraphicsView::resetZoom()
-{
+void ImageGraphicsView::resetZoom() {
     setZoomFactor(1.0);
 }
 
-void ImageGraphicsView::rotateLeft()
-{
+void ImageGraphicsView::rotateLeft() {
     m_rotation -= 90;
-    if (m_rotation < 0) m_rotation += 360;
+    if (m_rotation < 0)
+        m_rotation += 360;
     updateTransform();
 }
 
-void ImageGraphicsView::rotateRight()
-{
+void ImageGraphicsView::rotateRight() {
     m_rotation += 90;
-    if (m_rotation >= 360) m_rotation -= 360;
+    if (m_rotation >= 360)
+        m_rotation -= 360;
     updateTransform();
 }
 
-void ImageGraphicsView::flipHorizontal()
-{
+void ImageGraphicsView::flipHorizontal() {
     m_flippedHorizontal = !m_flippedHorizontal;
     updateTransform();
 }
 
-void ImageGraphicsView::flipVertical()
-{
+void ImageGraphicsView::flipVertical() {
     m_flippedVertical = !m_flippedVertical;
     updateTransform();
 }
 
-void ImageGraphicsView::updateTransform()
-{
-    if (!m_pixmapItem) return;
+void ImageGraphicsView::updateTransform() {
+    if (!m_pixmapItem)
+        return;
 
     QTransform transform;
     transform.scale(m_zoomFactor, m_zoomFactor);
@@ -171,8 +157,7 @@ void ImageGraphicsView::updateTransform()
     setTransform(transform);
 }
 
-void ImageGraphicsView::wheelEvent(QWheelEvent *event)
-{
+void ImageGraphicsView::wheelEvent(QWheelEvent* event) {
     if (event->modifiers() & Qt::ControlModifier) {
         // Zoom with Ctrl+Wheel
         const double scaleFactor = 1.15;
@@ -187,8 +172,7 @@ void ImageGraphicsView::wheelEvent(QWheelEvent *event)
     }
 }
 
-void ImageGraphicsView::mousePressEvent(QMouseEvent *event)
-{
+void ImageGraphicsView::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::MiddleButton) {
         m_panning = true;
         m_lastPanPoint = event->pos();
@@ -202,8 +186,7 @@ void ImageGraphicsView::mousePressEvent(QMouseEvent *event)
     }
 }
 
-void ImageGraphicsView::mouseMoveEvent(QMouseEvent *event)
-{
+void ImageGraphicsView::mouseMoveEvent(QMouseEvent* event) {
     if (m_panning) {
         QPoint delta = event->pos() - m_lastPanPoint;
         m_lastPanPoint = event->pos();
@@ -219,8 +202,7 @@ void ImageGraphicsView::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-void ImageGraphicsView::mouseReleaseEvent(QMouseEvent *event)
-{
+void ImageGraphicsView::mouseReleaseEvent(QMouseEvent* event) {
     if (event->button() == Qt::MiddleButton && m_panning) {
         m_panning = false;
         setCursor(Qt::ArrowCursor);
@@ -230,8 +212,7 @@ void ImageGraphicsView::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-void ImageGraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
-{
+void ImageGraphicsView::mouseDoubleClickEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         emit imageDoubleClicked(event->pos());
         event->accept();
@@ -240,56 +221,44 @@ void ImageGraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
     }
 }
 
-void ImageGraphicsView::keyPressEvent(QKeyEvent *event)
-{
+void ImageGraphicsView::keyPressEvent(QKeyEvent* event) {
     switch (event->key()) {
-    case Qt::Key_Plus:
-    case Qt::Key_Equal:
-        zoomIn();
-        break;
-    case Qt::Key_Minus:
-        zoomOut();
-        break;
-    case Qt::Key_0:
-        actualSize();
-        break;
-    case Qt::Key_F:
-        fitToWindow();
-        break;
-    default:
-        QGraphicsView::keyPressEvent(event);
+        case Qt::Key_Plus:
+        case Qt::Key_Equal:
+            zoomIn();
+            break;
+        case Qt::Key_Minus:
+            zoomOut();
+            break;
+        case Qt::Key_0:
+            actualSize();
+            break;
+        case Qt::Key_F:
+            fitToWindow();
+            break;
+        default:
+            QGraphicsView::keyPressEvent(event);
     }
 }
 
-void ImageGraphicsView::resizeEvent(QResizeEvent *event)
-{
+void ImageGraphicsView::resizeEvent(QResizeEvent* event) {
     QGraphicsView::resizeEvent(event);
     // Optionally maintain fit-to-window on resize
 }
 
-bool ImageGraphicsView::event(QEvent *event)
-{
+bool ImageGraphicsView::event(QEvent* event) {
     // Handle gesture events for touch devices
     return QGraphicsView::event(event);
 }
 
 // ImageViewerWidget Implementation
-ImageViewerWidget::ImageViewerWidget(QWidget *parent)
-    : QWidget(parent)
-    , m_contentManager(nullptr)
-    , m_imageView(new ImageGraphicsView(this))
-    , m_currentIndex(-1)
-    , m_viewMode(FitToWindow)
-    , m_slideshowTimer(new QTimer(this))
-    , m_slideshowSpeed(Normal)
-    , m_fadeAnimation(new QPropertyAnimation(this))
-    , m_opacityEffect(new QGraphicsOpacityEffect(this))
-    , m_isFullscreen(false)
-    , m_showImageInfo(true)
-    , m_backgroundColor(QColor(64, 64, 64))
-    , m_isLoading(false)
-    , m_loadingMovie(nullptr)
-{
+ImageViewerWidget::ImageViewerWidget(QWidget* parent)
+    : QWidget(parent), m_contentManager(nullptr), m_imageView(new ImageGraphicsView(this)),
+      m_currentIndex(-1), m_viewMode(FitToWindow), m_slideshowTimer(new QTimer(this)),
+      m_slideshowSpeed(Normal), m_fadeAnimation(new QPropertyAnimation(this)),
+      m_opacityEffect(new QGraphicsOpacityEffect(this)), m_isFullscreen(false),
+      m_showImageInfo(true), m_backgroundColor(QColor(64, 64, 64)), m_isLoading(false),
+      m_loadingMovie(nullptr) {
     GALLERY_LOG_INFO(galleryInit, "ImageViewerWidget constructor started");
 
     setupUI();
@@ -300,19 +269,17 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
 
     // Connect image view signals
     connect(m_imageView, &ImageGraphicsView::zoomChanged, this, &ImageViewerWidget::zoomChanged);
-    connect(m_imageView, &ImageGraphicsView::imageDoubleClicked,
-            this, &ImageViewerWidget::onToggleFullscreen);
+    connect(m_imageView, &ImageGraphicsView::imageDoubleClicked, this,
+            &ImageViewerWidget::onToggleFullscreen);
 
     GALLERY_LOG_INFO(galleryInit, "ImageViewerWidget initialized");
 }
 
-ImageViewerWidget::~ImageViewerWidget()
-{
+ImageViewerWidget::~ImageViewerWidget() {
     stopSlideshow();
 }
 
-void ImageViewerWidget::setupUI()
-{
+void ImageViewerWidget::setupUI() {
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
@@ -326,8 +293,7 @@ void ImageViewerWidget::setupUI()
     mainLayout->addWidget(m_infoPanel);
 }
 
-void ImageViewerWidget::setupToolbar()
-{
+void ImageViewerWidget::setupToolbar() {
     m_toolbar = new QToolBar(this);
     m_toolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
     m_toolbar->setIconSize(QSize(16, 16));
@@ -378,14 +344,12 @@ void ImageViewerWidget::setupToolbar()
     connect(m_infoAction, &QAction::triggered, this, &ImageViewerWidget::onToggleImageInfo);
 }
 
-void ImageViewerWidget::setupImageView()
-{
+void ImageViewerWidget::setupImageView() {
     // Image view is already created in constructor
     m_imageView->setBackgroundBrush(QBrush(m_backgroundColor));
 }
 
-void ImageViewerWidget::setupInfoPanel()
-{
+void ImageViewerWidget::setupInfoPanel() {
     m_infoPanel = new QWidget(this);
     QHBoxLayout* infoLayout = new QHBoxLayout(m_infoPanel);
 
@@ -398,8 +362,7 @@ void ImageViewerWidget::setupInfoPanel()
     m_infoPanel->setVisible(m_showImageInfo);
 }
 
-void ImageViewerWidget::setupAnimations()
-{
+void ImageViewerWidget::setupAnimations() {
     m_fadeAnimation->setTargetObject(m_opacityEffect);
     m_fadeAnimation->setPropertyName("opacity");
     m_fadeAnimation->setDuration(300);
@@ -407,27 +370,24 @@ void ImageViewerWidget::setupAnimations()
     setGraphicsEffect(m_opacityEffect);
 }
 
-void ImageViewerWidget::setContentManager(ContentManager* manager)
-{
+void ImageViewerWidget::setContentManager(ContentManager* manager) {
     m_contentManager = manager;
 }
 
-void ImageViewerWidget::setImageList(const QStringList& imageList)
-{
+void ImageViewerWidget::setImageList(const QStringList& imageList) {
     m_imageList = imageList;
     m_currentIndex = -1;
     m_currentImage.clear();
     updateNavigationActions();
 }
 
-void ImageViewerWidget::setCurrentImage(const QString& identifier)
-{
+void ImageViewerWidget::setCurrentImage(const QString& identifier) {
     if (identifier.isEmpty()) {
         return;
     }
 
     m_currentImage = identifier;
-    m_currentIndex = m_imageList.indexOf(identifier);
+    m_currentIndex = static_cast<int>(m_imageList.indexOf(identifier));
 
     loadCurrentImage();
     updateNavigationActions();
@@ -437,8 +397,7 @@ void ImageViewerWidget::setCurrentImage(const QString& identifier)
     emit imageChanged(identifier, m_currentIndex);
 }
 
-void ImageViewerWidget::loadCurrentImage()
-{
+void ImageViewerWidget::loadCurrentImage() {
     if (m_currentImage.isEmpty()) {
         return;
     }
@@ -460,136 +419,11 @@ void ImageViewerWidget::loadCurrentImage()
     m_isLoading = false;
 }
 
-void ImageViewerWidget::displayImage(const QPixmap& pixmap)
-{
+void ImageViewerWidget::displayImage(const QPixmap& pixmap) {
     m_imageView->setPixmap(pixmap);
 
     // Apply view mode
     switch (m_viewMode) {
-    case FitToWindow:
-        m_imageView->fitToWindow();
-        break;
-    case FitToWidth:
-        m_imageView->fitToWidth();
-        break;
-    case FitToHeight:
-        m_imageView->fitToHeight();
-        break;
-    case ActualSize:
-        m_imageView->actualSize();
-        break;
-    case CustomZoom:
-        // Keep current zoom
-        break;
-    }
-}
-
-void ImageViewerWidget::displayError(const QString& message)
-{
-    // Create error pixmap
-    QPixmap errorPixmap(400, 300);
-    errorPixmap.fill(Qt::gray);
-
-    QPainter painter(&errorPixmap);
-    painter.setPen(Qt::white);
-    painter.drawText(errorPixmap.rect(), Qt::AlignCenter, message);
-
-    m_imageView->setPixmap(errorPixmap);
-}
-
-void ImageViewerWidget::showNextImage()
-{
-    if (m_imageList.isEmpty()) return;
-
-    int nextIndex = (m_currentIndex + 1) % m_imageList.size();
-    setCurrentImage(m_imageList.at(nextIndex));
-}
-
-void ImageViewerWidget::showPreviousImage()
-{
-    if (m_imageList.isEmpty()) return;
-
-    int prevIndex = (m_currentIndex - 1 + m_imageList.size()) % m_imageList.size();
-    setCurrentImage(m_imageList.at(prevIndex));
-}
-
-void ImageViewerWidget::showFirstImage()
-{
-    if (!m_imageList.isEmpty()) {
-        setCurrentImage(m_imageList.first());
-    }
-}
-
-void ImageViewerWidget::showLastImage()
-{
-    if (!m_imageList.isEmpty()) {
-        setCurrentImage(m_imageList.last());
-    }
-}
-
-void ImageViewerWidget::showImageAt(int index)
-{
-    if (index >= 0 && index < m_imageList.size()) {
-        setCurrentImage(m_imageList.at(index));
-    }
-}
-
-void ImageViewerWidget::startSlideshow()
-{
-    if (m_imageList.isEmpty()) return;
-
-    m_slideshowTimer->start(static_cast<int>(m_slideshowSpeed));
-    m_slideshowAction->setText("Stop Slideshow");
-    emit slideshowStateChanged(true);
-}
-
-void ImageViewerWidget::stopSlideshow()
-{
-    m_slideshowTimer->stop();
-    m_slideshowAction->setText("Start Slideshow");
-    emit slideshowStateChanged(false);
-}
-
-void ImageViewerWidget::setSlideshowSpeed(SlideshowSpeed speed)
-{
-    m_slideshowSpeed = speed;
-    if (m_slideshowTimer->isActive()) {
-        m_slideshowTimer->setInterval(static_cast<int>(speed));
-    }
-}
-
-void ImageViewerWidget::rotateLeft()
-{
-    m_imageView->rotateLeft();
-}
-
-void ImageViewerWidget::rotateRight()
-{
-    m_imageView->rotateRight();
-}
-
-void ImageViewerWidget::flipHorizontal()
-{
-    m_imageView->flipHorizontal();
-}
-
-void ImageViewerWidget::flipVertical()
-{
-    m_imageView->flipVertical();
-}
-
-void ImageViewerWidget::resetTransformations()
-{
-    m_imageView->resetZoom();
-    // Reset rotation and flips would need additional methods in ImageGraphicsView
-}
-
-void ImageViewerWidget::setViewMode(ViewMode mode)
-{
-    m_viewMode = mode;
-
-    if (m_imageView->hasImage()) {
-        switch (mode) {
         case FitToWindow:
             m_imageView->fitToWindow();
             break;
@@ -605,19 +439,130 @@ void ImageViewerWidget::setViewMode(ViewMode mode)
         case CustomZoom:
             // Keep current zoom
             break;
+    }
+}
+
+void ImageViewerWidget::displayError(const QString& message) {
+    // Create error pixmap
+    QPixmap errorPixmap(400, 300);
+    errorPixmap.fill(Qt::gray);
+
+    QPainter painter(&errorPixmap);
+    painter.setPen(Qt::white);
+    painter.drawText(errorPixmap.rect(), Qt::AlignCenter, message);
+
+    m_imageView->setPixmap(errorPixmap);
+}
+
+void ImageViewerWidget::showNextImage() {
+    if (m_imageList.isEmpty())
+        return;
+
+    int nextIndex = (m_currentIndex + 1) % static_cast<int>(m_imageList.size());
+    setCurrentImage(m_imageList.at(nextIndex));
+}
+
+void ImageViewerWidget::showPreviousImage() {
+    if (m_imageList.isEmpty())
+        return;
+
+    int prevIndex = (m_currentIndex - 1 + static_cast<int>(m_imageList.size())) %
+                    static_cast<int>(m_imageList.size());
+    setCurrentImage(m_imageList.at(prevIndex));
+}
+
+void ImageViewerWidget::showFirstImage() {
+    if (!m_imageList.isEmpty()) {
+        setCurrentImage(m_imageList.first());
+    }
+}
+
+void ImageViewerWidget::showLastImage() {
+    if (!m_imageList.isEmpty()) {
+        setCurrentImage(m_imageList.last());
+    }
+}
+
+void ImageViewerWidget::showImageAt(int index) {
+    if (index >= 0 && index < m_imageList.size()) {
+        setCurrentImage(m_imageList.at(index));
+    }
+}
+
+void ImageViewerWidget::startSlideshow() {
+    if (m_imageList.isEmpty())
+        return;
+
+    m_slideshowTimer->start(static_cast<int>(m_slideshowSpeed));
+    m_slideshowAction->setText("Stop Slideshow");
+    emit slideshowStateChanged(true);
+}
+
+void ImageViewerWidget::stopSlideshow() {
+    m_slideshowTimer->stop();
+    m_slideshowAction->setText("Start Slideshow");
+    emit slideshowStateChanged(false);
+}
+
+void ImageViewerWidget::setSlideshowSpeed(SlideshowSpeed speed) {
+    m_slideshowSpeed = speed;
+    if (m_slideshowTimer->isActive()) {
+        m_slideshowTimer->setInterval(static_cast<int>(speed));
+    }
+}
+
+void ImageViewerWidget::rotateLeft() {
+    m_imageView->rotateLeft();
+}
+
+void ImageViewerWidget::rotateRight() {
+    m_imageView->rotateRight();
+}
+
+void ImageViewerWidget::flipHorizontal() {
+    m_imageView->flipHorizontal();
+}
+
+void ImageViewerWidget::flipVertical() {
+    m_imageView->flipVertical();
+}
+
+void ImageViewerWidget::resetTransformations() {
+    m_imageView->resetZoom();
+    // Reset rotation and flips would need additional methods in ImageGraphicsView
+}
+
+void ImageViewerWidget::setViewMode(ViewMode mode) {
+    m_viewMode = mode;
+
+    if (m_imageView->hasImage()) {
+        switch (mode) {
+            case FitToWindow:
+                m_imageView->fitToWindow();
+                break;
+            case FitToWidth:
+                m_imageView->fitToWidth();
+                break;
+            case FitToHeight:
+                m_imageView->fitToHeight();
+                break;
+            case ActualSize:
+                m_imageView->actualSize();
+                break;
+            case CustomZoom:
+                // Keep current zoom
+                break;
         }
     }
 
     emit viewModeChanged(mode);
 }
 
-double ImageViewerWidget::getZoomFactor() const
-{
+double ImageViewerWidget::getZoomFactor() const {
     return m_imageView->getZoomFactor();
 }
 
-void ImageViewerWidget::updateNavigationActions()
-{
+void ImageViewerWidget::updateNavigationActions() {
     bool hasMultiple = m_imageList.size() > 1;
 
     m_previousAction->setEnabled(hasMultiple);
@@ -625,8 +570,7 @@ void ImageViewerWidget::updateNavigationActions()
     m_slideshowAction->setEnabled(hasMultiple);
 }
 
-void ImageViewerWidget::updateImageInfo()
-{
+void ImageViewerWidget::updateImageInfo() {
     if (m_currentImage.isEmpty()) {
         m_imageInfoLabel->clear();
         m_navigationLabel->clear();
@@ -638,10 +582,8 @@ void ImageViewerWidget::updateImageInfo()
     QPixmap pixmap(m_currentImage);
 
     if (!pixmap.isNull()) {
-        QString info = QString("%1 (%2x%3)")
-                      .arg(fileInfo.fileName())
-                      .arg(pixmap.width())
-                      .arg(pixmap.height());
+        QString info =
+            QString("%1 (%2x%3)").arg(fileInfo.fileName()).arg(pixmap.width()).arg(pixmap.height());
         m_imageInfoLabel->setText(info);
     } else {
         m_imageInfoLabel->setText(fileInfo.fileName());
@@ -653,8 +595,7 @@ void ImageViewerWidget::updateImageInfo()
     }
 }
 
-void ImageViewerWidget::updateWindowTitle()
-{
+void ImageViewerWidget::updateWindowTitle() {
     if (m_currentImage.isEmpty()) {
         return;
     }
@@ -667,51 +608,42 @@ void ImageViewerWidget::updateWindowTitle()
     }
 }
 
-void ImageViewerWidget::onSlideshowTimer()
-{
+void ImageViewerWidget::onSlideshowTimer() {
     showNextImage();
 }
 
-void ImageViewerWidget::onZoomIn()
-{
+void ImageViewerWidget::onZoomIn() {
     m_imageView->zoomIn();
     m_viewMode = CustomZoom;
 }
 
-void ImageViewerWidget::onZoomOut()
-{
+void ImageViewerWidget::onZoomOut() {
     m_imageView->zoomOut();
     m_viewMode = CustomZoom;
 }
 
-void ImageViewerWidget::onResetZoom()
-{
+void ImageViewerWidget::onResetZoom() {
     m_imageView->resetZoom();
     m_viewMode = CustomZoom;
 }
 
-void ImageViewerWidget::onFitToWindow()
-{
+void ImageViewerWidget::onFitToWindow() {
     setViewMode(FitToWindow);
 }
 
-void ImageViewerWidget::onFitToWidth()
-{
+void ImageViewerWidget::onFitToWidth() {
     setViewMode(FitToWidth);
 }
 
-void ImageViewerWidget::onFitToHeight()
-{
+void ImageViewerWidget::onFitToHeight() {
     setViewMode(FitToHeight);
 }
 
-void ImageViewerWidget::onActualSize()
-{
+void ImageViewerWidget::onActualSize() {
     setViewMode(ActualSize);
 }
 
-void ImageViewerWidget::onToggleFullscreen()
-{
+void ImageViewerWidget::onToggleFullscreen() {
     m_isFullscreen = !m_isFullscreen;
 
     if (m_isFullscreen) {
@@ -727,34 +659,39 @@ void ImageViewerWidget::onToggleFullscreen()
     }
 }
 
-void ImageViewerWidget::onToggleImageInfo()
-{
+void ImageViewerWidget::onToggleImageInfo() {
     m_showImageInfo = !m_showImageInfo;
     m_infoPanel->setVisible(m_showImageInfo && !m_isFullscreen);
     m_infoAction->setChecked(m_showImageInfo);
 }
 
-void ImageViewerWidget::onImageLoaded()
-{
+void ImageViewerWidget::onImageLoaded() {
     // Update UI after image is loaded
     updateNavigationActions();
     updateImageInfo();
 
     // Enable relevant actions
-    if (m_zoomInAction) m_zoomInAction->setEnabled(true);
-    if (m_zoomOutAction) m_zoomOutAction->setEnabled(true);
-    if (m_fitToWindowAction) m_fitToWindowAction->setEnabled(true);
-    if (m_actualSizeAction) m_actualSizeAction->setEnabled(true);
-    if (m_rotateLeftAction) m_rotateLeftAction->setEnabled(true);
-    if (m_rotateRightAction) m_rotateRightAction->setEnabled(true);
-    if (m_flipHorizontalAction) m_flipHorizontalAction->setEnabled(true);
-    if (m_flipVerticalAction) m_flipVerticalAction->setEnabled(true);
+    if (m_zoomInAction)
+        m_zoomInAction->setEnabled(true);
+    if (m_zoomOutAction)
+        m_zoomOutAction->setEnabled(true);
+    if (m_fitToWindowAction)
+        m_fitToWindowAction->setEnabled(true);
+    if (m_actualSizeAction)
+        m_actualSizeAction->setEnabled(true);
+    if (m_rotateLeftAction)
+        m_rotateLeftAction->setEnabled(true);
+    if (m_rotateRightAction)
+        m_rotateRightAction->setEnabled(true);
+    if (m_flipHorizontalAction)
+        m_flipHorizontalAction->setEnabled(true);
+    if (m_flipVerticalAction)
+        m_flipVerticalAction->setEnabled(true);
 
     emit imageLoaded(m_currentImage);
 }
 
-void ImageViewerWidget::onZoomSliderChanged(int value)
-{
+void ImageViewerWidget::onZoomSliderChanged(int value) {
     if (m_imageView) {
         // Convert slider value to zoom factor
         // Assuming slider range is 10-500 (representing 10% to 500%)
@@ -771,8 +708,7 @@ void ImageViewerWidget::onZoomSliderChanged(int value)
     }
 }
 
-void ImageViewerWidget::onViewModeChanged()
-{
+void ImageViewerWidget::onViewModeChanged() {
     // Update UI based on current view mode
     updateNavigationActions();
 

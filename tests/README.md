@@ -37,8 +37,6 @@ tests/
 
 **Component Unit Tests** (`tests/unit/components/`)
 - `test_theme_manager.cpp/h` - Theme management system
-- `test_modern_search_widget.cpp/h` - Search widget functionality
-- `test_modern_sidebar_widget.cpp/h` - Sidebar widget behavior
 - `test_batch_export_manager.cpp/h` - Export management system
 - `test_icon_metadata_manager.cpp/h` - Metadata handling
 - `test_responsive_layout_manager.cpp/h` - Layout management

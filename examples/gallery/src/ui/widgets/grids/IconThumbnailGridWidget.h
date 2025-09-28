@@ -14,29 +14,29 @@
 #ifndef ICONTHUMBNAILGRIDWIDGET_H
 #define ICONTHUMBNAILGRIDWIDGET_H
 
-#include <QWidget>
-#include <QScrollArea>
-#include <QGridLayout>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QPushButton>
-#include <QPixmap>
-#include <QTimer>
-#include <QPropertyAnimation>
-#include <QGraphicsEffect>
-#include <QToolTip>
-#include <QMenu>
 #include <QContextMenuEvent>
+#include <QGraphicsEffect>
+#include <QGridLayout>
 #include <QKeyEvent>
+#include <QLabel>
+#include <QMenu>
+#include <QPixmap>
+#include <QPropertyAnimation>
+#include <QPushButton>
+#include <QScrollArea>
+#include <QTimer>
+#include <QToolTip>
+#include <QVBoxLayout>
+#include <QWidget>
 
 #include "../../config/LayoutConfig.h"
-#include <QMouseEvent>
-#include <QWheelEvent>
+#include <QApplication>
+#include <QClipboard>
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QMimeData>
-#include <QApplication>
-#include <QClipboard>
+#include <QMouseEvent>
+#include <QWheelEvent>
 
 // Forward declarations
 class ContentManager;
@@ -46,8 +46,7 @@ class FavoritesManager;
 /**
  * @brief Individual thumbnail item widget
  */
-class IconThumbnailItem : public QWidget
-{
+class IconThumbnailItem : public QWidget {
     Q_OBJECT
 
 public:
@@ -116,8 +115,7 @@ private:
 /**
  * @brief Virtual scrolling thumbnail grid widget
  */
-class IconThumbnailGridWidget : public QWidget
-{
+class IconThumbnailGridWidget : public QWidget {
     Q_OBJECT
 
 public:

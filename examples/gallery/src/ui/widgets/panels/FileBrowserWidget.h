@@ -8,31 +8,31 @@
 #ifndef FILEBROWSERWIDGET_H
 #define FILEBROWSERWIDGET_H
 
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QSplitter>
-#include <QTreeView>
-#include <QListView>
-#include <QLabel>
-#include <QPushButton>
-#include <QToolButton>
-#include <QLineEdit>
 #include <QComboBox>
-#include <QProgressBar>
-#include <QFileSystemModel>
-#include <QSortFilterProxyModel>
-#include <QStandardItemModel>
-#include <QStyledItemDelegate>
 #include <QDir>
 #include <QFileInfo>
-#include <QMimeDatabase>
-#include <QTimer>
-#include <QThread>
-#include <QMutex>
+#include <QFileSystemModel>
 #include <QFutureWatcher>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QListView>
+#include <QMimeDatabase>
+#include <QMutex>
+#include <QProgressBar>
+#include <QPushButton>
+#include <QSortFilterProxyModel>
+#include <QSplitter>
+#include <QStandardItemModel>
+#include <QStyledItemDelegate>
+#include <QThread>
+#include <QTimer>
+#include <QToolButton>
+#include <QTreeView>
+#include <QVBoxLayout>
+#include <QWidget>
 #ifdef QTLUCIDE_HAS_CONCURRENT
-#include <QtConcurrent>
+    #include <QtConcurrent>
 #endif
 
 #include "ContentManager.h"
@@ -41,18 +41,17 @@
 /**
  * @brief Custom file system model with image filtering
  */
-class ImageFileSystemModel : public QFileSystemModel
-{
+class ImageFileSystemModel : public QFileSystemModel {
     Q_OBJECT
 
 public:
-    explicit ImageFileSystemModel(QObject *parent = nullptr);
+    explicit ImageFileSystemModel(QObject* parent = nullptr);
 
     void setImageMetadataManager(ImageMetadataManager* manager);
     void setShowOnlyImages(bool showOnly);
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+    bool filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const;
 
 private:
     ImageMetadataManager* m_metadataManager;
@@ -63,20 +62,18 @@ private:
 /**
  * @brief Thumbnail delegate for file list view
  */
-class ThumbnailDelegate : public QStyledItemDelegate
-{
+class ThumbnailDelegate : public QStyledItemDelegate {
     Q_OBJECT
 
 public:
-    explicit ThumbnailDelegate(QObject *parent = nullptr);
+    explicit ThumbnailDelegate(QObject* parent = nullptr);
 
     void setThumbnailSize(const QSize& size);
     void setContentManager(ContentManager* manager);
 
-    void paint(QPainter *painter, const QStyleOptionViewItem &option,
-               const QModelIndex &index) const override;
-    QSize sizeHint(const QStyleOptionViewItem &option,
-                   const QModelIndex &index) const override;
+    void paint(QPainter* painter, const QStyleOptionViewItem& option,
+               const QModelIndex& index) const override;
+    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
 private:
     QSize m_thumbnailSize;
@@ -87,19 +84,14 @@ private:
 /**
  * @brief Main file browser widget
  */
-class FileBrowserWidget : public QWidget
-{
+class FileBrowserWidget : public QWidget {
     Q_OBJECT
 
 public:
-    enum ViewMode {
-        TreeView,
-        ListView,
-        ThumbnailView
-    };
+    enum ViewMode { TreeView, ListView, ThumbnailView };
     Q_ENUM(ViewMode)
 
-    explicit FileBrowserWidget(QWidget *parent = nullptr);
+    explicit FileBrowserWidget(QWidget* parent = nullptr);
     ~FileBrowserWidget();
 
     // Setup
@@ -239,12 +231,11 @@ private:
 /**
  * @brief Directory scanner for background loading
  */
-class DirectoryScanner : public QObject
-{
+class DirectoryScanner : public QObject {
     Q_OBJECT
 
 public:
-    explicit DirectoryScanner(QObject *parent = nullptr);
+    explicit DirectoryScanner(QObject* parent = nullptr);
 
     void scanDirectory(const QString& path, const QStringList& filters);
     void cancel();

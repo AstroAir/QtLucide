@@ -175,7 +175,6 @@ Thumbs.db
 desktop.ini
 
 # Core dumps
-core
 core.*
 *.core
 *.stackdump

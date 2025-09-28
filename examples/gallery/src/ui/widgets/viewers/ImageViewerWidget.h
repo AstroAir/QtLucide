@@ -8,47 +8,46 @@
 #ifndef IMAGEVIEWERWIDGET_H
 #define IMAGEVIEWERWIDGET_H
 
-#include <QWidget>
-#include <QLabel>
-#include <QScrollArea>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QToolBar>
 #include <QAction>
+#include <QComboBox>
+#include <QFileInfo>
+#include <QGestureEvent>
+#include <QGraphicsOpacityEffect>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QHBoxLayout>
+#include <QKeyEvent>
+#include <QLabel>
+#include <QMimeDatabase>
+#include <QMouseEvent>
+#include <QMovie>
+#include <QPaintEvent>
+#include <QPixmap>
+#include <QProgressBar>
+#include <QPropertyAnimation>
+#include <QPushButton>
+#include <QResizeEvent>
+#include <QScrollArea>
+#include <QScrollBar>
 #include <QSlider>
 #include <QSpinBox>
-#include <QPushButton>
-#include <QComboBox>
-#include <QProgressBar>
 #include <QTimer>
-#include <QPropertyAnimation>
-#include <QGraphicsView>
-#include <QGraphicsScene>
-#include <QGraphicsPixmapItem>
-#include <QGraphicsOpacityEffect>
-#include <QScrollBar>
+#include <QToolBar>
+#include <QVBoxLayout>
 #include <QWheelEvent>
-#include <QMouseEvent>
-#include <QKeyEvent>
-#include <QResizeEvent>
-#include <QPaintEvent>
-#include <QGestureEvent>
-#include <QPixmap>
-#include <QMovie>
-#include <QFileInfo>
-#include <QMimeDatabase>
+#include <QWidget>
 
 #include "ContentManager.h"
 
 /**
  * @brief Enhanced graphics view for image display with zoom and pan
  */
-class ImageGraphicsView : public QGraphicsView
-{
+class ImageGraphicsView : public QGraphicsView {
     Q_OBJECT
 
 public:
-    explicit ImageGraphicsView(QWidget *parent = nullptr);
+    explicit ImageGraphicsView(QWidget* parent = nullptr);
 
     void setPixmap(const QPixmap& pixmap);
     void setZoomFactor(double factor);
@@ -75,14 +74,14 @@ signals:
     void imageDoubleClicked(const QPoint& position);
 
 protected:
-    void wheelEvent(QWheelEvent *event) override;
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
-    void mouseDoubleClickEvent(QMouseEvent *event) override;
-    void keyPressEvent(QKeyEvent *event) override;
-    void resizeEvent(QResizeEvent *event) override;
-    bool event(QEvent *event) override;
+    void wheelEvent(QWheelEvent* event) override;
+    void mousePressEvent(QMouseEvent* event) override;
+    void mouseMoveEvent(QMouseEvent* event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
+    void mouseDoubleClickEvent(QMouseEvent* event) override;
+    void keyPressEvent(QKeyEvent* event) override;
+    void resizeEvent(QResizeEvent* event) override;
+    bool event(QEvent* event) override;
 
 private:
     void updateTransform();
@@ -106,30 +105,23 @@ private:
 /**
  * @brief Main image viewer widget with full functionality
  */
-class ImageViewerWidget : public QWidget
-{
+class ImageViewerWidget : public QWidget {
     Q_OBJECT
 
 public:
-    enum ViewMode {
-        FitToWindow,
-        FitToWidth,
-        FitToHeight,
-        ActualSize,
-        CustomZoom
-    };
+    enum ViewMode { FitToWindow, FitToWidth, FitToHeight, ActualSize, CustomZoom };
     Q_ENUM(ViewMode)
 
     enum SlideshowSpeed {
-        VerySlow = 10000,  // 10 seconds
-        Slow = 5000,       // 5 seconds
-        Normal = 3000,     // 3 seconds
-        Fast = 1500,       // 1.5 seconds
-        VeryFast = 1000    // 1 second
+        VerySlow = 10000, // 10 seconds
+        Slow = 5000,      // 5 seconds
+        Normal = 3000,    // 3 seconds
+        Fast = 1500,      // 1.5 seconds
+        VeryFast = 1000   // 1 second
     };
     Q_ENUM(SlideshowSpeed)
 
-    explicit ImageViewerWidget(QWidget *parent = nullptr);
+    explicit ImageViewerWidget(QWidget* parent = nullptr);
     ~ImageViewerWidget();
 
     // Content management
@@ -187,7 +179,7 @@ signals:
     void viewModeChanged(ViewMode mode);
     void slideshowStateChanged(bool active);
     void loadingStarted(const QString& identifier);
-    void imageLoaded(const QString& identifier);  // Added for compatibility
+    void imageLoaded(const QString& identifier); // Added for compatibility
     void loadingFinished(const QString& identifier);
     void loadingFailed(const QString& identifier, const QString& error);
 
@@ -243,7 +235,7 @@ private:
     QAction* m_infoAction;
 
     QSlider* m_zoomSlider;
-    QLabel* m_zoomLabel;  // Added for compatibility
+    QLabel* m_zoomLabel; // Added for compatibility
     QComboBox* m_viewModeCombo;
     QProgressBar* m_loadingProgress;
 

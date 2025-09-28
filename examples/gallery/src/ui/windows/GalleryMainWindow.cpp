@@ -3,105 +3,77 @@
  */
 
 #include "GalleryMainWindow.h"
-#include "../widgets/grids/IconGridWidget.h"
-#include "../widgets/grids/IconThumbnailGridWidget.h"
-#include "../widgets/panels/IconDetailsPanel.h"
-#include "../widgets/panels/CategorySidebarWidget.h"
-#include "../widgets/search/SearchWidget.h"
-#include "../widgets/search/IconSearchWidget.h"
-#include "../widgets/search/CategoryFilterWidget.h"
-#include "../../core/managers/IconMetadataManager.h"
-#include "../../core/managers/ImageMetadataManager.h"
+#include "../../config/LayoutConfig.h"
 #include "../../core/managers/ContentManager.h"
 #include "../../core/managers/FavoritesManager.h"
-#include "../widgets/viewers/ImageViewerWidget.h"
-#include "FileBrowserWidget.h"
-#include "PreferencesDialog.h"
-#include "IconExportDialog.h"
-#include "../../core/utils/GalleryLogger.h"
+#include "../../core/managers/IconMetadataManager.h"
+#include "../../core/managers/ImageMetadataManager.h"
 #include "../../core/utils/ErrorHandler.h"
-#include "../../config/LayoutConfig.h"
+#include "../../core/utils/GalleryLogger.h"
+#include "../dialogs/IconExportDialog.h"
+#include "../dialogs/PreferencesDialog.h"
+#include "../widgets/grids/IconGridWidget.h"
+#include "../widgets/grids/IconThumbnailGridWidget.h"
+#include "../widgets/panels/CategorySidebarWidget.h"
+#include "../widgets/panels/FileBrowserWidget.h"
+#include "../widgets/panels/IconDetailsPanel.h"
+#include "../widgets/search/CategoryFilterWidget.h"
+#include "../widgets/search/IconSearchWidget.h"
+#include "../widgets/search/SearchWidget.h"
+#include "../widgets/viewers/ImageViewerWidget.h"
 
-#include <QApplication>
-#include <QWidget>
-#include <QSettings>
-#include <QTimer>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QStandardPaths>
-#include <QDesktopServices>
-#include <QUrl>
-#include <QDebug>
-#include <QSplitter>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QStackedWidget>
-#include <QToolBar>
-#include <QMenuBar>
-#include <QStatusBar>
-#include <QLabel>
-#include <QProgressBar>
-#include <QShortcut>
 #include <QActionGroup>
+#include <QApplication>
 #include <QCloseEvent>
-#include <QKeyEvent>
+#include <QDebug>
+#include <QDesktopServices>
 #include <QDragEnterEvent>
 #include <QDropEvent>
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QKeyEvent>
+#include <QLabel>
+#include <QMenuBar>
+#include <QMessageBox>
 #include <QMimeData>
+#include <QProgressBar>
+#include <QSettings>
+#include <QShortcut>
+#include <QSplitter>
+#include <QStackedWidget>
+#include <QStandardPaths>
+#include <QStatusBar>
+#include <QTimer>
+#include <QToolBar>
+#include <QUrl>
+#include <QVBoxLayout>
+#include <QWidget>
 
-GalleryMainWindow::GalleryMainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , m_lucide(nullptr)
-    , m_metadataManager(nullptr)
-    , m_imageMetadataManager(nullptr)
-    , m_contentManager(nullptr)
-    , m_favoritesManager(nullptr)
-    , m_centralWidget(nullptr)
-    , m_stackedWidget(nullptr)
-    , m_viewStack(nullptr)
-    , m_mainSplitter(nullptr)
-    , m_rightSplitter(nullptr)
-    , m_leftSplitter(nullptr)
-    , m_contentSplitter(nullptr)
-    , m_searchWidget(nullptr)
-    , m_iconSearchWidget(nullptr)
-    , m_categoryFilter(nullptr)
-    , m_categorySidebar(nullptr)
-    , m_iconGrid(nullptr)
-    , m_thumbnailGrid(nullptr)
-    , m_detailsPanel(nullptr)
-    , m_imageViewer(nullptr)
-    , m_fileBrowser(nullptr)
-    , m_mainToolbar(nullptr)
-    , m_viewToolbar(nullptr)
-    , m_statusLabel(nullptr)
-    , m_iconCountLabel(nullptr)
-    , m_currentIconLabel(nullptr)
-    , m_progressBar(nullptr)
-    , m_fullscreenAction(nullptr)
-    , m_toggleFavoriteAction(nullptr)
-    , m_viewModeGroup(nullptr)
-    , m_settings(new QSettings(this))
-    , m_showTooltips(true)
-    , m_exportDialogEnhanced(nullptr)
-    , m_settingsDialog(nullptr)
-    , m_themeGroup(nullptr)
-    , m_currentViewModeEnum(SplitView)
-    , m_currentTheme(SystemTheme)
-    , m_thumbnailSize(64)
-    , m_slideshowInterval(3000)
-    , m_autoSaveSettings(true)
-    , m_statusUpdateTimer(new QTimer(this))
-    , m_slideshowTimer(new QTimer(this))
-{
-    GALLERY_LOG_INFO(galleryInit, "Consolidated GalleryMainWindow constructor started");
-    GALLERY_START_TIMER("MainWindow initialization");
+GalleryMainWindow::GalleryMainWindow(QWidget* parent)
+    : QMainWindow(parent), m_lucide(nullptr), m_metadataManager(nullptr),
+      m_imageMetadataManager(nullptr), m_contentManager(nullptr), m_favoritesManager(nullptr),
+      m_centralWidget(nullptr), m_stackedWidget(nullptr), m_viewStack(nullptr),
+      m_mainSplitter(nullptr), m_rightSplitter(nullptr), m_leftSplitter(nullptr),
+      m_contentSplitter(nullptr), m_searchWidget(nullptr), m_iconSearchWidget(nullptr),
+      m_categoryFilter(nullptr), m_categorySidebar(nullptr), m_iconGrid(nullptr),
+      m_thumbnailGrid(nullptr), m_detailsPanel(nullptr), m_imageViewer(nullptr),
+      m_fileBrowser(nullptr), m_mainToolbar(nullptr), m_viewToolbar(nullptr),
+      m_statusLabel(nullptr), m_iconCountLabel(nullptr), m_currentIconLabel(nullptr),
+      m_progressBar(nullptr), m_fullscreenAction(nullptr), m_toggleFavoriteAction(nullptr),
+      m_viewModeGroup(nullptr), m_settings(new QSettings(this)), m_themeGroup(nullptr),
+      m_showTooltips(true), m_exportDialogEnhanced(nullptr), m_settingsDialog(nullptr),
+      m_currentViewModeEnum(SplitView), m_currentTheme(SystemTheme), m_thumbnailSize(64),
+      m_slideshowInterval(3000), m_autoSaveSettings(true), m_statusUpdateTimer(new QTimer(this)),
+      m_slideshowTimer(new QTimer(this)) {
+    // GALLERY_LOG_INFO(galleryInit, "Consolidated GalleryMainWindow constructor started");
+    // GALLERY_START_TIMER("MainWindow initialization");
+    qDebug() << "GalleryMainWindow constructor started";
 
     setWindowTitle("QtLucide Enhanced Icon & Image Gallery");
 
     // Enhanced window sizing with responsive constraints
-    setMinimumSize(800, 600);  // Minimum usable size
-    resize(1200, 800);         // Optimal default size
+    setMinimumSize(800, 600); // Minimum usable size
+    resize(1200, 800);        // Optimal default size
 
     // Set size policy for better responsive behavior
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -109,80 +81,116 @@ GalleryMainWindow::GalleryMainWindow(QWidget *parent)
     // Enable drag and drop
     setAcceptDrops(true);
 
-    GALLERY_LOG_DEBUG(galleryInit, "Window properties set");
+    // GALLERY_LOG_DEBUG(galleryInit, "Window properties set");
+    qDebug() << "Window properties set";
 
     // Initialize core components first
-    GALLERY_LOG_INFO(galleryInit, "Initializing components");
+    // GALLERY_LOG_INFO(galleryInit, "Initializing components");
+    qDebug() << "Initializing components";
     initializeComponents();
 
     // Initialize icon system
-    GALLERY_LOG_INFO(galleryInit, "Initializing icon system");
+    // GALLERY_LOG_INFO(galleryInit, "Initializing icon system");
+    qDebug() << "Initializing icon system";
     initializeIconSystem();
 
     // Setup UI
-    GALLERY_LOG_INFO(galleryInit, "Setting up UI components");
+    // GALLERY_LOG_INFO(galleryInit, "Setting up UI components");
+    qDebug() << "Setting up UI components";
     setupUI();
-    setupMenuBar();
-    setupToolBars();
-    setupStatusBar();
     setupShortcuts();
 
-    GALLERY_LOG_INFO(galleryInit, "Setting up connections");
+    // GALLERY_LOG_INFO(galleryInit, "Setting up connections");
+    qDebug() << "Setting up connections";
     setupConnections();
 
     // Load settings and restore state
-    GALLERY_LOG_INFO(galleryInit, "Loading settings");
+    // GALLERY_LOG_INFO(galleryInit, "Loading settings");
+    qDebug() << "Loading settings";
     loadSettings();
     applyTheme();
 
     // Setup status update timer
-    GALLERY_LOG_DEBUG(galleryInit, "Setting up status update timer");
+    // GALLERY_LOG_DEBUG(galleryInit, "Setting up status update timer");
+    qDebug() << "Setting up status update timer";
     m_statusUpdateTimer->setSingleShot(true);
     m_statusUpdateTimer->setInterval(500);
     connect(m_statusUpdateTimer, &QTimer::timeout, this, &GalleryMainWindow::updateStatusBar);
 
     // Set application icon
-    GALLERY_LOG_DEBUG(galleryInit, "Setting up application icon");
+    // GALLERY_LOG_DEBUG(galleryInit, "Setting up application icon");
+    qDebug() << "Setting up application icon";
     setupApplicationIcon();
 
-    GALLERY_END_TIMER("MainWindow initialization");
-    GALLERY_LOG_INFO(galleryInit, "GalleryMainWindow constructor completed");
-    GALLERY_LOG_MEMORY("After MainWindow construction");
+    // GALLERY_END_TIMER("MainWindow initialization");
+    // GALLERY_LOG_INFO(galleryInit, "GalleryMainWindow constructor completed");
+    // GALLERY_LOG_MEMORY("After MainWindow construction");
+    qDebug() << "GalleryMainWindow constructor completed";
 }
 
-GalleryMainWindow::~GalleryMainWindow()
-{
+GalleryMainWindow::~GalleryMainWindow() {
     saveSettings();
 }
 
-void GalleryMainWindow::initializeComponents()
-{
-    GALLERY_LOG_INFO(galleryInit, "Initializing core components");
+void GalleryMainWindow::initializeComponents() {
+    // GALLERY_LOG_INFO(galleryInit, "Initializing core components");
+    qDebug() << "Initializing core components";
 
     // Create core managers (only those available in current build)
     if (!m_lucide) {
+        qDebug() << "Creating QtLucide instance";
         m_lucide = new lucide::QtLucide(this);
     }
 
     // Only create managers that are available in the current build configuration
     if (!m_metadataManager) {
-        m_metadataManager = new IconMetadataManager(this);
+        qDebug() << "Creating IconMetadataManager";
+        try {
+            m_metadataManager = new IconMetadataManager(this);
+            qDebug() << "IconMetadataManager created successfully";
+        } catch (const std::exception& e) {
+            qCritical() << "Failed to create IconMetadataManager:" << e.what();
+            m_metadataManager = nullptr;
+        } catch (...) {
+            qCritical() << "Failed to create IconMetadataManager: Unknown error";
+            m_metadataManager = nullptr;
+        }
     }
 
-    // Note: ContentManager, ImageMetadataManager, and FavoritesManager
+    // Create FavoritesManager
+    if (!m_favoritesManager) {
+        qDebug() << "Creating FavoritesManager";
+        try {
+            m_favoritesManager = new FavoritesManager(this);
+            if (m_metadataManager) {
+                m_favoritesManager->setIconMetadataManager(m_metadataManager);
+            }
+            qDebug() << "FavoritesManager created successfully";
+        } catch (const std::exception& e) {
+            qCritical() << "Failed to create FavoritesManager:" << e.what();
+            m_favoritesManager = nullptr;
+        } catch (...) {
+            qCritical() << "Failed to create FavoritesManager: Unknown error";
+            m_favoritesManager = nullptr;
+        }
+    }
+
+    // Note: ContentManager and ImageMetadataManager
     // are only created if they're available in the build configuration
     // This allows the consolidated window to work in different build contexts
 
-    GALLERY_LOG_INFO(galleryInit, "Core components initialized");
+    // GALLERY_LOG_INFO(galleryInit, "Core components initialized");
+    qDebug() << "Core components initialized";
 }
 
-void GalleryMainWindow::initializeIconSystem()
-{
+void GalleryMainWindow::initializeIconSystem() {
     GALLERY_START_TIMER("Icon system initialization");
 
-    // Create QtLucide instance
-    GALLERY_LOG_DEBUG(galleryInit, "Creating QtLucide instance");
-    m_lucide = new lucide::QtLucide(this);
+    // Initialize QtLucide if not already created
+    if (!m_lucide) {
+        GALLERY_LOG_DEBUG(galleryInit, "Creating QtLucide instance");
+        m_lucide = new lucide::QtLucide(this);
+    }
 
     GALLERY_LOG_INFO(galleryInit, "Initializing QtLucide");
     if (!m_lucide->initLucide()) {
@@ -193,33 +201,38 @@ void GalleryMainWindow::initializeIconSystem()
     }
 
     int iconCount = static_cast<int>(m_lucide->availableIcons().size());
-    GALLERY_LOG_INFO(galleryInit, QString("QtLucide initialized successfully with %1 icons").arg(iconCount));
+    GALLERY_LOG_INFO(galleryInit,
+                     QString("QtLucide initialized successfully with %1 icons").arg(iconCount));
 
-    // Create metadata manager
-    GALLERY_LOG_DEBUG(galleryInit, "Creating IconMetadataManager");
-    m_metadataManager = new IconMetadataManager(this);
+    // Use existing metadata manager if already created
+    if (!m_metadataManager) {
+        GALLERY_LOG_DEBUG(galleryInit, "Creating IconMetadataManager");
+        m_metadataManager = new IconMetadataManager(this);
+    }
 
     // Connect metadata manager signals
     GALLERY_LOG_DEBUG(galleryInit, "Connecting metadata manager signals");
-    connect(m_metadataManager, &IconMetadataManager::metadataLoaded,
-            this, &GalleryMainWindow::onIconsLoaded);
-    connect(m_metadataManager, &IconMetadataManager::metadataLoadFailed,
-            this, [this](const QString& error) {
-                GALLERY_LOG_CRITICAL(galleryMetadata, QString("Metadata loading failed: %1").arg(error));
-                ErrorHandler::reportError(
-                    QString("Failed to load icon metadata: %1").arg(error),
-                    ErrorSeverity::Critical,
-                    ErrorCategory::Resource,
-                    "IconMetadataManager initialization"
-                );
-                ErrorHandler::showErrorDialog(this, "Loading Error",
+    connect(m_metadataManager, &IconMetadataManager::metadataLoaded, this,
+            &GalleryMainWindow::onIconsLoaded);
+    connect(m_metadataManager, &IconMetadataManager::metadataLoadFailed, this,
+            [this](const QString& error) {
+                GALLERY_LOG_CRITICAL(galleryMetadata,
+                                     QString("Metadata loading failed: %1").arg(error));
+                ErrorHandler::reportError(QString("Failed to load icon metadata: %1").arg(error),
+                                          ErrorSeverity::Critical, ErrorCategory::Resource,
+                                          "IconMetadataManager initialization");
+                ErrorHandler::showErrorDialog(
+                    this, "Loading Error",
                     "Failed to load icon metadata. The application may not function correctly.",
                     error);
             });
-    connect(m_metadataManager, &IconMetadataManager::filteredIconsChanged,
-            this, [this](const QStringList& iconNames) {
-                GALLERY_LOG_DEBUG(gallerySearch, QString("Filtered icons changed: %1 icons").arg(iconNames.size()));
-                onFilteredIconsChanged(static_cast<int>(iconNames.size()), m_metadataManager->getTotalIconCount());
+    connect(m_metadataManager, &IconMetadataManager::filteredIconsChanged, this,
+            [this](const QStringList& iconNames) {
+                GALLERY_LOG_DEBUG(
+                    gallerySearch,
+                    QString("Filtered icons changed: %1 icons").arg(iconNames.size()));
+                onFilteredIconsChanged(static_cast<int>(iconNames.size()),
+                                       m_metadataManager->getTotalIconCount());
             });
 
     // Start loading metadata
@@ -227,11 +240,16 @@ void GalleryMainWindow::initializeIconSystem()
     GALLERY_START_TIMER("Metadata loading");
     m_metadataManager->loadMetadata();
 
+    // Load favorites data
+    if (m_favoritesManager) {
+        GALLERY_LOG_INFO(galleryInit, "Loading favorites data");
+        m_favoritesManager->loadFavorites();
+    }
+
     GALLERY_END_TIMER("Icon system initialization");
 }
 
-void GalleryMainWindow::setupUI()
-{
+void GalleryMainWindow::setupUI() {
     createActions();
     setupMenuBar();
     setupToolBars();
@@ -239,8 +257,7 @@ void GalleryMainWindow::setupUI()
     setupCentralWidget();
 }
 
-void GalleryMainWindow::createActions()
-{
+void GalleryMainWindow::createActions() {
     // File menu actions
     m_aboutAction = new QAction("&About QtLucide Gallery", this);
     m_aboutAction->setStatusTip("Show information about QtLucide Gallery");
@@ -393,8 +410,7 @@ void GalleryMainWindow::createActions()
     addAction(refreshAction);
 }
 
-void GalleryMainWindow::setupMenuBar()
-{
+void GalleryMainWindow::setupMenuBar() {
     // File menu
     QMenu* fileMenu = menuBar()->addMenu("&File");
     fileMenu->addAction(m_exportAction);
@@ -436,8 +452,7 @@ void GalleryMainWindow::setupMenuBar()
     helpMenu->addAction(m_aboutQtAction);
 }
 
-void GalleryMainWindow::setupToolBars()
-{
+void GalleryMainWindow::setupToolBars() {
     m_mainToolBar = addToolBar("Main");
     m_mainToolBar->setObjectName("MainToolBar");
     m_mainToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -464,8 +479,7 @@ void GalleryMainWindow::setupToolBars()
     }
 }
 
-void GalleryMainWindow::setupStatusBar()
-{
+void GalleryMainWindow::setupStatusBar() {
     m_statusLabel = new QLabel("Ready", this);
     m_iconCountLabel = new QLabel("0 icons", this);
     m_progressBar = new QProgressBar(this);
@@ -479,35 +493,69 @@ void GalleryMainWindow::setupStatusBar()
     updateStatusBar();
 }
 
-void GalleryMainWindow::setupCentralWidget()
-{
+void GalleryMainWindow::setupCentralWidget() {
     m_centralWidget = new QWidget(this);
     setCentralWidget(m_centralWidget);
 
     // Create main horizontal splitter
     m_mainSplitter = new QSplitter(Qt::Horizontal, this);
 
-    // Create search widget
-    m_searchWidget = new SearchWidget(m_metadataManager, this);
+    // Create search widget (only if metadata manager is available)
+    if (m_metadataManager) {
+        m_searchWidget = new SearchWidget(m_metadataManager, this);
+    } else {
+        qWarning() << "Cannot create SearchWidget: IconMetadataManager is null";
+        m_searchWidget = nullptr;
+    }
 
-    // Create category filter
-    m_categoryFilter = new CategoryFilterWidget(m_metadataManager, this);
+    // Create category filter (only if metadata manager is available)
+    if (m_metadataManager) {
+        m_categoryFilter = new CategoryFilterWidget(m_metadataManager, this);
+    } else {
+        qWarning() << "Cannot create CategoryFilterWidget: IconMetadataManager is null";
+        m_categoryFilter = nullptr;
+    }
 
     // Create icon grid
     m_iconGrid = new IconGridWidget(this);
-    m_iconGrid->setLucide(m_lucide);
-    m_iconGrid->setMetadataManager(m_metadataManager);
+    if (m_lucide) {
+        m_iconGrid->setLucide(m_lucide);
+    }
+    if (m_metadataManager) {
+        m_iconGrid->setMetadataManager(m_metadataManager);
+    } else {
+        qWarning() << "Cannot set metadata manager for IconGridWidget: IconMetadataManager is null";
+    }
 
-    // Create details panel
-    m_detailsPanel = new IconDetailsPanel(m_lucide, m_metadataManager, this);
+    // Create details panel (only if both lucide and metadata manager are available)
+    if (m_lucide && m_metadataManager) {
+        m_detailsPanel = new IconDetailsPanel(m_lucide, m_metadataManager, this);
+    } else {
+        qWarning() << "Cannot create IconDetailsPanel: Missing dependencies (lucide:"
+                   << (m_lucide ? "OK" : "NULL") << ", metadata:"
+                   << (m_metadataManager ? "OK" : "NULL") << ")";
+        m_detailsPanel = nullptr;
+    }
 
     // Create right splitter for grid and details
     m_rightSplitter = new QSplitter(Qt::Vertical, this);
 
     // Setup layout
     QVBoxLayout* leftLayout = new QVBoxLayout();
-    leftLayout->addWidget(m_searchWidget);
-    leftLayout->addWidget(m_categoryFilter, 1);
+    if (m_searchWidget) {
+        leftLayout->addWidget(m_searchWidget);
+    }
+    if (m_categoryFilter) {
+        leftLayout->addWidget(m_categoryFilter, 1);
+    }
+
+    // If no widgets were added to left layout, add a placeholder
+    if (leftLayout->count() == 0) {
+        QLabel* placeholder = new QLabel("Search and filters unavailable\n(Metadata manager failed to initialize)", this);
+        placeholder->setAlignment(Qt::AlignCenter);
+        placeholder->setStyleSheet("color: gray; font-style: italic;");
+        leftLayout->addWidget(placeholder);
+    }
 
     QWidget* leftWidget = new QWidget();
     leftWidget->setLayout(leftLayout);
@@ -516,28 +564,45 @@ void GalleryMainWindow::setupCentralWidget()
 
     QVBoxLayout* centerLayout = new QVBoxLayout();
     centerLayout->setContentsMargins(0, 0, 0, 0);
-    centerLayout->addWidget(m_iconGrid, 1);
+    if (m_iconGrid) {
+        centerLayout->addWidget(m_iconGrid, 1);
+    }
 
     QWidget* centerWidget = new QWidget();
     centerWidget->setLayout(centerLayout);
 
     m_rightSplitter->addWidget(centerWidget);
-    m_rightSplitter->addWidget(m_detailsPanel);
-    m_rightSplitter->setStretchFactor(0, 1);
-    m_rightSplitter->setStretchFactor(1, 0);
+    if (m_detailsPanel) {
+        m_rightSplitter->addWidget(m_detailsPanel);
+        m_rightSplitter->setStretchFactor(0, 1);
+        m_rightSplitter->setStretchFactor(1, 0);
+    } else {
+        // If no details panel, just use the center widget
+        m_rightSplitter->setStretchFactor(0, 1);
+    }
 
     m_mainSplitter->addWidget(leftWidget);
     m_mainSplitter->addWidget(m_rightSplitter);
     m_mainSplitter->setStretchFactor(0, 0);
     m_mainSplitter->setStretchFactor(1, 1);
 
+    // Set initial splitter sizes for better responsive behavior
+    m_mainSplitter->setSizes({280, 800}); // Left panel: 280px, Right panel: remaining
+
+    // Configure splitter properties for better user experience
+    m_mainSplitter->setChildrenCollapsible(false); // Prevent panels from collapsing completely
+    m_rightSplitter->setChildrenCollapsible(false);
+
+    // Set handle width for easier resizing
+    m_mainSplitter->setHandleWidth(6);
+    m_rightSplitter->setHandleWidth(6);
+
     QVBoxLayout* mainLayout = new QVBoxLayout(m_centralWidget);
     mainLayout->setContentsMargins(4, 4, 4, 4);
     mainLayout->addWidget(m_mainSplitter);
 }
 
-void GalleryMainWindow::setupConnections()
-{
+void GalleryMainWindow::setupConnections() {
     // Menu and toolbar actions
     connect(m_aboutAction, &QAction::triggered, this, &GalleryMainWindow::onAboutApplication);
     connect(m_aboutQtAction, &QAction::triggered, this, &GalleryMainWindow::onAboutQt);
@@ -546,18 +611,22 @@ void GalleryMainWindow::setupConnections()
 
     connect(m_fullscreenAction, &QAction::triggered, this, &GalleryMainWindow::onToggleFullscreen);
     connect(m_toggleSidebarAction, &QAction::triggered, this, &GalleryMainWindow::onToggleSidebar);
-    connect(m_toggleDetailsPanelAction, &QAction::triggered, this, &GalleryMainWindow::onToggleDetailsPanel);
-    connect(m_toggleStatusBarAction, &QAction::triggered, this, &GalleryMainWindow::onToggleStatusBar);
+    connect(m_toggleDetailsPanelAction, &QAction::triggered, this,
+            &GalleryMainWindow::onToggleDetailsPanel);
+    connect(m_toggleStatusBarAction, &QAction::triggered, this,
+            &GalleryMainWindow::onToggleStatusBar);
 
-    connect(m_gridSizeActionGroup, QOverload<QAction*>::of(&QActionGroup::triggered),
-            this, [this](QAction* action) {
+    connect(m_gridSizeActionGroup, QOverload<QAction*>::of(&QActionGroup::triggered), this,
+            [this](QAction* action) {
                 int size = action->data().toInt();
                 onChangeGridSize(size);
             });
 
     connect(m_exportAction, &QAction::triggered, this, &GalleryMainWindow::onExportIcons);
-    connect(m_importFavoritesAction, &QAction::triggered, this, &GalleryMainWindow::onImportFavorites);
-    connect(m_exportFavoritesAction, &QAction::triggered, this, &GalleryMainWindow::onExportFavorites);
+    connect(m_importFavoritesAction, &QAction::triggered, this,
+            &GalleryMainWindow::onImportFavorites);
+    connect(m_exportFavoritesAction, &QAction::triggered, this,
+            &GalleryMainWindow::onExportFavorites);
 
     connect(m_copyNameAction, &QAction::triggered, this, &GalleryMainWindow::onCopyIconName);
     connect(m_copyCodeAction, &QAction::triggered, this, &GalleryMainWindow::onCopyIconCode);
@@ -568,45 +637,69 @@ void GalleryMainWindow::setupConnections()
 
     // Widget connections
     if (m_searchWidget) {
-        connect(m_searchWidget, &SearchWidget::searchChanged,
-                this, &GalleryMainWindow::onSearchTextChanged);
-        connect(m_searchWidget, &SearchWidget::filtersChanged,
-                this, [this](const IconFilterCriteria& criteria) {
+        connect(m_searchWidget, &SearchWidget::searchChanged, this,
+                &GalleryMainWindow::onSearchTextChanged);
+        connect(m_searchWidget, &SearchWidget::filtersChanged, this,
+                [this](const IconFilterCriteria& criteria) {
                     m_metadataManager->applyFilter(criteria);
                 });
     }
 
     if (m_categoryFilter) {
-        connect(m_categoryFilter, &CategoryFilterWidget::categorySelectionChanged,
-                this, &GalleryMainWindow::onCategoryFilterChanged);
-        connect(m_categoryFilter, &CategoryFilterWidget::tagSelectionChanged,
-                this, &GalleryMainWindow::onTagFilterChanged);
+        connect(m_categoryFilter, &CategoryFilterWidget::categorySelectionChanged, this,
+                &GalleryMainWindow::onCategoryFilterChanged);
+        connect(m_categoryFilter, &CategoryFilterWidget::tagSelectionChanged, this,
+                &GalleryMainWindow::onTagFilterChanged);
     }
 
     if (m_iconGrid) {
-        connect(m_iconGrid, &IconGridWidget::iconSelected,
-                this, &GalleryMainWindow::onIconSelected);
-        connect(m_iconGrid, &IconGridWidget::iconDoubleClicked,
-                this, &GalleryMainWindow::onIconDoubleClicked);
-        connect(m_iconGrid, &IconGridWidget::favoriteToggled,
-                this, [this](const QString& iconName, bool favorite) {
+        connect(m_iconGrid, &IconGridWidget::iconSelected, this,
+                &GalleryMainWindow::onIconSelected);
+        connect(m_iconGrid, &IconGridWidget::iconDoubleClicked, this,
+                &GalleryMainWindow::onIconDoubleClicked);
+        connect(m_iconGrid, &IconGridWidget::favoriteToggled, this,
+                [this](const QString& iconName, bool favorite) {
                     Q_UNUSED(favorite)
                     onToggleFavorite(iconName);
                 });
     }
 
     if (m_detailsPanel) {
-        connect(m_detailsPanel, &IconDetailsPanel::favoriteToggled,
-                this, [this](const QString& iconName, bool favorite) {
+        connect(m_detailsPanel, &IconDetailsPanel::favoriteToggled, this,
+                [this](const QString& iconName, bool favorite) {
                     Q_UNUSED(iconName)
                     Q_UNUSED(favorite)
                     updateActions();
                 });
     }
+
+    // FavoritesManager connections
+    if (m_favoritesManager) {
+        connect(m_favoritesManager, &FavoritesManager::favoriteAdded, this,
+                [this](const QString& iconName) {
+                    qDebug() << "Favorite added:" << iconName;
+                    updateActions();
+                    if (m_detailsPanel) {
+                        m_detailsPanel->updateFavoriteStatus();
+                    }
+                });
+        connect(m_favoritesManager, &FavoritesManager::favoriteRemoved, this,
+                [this](const QString& iconName) {
+                    qDebug() << "Favorite removed:" << iconName;
+                    updateActions();
+                    if (m_detailsPanel) {
+                        m_detailsPanel->updateFavoriteStatus();
+                    }
+                });
+        connect(m_favoritesManager, &FavoritesManager::favoritesChanged, this,
+                [this]() {
+                    qDebug() << "Favorites changed";
+                    updateActions();
+                });
+    }
 }
 
-void GalleryMainWindow::setupApplicationIcon()
-{
+void GalleryMainWindow::setupApplicationIcon() {
     if (m_lucide) {
         QIcon appIcon = m_lucide->icon("image");
         if (!appIcon.isNull()) {
@@ -616,8 +709,7 @@ void GalleryMainWindow::setupApplicationIcon()
     }
 }
 
-void GalleryMainWindow::loadSettings()
-{
+void GalleryMainWindow::loadSettings() {
     // Restore window geometry
     QMainWindow::restoreGeometry(m_settings->value("geometry").toByteArray());
     QMainWindow::restoreState(m_settings->value("windowState").toByteArray());
@@ -654,8 +746,7 @@ void GalleryMainWindow::loadSettings()
     }
 }
 
-void GalleryMainWindow::saveSettings()
-{
+void GalleryMainWindow::saveSettings() {
     // Save window geometry
     m_settings->setValue("geometry", QMainWindow::saveGeometry());
     m_settings->setValue("windowState", QMainWindow::saveState());
@@ -684,8 +775,7 @@ void GalleryMainWindow::saveSettings()
     }
 }
 
-void GalleryMainWindow::updateActions()
-{
+void GalleryMainWindow::updateActions() {
     bool hasSelection = !m_currentIconName.isEmpty();
 
     m_copyNameAction->setEnabled(hasSelection);
@@ -706,9 +796,9 @@ void GalleryMainWindow::updateActions()
     }
 }
 
-void GalleryMainWindow::updateStatusBar()
-{
-    if (!m_metadataManager) return;
+void GalleryMainWindow::updateStatusBar() {
+    if (!m_metadataManager)
+        return;
 
     int totalIcons = m_metadataManager->getTotalIconCount();
     int visibleIcons = 0;
@@ -728,91 +818,116 @@ void GalleryMainWindow::updateStatusBar()
     m_iconCountLabel->setText(QString("%1 icons").arg(visibleIcons));
 }
 
-void GalleryMainWindow::closeEvent(QCloseEvent *event)
-{
+void GalleryMainWindow::closeEvent(QCloseEvent* event) {
     saveSettings();
     QMainWindow::closeEvent(event);
 }
 
-void GalleryMainWindow::resizeEvent(QResizeEvent *event)
-{
+void GalleryMainWindow::resizeEvent(QResizeEvent* event) {
     QMainWindow::resizeEvent(event);
+
+    // Optimize layout for different window sizes
+    if (m_mainSplitter && event->size().isValid()) {
+        int windowWidth = event->size().width();
+
+        // Auto-hide sidebar on very small windows
+        if (windowWidth < 800 && m_toggleSidebarAction->isChecked()) {
+            // Remember the user's preference
+            m_settings->setValue("sidebarAutoHidden", true);
+            m_toggleSidebarAction->setChecked(false);
+            onToggleSidebar();
+        } else if (windowWidth >= 800 && m_settings->value("sidebarAutoHidden", false).toBool()) {
+            // Restore sidebar when window is large enough
+            m_settings->remove("sidebarAutoHidden");
+            m_toggleSidebarAction->setChecked(true);
+            onToggleSidebar();
+        }
+
+        // Adjust details panel for medium-sized windows
+        if (m_rightSplitter && m_detailsPanel) {
+            if (windowWidth < 1200 && m_toggleDetailsPanelAction->isChecked()) {
+                // Auto-hide details panel on medium windows
+                m_settings->setValue("detailsPanelAutoHidden", true);
+                m_toggleDetailsPanelAction->setChecked(false);
+                onToggleDetailsPanel();
+            } else if (windowWidth >= 1200 && m_settings->value("detailsPanelAutoHidden", false).toBool()) {
+                // Restore details panel when window is large enough
+                m_settings->remove("detailsPanelAutoHidden");
+                m_toggleDetailsPanelAction->setChecked(true);
+                onToggleDetailsPanel();
+            }
+        }
+    }
+
     m_statusUpdateTimer->start();
 }
 
 // Slot implementations
-void GalleryMainWindow::onAboutApplication()
-{
-    QString aboutText = QString(
-        "<h3>QtLucide Gallery</h3>"
-        "<p>Version 1.0.0</p>"
-        "<p>A comprehensive icon gallery application for browsing and using "
-        "Lucide icons in Qt applications.</p>"
-        "<p>Built with Qt %1 and QtLucide library.</p>"
-        "<p>Total Icons: %2</p>"
-        "<p>Categories: %3</p>"
-        "<p>Tags: %4</p>"
-    ).arg(QT_VERSION_STR)
-     .arg(m_metadataManager ? m_metadataManager->getTotalIconCount() : 0)
-     .arg(m_metadataManager ? m_metadataManager->getCategoryCount() : 0)
-     .arg(m_metadataManager ? m_metadataManager->getTagCount() : 0);
+void GalleryMainWindow::onAboutApplication() {
+    QString aboutText =
+        QString("<h3>QtLucide Gallery</h3>"
+                "<p>Version 1.0.0</p>"
+                "<p>A comprehensive icon gallery application for browsing and using "
+                "Lucide icons in Qt applications.</p>"
+                "<p>Built with Qt %1 and QtLucide library.</p>"
+                "<p>Total Icons: %2</p>"
+                "<p>Categories: %3</p>"
+                "<p>Tags: %4</p>")
+            .arg(QT_VERSION_STR)
+            .arg(m_metadataManager ? m_metadataManager->getTotalIconCount() : 0)
+            .arg(m_metadataManager ? m_metadataManager->getCategoryCount() : 0)
+            .arg(m_metadataManager ? m_metadataManager->getTagCount() : 0);
 
     QMessageBox::about(this, "About QtLucide Gallery", aboutText);
 }
 
-void GalleryMainWindow::onAboutQt()
-{
+void GalleryMainWindow::onAboutQt() {
     QMessageBox::aboutQt(this);
 }
 
-void GalleryMainWindow::onShowPreferences()
-{
+void GalleryMainWindow::onShowPreferences() {
     PreferencesDialog dialog(this);
 
     // Connect signals to update the application when settings change
-    connect(&dialog, &PreferencesDialog::themeChanged,
-            this, [this](const QString& theme) {
-                // Apply theme changes
-                if (theme == "light") {
-                    setTheme(LightTheme);
-                } else if (theme == "dark") {
-                    setTheme(DarkTheme);
-                } else {
-                    setTheme(SystemTheme);
-                }
-                applyTheme();
-                statusBar()->showMessage(tr("Theme changed to %1").arg(theme), 2000);
-            });
+    connect(&dialog, &PreferencesDialog::themeChanged, this, [this](const QString& theme) {
+        // Apply theme changes
+        if (theme == "light") {
+            setTheme(LightTheme);
+        } else if (theme == "dark") {
+            setTheme(DarkTheme);
+        } else {
+            setTheme(SystemTheme);
+        }
+        applyTheme();
+        statusBar()->showMessage(tr("Theme changed to %1").arg(theme), 2000);
+    });
 
-    connect(&dialog, &PreferencesDialog::iconSizeChanged,
-            this, [this](int size) {
-                if (m_iconGrid) {
-                    m_iconGrid->setIconSize(size);
-                }
-            });
+    connect(&dialog, &PreferencesDialog::iconSizeChanged, this, [this](int size) {
+        if (m_iconGrid) {
+            m_iconGrid->setIconSize(size);
+        }
+    });
 
-    connect(&dialog, &PreferencesDialog::viewModeChanged,
-            this, [this](const QString& mode) {
-                if (m_iconGrid) {
-                    if (mode == "grid") {
-                        setViewMode(GridView);
-                    } else if (mode == "detail") {
-                        setViewMode(DetailView);
-                    } else if (mode == "split") {
-                        setViewMode(SplitView);
-                    }
-                    statusBar()->showMessage(tr("View mode changed to %1").arg(mode), 2000);
-                }
-            });
+    connect(&dialog, &PreferencesDialog::viewModeChanged, this, [this](const QString& mode) {
+        if (m_iconGrid) {
+            if (mode == "grid") {
+                setViewMode(GridView);
+            } else if (mode == "detail") {
+                setViewMode(DetailView);
+            } else if (mode == "split") {
+                setViewMode(SplitView);
+            }
+            statusBar()->showMessage(tr("View mode changed to %1").arg(mode), 2000);
+        }
+    });
 
-    connect(&dialog, &PreferencesDialog::settingsChanged,
-            this, [this]() {
-                // Refresh the application with new settings
-                if (m_iconGrid) {
-                    m_iconGrid->refreshIcons();
-                }
-                updateActions();
-            });
+    connect(&dialog, &PreferencesDialog::settingsChanged, this, [this]() {
+        // Refresh the application with new settings
+        if (m_iconGrid) {
+            m_iconGrid->refreshIcons();
+        }
+        updateActions();
+    });
 
     if (dialog.exec() == QDialog::Accepted) {
         // Settings have been applied
@@ -820,8 +935,7 @@ void GalleryMainWindow::onShowPreferences()
     }
 }
 
-void GalleryMainWindow::onToggleFullscreen()
-{
+void GalleryMainWindow::onToggleFullscreen() {
     if (isFullScreen()) {
         showNormal();
         m_fullscreenAction->setChecked(false);
@@ -831,8 +945,7 @@ void GalleryMainWindow::onToggleFullscreen()
     }
 }
 
-void GalleryMainWindow::onExportIcons()
-{
+void GalleryMainWindow::onExportIcons() {
     IconExportDialog dialog(m_lucide, m_metadataManager, this);
 
     // Set current icon if one is selected
@@ -841,35 +954,33 @@ void GalleryMainWindow::onExportIcons()
     }
 
     // Connect signals for progress feedback
-    connect(&dialog, &IconExportDialog::exportStarted,
-            this, [this]() {
-                m_statusLabel->setText("Starting icon export...");
-            });
+    connect(&dialog, &IconExportDialog::exportStarted, this,
+            [this]() { m_statusLabel->setText("Starting icon export..."); });
 
-    connect(&dialog, &IconExportDialog::exportProgress,
-            this, [this](int current, int total, const QString& currentIcon) {
-                m_statusLabel->setText(QString("Exporting %1... (%2/%3)")
-                                     .arg(currentIcon).arg(current + 1).arg(total));
-            });
+    connect(
+        &dialog, &IconExportDialog::exportProgress, this,
+        [this](int current, int total, const QString& currentIcon) {
+            m_statusLabel->setText(
+                QString("Exporting %1... (%2/%3)").arg(currentIcon).arg(current + 1).arg(total));
+        });
 
-    connect(&dialog, static_cast<void(IconExportDialog::*)(bool, const QString&, const QStringList&)>(&IconExportDialog::exportFinished),
+    connect(&dialog,
+            static_cast<void (IconExportDialog::*)(bool, const QString&, const QStringList&)>(
+                &IconExportDialog::exportFinished),
             this, [this](bool success, const QString& message, const QStringList&) {
                 m_statusLabel->setText(message);
                 if (success) {
                     // Show success message briefly
-                    QTimer::singleShot(3000, this, [this]() {
-                        updateStatusBar();
-                    });
+                    QTimer::singleShot(3000, this, [this]() { updateStatusBar(); });
                 }
             });
 
     dialog.exec();
 }
 
-void GalleryMainWindow::onImportFavorites()
-{
-    QString fileName = QFileDialog::getOpenFileName(this,
-        "Import Favorites", QString(), "JSON Files (*.json)");
+void GalleryMainWindow::onImportFavorites() {
+    QString fileName =
+        QFileDialog::getOpenFileName(this, "Import Favorites", QString(), "JSON Files (*.json)");
 
     if (!fileName.isEmpty() && m_metadataManager) {
         if (m_metadataManager->loadFavorites(fileName)) {
@@ -881,10 +992,9 @@ void GalleryMainWindow::onImportFavorites()
     }
 }
 
-void GalleryMainWindow::onExportFavorites()
-{
-    QString fileName = QFileDialog::getSaveFileName(this,
-        "Export Favorites", "favorites.json", "JSON Files (*.json)");
+void GalleryMainWindow::onExportFavorites() {
+    QString fileName = QFileDialog::getSaveFileName(this, "Export Favorites", "favorites.json",
+                                                    "JSON Files (*.json)");
 
     if (!fileName.isEmpty() && m_metadataManager) {
         if (m_metadataManager->saveFavorites(fileName)) {
@@ -895,8 +1005,7 @@ void GalleryMainWindow::onExportFavorites()
     }
 }
 
-void GalleryMainWindow::onToggleSidebar()
-{
+void GalleryMainWindow::onToggleSidebar() {
     bool visible = m_toggleSidebarAction->isChecked();
     if (m_categoryFilter) {
         m_categoryFilter->setVisible(visible);
@@ -906,30 +1015,27 @@ void GalleryMainWindow::onToggleSidebar()
     }
 }
 
-void GalleryMainWindow::onToggleDetailsPanel()
-{
+void GalleryMainWindow::onToggleDetailsPanel() {
     bool visible = m_toggleDetailsPanelAction->isChecked();
     if (m_detailsPanel) {
         m_detailsPanel->setVisible(visible);
     }
 }
 
-void GalleryMainWindow::onToggleStatusBar()
-{
+void GalleryMainWindow::onToggleStatusBar() {
     bool visible = m_toggleStatusBarAction->isChecked();
     statusBar()->setVisible(visible);
 }
 
-void GalleryMainWindow::onChangeGridSize(int size)
-{
+void GalleryMainWindow::onChangeGridSize(int size) {
     if (m_iconGrid) {
         m_iconGrid->setIconSize(size);
     }
 }
 
-void GalleryMainWindow::onChangeViewMode(int mode)
-{
-    if (!m_iconGrid) return;
+void GalleryMainWindow::onChangeViewMode(int mode) {
+    if (!m_iconGrid)
+        return;
 
     // Set the specified view mode
     IconGridWidget::ViewMode newMode = static_cast<IconGridWidget::ViewMode>(mode);
@@ -958,8 +1064,7 @@ void GalleryMainWindow::onChangeViewMode(int mode)
     updateActions();
 }
 
-void GalleryMainWindow::onIconSelected(const QString& iconName)
-{
+void GalleryMainWindow::onIconSelected(const QString& iconName) {
     m_currentIconName = iconName;
     updateActions();
 
@@ -970,8 +1075,7 @@ void GalleryMainWindow::onIconSelected(const QString& iconName)
     m_statusUpdateTimer->start();
 }
 
-void GalleryMainWindow::onIconDoubleClicked(const QString& iconName)
-{
+void GalleryMainWindow::onIconDoubleClicked(const QString& iconName) {
     onIconSelected(iconName);
 
     // Show details panel if hidden
@@ -981,16 +1085,14 @@ void GalleryMainWindow::onIconDoubleClicked(const QString& iconName)
     }
 }
 
-void GalleryMainWindow::onCopyIconName()
-{
+void GalleryMainWindow::onCopyIconName() {
     if (!m_currentIconName.isEmpty()) {
         QApplication::clipboard()->setText(m_currentIconName);
         m_statusLabel->setText(QString("Copied icon name: %1").arg(m_currentIconName));
     }
 }
 
-void GalleryMainWindow::onCopyIconCode()
-{
+void GalleryMainWindow::onCopyIconCode() {
     if (!m_currentIconName.isEmpty()) {
         QString code = QString("lucide->icon(\"%1\")").arg(m_currentIconName);
         QApplication::clipboard()->setText(code);
@@ -998,8 +1100,7 @@ void GalleryMainWindow::onCopyIconCode()
     }
 }
 
-void GalleryMainWindow::onCopyIconSvg()
-{
+void GalleryMainWindow::onCopyIconSvg() {
     if (!m_currentIconName.isEmpty() && m_lucide) {
         QByteArray svgData = m_lucide->svgData(m_currentIconName);
         QApplication::clipboard()->setText(QString::fromUtf8(svgData));
@@ -1007,8 +1108,7 @@ void GalleryMainWindow::onCopyIconSvg()
     }
 }
 
-void GalleryMainWindow::onToggleFavorite()
-{
+void GalleryMainWindow::onToggleFavorite() {
     if (!m_currentIconName.isEmpty() && m_metadataManager) {
         bool isFavorite = m_metadataManager->isFavorite(m_currentIconName);
 
@@ -1028,8 +1128,7 @@ void GalleryMainWindow::onToggleFavorite()
     }
 }
 
-void GalleryMainWindow::onToggleFavorite(const QString& iconName)
-{
+void GalleryMainWindow::onToggleFavorite(const QString& iconName) {
     if (!iconName.isEmpty() && m_metadataManager) {
         bool isFavorite = m_metadataManager->isFavorite(iconName);
 
@@ -1049,26 +1148,22 @@ void GalleryMainWindow::onToggleFavorite(const QString& iconName)
     }
 }
 
-void GalleryMainWindow::onSearchTextChanged(const QString& text)
-{
+void GalleryMainWindow::onSearchTextChanged(const QString& text) {
     Q_UNUSED(text)
     m_statusUpdateTimer->start();
 }
 
-void GalleryMainWindow::onCategoryFilterChanged(const QStringList& categories)
-{
+void GalleryMainWindow::onCategoryFilterChanged(const QStringList& categories) {
     Q_UNUSED(categories)
     m_statusUpdateTimer->start();
 }
 
-void GalleryMainWindow::onTagFilterChanged(const QStringList& tags)
-{
+void GalleryMainWindow::onTagFilterChanged(const QStringList& tags) {
     Q_UNUSED(tags)
     m_statusUpdateTimer->start();
 }
 
-void GalleryMainWindow::onClearAllFilters()
-{
+void GalleryMainWindow::onClearAllFilters() {
     if (m_searchWidget) {
         m_searchWidget->clearAllFilters();
     }
@@ -1078,10 +1173,10 @@ void GalleryMainWindow::onClearAllFilters()
     m_statusLabel->setText("All filters cleared");
 }
 
-void GalleryMainWindow::onIconsLoaded(int totalCount)
-{
+void GalleryMainWindow::onIconsLoaded(int totalCount) {
     GALLERY_END_TIMER("Metadata loading");
-    GALLERY_LOG_INFO(galleryMetadata, QString("Icons loaded successfully: %1 total").arg(totalCount));
+    GALLERY_LOG_INFO(galleryMetadata,
+                     QString("Icons loaded successfully: %1 total").arg(totalCount));
     GALLERY_LOG_MEMORY("After metadata loading");
 
     m_progressBar->setVisible(false);
@@ -1094,7 +1189,8 @@ void GalleryMainWindow::onIconsLoaded(int totalCount)
         QStringList allIcons = m_metadataManager->getAllIconNames();
         m_iconGrid->setIconNames(allIcons);
         GALLERY_END_TIMER("Icon grid initialization");
-        GALLERY_LOG_INFO(galleryUI, QString("Icon grid initialized with %1 icons").arg(allIcons.size()));
+        GALLERY_LOG_INFO(galleryUI,
+                         QString("Icon grid initialized with %1 icons").arg(allIcons.size()));
     } else {
         GALLERY_LOG_WARNING(galleryUI, "Icon grid or metadata manager is null");
     }
@@ -1104,7 +1200,7 @@ void GalleryMainWindow::onIconsLoaded(int totalCount)
         GALLERY_LOG_DEBUG(galleryUI, "Refreshing category filter");
         m_categoryFilter->refreshCategories();
         GALLERY_LOG_INFO(galleryUI, QString("Category filter updated with %1 categories")
-                         .arg(m_metadataManager->getCategoryCount()));
+                                        .arg(m_metadataManager->getCategoryCount()));
     } else {
         GALLERY_LOG_WARNING(galleryUI, "Category filter is null");
     }
@@ -1113,8 +1209,7 @@ void GalleryMainWindow::onIconsLoaded(int totalCount)
     GALLERY_LOG_INFO(galleryInit, "Gallery initialization completed successfully");
 }
 
-void GalleryMainWindow::onFilteredIconsChanged(int visibleCount, int totalCount)
-{
+void GalleryMainWindow::onFilteredIconsChanged(int visibleCount, int totalCount) {
     Q_UNUSED(visibleCount)
     Q_UNUSED(totalCount)
 
@@ -1127,21 +1222,17 @@ void GalleryMainWindow::onFilteredIconsChanged(int visibleCount, int totalCount)
     updateStatusBar();
 }
 
-void GalleryMainWindow::onApplicationStateChanged()
-{
+void GalleryMainWindow::onApplicationStateChanged() {
     updateActions();
     updateStatusBar();
 }
 
 // Settings management methods
-void GalleryMainWindow::onImportSettings()
-{
+void GalleryMainWindow::onImportSettings() {
     QString fileName = QFileDialog::getOpenFileName(
-        this,
-        tr("Import Settings"),
+        this, tr("Import Settings"),
         QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
-        tr("Settings Files (*.ini *.conf);;All Files (*)")
-    );
+        tr("Settings Files (*.ini *.conf);;All Files (*)"));
 
     if (!fileName.isEmpty()) {
         QSettings importSettings(fileName, QSettings::IniFormat);
@@ -1165,14 +1256,12 @@ void GalleryMainWindow::onImportSettings()
     }
 }
 
-void GalleryMainWindow::onExportSettings()
-{
+void GalleryMainWindow::onExportSettings() {
     QString fileName = QFileDialog::getSaveFileName(
-        this,
-        tr("Export Settings"),
-        QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/qtlucide_settings.ini",
-        tr("Settings Files (*.ini *.conf);;All Files (*)")
-    );
+        this, tr("Export Settings"),
+        QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) +
+            "/qtlucide_settings.ini",
+        tr("Settings Files (*.ini *.conf);;All Files (*)"));
 
     if (!fileName.isEmpty()) {
         QSettings exportSettings(fileName, QSettings::IniFormat);
@@ -1192,16 +1281,11 @@ void GalleryMainWindow::onExportSettings()
     }
 }
 
-void GalleryMainWindow::onResetSettings()
-{
-    int ret = QMessageBox::question(
-        this,
-        tr("Reset Settings"),
-        tr("Are you sure you want to reset all settings to defaults?\n"
-           "This action cannot be undone."),
-        QMessageBox::Yes | QMessageBox::No,
-        QMessageBox::No
-    );
+void GalleryMainWindow::onResetSettings() {
+    int ret = QMessageBox::question(this, tr("Reset Settings"),
+                                    tr("Are you sure you want to reset all settings to defaults?\n"
+                                       "This action cannot be undone."),
+                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
     if (ret == QMessageBox::Yes) {
         // Reset to defaults
@@ -1227,66 +1311,56 @@ void GalleryMainWindow::onResetSettings()
     }
 }
 
-void GalleryMainWindow::onCheckForUpdates()
-{
+void GalleryMainWindow::onCheckForUpdates() {
     // Simple update check dialog
-    QMessageBox::information(
-        this,
-        tr("Check for Updates"),
-        tr("QtLucide Gallery v2.0.0\n\n"
-           "You are running the latest version.\n\n"
-           "For updates and more information, visit:\n"
-           "https://github.com/AstroAir/QtLucide")
-    );
+    QMessageBox::information(this, tr("Check for Updates"),
+                             tr("QtLucide Gallery v2.0.0\n\n"
+                                "You are running the latest version.\n\n"
+                                "For updates and more information, visit:\n"
+                                "https://github.com/AstroAir/QtLucide"));
     GALLERY_LOG_INFO(galleryUI, "Update check requested");
 }
 
-void GalleryMainWindow::onShowShortcuts()
-{
-    QString shortcuts = tr(
-        "<h3>Keyboard Shortcuts</h3>"
-        "<table>"
-        "<tr><td><b>Ctrl+O</b></td><td>Open Directory</td></tr>"
-        "<tr><td><b>Ctrl+F</b></td><td>Focus Search</td></tr>"
-        "<tr><td><b>Ctrl+E</b></td><td>Export Icons</td></tr>"
-        "<tr><td><b>F11</b></td><td>Toggle Fullscreen</td></tr>"
-        "<tr><td><b>Ctrl++</b></td><td>Zoom In</td></tr>"
-        "<tr><td><b>Ctrl+-</b></td><td>Zoom Out</td></tr>"
-        "<tr><td><b>Ctrl+0</b></td><td>Reset Zoom</td></tr>"
-        "<tr><td><b>Ctrl+1</b></td><td>Grid View</td></tr>"
-        "<tr><td><b>Ctrl+2</b></td><td>Detail View</td></tr>"
-        "<tr><td><b>Ctrl+3</b></td><td>Split View</td></tr>"
-        "<tr><td><b>Ctrl+T</b></td><td>Toggle Theme</td></tr>"
-        "<tr><td><b>Ctrl+,</b></td><td>Preferences</td></tr>"
-        "<tr><td><b>F1</b></td><td>Help</td></tr>"
-        "</table>"
-    );
+void GalleryMainWindow::onShowShortcuts() {
+    QString shortcuts = tr("<h3>Keyboard Shortcuts</h3>"
+                           "<table>"
+                           "<tr><td><b>Ctrl+O</b></td><td>Open Directory</td></tr>"
+                           "<tr><td><b>Ctrl+F</b></td><td>Focus Search</td></tr>"
+                           "<tr><td><b>Ctrl+E</b></td><td>Export Icons</td></tr>"
+                           "<tr><td><b>F11</b></td><td>Toggle Fullscreen</td></tr>"
+                           "<tr><td><b>Ctrl++</b></td><td>Zoom In</td></tr>"
+                           "<tr><td><b>Ctrl+-</b></td><td>Zoom Out</td></tr>"
+                           "<tr><td><b>Ctrl+0</b></td><td>Reset Zoom</td></tr>"
+                           "<tr><td><b>Ctrl+1</b></td><td>Grid View</td></tr>"
+                           "<tr><td><b>Ctrl+2</b></td><td>Detail View</td></tr>"
+                           "<tr><td><b>Ctrl+3</b></td><td>Split View</td></tr>"
+                           "<tr><td><b>Ctrl+T</b></td><td>Toggle Theme</td></tr>"
+                           "<tr><td><b>Ctrl+,</b></td><td>Preferences</td></tr>"
+                           "<tr><td><b>F1</b></td><td>Help</td></tr>"
+                           "</table>");
 
     QMessageBox::information(this, tr("Keyboard Shortcuts"), shortcuts);
     GALLERY_LOG_INFO(galleryUI, "Keyboard shortcuts displayed");
 }
 
-void GalleryMainWindow::onShowPerformanceMetrics()
-{
-    QString metrics = tr(
-        "<h3>Performance Metrics</h3>"
-        "<table>"
-        "<tr><td><b>Icons Loaded:</b></td><td>%1</td></tr>"
-        "<tr><td><b>Memory Usage:</b></td><td>%2 MB</td></tr>"
-        "<tr><td><b>Cache Size:</b></td><td>%3 items</td></tr>"
-        "<tr><td><b>Render Time:</b></td><td>%4 ms</td></tr>"
-        "</table>"
-    ).arg(m_lucide ? m_lucide->availableIcons().size() : 0)
-     .arg(QCoreApplication::applicationPid()) // Simplified memory metric
-     .arg(100) // Placeholder cache size
-     .arg(15); // Placeholder render time
+void GalleryMainWindow::onShowPerformanceMetrics() {
+    QString metrics = tr("<h3>Performance Metrics</h3>"
+                         "<table>"
+                         "<tr><td><b>Icons Loaded:</b></td><td>%1</td></tr>"
+                         "<tr><td><b>Memory Usage:</b></td><td>%2 MB</td></tr>"
+                         "<tr><td><b>Cache Size:</b></td><td>%3 items</td></tr>"
+                         "<tr><td><b>Render Time:</b></td><td>%4 ms</td></tr>"
+                         "</table>")
+                          .arg(m_lucide ? m_lucide->availableIcons().size() : 0)
+                          .arg(QCoreApplication::applicationPid()) // Simplified memory metric
+                          .arg(100)                                // Placeholder cache size
+                          .arg(15);                                // Placeholder render time
 
     QMessageBox::information(this, tr("Performance Metrics"), metrics);
     GALLERY_LOG_INFO(galleryUI, "Performance metrics displayed");
 }
 
-void GalleryMainWindow::onToggleToolbar()
-{
+void GalleryMainWindow::onToggleToolbar() {
     if (m_mainToolbar) {
         bool visible = !m_mainToolbar->isVisible();
         m_mainToolbar->setVisible(visible);
@@ -1298,15 +1372,13 @@ void GalleryMainWindow::onToggleToolbar()
     }
 }
 
-void GalleryMainWindow::onToggleMenuBar()
-{
+void GalleryMainWindow::onToggleMenuBar() {
     bool visible = !menuBar()->isVisible();
     menuBar()->setVisible(visible);
     statusBar()->showMessage(visible ? tr("Menu bar shown") : tr("Menu bar hidden"), 2000);
     GALLERY_LOG_DEBUG(galleryUI, QString("Menu bar visibility: %1").arg(visible));
 }
-void GalleryMainWindow::onZoomIn()
-{
+void GalleryMainWindow::onZoomIn() {
     if (m_thumbnailSize < MAX_GRID_SIZE) {
         m_thumbnailSize = qMin(m_thumbnailSize + GRID_SIZE_STEP, MAX_GRID_SIZE);
         if (m_thumbnailGrid) {
@@ -1316,8 +1388,7 @@ void GalleryMainWindow::onZoomIn()
     }
 }
 
-void GalleryMainWindow::onZoomOut()
-{
+void GalleryMainWindow::onZoomOut() {
     if (m_thumbnailSize > MIN_GRID_SIZE) {
         m_thumbnailSize = qMax(m_thumbnailSize - GRID_SIZE_STEP, MIN_GRID_SIZE);
         if (m_thumbnailGrid) {
@@ -1327,32 +1398,30 @@ void GalleryMainWindow::onZoomOut()
     }
 }
 
-void GalleryMainWindow::onResetZoom()
-{
+void GalleryMainWindow::onResetZoom() {
     m_thumbnailSize = DEFAULT_GRID_SIZE;
     if (m_thumbnailGrid) {
         // Reset thumbnail grid size
     }
     updateStatusBar();
 }
-void GalleryMainWindow::onToggleCompactMode()
-{
+void GalleryMainWindow::onToggleCompactMode() {
     m_compactMode = !m_compactMode;
     applyCompactMode(m_compactMode);
-    statusBar()->showMessage(m_compactMode ? tr("Compact mode enabled") : tr("Compact mode disabled"), 2000);
+    statusBar()->showMessage(
+        m_compactMode ? tr("Compact mode enabled") : tr("Compact mode disabled"), 2000);
     GALLERY_LOG_DEBUG(galleryUI, QString("Compact mode: %1").arg(m_compactMode));
 }
 
-void GalleryMainWindow::onToggleAnimations()
-{
+void GalleryMainWindow::onToggleAnimations() {
     m_animationsEnabled = !m_animationsEnabled;
     applyAnimations(m_animationsEnabled);
-    statusBar()->showMessage(m_animationsEnabled ? tr("Animations enabled") : tr("Animations disabled"), 2000);
+    statusBar()->showMessage(
+        m_animationsEnabled ? tr("Animations enabled") : tr("Animations disabled"), 2000);
     GALLERY_LOG_DEBUG(galleryUI, QString("Animations: %1").arg(m_animationsEnabled));
 }
 
-void GalleryMainWindow::onIconHovered(const QString& iconName)
-{
+void GalleryMainWindow::onIconHovered(const QString& iconName) {
     if (!iconName.isEmpty()) {
         // Update status bar with icon information
         statusBar()->showMessage(tr("Icon: %1").arg(iconName));
@@ -1366,9 +1435,9 @@ void GalleryMainWindow::onIconHovered(const QString& iconName)
     }
 }
 
-void GalleryMainWindow::onIconContextMenu(const QString& iconName, const QPoint& position)
-{
-    if (iconName.isEmpty()) return;
+void GalleryMainWindow::onIconContextMenu(const QString& iconName, const QPoint& position) {
+    if (iconName.isEmpty())
+        return;
 
     QMenu contextMenu(this);
 
@@ -1387,9 +1456,8 @@ void GalleryMainWindow::onIconContextMenu(const QString& iconName, const QPoint&
     // Copy icon name
     QAction* copyNameAction = contextMenu.addAction(tr("Copy Icon Name"));
     copyNameAction->setIcon(QIcon(":/icons/copy.svg"));
-    connect(copyNameAction, &QAction::triggered, [iconName]() {
-        QApplication::clipboard()->setText(iconName);
-    });
+    connect(copyNameAction, &QAction::triggered,
+            [iconName]() { QApplication::clipboard()->setText(iconName); });
 
     // Copy as code
     QAction* copyCodeAction = contextMenu.addAction(tr("Copy as Code"));
@@ -1404,9 +1472,7 @@ void GalleryMainWindow::onIconContextMenu(const QString& iconName, const QPoint&
     // Export icon
     QAction* exportAction = contextMenu.addAction(tr("Export Icon..."));
     exportAction->setIcon(QIcon(":/icons/download.svg"));
-    connect(exportAction, &QAction::triggered, [this, iconName]() {
-        onExportIcon();
-    });
+    connect(exportAction, &QAction::triggered, [this, iconName]() { onExportIcon(); });
 
     // Show details
     QAction* detailsAction = contextMenu.addAction(tr("Show Details"));
@@ -1421,8 +1487,7 @@ void GalleryMainWindow::onIconContextMenu(const QString& iconName, const QPoint&
     contextMenu.exec(position);
     GALLERY_LOG_DEBUG(galleryUI, QString("Context menu shown for icon: %1").arg(iconName));
 }
-void GalleryMainWindow::onCopyIconPath()
-{
+void GalleryMainWindow::onCopyIconPath() {
     if (!m_currentIconName.isEmpty()) {
         QString iconPath = QString(":/icons/%1.svg").arg(m_currentIconName);
         QApplication::clipboard()->setText(iconPath);
@@ -1431,8 +1496,7 @@ void GalleryMainWindow::onCopyIconPath()
     }
 }
 
-void GalleryMainWindow::onPreviewIcon()
-{
+void GalleryMainWindow::onPreviewIcon() {
     if (!m_currentIconName.isEmpty() && m_lucide) {
         // Create a preview dialog
         QDialog previewDialog(this);
@@ -1467,8 +1531,7 @@ void GalleryMainWindow::onPreviewIcon()
     }
 }
 
-void GalleryMainWindow::onEditIconMetadata()
-{
+void GalleryMainWindow::onEditIconMetadata() {
     if (!m_currentIconName.isEmpty()) {
         // Simple metadata editing dialog
         QDialog metadataDialog(this);
@@ -1526,35 +1589,34 @@ void GalleryMainWindow::onEditIconMetadata()
         layout->addLayout(buttonLayout);
 
         metadataDialog.exec();
-        GALLERY_LOG_DEBUG(galleryUI, QString("Edited metadata for icon: %1").arg(m_currentIconName));
+        GALLERY_LOG_DEBUG(galleryUI,
+                          QString("Edited metadata for icon: %1").arg(m_currentIconName));
     }
 }
 
-void GalleryMainWindow::onImageSelected(const QString& imagePath)
-{
+void GalleryMainWindow::onImageSelected(const QString& imagePath) {
     if (imagePath.isEmpty()) {
         return;
     }
 
     QString errorMessage;
     if (!ErrorHandler::validateImageFile(imagePath, &errorMessage)) {
-        ErrorHandler::reportError(
-            QString("Invalid image file selected: %1").arg(errorMessage),
-            ErrorSeverity::Warning,
-            ErrorCategory::FileSystem,
-            "Image selection"
-        );
+        ErrorHandler::reportError(QString("Invalid image file selected: %1").arg(errorMessage),
+                                  ErrorSeverity::Warning, ErrorCategory::FileSystem,
+                                  "Image selection");
         statusBar()->showMessage(tr("Invalid image file: %1").arg(errorMessage), 5000);
         return;
     }
 
-    if (!ErrorHandler::safeExecute([this, &imagePath]() {
-        if (m_imageViewer) {
-            m_imageViewer->setCurrentImage(imagePath);
-        }
-    }, "Loading image", &errorMessage)) {
+    if (!ErrorHandler::safeExecute(
+            [this, &imagePath]() {
+                if (m_imageViewer) {
+                    m_imageViewer->setCurrentImage(imagePath);
+                }
+            },
+            "Loading image", &errorMessage)) {
         ErrorHandler::showWarningDialog(this, "Image Loading Error",
-            QString("Failed to load image: %1").arg(errorMessage));
+                                        QString("Failed to load image: %1").arg(errorMessage));
         return;
     }
 
@@ -1564,8 +1626,7 @@ void GalleryMainWindow::onImageSelected(const QString& imagePath)
     GALLERY_LOG_DEBUG(galleryUI, QString("Image selected: %1").arg(imagePath));
 }
 
-void GalleryMainWindow::onImageDoubleClicked(const QString& imagePath)
-{
+void GalleryMainWindow::onImageDoubleClicked(const QString& imagePath) {
     if (!imagePath.isEmpty()) {
         // Open image in fullscreen mode
         if (m_imageViewer) {
@@ -1576,25 +1637,20 @@ void GalleryMainWindow::onImageDoubleClicked(const QString& imagePath)
     }
 }
 
-void GalleryMainWindow::onDirectorySelected(const QString& dirPath)
-{
+void GalleryMainWindow::onDirectorySelected(const QString& dirPath) {
     QString errorMessage;
     if (!ErrorHandler::validateDirectoryPath(dirPath, &errorMessage)) {
-        ErrorHandler::reportError(
-            QString("Invalid directory selected: %1").arg(errorMessage),
-            ErrorSeverity::Warning,
-            ErrorCategory::FileSystem,
-            "Directory selection"
-        );
+        ErrorHandler::reportError(QString("Invalid directory selected: %1").arg(errorMessage),
+                                  ErrorSeverity::Warning, ErrorCategory::FileSystem,
+                                  "Directory selection");
         ErrorHandler::showWarningDialog(this, "Invalid Directory", errorMessage);
         return;
     }
 
-    if (!ErrorHandler::safeExecute([this, &dirPath]() {
-        loadImageDirectory(dirPath);
-    }, "Loading directory", &errorMessage)) {
+    if (!ErrorHandler::safeExecute([this, &dirPath]() { loadImageDirectory(dirPath); },
+                                   "Loading directory", &errorMessage)) {
         ErrorHandler::showErrorDialog(this, "Directory Loading Error",
-            "Failed to load the selected directory.", errorMessage);
+                                      "Failed to load the selected directory.", errorMessage);
         return;
     }
 
@@ -1602,8 +1658,7 @@ void GalleryMainWindow::onDirectorySelected(const QString& dirPath)
     GALLERY_LOG_INFO(galleryUI, QString("Directory selected: %1").arg(dirPath));
 }
 
-void GalleryMainWindow::onToggleGalleryMode()
-{
+void GalleryMainWindow::onToggleGalleryMode() {
     // Toggle between icon mode and image gallery mode
     static bool imageMode = false;
     imageMode = !imageMode;
@@ -1614,13 +1669,10 @@ void GalleryMainWindow::onToggleGalleryMode()
     GALLERY_LOG_DEBUG(galleryUI, QString("Gallery mode: %1").arg(imageMode ? "image" : "icon"));
 }
 
-void GalleryMainWindow::onOpenImageDirectory()
-{
+void GalleryMainWindow::onOpenImageDirectory() {
     QString dir = QFileDialog::getExistingDirectory(
-        this,
-        tr("Select Image Directory"),
-        QStandardPaths::writableLocation(QStandardPaths::PicturesLocation)
-    );
+        this, tr("Select Image Directory"),
+        QStandardPaths::writableLocation(QStandardPaths::PicturesLocation));
 
     if (!dir.isEmpty()) {
         loadImageDirectory(dir);
@@ -1629,32 +1681,30 @@ void GalleryMainWindow::onOpenImageDirectory()
     }
 }
 
-void GalleryMainWindow::onImageViewerModeChanged()
-{
+void GalleryMainWindow::onImageViewerModeChanged() {
     if (m_imageViewer) {
         // Cycle through image viewer modes
         static int mode = 0;
         mode = (mode + 1) % 3; // Assuming 3 modes: fit, actual, custom
 
         switch (mode) {
-        case 0:
-            m_imageViewer->onFitToWindow();
-            statusBar()->showMessage(tr("Image viewer: Fit to window"), 2000);
-            break;
-        case 1:
-            m_imageViewer->onActualSize();
-            statusBar()->showMessage(tr("Image viewer: Actual size"), 2000);
-            break;
-        case 2:
-            statusBar()->showMessage(tr("Image viewer: Custom zoom"), 2000);
-            break;
+            case 0:
+                m_imageViewer->onFitToWindow();
+                statusBar()->showMessage(tr("Image viewer: Fit to window"), 2000);
+                break;
+            case 1:
+                m_imageViewer->onActualSize();
+                statusBar()->showMessage(tr("Image viewer: Actual size"), 2000);
+                break;
+            case 2:
+                statusBar()->showMessage(tr("Image viewer: Custom zoom"), 2000);
+                break;
         }
 
         GALLERY_LOG_DEBUG(galleryUI, QString("Image viewer mode changed: %1").arg(mode));
     }
 }
-void GalleryMainWindow::onStartSlideshow()
-{
+void GalleryMainWindow::onStartSlideshow() {
     if (!m_slideshowActive && m_slideshowTimer) {
         m_slideshowActive = true;
         m_slideshowTimer->start(m_slideshowInterval);
@@ -1664,8 +1714,7 @@ void GalleryMainWindow::onStartSlideshow()
 }
 
 // Missing methods declared in headers but not implemented (Part 2)
-void GalleryMainWindow::onStopSlideshow()
-{
+void GalleryMainWindow::onStopSlideshow() {
     if (m_slideshowActive && m_slideshowTimer) {
         m_slideshowActive = false;
         m_slideshowTimer->stop();
@@ -1673,8 +1722,7 @@ void GalleryMainWindow::onStopSlideshow()
         updateStatusBar();
     }
 }
-void GalleryMainWindow::onImageRotateLeft()
-{
+void GalleryMainWindow::onImageRotateLeft() {
     if (m_imageViewer) {
         m_imageViewer->rotateLeft();
         statusBar()->showMessage(tr("Image rotated left"), 2000);
@@ -1682,8 +1730,7 @@ void GalleryMainWindow::onImageRotateLeft()
     }
 }
 
-void GalleryMainWindow::onImageRotateRight()
-{
+void GalleryMainWindow::onImageRotateRight() {
     if (m_imageViewer) {
         m_imageViewer->rotateRight();
         statusBar()->showMessage(tr("Image rotated right"), 2000);
@@ -1691,8 +1738,7 @@ void GalleryMainWindow::onImageRotateRight()
     }
 }
 
-void GalleryMainWindow::onImageFlipHorizontal()
-{
+void GalleryMainWindow::onImageFlipHorizontal() {
     if (m_imageViewer) {
         m_imageViewer->flipHorizontal();
         statusBar()->showMessage(tr("Image flipped horizontally"), 2000);
@@ -1700,8 +1746,7 @@ void GalleryMainWindow::onImageFlipHorizontal()
     }
 }
 
-void GalleryMainWindow::onImageFlipVertical()
-{
+void GalleryMainWindow::onImageFlipVertical() {
     if (m_imageViewer) {
         m_imageViewer->flipVertical();
         statusBar()->showMessage(tr("Image flipped vertically"), 2000);
@@ -1709,8 +1754,7 @@ void GalleryMainWindow::onImageFlipVertical()
     }
 }
 
-void GalleryMainWindow::onImageZoomIn()
-{
+void GalleryMainWindow::onImageZoomIn() {
     if (m_imageViewer) {
         m_imageViewer->onZoomIn();
         statusBar()->showMessage(tr("Image zoomed in"), 1000);
@@ -1718,8 +1762,7 @@ void GalleryMainWindow::onImageZoomIn()
     }
 }
 
-void GalleryMainWindow::onImageZoomOut()
-{
+void GalleryMainWindow::onImageZoomOut() {
     if (m_imageViewer) {
         m_imageViewer->onZoomOut();
         statusBar()->showMessage(tr("Image zoomed out"), 1000);
@@ -1727,8 +1770,7 @@ void GalleryMainWindow::onImageZoomOut()
     }
 }
 
-void GalleryMainWindow::onImageFitToWindow()
-{
+void GalleryMainWindow::onImageFitToWindow() {
     if (m_imageViewer) {
         m_imageViewer->onFitToWindow();
         statusBar()->showMessage(tr("Image fit to window"), 2000);
@@ -1736,16 +1778,14 @@ void GalleryMainWindow::onImageFitToWindow()
     }
 }
 
-void GalleryMainWindow::onImageActualSize()
-{
+void GalleryMainWindow::onImageActualSize() {
     if (m_imageViewer) {
         m_imageViewer->onActualSize();
         statusBar()->showMessage(tr("Image shown at actual size"), 2000);
         GALLERY_LOG_DEBUG(galleryUI, "Image shown at actual size");
     }
 }
-void GalleryMainWindow::onAdvancedSearchRequested()
-{
+void GalleryMainWindow::onAdvancedSearchRequested() {
     if (m_searchWidget) {
         m_searchWidget->showAdvancedOptions();
         statusBar()->showMessage(tr("Advanced search options shown"), 2000);
@@ -1753,8 +1793,7 @@ void GalleryMainWindow::onAdvancedSearchRequested()
     }
 }
 
-void GalleryMainWindow::onContributorFilterChanged(const QStringList& contributors)
-{
+void GalleryMainWindow::onContributorFilterChanged(const QStringList& contributors) {
     if (m_metadataManager) {
         // Apply contributor filter
         QStringList filteredIcons;
@@ -1775,19 +1814,22 @@ void GalleryMainWindow::onContributorFilterChanged(const QStringList& contributo
             m_iconGrid->setFilteredIcons(filteredIcons);
         }
 
-        statusBar()->showMessage(tr("Filtered by contributors: %1 icons found").arg(filteredIcons.size()), 3000);
-        GALLERY_LOG_DEBUG(galleryUI, QString("Contributor filter applied: %1 contributors, %2 icons found")
-                         .arg(contributors.size()).arg(filteredIcons.size()));
+        statusBar()->showMessage(
+            tr("Filtered by contributors: %1 icons found").arg(filteredIcons.size()), 3000);
+        GALLERY_LOG_DEBUG(galleryUI,
+                          QString("Contributor filter applied: %1 contributors, %2 icons found")
+                              .arg(contributors.size())
+                              .arg(filteredIcons.size()));
     }
 }
 
-void GalleryMainWindow::onFavoritesFilterToggled(bool enabled)
-{
+void GalleryMainWindow::onFavoritesFilterToggled(bool enabled) {
     if (m_favoritesManager && m_iconGrid) {
         if (enabled) {
             QStringList favoriteIcons = m_favoritesManager->getFavorites();
             m_iconGrid->setFilteredIcons(favoriteIcons);
-            statusBar()->showMessage(tr("Showing favorites: %1 icons").arg(favoriteIcons.size()), 3000);
+            statusBar()->showMessage(tr("Showing favorites: %1 icons").arg(favoriteIcons.size()),
+                                     3000);
         } else {
             m_iconGrid->clearFilter();
             statusBar()->showMessage(tr("Showing all icons"), 2000);
@@ -1796,13 +1838,13 @@ void GalleryMainWindow::onFavoritesFilterToggled(bool enabled)
     }
 }
 
-void GalleryMainWindow::onRecentFilterToggled(bool enabled)
-{
+void GalleryMainWindow::onRecentFilterToggled(bool enabled) {
     if (m_iconGrid) {
         if (enabled) {
             // Show recently used icons (stored in m_recentIcons)
             m_iconGrid->setFilteredIcons(m_recentIcons);
-            statusBar()->showMessage(tr("Showing recent icons: %1 icons").arg(m_recentIcons.size()), 3000);
+            statusBar()->showMessage(tr("Showing recent icons: %1 icons").arg(m_recentIcons.size()),
+                                     3000);
         } else {
             m_iconGrid->clearFilter();
             statusBar()->showMessage(tr("Showing all icons"), 2000);
@@ -1811,17 +1853,10 @@ void GalleryMainWindow::onRecentFilterToggled(bool enabled)
     }
 }
 
-void GalleryMainWindow::onSaveCurrentFilter()
-{
+void GalleryMainWindow::onSaveCurrentFilter() {
     bool ok;
-    QString name = QInputDialog::getText(
-        this,
-        tr("Save Filter"),
-        tr("Enter filter name:"),
-        QLineEdit::Normal,
-        QString(),
-        &ok
-    );
+    QString name = QInputDialog::getText(this, tr("Save Filter"), tr("Enter filter name:"),
+                                         QLineEdit::Normal, QString(), &ok);
 
     if (ok && !name.isEmpty()) {
         // Save current filter settings
@@ -1838,9 +1873,9 @@ void GalleryMainWindow::onSaveCurrentFilter()
     }
 }
 
-void GalleryMainWindow::onLoadSavedFilter()
-{
-    if (!m_settings) return;
+void GalleryMainWindow::onLoadSavedFilter() {
+    if (!m_settings)
+        return;
 
     m_settings->beginGroup("SavedFilters");
     QStringList savedFilters = m_settings->childGroups();
@@ -1853,14 +1888,7 @@ void GalleryMainWindow::onLoadSavedFilter()
 
     bool ok;
     QString selectedFilter = QInputDialog::getItem(
-        this,
-        tr("Load Filter"),
-        tr("Select filter to load:"),
-        savedFilters,
-        0,
-        false,
-        &ok
-    );
+        this, tr("Load Filter"), tr("Select filter to load:"), savedFilters, 0, false, &ok);
 
     if (ok && !selectedFilter.isEmpty()) {
         m_settings->beginGroup("SavedFilters");
@@ -1876,8 +1904,7 @@ void GalleryMainWindow::onLoadSavedFilter()
     }
 }
 
-void GalleryMainWindow::onIconsLoadProgress(int current, int total)
-{
+void GalleryMainWindow::onIconsLoadProgress(int current, int total) {
     if (m_progressBar) {
         m_progressBar->setVisible(true);
         m_progressBar->setMaximum(total);
@@ -1896,21 +1923,18 @@ void GalleryMainWindow::onIconsLoadProgress(int current, int total)
     GALLERY_LOG_DEBUG(galleryUI, QString("Icons load progress: %1/%2").arg(current).arg(total));
 }
 
-void GalleryMainWindow::onThemeChanged()
-{
+void GalleryMainWindow::onThemeChanged() {
     applyTheme();
     statusBar()->showMessage(tr("Theme applied"), 2000);
     GALLERY_LOG_DEBUG(galleryUI, "Theme changed");
 }
 
-void GalleryMainWindow::onLanguageChanged()
-{
+void GalleryMainWindow::onLanguageChanged() {
     // Apply language changes (would need translation system)
     statusBar()->showMessage(tr("Language changed"), 2000);
     GALLERY_LOG_DEBUG(galleryUI, "Language changed");
 }
-void GalleryMainWindow::onPerformanceMetricsUpdated(const QMap<QString, QVariant>& metrics)
-{
+void GalleryMainWindow::onPerformanceMetricsUpdated(const QMap<QString, QVariant>& metrics) {
     // Update performance metrics display
     QString metricsText;
     for (auto it = metrics.begin(); it != metrics.end(); ++it) {
@@ -1918,33 +1942,33 @@ void GalleryMainWindow::onPerformanceMetricsUpdated(const QMap<QString, QVariant
     }
 
     // Update status or performance panel if available
-    GALLERY_LOG_DEBUG(galleryPerf, QString("Performance metrics updated: %1 metrics").arg(metrics.size()));
+    GALLERY_LOG_DEBUG(galleryPerf,
+                      QString("Performance metrics updated: %1 metrics").arg(metrics.size()));
 }
 
-void GalleryMainWindow::onSystemTrayActivated(QSystemTrayIcon::ActivationReason reason)
-{
+void GalleryMainWindow::onSystemTrayActivated(QSystemTrayIcon::ActivationReason reason) {
     switch (reason) {
-    case QSystemTrayIcon::Trigger:
-        // Single click - show/hide window
-        setVisible(!isVisible());
-        break;
-    case QSystemTrayIcon::DoubleClick:
-        // Double click - restore and activate
-        show();
-        raise();
-        activateWindow();
-        break;
-    case QSystemTrayIcon::MiddleClick:
-        // Middle click - show quick actions
-        break;
-    default:
-        break;
+        case QSystemTrayIcon::Trigger:
+            // Single click - show/hide window
+            setVisible(!isVisible());
+            break;
+        case QSystemTrayIcon::DoubleClick:
+            // Double click - restore and activate
+            show();
+            raise();
+            activateWindow();
+            break;
+        case QSystemTrayIcon::MiddleClick:
+            // Middle click - show quick actions
+            break;
+        default:
+            break;
     }
-    GALLERY_LOG_DEBUG(galleryUI, QString("System tray activated: %1").arg(static_cast<int>(reason)));
+    GALLERY_LOG_DEBUG(galleryUI,
+                      QString("System tray activated: %1").arg(static_cast<int>(reason)));
 }
 
-void GalleryMainWindow::onSystemTrayMessageClicked()
-{
+void GalleryMainWindow::onSystemTrayMessageClicked() {
     // Handle system tray message click
     show();
     raise();
@@ -1952,26 +1976,22 @@ void GalleryMainWindow::onSystemTrayMessageClicked()
     GALLERY_LOG_DEBUG(galleryUI, "System tray message clicked");
 }
 
-void GalleryMainWindow::onFadeInFinished()
-{
+void GalleryMainWindow::onFadeInFinished() {
     // Handle fade in animation completion
     GALLERY_LOG_DEBUG(galleryUI, "Fade in animation finished");
 }
 
-void GalleryMainWindow::onFadeOutFinished()
-{
+void GalleryMainWindow::onFadeOutFinished() {
     // Handle fade out animation completion
     GALLERY_LOG_DEBUG(galleryUI, "Fade out animation finished");
 }
 
-void GalleryMainWindow::onSlideAnimationFinished()
-{
+void GalleryMainWindow::onSlideAnimationFinished() {
     // Handle slide animation completion
     GALLERY_LOG_DEBUG(galleryUI, "Slide animation finished");
 }
 
-void GalleryMainWindow::onAutoSaveTimer()
-{
+void GalleryMainWindow::onAutoSaveTimer() {
     // Auto-save settings and state
     if (m_autoSaveSettings) {
         saveSettings();
@@ -1979,11 +1999,11 @@ void GalleryMainWindow::onAutoSaveTimer()
     }
 }
 
-void GalleryMainWindow::onBackupTimer()
-{
+void GalleryMainWindow::onBackupTimer() {
     // Create backup of settings and favorites
     if (m_settings) {
-        QString backupDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/backups";
+        QString backupDir =
+            QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/backups";
         QDir().mkpath(backupDir);
 
         QString timestamp = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");
@@ -2001,96 +2021,99 @@ void GalleryMainWindow::onBackupTimer()
 }
 
 // Event handlers
-void GalleryMainWindow::keyPressEvent(QKeyEvent *event)
-{
+void GalleryMainWindow::keyPressEvent(QKeyEvent* event) {
     // Handle global keyboard shortcuts that aren't handled by actions
     switch (event->key()) {
-    case Qt::Key_Escape:
-        // Clear search or exit fullscreen
-        if (m_isFullscreen) {
-            onToggleFullscreen();
-        } else if (m_searchWidget) {
-            m_searchWidget->clearSearch();
-        }
-        event->accept();
-        return;
-
-    case Qt::Key_F5:
-        // Refresh/reload
-        if (m_iconGrid) {
-            m_iconGrid->refresh();
-        }
-        event->accept();
-        return;
-
-    case Qt::Key_Delete:
-        // Remove from favorites
-        if (!m_currentIconName.isEmpty() && m_favoritesManager) {
-            m_favoritesManager->removeFavorite(m_currentIconName);
-            statusBar()->showMessage(tr("Removed '%1' from favorites").arg(m_currentIconName), 2000);
-        }
-        event->accept();
-        return;
-
-    case Qt::Key_Space:
-        // Quick preview
-        if (!m_currentIconName.isEmpty()) {
-            onPreviewIcon();
-        }
-        event->accept();
-        return;
-
-    case Qt::Key_Return:
-    case Qt::Key_Enter:
-        // Open details or export
-        if (event->modifiers() & Qt::ControlModifier) {
-            onExportIcon();
-        } else if (!m_currentIconName.isEmpty()) {
-            onEditIconMetadata();
-        }
-        event->accept();
-        return;
-
-    case Qt::Key_Left:
-        if (event->modifiers() & Qt::ControlModifier) {
-            onPreviousIcon();
+        case Qt::Key_Escape:
+            // Clear search or exit fullscreen
+            if (m_isFullscreen) {
+                onToggleFullscreen();
+            } else if (m_searchWidget) {
+                m_searchWidget->clearSearch();
+            }
             event->accept();
             return;
-        }
-        break;
 
-    case Qt::Key_Right:
-        if (event->modifiers() & Qt::ControlModifier) {
-            onNextIcon();
+        case Qt::Key_F5:
+            // Refresh/reload
+            if (m_iconGrid) {
+                m_iconGrid->refresh();
+            }
             event->accept();
             return;
-        }
-        break;
 
-    case Qt::Key_Home:
-        if (event->modifiers() & Qt::ControlModifier) {
-            onFirstIcon();
+        case Qt::Key_Delete:
+            // Remove from favorites
+            if (!m_currentIconName.isEmpty() && m_favoritesManager) {
+                m_favoritesManager->removeFavorite(m_currentIconName);
+                statusBar()->showMessage(tr("Removed '%1' from favorites").arg(m_currentIconName),
+                                         2000);
+            }
             event->accept();
             return;
-        }
-        break;
 
-    case Qt::Key_End:
-        if (event->modifiers() & Qt::ControlModifier) {
-            onLastIcon();
+        case Qt::Key_Space:
+            // Quick preview
+            if (!m_currentIconName.isEmpty()) {
+                onPreviewIcon();
+            }
             event->accept();
             return;
-        }
-        break;
+
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+            // Open details or export
+            if (event->modifiers() & Qt::ControlModifier) {
+                onExportIcon();
+            } else if (!m_currentIconName.isEmpty()) {
+                onEditIconMetadata();
+            }
+            event->accept();
+            return;
+
+        case Qt::Key_Left:
+            if (event->modifiers() & Qt::ControlModifier) {
+                onPreviousIcon();
+                event->accept();
+                return;
+            }
+            break;
+
+        case Qt::Key_Right:
+            if (event->modifiers() & Qt::ControlModifier) {
+                onNextIcon();
+                event->accept();
+                return;
+            }
+            break;
+
+        case Qt::Key_Home:
+            if (event->modifiers() & Qt::ControlModifier) {
+                onFirstIcon();
+                event->accept();
+                return;
+            }
+            break;
+
+        case Qt::Key_End:
+            if (event->modifiers() & Qt::ControlModifier) {
+                onLastIcon();
+                event->accept();
+                return;
+            }
+            break;
     }
 
     QMainWindow::keyPressEvent(event);
 }
-void GalleryMainWindow::showEvent(QShowEvent *event) { QMainWindow::showEvent(event); }
-void GalleryMainWindow::changeEvent(QEvent *event) { QMainWindow::changeEvent(event); }
+void GalleryMainWindow::showEvent(QShowEvent* event) {
+    QMainWindow::showEvent(event);
+}
+void GalleryMainWindow::changeEvent(QEvent* event) {
+    QMainWindow::changeEvent(event);
+}
 
-void GalleryMainWindow::contextMenuEvent(QContextMenuEvent *event)
-{
+void GalleryMainWindow::contextMenuEvent(QContextMenuEvent* event) {
     // Create context menu for main window
     QMenu contextMenu(this);
 
@@ -2107,13 +2130,15 @@ void GalleryMainWindow::contextMenuEvent(QContextMenuEvent *event)
     toggleDetailsPanelAction->setShortcut(QKeySequence("F10"));
     toggleDetailsPanelAction->setCheckable(true);
     toggleDetailsPanelAction->setChecked(m_detailsPanelVisible);
-    connect(toggleDetailsPanelAction, &QAction::triggered, this, &GalleryMainWindow::onToggleDetailsPanel);
+    connect(toggleDetailsPanelAction, &QAction::triggered, this,
+            &GalleryMainWindow::onToggleDetailsPanel);
 
     QAction* toggleStatusBarAction = viewMenu->addAction(tr("Toggle Status Bar"));
     toggleStatusBarAction->setShortcut(QKeySequence("Ctrl+/"));
     toggleStatusBarAction->setCheckable(true);
     toggleStatusBarAction->setChecked(m_statusBarVisible);
-    connect(toggleStatusBarAction, &QAction::triggered, this, &GalleryMainWindow::onToggleStatusBar);
+    connect(toggleStatusBarAction, &QAction::triggered, this,
+            &GalleryMainWindow::onToggleStatusBar);
 
     viewMenu->addSeparator();
 
@@ -2165,7 +2190,8 @@ void GalleryMainWindow::contextMenuEvent(QContextMenuEvent *event)
         // Favorites
         if (m_favoritesManager) {
             bool isFavorite = m_favoritesManager->isFavorite(m_currentIconName);
-            QAction* favoriteAction = contextMenu.addAction(isFavorite ? tr("Remove from Favorites") : tr("Add to Favorites"));
+            QAction* favoriteAction = contextMenu.addAction(isFavorite ? tr("Remove from Favorites")
+                                                                       : tr("Add to Favorites"));
             favoriteAction->setShortcut(QKeySequence("Ctrl+D"));
             connect(favoriteAction, &QAction::triggered, this, [this, isFavorite]() {
                 if (isFavorite) {
@@ -2199,19 +2225,17 @@ void GalleryMainWindow::contextMenuEvent(QContextMenuEvent *event)
     event->accept();
 }
 
-void GalleryMainWindow::dragEnterEvent(QDragEnterEvent *event)
-{
+void GalleryMainWindow::dragEnterEvent(QDragEnterEvent* event) {
     if (event->mimeData()->hasUrls()) {
         event->acceptProposedAction();
     }
 }
 
-void GalleryMainWindow::dropEvent(QDropEvent *event)
-{
-    const QMimeData *mimeData = event->mimeData();
+void GalleryMainWindow::dropEvent(QDropEvent* event) {
+    const QMimeData* mimeData = event->mimeData();
     if (mimeData->hasUrls()) {
         QList<QUrl> urls = mimeData->urls();
-        for (const QUrl &url : urls) {
+        for (const QUrl& url : urls) {
             if (url.isLocalFile()) {
                 QString filePath = url.toLocalFile();
                 // Handle dropped files (images or directories)
@@ -2220,8 +2244,8 @@ void GalleryMainWindow::dropEvent(QDropEvent *event)
                     loadImageDirectory(filePath);
                 } else {
                     QString suffix = fileInfo.suffix().toLower();
-                    if (suffix == "jpg" || suffix == "jpeg" || suffix == "png" ||
-                        suffix == "gif" || suffix == "bmp" || suffix == "svg") {
+                    if (suffix == "jpg" || suffix == "jpeg" || suffix == "png" || suffix == "gif" ||
+                        suffix == "bmp" || suffix == "svg") {
                         showImage(filePath);
                     }
                 }
@@ -2232,108 +2256,98 @@ void GalleryMainWindow::dropEvent(QDropEvent *event)
 }
 
 // Enhanced methods from consolidated design
-void GalleryMainWindow::setViewMode(ViewMode mode)
-{
-    if (m_currentViewModeEnum == mode) return;
+void GalleryMainWindow::setViewMode(ViewMode mode) {
+    if (m_currentViewModeEnum == mode)
+        return;
 
     m_currentViewModeEnum = mode;
     updateViewMode();
     updateUI();
 }
 
-void GalleryMainWindow::setTheme(ThemeMode theme)
-{
-    if (m_currentTheme == theme) return;
+void GalleryMainWindow::setTheme(ThemeMode theme) {
+    if (m_currentTheme == theme)
+        return;
 
     m_currentTheme = theme;
     applyTheme();
 }
 
-void GalleryMainWindow::updateUI()
-{
+void GalleryMainWindow::updateUI() {
     updateStatusBar();
     updateWindowTitle();
     updateActions();
 }
 
-void GalleryMainWindow::setupCategoryShortcuts()
-{
+void GalleryMainWindow::setupCategoryShortcuts() {
     // Setup Ctrl+1-9 shortcuts for categories
     for (int i = 1; i <= 9; ++i) {
         QShortcut* shortcut = new QShortcut(QKeySequence(QString("Ctrl+%1").arg(i)), this);
         connect(shortcut, &QShortcut::activated, this, [this, i]() {
-            onCategoryShortcut(i - 1);  // Convert to 0-based index
+            onCategoryShortcut(i - 1); // Convert to 0-based index
         });
         m_categoryShortcuts.append(shortcut);
     }
 }
 
-void GalleryMainWindow::onCategoryShortcut(int categoryIndex)
-{
+void GalleryMainWindow::onCategoryShortcut(int categoryIndex) {
     // Handle category shortcut activation
     if (m_categorySidebar) {
         // Implementation would depend on CategorySidebarWidget interface
-        GALLERY_LOG_DEBUG(galleryUI, QString("Category shortcut %1 activated").arg(categoryIndex + 1));
+        GALLERY_LOG_DEBUG(galleryUI,
+                          QString("Category shortcut %1 activated").arg(categoryIndex + 1));
     }
 }
 
 // Enhanced methods from EnhancedGalleryMainWindow
-void GalleryMainWindow::onZoomFit()
-{
+void GalleryMainWindow::onZoomFit() {
     if (m_imageViewer) {
         // Implement zoom to fit functionality
         GALLERY_LOG_DEBUG(galleryUI, "Zoom to fit requested");
     }
 }
 
-void GalleryMainWindow::onZoomActual()
-{
+void GalleryMainWindow::onZoomActual() {
     if (m_imageViewer) {
         // Implement zoom to actual size functionality
         GALLERY_LOG_DEBUG(galleryUI, "Zoom to actual size requested");
     }
 }
 
-void GalleryMainWindow::onGoToIcon()
-{
+void GalleryMainWindow::onGoToIcon() {
     // Implement go to specific icon functionality
     GALLERY_LOG_DEBUG(galleryUI, "Go to icon requested");
 }
 
-void GalleryMainWindow::onNextIcon()
-{
+void GalleryMainWindow::onNextIcon() {
     // Implement next icon navigation
     if (m_thumbnailGrid) {
         GALLERY_LOG_DEBUG(galleryUI, "Next icon requested");
     }
 }
 
-void GalleryMainWindow::onPreviousIcon()
-{
+void GalleryMainWindow::onPreviousIcon() {
     // Implement previous icon navigation
     if (m_thumbnailGrid) {
         GALLERY_LOG_DEBUG(galleryUI, "Previous icon requested");
     }
 }
 
-void GalleryMainWindow::onFirstIcon()
-{
+void GalleryMainWindow::onFirstIcon() {
     // Implement first icon navigation
     if (m_thumbnailGrid) {
         GALLERY_LOG_DEBUG(galleryUI, "First icon requested");
     }
 }
 
-void GalleryMainWindow::onLastIcon()
-{
+void GalleryMainWindow::onLastIcon() {
     // Implement last icon navigation
     if (m_thumbnailGrid) {
         GALLERY_LOG_DEBUG(galleryUI, "Last icon requested");
     }
 }
 
-void GalleryMainWindow::onToggleSlideshow()
-{
+void GalleryMainWindow::onToggleSlideshow() {
     if (m_slideshowActive) {
         onStopSlideshow();
     } else {
@@ -2341,11 +2355,10 @@ void GalleryMainWindow::onToggleSlideshow()
     }
 }
 
-void GalleryMainWindow::onOpenImages()
-{
-    QStringList fileNames = QFileDialog::getOpenFileNames(this,
-        tr("Open Images"), QString(),
-        tr("Image Files (*.png *.jpg *.jpeg *.gif *.bmp *.svg)"));
+void GalleryMainWindow::onOpenImages() {
+    QStringList fileNames =
+        QFileDialog::getOpenFileNames(this, tr("Open Images"), QString(),
+                                      tr("Image Files (*.png *.jpg *.jpeg *.gif *.bmp *.svg)"));
 
     if (!fileNames.isEmpty()) {
         // Handle opening multiple images
@@ -2355,18 +2368,15 @@ void GalleryMainWindow::onOpenImages()
     }
 }
 
-void GalleryMainWindow::onOpenDirectory()
-{
-    QString dirPath = QFileDialog::getExistingDirectory(this,
-        tr("Open Directory"), QString());
+void GalleryMainWindow::onOpenDirectory() {
+    QString dirPath = QFileDialog::getExistingDirectory(this, tr("Open Directory"), QString());
 
     if (!dirPath.isEmpty()) {
         loadImageDirectory(dirPath);
     }
 }
 
-void GalleryMainWindow::onExportIcon()
-{
+void GalleryMainWindow::onExportIcon() {
     if (m_currentIconName.isEmpty()) {
         ErrorHandler::showInfoDialog(this, "No Icon Selected", "Please select an icon to export.");
         return;
@@ -2374,95 +2384,75 @@ void GalleryMainWindow::onExportIcon()
 
     QString errorMessage;
     if (!ErrorHandler::validateIconName(m_currentIconName, &errorMessage)) {
-        ErrorHandler::reportError(
-            QString("Invalid icon name for export: %1").arg(errorMessage),
-            ErrorSeverity::Warning,
-            ErrorCategory::Validation,
-            "Icon export"
-        );
+        ErrorHandler::reportError(QString("Invalid icon name for export: %1").arg(errorMessage),
+                                  ErrorSeverity::Warning, ErrorCategory::Validation, "Icon export");
         ErrorHandler::showWarningDialog(this, "Invalid Icon", errorMessage);
         return;
     }
 
-    if (!ErrorHandler::safeExecute([this]() {
-        onExportIcons();
-    }, "Exporting icon", &errorMessage)) {
-        ErrorHandler::showErrorDialog(this, "Export Error",
-            "Failed to export icon.", errorMessage);
+    if (!ErrorHandler::safeExecute([this]() { onExportIcons(); }, "Exporting icon",
+                                   &errorMessage)) {
+        ErrorHandler::showErrorDialog(this, "Export Error", "Failed to export icon.", errorMessage);
     }
 }
 
-void GalleryMainWindow::onExportBatch()
-{
+void GalleryMainWindow::onExportBatch() {
     // Implement batch export functionality
     onExportIcons();
 }
 
-void GalleryMainWindow::onCopyIcon()
-{
+void GalleryMainWindow::onCopyIcon() {
     // Copy current icon to clipboard
     onCopyIconSvg();
 }
 
-void GalleryMainWindow::onGenerateCode()
-{
+void GalleryMainWindow::onGenerateCode() {
     if (!m_currentIconName.isEmpty()) {
         // Generate code for current icon
         onCopyIconCode();
     }
 }
 
-
-
-void GalleryMainWindow::onShowFavorites()
-{
+void GalleryMainWindow::onShowFavorites() {
     if (m_favoritesManager) {
         // Show favorites view
         GALLERY_LOG_DEBUG(galleryUI, "Show favorites requested");
     }
 }
 
-void GalleryMainWindow::onClearFavorites()
-{
+void GalleryMainWindow::onClearFavorites() {
     if (m_favoritesManager) {
         // Clear all favorites
         GALLERY_LOG_DEBUG(galleryUI, "Clear favorites requested");
     }
 }
 
-void GalleryMainWindow::onSettings()
-{
+void GalleryMainWindow::onSettings() {
     onShowPreferences();
 }
 
-void GalleryMainWindow::onAbout()
-{
+void GalleryMainWindow::onAbout() {
     onAboutApplication();
 }
 
-void GalleryMainWindow::onShowKeyboardShortcuts()
-{
+void GalleryMainWindow::onShowKeyboardShortcuts() {
     onShowShortcuts();
 }
 
-void GalleryMainWindow::onContentLoaded()
-{
+void GalleryMainWindow::onContentLoaded() {
     updateStatusBar();
     updateUI();
 }
 
-void GalleryMainWindow::onMetadataLoaded(int totalIcons)
-{
+void GalleryMainWindow::onMetadataLoaded(int totalIcons) {
     onIconsLoaded(totalIcons);
 }
 
-void GalleryMainWindow::onLoadingProgress(int current, int total)
-{
+void GalleryMainWindow::onLoadingProgress(int current, int total) {
     onIconsLoadProgress(current, total);
 }
 
-void GalleryMainWindow::onThumbnailSizeChanged(int size)
-{
+void GalleryMainWindow::onThumbnailSizeChanged(int size) {
     m_thumbnailSize = size;
     if (m_thumbnailGrid) {
         // Update thumbnail grid size
@@ -2471,8 +2461,7 @@ void GalleryMainWindow::onThumbnailSizeChanged(int size)
 }
 
 // Missing method implementations that are causing linker errors
-void GalleryMainWindow::setupShortcuts()
-{
+void GalleryMainWindow::setupShortcuts() {
     // Setup keyboard shortcuts
     setupCategoryShortcuts();
 
@@ -2481,7 +2470,8 @@ void GalleryMainWindow::setupShortcuts()
     connect(m_shortcuts["nextIcon"], &QShortcut::activated, this, &GalleryMainWindow::onNextIcon);
 
     m_shortcuts["previousIcon"] = new QShortcut(QKeySequence("Ctrl+Left"), this);
-    connect(m_shortcuts["previousIcon"], &QShortcut::activated, this, &GalleryMainWindow::onPreviousIcon);
+    connect(m_shortcuts["previousIcon"], &QShortcut::activated, this,
+            &GalleryMainWindow::onPreviousIcon);
 
     m_shortcuts["firstIcon"] = new QShortcut(QKeySequence("Ctrl+Home"), this);
     connect(m_shortcuts["firstIcon"], &QShortcut::activated, this, &GalleryMainWindow::onFirstIcon);
@@ -2491,13 +2481,16 @@ void GalleryMainWindow::setupShortcuts()
 
     // View shortcuts
     m_shortcuts["toggleSidebar"] = new QShortcut(QKeySequence("F9"), this);
-    connect(m_shortcuts["toggleSidebar"], &QShortcut::activated, this, &GalleryMainWindow::onToggleSidebar);
+    connect(m_shortcuts["toggleSidebar"], &QShortcut::activated, this,
+            &GalleryMainWindow::onToggleSidebar);
 
     m_shortcuts["toggleDetailsPanel"] = new QShortcut(QKeySequence("F10"), this);
-    connect(m_shortcuts["toggleDetailsPanel"], &QShortcut::activated, this, &GalleryMainWindow::onToggleDetailsPanel);
+    connect(m_shortcuts["toggleDetailsPanel"], &QShortcut::activated, this,
+            &GalleryMainWindow::onToggleDetailsPanel);
 
     m_shortcuts["toggleStatusBar"] = new QShortcut(QKeySequence("Ctrl+/"), this);
-    connect(m_shortcuts["toggleStatusBar"], &QShortcut::activated, this, &GalleryMainWindow::onToggleStatusBar);
+    connect(m_shortcuts["toggleStatusBar"], &QShortcut::activated, this,
+            &GalleryMainWindow::onToggleStatusBar);
 
     // Zoom shortcuts
     m_shortcuts["zoomIn"] = new QShortcut(QKeySequence("Ctrl++"), this);
@@ -2511,13 +2504,16 @@ void GalleryMainWindow::setupShortcuts()
 
     // File operations
     m_shortcuts["exportIcon"] = new QShortcut(QKeySequence("Ctrl+E"), this);
-    connect(m_shortcuts["exportIcon"], &QShortcut::activated, this, &GalleryMainWindow::onExportIcon);
+    connect(m_shortcuts["exportIcon"], &QShortcut::activated, this,
+            &GalleryMainWindow::onExportIcon);
 
     m_shortcuts["copyIconName"] = new QShortcut(QKeySequence("Ctrl+C"), this);
-    connect(m_shortcuts["copyIconName"], &QShortcut::activated, this, &GalleryMainWindow::onCopyIconName);
+    connect(m_shortcuts["copyIconName"], &QShortcut::activated, this,
+            &GalleryMainWindow::onCopyIconName);
 
     m_shortcuts["copyIconPath"] = new QShortcut(QKeySequence("Ctrl+Shift+C"), this);
-    connect(m_shortcuts["copyIconPath"], &QShortcut::activated, this, &GalleryMainWindow::onCopyIconPath);
+    connect(m_shortcuts["copyIconPath"], &QShortcut::activated, this,
+            &GalleryMainWindow::onCopyIconPath);
 
     // Search shortcuts
     m_shortcuts["focusSearch"] = new QShortcut(QKeySequence("Ctrl+F"), this);
@@ -2528,7 +2524,8 @@ void GalleryMainWindow::setupShortcuts()
     });
 
     m_shortcuts["advancedSearch"] = new QShortcut(QKeySequence("Ctrl+Shift+F"), this);
-    connect(m_shortcuts["advancedSearch"], &QShortcut::activated, this, &GalleryMainWindow::onAdvancedSearchRequested);
+    connect(m_shortcuts["advancedSearch"], &QShortcut::activated, this,
+            &GalleryMainWindow::onAdvancedSearchRequested);
 
     m_shortcuts["clearSearch"] = new QShortcut(QKeySequence("Ctrl+Shift+X"), this);
     connect(m_shortcuts["clearSearch"], &QShortcut::activated, this, [this]() {
@@ -2552,7 +2549,8 @@ void GalleryMainWindow::setupShortcuts()
     });
 
     m_shortcuts["showFavorites"] = new QShortcut(QKeySequence("Ctrl+Shift+D"), this);
-    connect(m_shortcuts["showFavorites"], &QShortcut::activated, this, &GalleryMainWindow::onShowFavorites);
+    connect(m_shortcuts["showFavorites"], &QShortcut::activated, this,
+            &GalleryMainWindow::onShowFavorites);
 
     // Theme shortcuts
     m_shortcuts["toggleTheme"] = new QShortcut(QKeySequence("Ctrl+T"), this);
@@ -2576,16 +2574,17 @@ void GalleryMainWindow::setupShortcuts()
         }
     });
 
-    GALLERY_LOG_DEBUG(galleryUI, QString("Keyboard shortcuts setup completed: %1 shortcuts").arg(m_shortcuts.size()));
+    GALLERY_LOG_DEBUG(
+        galleryUI,
+        QString("Keyboard shortcuts setup completed: %1 shortcuts").arg(m_shortcuts.size()));
 }
 
-void GalleryMainWindow::applyTheme()
-{
+void GalleryMainWindow::applyTheme() {
     // Apply the current theme
     switch (m_currentTheme) {
         case LightTheme:
             // Apply light theme
-            setStyleSheet("");  // Default light theme
+            setStyleSheet(""); // Default light theme
             break;
         case DarkTheme:
             // Apply dark theme
@@ -2600,22 +2599,23 @@ void GalleryMainWindow::applyTheme()
     GALLERY_LOG_DEBUG(galleryUI, "Theme applied");
 }
 
-void GalleryMainWindow::loadImageDirectory(const QString& directoryPath)
-{
-    if (directoryPath.isEmpty()) return;
+void GalleryMainWindow::loadImageDirectory(const QString& directoryPath) {
+    if (directoryPath.isEmpty())
+        return;
 
     if (m_imageMetadataManager) {
         // Load images from directory
-        GALLERY_LOG_INFO(galleryUI, QString("Loading images from directory: %1").arg(directoryPath));
+        GALLERY_LOG_INFO(galleryUI,
+                         QString("Loading images from directory: %1").arg(directoryPath));
         // Implementation would depend on ImageMetadataManager interface
     }
 
     updateStatusBar();
 }
 
-void GalleryMainWindow::showImage(const QString& imagePath)
-{
-    if (imagePath.isEmpty()) return;
+void GalleryMainWindow::showImage(const QString& imagePath) {
+    if (imagePath.isEmpty())
+        return;
 
     if (m_imageViewer) {
         // Show image in viewer
@@ -2624,8 +2624,7 @@ void GalleryMainWindow::showImage(const QString& imagePath)
     }
 }
 
-void GalleryMainWindow::updateViewMode()
-{
+void GalleryMainWindow::updateViewMode() {
     // Update the view mode based on current settings
     if (m_iconGrid) {
         // Update icon grid view mode
@@ -2636,8 +2635,7 @@ void GalleryMainWindow::updateViewMode()
     updateStatusBar();
 }
 
-void GalleryMainWindow::updateWindowTitle()
-{
+void GalleryMainWindow::updateWindowTitle() {
     QString title = "QtLucide Enhanced Icon & Image Gallery";
     if (!m_currentIconName.isEmpty()) {
         title += QString(" - %1").arg(m_currentIconName);
@@ -2646,8 +2644,7 @@ void GalleryMainWindow::updateWindowTitle()
 }
 
 // Helper method implementations
-void GalleryMainWindow::applyCompactMode(bool enabled)
-{
+void GalleryMainWindow::applyCompactMode(bool enabled) {
     if (enabled) {
         // Apply compact mode styling
         if (m_iconGrid) {
@@ -2676,8 +2673,7 @@ void GalleryMainWindow::applyCompactMode(bool enabled)
     GALLERY_LOG_DEBUG(galleryUI, QString("Compact mode applied: %1").arg(enabled));
 }
 
-void GalleryMainWindow::applyAnimations(bool enabled)
-{
+void GalleryMainWindow::applyAnimations(bool enabled) {
     // Enable/disable animations throughout the UI
     if (m_iconGrid) {
         m_iconGrid->setAnimationsEnabled(enabled);
@@ -2696,9 +2692,9 @@ void GalleryMainWindow::applyAnimations(bool enabled)
     GALLERY_LOG_DEBUG(galleryUI, QString("Animations applied: %1").arg(enabled));
 }
 
-void GalleryMainWindow::applyCurrentFilter()
-{
-    if (!m_iconGrid || !m_lucide) return;
+void GalleryMainWindow::applyCurrentFilter() {
+    if (!m_iconGrid || !m_lucide)
+        return;
 
     QStringList allIcons = m_lucide->availableIcons();
     QStringList filteredIcons;
@@ -2751,12 +2747,12 @@ void GalleryMainWindow::applyCurrentFilter()
     m_iconGrid->setFilteredIcons(filteredIcons);
     updateStatusBar();
 
-    GALLERY_LOG_DEBUG(galleryUI, QString("Filter applied: %1 icons match").arg(filteredIcons.size()));
+    GALLERY_LOG_DEBUG(galleryUI,
+                      QString("Filter applied: %1 icons match").arg(filteredIcons.size()));
 }
 
 // Missing GalleryMainWindow methods
-void GalleryMainWindow::setIconSize(int size)
-{
+void GalleryMainWindow::setIconSize(int size) {
     m_thumbnailSize = size;
     if (m_iconGrid) {
         m_iconGrid->setIconSize(size);
@@ -2769,8 +2765,7 @@ void GalleryMainWindow::setIconSize(int size)
     m_currentIconSize = size;
 }
 
-void GalleryMainWindow::setGalleryMode(bool galleryMode)
-{
+void GalleryMainWindow::setGalleryMode(bool galleryMode) {
     // m_galleryMode is not available in this class
     // Store the mode in a local variable or use existing member variables
 

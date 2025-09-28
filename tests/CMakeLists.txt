@@ -40,8 +40,6 @@ set(COMPONENT_UNIT_TEST_SOURCES
 # Component unit test headers
 set(COMPONENT_UNIT_TEST_HEADERS
     unit/components/test_theme_manager.h
-    unit/components/test_modern_search_widget.h
-    unit/components/test_modern_sidebar_widget.h
     unit/components/test_batch_export_manager.h
     unit/components/test_icon_metadata_manager.h
     unit/components/test_responsive_layout_manager.h

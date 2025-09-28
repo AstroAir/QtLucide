@@ -3,27 +3,39 @@
 # Find Qt6 Test module
 qt6_test_dep = dependency('qt6', modules: ['Test'], required: true)
 
-# Test sources
+# Test sources (using actual test files that exist)
 test_sources = [
   'main.cpp',
-  'test_qtlucide.cpp',
-  'test_icon_loading.cpp',
-  'test_svg_rendering.cpp',
-  'test_error_handling.cpp',
-  'test_thread_safety.cpp',
-  'test_boundary_conditions.cpp',
-  'test_memory_management.cpp',
+  'unit/core/test_qtlucide.cpp',
+  'unit/core/test_icon_loading.cpp',
+  'unit/core/test_svg_rendering.cpp',
+  'unit/core/test_error_handling.cpp',
+  'unit/core/test_thread_safety.cpp',
+  'unit/core/test_boundary_conditions.cpp',
+  'unit/core/test_memory_management.cpp',
+  'integration/test_integration.cpp',
+  'integration/test_ui_components.cpp',
+  'performance/test_performance_regression.cpp',
+  'platform/test_platform_specific.cpp',
+  'functional/test_accessibility.cpp',
+  'functional/test_export_functionality.cpp',
 ]
 
-# Test headers that need MOC processing
+# Test headers that need MOC processing (using actual headers that exist)
 test_headers = [
-  'test_qtlucide.h',
-  'test_icon_loading.h',
-  'test_svg_rendering.h',
-  'test_error_handling.h',
-  'test_thread_safety.h',
-  'test_boundary_conditions.h',
-  'test_memory_management.h',
+  'unit/core/test_qtlucide.h',
+  'unit/core/test_icon_loading.h',
+  'unit/core/test_svg_rendering.h',
+  'unit/core/test_error_handling.h',
+  'unit/core/test_thread_safety.h',
+  'unit/core/test_boundary_conditions.h',
+  'unit/core/test_memory_management.h',
+  'integration/test_integration.h',
+  'integration/test_ui_components.h',
+  'performance/test_performance_regression.h',
+  'platform/test_platform_specific.h',
+  'functional/test_accessibility.h',
+  'functional/test_export_functionality.h',
 ]
 
 # Process MOC files

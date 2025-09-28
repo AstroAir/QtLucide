@@ -5,27 +5,22 @@
 #include "IconExportDialog.h"
 #include "IconMetadataManager.h"
 #include <QApplication>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QColorDialog>
-#include <QStandardPaths>
-#include <QDir>
-#include <QPainter>
-#include <QSvgRenderer>
 #include <QBuffer>
-#include <QImageWriter>
+#include <QColorDialog>
 #include <QDebug>
+#include <QDir>
+#include <QFileDialog>
+#include <QImageWriter>
+#include <QMessageBox>
+#include <QPainter>
+#include <QStandardPaths>
+#include <QSvgRenderer>
 
-IconExportDialog::IconExportDialog(lucide::QtLucide* lucide,
-                                 IconMetadataManager* metadataManager,
-                                 QWidget *parent)
-    : QDialog(parent)
-    , m_lucide(lucide)
-    , m_metadataManager(metadataManager)
-    , m_mainLayout(nullptr)
-    , m_exporting(false)
-    , m_previewTimer(new QTimer(this))
-{
+
+IconExportDialog::IconExportDialog(lucide::QtLucide* lucide, IconMetadataManager* metadataManager,
+                                   QWidget* parent)
+    : QDialog(parent), m_lucide(lucide), m_metadataManager(metadataManager), m_mainLayout(nullptr),
+      m_exporting(false), m_previewTimer(new QTimer(this)) {
     setWindowTitle("Export Icons");
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setModal(true);
@@ -44,12 +39,9 @@ IconExportDialog::IconExportDialog(lucide::QtLucide* lucide,
     connect(m_previewTimer, &QTimer::timeout, this, &IconExportDialog::updatePreview);
 }
 
-IconExportDialog::~IconExportDialog()
-{
-}
+IconExportDialog::~IconExportDialog() {}
 
-void IconExportDialog::setupUI()
-{
+void IconExportDialog::setupUI() {
     m_mainLayout = new QVBoxLayout(this);
     m_contentLayout = new QHBoxLayout();
 
@@ -89,8 +81,7 @@ void IconExportDialog::setupUI()
     setupButtonBox();
 }
 
-void IconExportDialog::setupFormatOptions()
-{
+void IconExportDialog::setupFormatOptions() {
     m_formatGroup = new QGroupBox("Format & Mode");
     QFormLayout* layout = new QFormLayout(m_formatGroup);
 
@@ -99,13 +90,12 @@ void IconExportDialog::setupFormatOptions()
     layout->addRow("Format:", m_formatCombo);
 
     m_modeCombo = new QComboBox();
-    m_modeCombo->addItems({"Single Icon", "Selected Icons", "All Icons",
-                          "Favorite Icons", "Category Icons"});
+    m_modeCombo->addItems(
+        {"Single Icon", "Selected Icons", "All Icons", "Favorite Icons", "Category Icons"});
     layout->addRow("Export Mode:", m_modeCombo);
 }
 
-void IconExportDialog::setupSizeOptions()
-{
+void IconExportDialog::setupSizeOptions() {
     m_sizeGroup = new QGroupBox("Size Options");
     QVBoxLayout* layout = new QVBoxLayout(m_sizeGroup);
 
@@ -142,8 +132,7 @@ void IconExportDialog::setupSizeOptions()
     updateSizeList();
 }
 
-void IconExportDialog::setupOutputOptions()
-{
+void IconExportDialog::setupOutputOptions() {
     m_outputGroup = new QGroupBox("Output Options");
     QFormLayout* layout = new QFormLayout(m_outputGroup);
 
@@ -172,8 +161,7 @@ void IconExportDialog::setupOutputOptions()
     updateFilenamePreview();
 }
 
-void IconExportDialog::setupAdvancedOptions()
-{
+void IconExportDialog::setupAdvancedOptions() {
     m_advancedGroup = new QGroupBox("Advanced Options");
     QFormLayout* layout = new QFormLayout(m_advancedGroup);
 
@@ -204,8 +192,7 @@ void IconExportDialog::setupAdvancedOptions()
     layout->addRow(m_includeMetadataCheck);
 }
 
-void IconExportDialog::setupPreview()
-{
+void IconExportDialog::setupPreview() {
     m_previewGroup = new QGroupBox("Preview");
     QVBoxLayout* layout = new QVBoxLayout(m_previewGroup);
 
@@ -222,8 +209,7 @@ void IconExportDialog::setupPreview()
     layout->addWidget(m_previewInfoLabel);
 }
 
-void IconExportDialog::setupButtonBox()
-{
+void IconExportDialog::setupButtonBox() {
     QHBoxLayout* buttonLayout = new QHBoxLayout();
 
     m_previewButton = new QPushButton("Preview");
@@ -241,28 +227,27 @@ void IconExportDialog::setupButtonBox()
     m_mainLayout->addLayout(buttonLayout);
 }
 
-void IconExportDialog::connectSignals()
-{
-    connect(m_formatCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &IconExportDialog::onFormatChanged);
-    connect(m_modeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &IconExportDialog::onModeChanged);
+void IconExportDialog::connectSignals() {
+    connect(m_formatCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+            &IconExportDialog::onFormatChanged);
+    connect(m_modeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+            &IconExportDialog::onModeChanged);
 
     connect(m_addSizeButton, &QPushButton::clicked, this, &IconExportDialog::onAddSize);
     connect(m_removeSizeButton, &QPushButton::clicked, this, &IconExportDialog::onRemoveSize);
 
-    connect(m_browseButton, &QPushButton::clicked, this, &IconExportDialog::onBrowseOutputDirectory);
-    connect(m_outputDirEdit, &QLineEdit::textChanged, [this](const QString& text) {
-        m_options.outputDirectory = text;
-    });
+    connect(m_browseButton, &QPushButton::clicked, this,
+            &IconExportDialog::onBrowseOutputDirectory);
+    connect(m_outputDirEdit, &QLineEdit::textChanged,
+            [this](const QString& text) { m_options.outputDirectory = text; });
 
-    connect(m_filenameTemplateEdit, &QLineEdit::textChanged,
-            this, &IconExportDialog::onFilenameTemplateChanged);
+    connect(m_filenameTemplateEdit, &QLineEdit::textChanged, this,
+            &IconExportDialog::onFilenameTemplateChanged);
 
-    connect(m_backgroundColorButton, &QPushButton::clicked,
-            this, &IconExportDialog::onBackgroundColorChanged);
-    connect(m_customColorButton, &QPushButton::clicked,
-            this, &IconExportDialog::onCustomColorChanged);
+    connect(m_backgroundColorButton, &QPushButton::clicked, this,
+            &IconExportDialog::onBackgroundColorChanged);
+    connect(m_customColorButton, &QPushButton::clicked, this,
+            &IconExportDialog::onCustomColorChanged);
 
     connect(m_useOriginalColorsCheck, &QCheckBox::toggled, [this](bool checked) {
         m_customColorButton->setEnabled(!checked);
@@ -276,31 +261,27 @@ void IconExportDialog::connectSignals()
     connect(m_previewButton, &QPushButton::clicked, this, &IconExportDialog::onPreviewExport);
 }
 
-void IconExportDialog::setIconName(const QString& iconName)
-{
+void IconExportDialog::setIconName(const QString& iconName) {
     m_options.iconNames = {iconName};
     m_options.mode = SingleIcon;
     m_modeCombo->setCurrentIndex(0);
     updatePreview();
 }
 
-void IconExportDialog::setIconNames(const QStringList& iconNames)
-{
+void IconExportDialog::setIconNames(const QStringList& iconNames) {
     m_options.iconNames = iconNames;
     m_options.mode = SelectedIcons;
     m_modeCombo->setCurrentIndex(1);
     updatePreview();
 }
 
-void IconExportDialog::setExportMode(ExportMode mode)
-{
+void IconExportDialog::setExportMode(ExportMode mode) {
     m_options.mode = mode;
     m_modeCombo->setCurrentIndex(static_cast<int>(mode));
     updatePreview();
 }
 
-void IconExportDialog::setCategory(const QString& category)
-{
+void IconExportDialog::setCategory(const QString& category) {
     m_options.category = category;
     if (m_metadataManager) {
         m_options.iconNames = m_metadataManager->getIconsByCategory(category);
@@ -308,13 +289,11 @@ void IconExportDialog::setCategory(const QString& category)
     updatePreview();
 }
 
-IconExportDialog::ExportOptions IconExportDialog::getExportOptions() const
-{
+IconExportDialog::ExportOptions IconExportDialog::getExportOptions() const {
     return m_options;
 }
 
-void IconExportDialog::onFormatChanged()
-{
+void IconExportDialog::onFormatChanged() {
     m_options.format = static_cast<ExportFormat>(m_formatCombo->currentIndex());
 
     // Enable/disable format-specific options
@@ -322,15 +301,15 @@ void IconExportDialog::onFormatChanged()
     m_optimizeSvgCheck->setEnabled(isSvg);
     m_embedFontsCheck->setEnabled(isSvg);
 
-    bool isRaster = (m_options.format == PNG || m_options.format == ICO || m_options.format == ICNS);
+    bool isRaster =
+        (m_options.format == PNG || m_options.format == ICO || m_options.format == ICNS);
     m_backgroundColorButton->setEnabled(isRaster);
     m_antialiasingCheck->setEnabled(isRaster);
 
     m_previewTimer->start();
 }
 
-void IconExportDialog::onModeChanged()
-{
+void IconExportDialog::onModeChanged() {
     m_options.mode = static_cast<ExportMode>(m_modeCombo->currentIndex());
 
     // Update icon list based on mode
@@ -356,8 +335,7 @@ void IconExportDialog::onModeChanged()
     updatePreview();
 }
 
-void IconExportDialog::onAddSize()
-{
+void IconExportDialog::onAddSize() {
     int size = m_sizeSpinBox->value();
     if (!m_options.sizes.contains(size)) {
         m_options.sizes.append(size);
@@ -367,8 +345,7 @@ void IconExportDialog::onAddSize()
     }
 }
 
-void IconExportDialog::onRemoveSize()
-{
+void IconExportDialog::onRemoveSize() {
     int currentRow = m_sizeList->currentRow();
     if (currentRow >= 0 && currentRow < m_options.sizes.size()) {
         m_options.sizes.removeAt(currentRow);
@@ -377,28 +354,24 @@ void IconExportDialog::onRemoveSize()
     }
 }
 
-void IconExportDialog::onSizeChanged()
-{
+void IconExportDialog::onSizeChanged() {
     // Update size options when size controls change
     m_options.maintainAspectRatio = m_aspectRatioCheck->isChecked();
     m_previewTimer->start();
 }
 
-void IconExportDialog::onBrowseOutputDirectory()
-{
+void IconExportDialog::onBrowseOutputDirectory() {
     QString dir = QFileDialog::getExistingDirectory(this, "Choose Output Directory",
-                                                   m_options.outputDirectory);
+                                                    m_options.outputDirectory);
     if (!dir.isEmpty()) {
         m_options.outputDirectory = dir;
         m_outputDirEdit->setText(dir);
     }
 }
 
-void IconExportDialog::onBackgroundColorChanged()
-{
-    QColor color = QColorDialog::getColor(m_options.backgroundColor, this,
-                                        "Choose Background Color",
-                                        QColorDialog::ShowAlphaChannel);
+void IconExportDialog::onBackgroundColorChanged() {
+    QColor color = QColorDialog::getColor(
+        m_options.backgroundColor, this, "Choose Background Color", QColorDialog::ShowAlphaChannel);
     if (color.isValid()) {
         m_options.backgroundColor = color;
 
@@ -415,15 +388,14 @@ void IconExportDialog::onBackgroundColorChanged()
     }
 }
 
-void IconExportDialog::onCustomColorChanged()
-{
+void IconExportDialog::onCustomColorChanged() {
     QColor color = QColorDialog::getColor(m_options.customColor, this, "Choose Custom Color");
     if (color.isValid()) {
         m_options.customColor = color;
 
         QString style = QString("QPushButton { background-color: %1; color: %2; }")
-                       .arg(color.name())
-                       .arg(color.lightness() > 128 ? "black" : "white");
+                            .arg(color.name())
+                            .arg(color.lightness() > 128 ? "black" : "white");
         m_customColorButton->setStyleSheet(style);
         m_customColorButton->setText(color.name());
 
@@ -431,28 +403,25 @@ void IconExportDialog::onCustomColorChanged()
     }
 }
 
-void IconExportDialog::onFilenameTemplateChanged()
-{
+void IconExportDialog::onFilenameTemplateChanged() {
     m_options.filenameTemplate = m_filenameTemplateEdit->text();
     updateFilenamePreview();
 }
 
-void IconExportDialog::updateSizeList()
-{
+void IconExportDialog::updateSizeList() {
     m_sizeList->clear();
     for (int size : m_options.sizes) {
         m_sizeList->addItem(QString("%1px").arg(size));
     }
 }
 
-void IconExportDialog::updateFilenamePreview()
-{
+void IconExportDialog::updateFilenamePreview() {
     QString preview = generateFilename("example-icon", 256, "png");
     m_filenamePreviewLabel->setText(preview);
 }
 
-QString IconExportDialog::generateFilename(const QString& iconName, int size, const QString& format) const
-{
+QString IconExportDialog::generateFilename(const QString& iconName, int size,
+                                           const QString& format) const {
     QString filename = m_options.filenameTemplate;
     filename.replace("{name}", iconName);
     filename.replace("{size}", QString::number(size));
@@ -465,8 +434,7 @@ QString IconExportDialog::generateFilename(const QString& iconName, int size, co
     return filename;
 }
 
-void IconExportDialog::updatePreview()
-{
+void IconExportDialog::updatePreview() {
     if (!m_lucide || m_options.iconNames.isEmpty()) {
         m_previewLabel->setText("No icon selected");
         m_previewInfoLabel->clear();
@@ -481,10 +449,10 @@ void IconExportDialog::updatePreview()
         m_previewLabel->setPixmap(pixmap);
 
         QString info = QString("Icon: %1\nSize: %2x%3\nFormat: %4")
-                      .arg(iconName)
-                      .arg(pixmap.width())
-                      .arg(pixmap.height())
-                      .arg(m_formatCombo->currentText());
+                           .arg(iconName)
+                           .arg(pixmap.width())
+                           .arg(pixmap.height())
+                           .arg(m_formatCombo->currentText());
         m_previewInfoLabel->setText(info);
     } else {
         m_previewLabel->setText("Preview not available");
@@ -492,8 +460,8 @@ void IconExportDialog::updatePreview()
     }
 }
 
-QPixmap IconExportDialog::renderIcon(const QString& iconName, int size, const ExportOptions& options) const
-{
+QPixmap IconExportDialog::renderIcon(const QString& iconName, int size,
+                                     const ExportOptions& options) const {
     if (!m_lucide) {
         return QPixmap();
     }
@@ -536,8 +504,7 @@ QPixmap IconExportDialog::renderIcon(const QString& iconName, int size, const Ex
     return pixmap;
 }
 
-void IconExportDialog::startExport()
-{
+void IconExportDialog::startExport() {
     if (m_exporting) {
         return;
     }
@@ -562,8 +529,7 @@ void IconExportDialog::startExport()
     QDir outputDir(m_options.outputDirectory);
     if (!outputDir.exists()) {
         if (!outputDir.mkpath(".")) {
-            QMessageBox::critical(this, "Export Error",
-                                "Failed to create output directory.");
+            QMessageBox::critical(this, "Export Error", "Failed to create output directory.");
             return;
         }
     }
@@ -587,10 +553,12 @@ void IconExportDialog::startExport()
 
     // Export each icon in each size
     for (const QString& iconName : m_options.iconNames) {
-        if (!m_exporting) break; // Check for cancellation
+        if (!m_exporting)
+            break; // Check for cancellation
 
         for (int size : m_options.sizes) {
-            if (!m_exporting) break; // Check for cancellation
+            if (!m_exporting)
+                break; // Check for cancellation
 
             emit exportProgress(currentOperation, totalOperations, iconName);
             m_progressLabel->setText(QString("Exporting %1 (%2px)...").arg(iconName).arg(size));
@@ -631,14 +599,14 @@ void IconExportDialog::startExport()
         QMessageBox::information(this, "Export Complete", message);
     } else {
         message = QString("Export completed with %1 successes and %2 errors.")
-                 .arg(successCount).arg(errorCount);
+                      .arg(successCount)
+                      .arg(errorCount);
         emit exportFinished(false, message, exportedFiles);
         QMessageBox::warning(this, "Export Complete", message);
     }
 }
 
-void IconExportDialog::cancelExport()
-{
+void IconExportDialog::cancelExport() {
     if (m_exporting) {
         m_exporting = false;
         m_progressLabel->setText("Cancelling export...");
@@ -647,26 +615,49 @@ void IconExportDialog::cancelExport()
     }
 }
 
-bool IconExportDialog::exportIcon(const QString& iconName, const ExportOptions& options)
-{
+bool IconExportDialog::exportIcon(const QString& iconName, const ExportOptions& options) {
     QMutexLocker locker(&m_exportMutex);
 
     try {
         for (int size : options.sizes) {
             QString formatStr;
             switch (options.format) {
-                case PNG: formatStr = "png"; break;
-                case SVG: formatStr = "svg"; break;
-                case ICO: formatStr = "ico"; break;
-                case PDF: formatStr = "pdf"; break;
-                case ICNS: formatStr = "icns"; break;
-                case WEBP: formatStr = "webp"; break;
-                case TIFF: formatStr = "tiff"; break;
-                case BMP: formatStr = "bmp"; break;
-                case JPEG: formatStr = "jpeg"; break;
-                case GIF: formatStr = "gif"; break;
-                case EPS: formatStr = "eps"; break;
-                case AI: formatStr = "ai"; break;
+                case PNG:
+                    formatStr = "png";
+                    break;
+                case SVG:
+                    formatStr = "svg";
+                    break;
+                case ICO:
+                    formatStr = "ico";
+                    break;
+                case PDF:
+                    formatStr = "pdf";
+                    break;
+                case ICNS:
+                    formatStr = "icns";
+                    break;
+                case WEBP:
+                    formatStr = "webp";
+                    break;
+                case TIFF:
+                    formatStr = "tiff";
+                    break;
+                case BMP:
+                    formatStr = "bmp";
+                    break;
+                case JPEG:
+                    formatStr = "jpeg";
+                    break;
+                case GIF:
+                    formatStr = "gif";
+                    break;
+                case EPS:
+                    formatStr = "eps";
+                    break;
+                case AI:
+                    formatStr = "ai";
+                    break;
             }
 
             QString filename = generateFilename(iconName, size, formatStr);
@@ -722,8 +713,7 @@ bool IconExportDialog::exportIcon(const QString& iconName, const ExportOptions& 
     }
 }
 
-void IconExportDialog::onPreviewExport()
-{
+void IconExportDialog::onPreviewExport() {
     if (m_options.iconNames.isEmpty()) {
         QMessageBox::information(this, "Preview", "No icons selected for preview.");
         return;
@@ -744,7 +734,8 @@ void IconExportDialog::onPreviewExport()
         label->setPixmap(pixmap);
         label->setAlignment(Qt::AlignCenter);
 
-        QLabel* infoLabel = new QLabel(QString("Size: %1x%2 pixels").arg(pixmap.width()).arg(pixmap.height()));
+        QLabel* infoLabel =
+            new QLabel(QString("Size: %1x%2 pixels").arg(pixmap.width()).arg(pixmap.height()));
         infoLabel->setAlignment(Qt::AlignCenter);
 
         layout->addWidget(label);
@@ -757,8 +748,7 @@ void IconExportDialog::onPreviewExport()
 }
 
 // Missing methods declared in headers but not implemented
-void IconExportDialog::pauseExport()
-{
+void IconExportDialog::pauseExport() {
     if (m_exportInProgress) {
         m_exportPaused = true;
         if (m_exportButton) {
@@ -771,8 +761,7 @@ void IconExportDialog::pauseExport()
     }
 }
 
-void IconExportDialog::resumeExport()
-{
+void IconExportDialog::resumeExport() {
     if (m_exportInProgress && m_exportPaused) {
         m_exportPaused = false;
         if (m_exportButton) {
@@ -785,8 +774,7 @@ void IconExportDialog::resumeExport()
     }
 }
 
-void IconExportDialog::previewExport()
-{
+void IconExportDialog::previewExport() {
     if (m_selectedIcons.isEmpty()) {
         QMessageBox::information(this, tr("Preview Export"), tr("No icons selected for export."));
         return;
@@ -811,9 +799,9 @@ void IconExportDialog::previewExport()
 
     // Summary
     QLabel* summaryLabel = new QLabel(tr("Total icons: %1\nOutput directory: %2\nFormat: %3")
-                                     .arg(m_selectedIcons.size())
-                                     .arg(m_outputDirectory)
-                                     .arg(m_exportFormat));
+                                          .arg(m_selectedIcons.size())
+                                          .arg(m_outputDirectory)
+                                          .arg(m_exportFormat));
     layout->addWidget(summaryLabel);
 
     // Close button
@@ -824,8 +812,7 @@ void IconExportDialog::previewExport()
     previewDialog.exec();
 }
 
-void IconExportDialog::validateOptions()
-{
+void IconExportDialog::validateOptions() {
     QStringList errors;
 
     // Validate output directory
@@ -858,8 +845,7 @@ void IconExportDialog::validateOptions()
     QMessageBox::information(this, tr("Validation"), tr("All export options are valid."));
 }
 
-void IconExportDialog::resetToDefaults()
-{
+void IconExportDialog::resetToDefaults() {
     // Reset all options to defaults
     m_iconSize = 64;
     m_exportFormat = "PNG";
@@ -875,8 +861,7 @@ void IconExportDialog::resetToDefaults()
     emit optionsReset();
 }
 
-void IconExportDialog::onQualityChanged()
-{
+void IconExportDialog::onQualityChanged() {
     // Update quality from UI control
     if (m_qualitySpinBox) {
         m_quality = m_qualitySpinBox->value();
@@ -884,8 +869,7 @@ void IconExportDialog::onQualityChanged()
     }
 }
 
-void IconExportDialog::onBackgroundTypeChanged()
-{
+void IconExportDialog::onBackgroundTypeChanged() {
     // Update background type from UI control
     if (m_backgroundTypeCombo) {
         m_backgroundType = static_cast<BackgroundType>(m_backgroundTypeCombo->currentIndex());
@@ -894,8 +878,7 @@ void IconExportDialog::onBackgroundTypeChanged()
     }
 }
 
-void IconExportDialog::onGradientColorsChanged()
-{
+void IconExportDialog::onGradientColorsChanged() {
     // Update gradient colors from UI controls
     if (m_gradientStartButton && m_gradientEndButton) {
         m_gradientStartColor = m_gradientStartButton->property("color").value<QColor>();
@@ -903,14 +886,11 @@ void IconExportDialog::onGradientColorsChanged()
         emit gradientColorsChanged(m_gradientStartColor, m_gradientEndColor);
     }
 }
-void IconExportDialog::onBackgroundImageChanged()
-{
+void IconExportDialog::onBackgroundImageChanged() {
     QString fileName = QFileDialog::getOpenFileName(
-        this,
-        tr("Select Background Image"),
+        this, tr("Select Background Image"),
         QStandardPaths::writableLocation(QStandardPaths::PicturesLocation),
-        tr("Image Files (*.png *.jpg *.jpeg *.bmp *.gif)")
-    );
+        tr("Image Files (*.png *.jpg *.jpeg *.bmp *.gif)"));
 
     if (!fileName.isEmpty()) {
         m_backgroundImagePath = fileName;
@@ -922,8 +902,7 @@ void IconExportDialog::onBackgroundImageChanged()
     }
 }
 
-void IconExportDialog::onNamingPatternChanged()
-{
+void IconExportDialog::onNamingPatternChanged() {
     if (m_namingPatternEdit) {
         m_namingPattern = m_namingPatternEdit->text();
 
@@ -937,8 +916,7 @@ void IconExportDialog::onNamingPatternChanged()
     }
 }
 
-void IconExportDialog::onAdvancedOptionsToggled()
-{
+void IconExportDialog::onAdvancedOptionsToggled() {
     if (m_advancedOptionsGroup) {
         bool visible = !m_advancedOptionsGroup->isVisible();
         m_advancedOptionsGroup->setVisible(visible);
@@ -953,8 +931,7 @@ void IconExportDialog::onAdvancedOptionsToggled()
     }
 }
 
-void IconExportDialog::onPresetChanged()
-{
+void IconExportDialog::onPresetChanged() {
     if (m_presetCombo) {
         QString presetName = m_presetCombo->currentText();
         if (!presetName.isEmpty() && presetName != tr("Custom")) {
@@ -964,17 +941,10 @@ void IconExportDialog::onPresetChanged()
     }
 }
 
-void IconExportDialog::onSavePreset()
-{
+void IconExportDialog::onSavePreset() {
     bool ok;
-    QString presetName = QInputDialog::getText(
-        this,
-        tr("Save Preset"),
-        tr("Enter preset name:"),
-        QLineEdit::Normal,
-        QString(),
-        &ok
-    );
+    QString presetName = QInputDialog::getText(this, tr("Save Preset"), tr("Enter preset name:"),
+                                               QLineEdit::Normal, QString(), &ok);
 
     if (ok && !presetName.isEmpty()) {
         // Save current settings as preset
@@ -997,8 +967,7 @@ void IconExportDialog::onSavePreset()
     }
 }
 
-void IconExportDialog::onDeletePreset()
-{
+void IconExportDialog::onDeletePreset() {
     if (m_presetCombo) {
         QString presetName = m_presetCombo->currentText();
         if (presetName.isEmpty() || presetName == tr("Custom")) {
@@ -1006,12 +975,9 @@ void IconExportDialog::onDeletePreset()
         }
 
         int ret = QMessageBox::question(
-            this,
-            tr("Delete Preset"),
+            this, tr("Delete Preset"),
             tr("Are you sure you want to delete the preset '%1'?").arg(presetName),
-            QMessageBox::Yes | QMessageBox::No,
-            QMessageBox::No
-        );
+            QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
         if (ret == QMessageBox::Yes) {
             // Remove from settings
@@ -1031,14 +997,11 @@ void IconExportDialog::onDeletePreset()
     }
 }
 
-void IconExportDialog::onImportFavorites()
-{
+void IconExportDialog::onImportFavorites() {
     QString fileName = QFileDialog::getOpenFileName(
-        this,
-        tr("Import Favorites"),
+        this, tr("Import Favorites"),
         QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
-        tr("JSON Files (*.json);;All Files (*)")
-    );
+        tr("JSON Files (*.json);;All Files (*)"));
 
     if (!fileName.isEmpty()) {
         // Load favorites from file
@@ -1065,25 +1028,23 @@ void IconExportDialog::onImportFavorites()
                 }
 
                 updateIconList();
-                emit favoritesImported(favorites.size());
+                emit favoritesImported(static_cast<int>(favorites.size()));
             }
         }
     }
 }
 
-void IconExportDialog::onExportFavorites()
-{
+void IconExportDialog::onExportFavorites() {
     if (m_selectedIcons.isEmpty()) {
-        QMessageBox::information(this, tr("Export Favorites"), tr("No icons selected to export as favorites."));
+        QMessageBox::information(this, tr("Export Favorites"),
+                                 tr("No icons selected to export as favorites."));
         return;
     }
 
     QString fileName = QFileDialog::getSaveFileName(
-        this,
-        tr("Export Favorites"),
+        this, tr("Export Favorites"),
         QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/favorites.json",
-        tr("JSON Files (*.json);;All Files (*)")
-    );
+        tr("JSON Files (*.json);;All Files (*)"));
 
     if (!fileName.isEmpty()) {
         // Save favorites to file
@@ -1096,18 +1057,15 @@ void IconExportDialog::onExportFavorites()
         QFile file(fileName);
         if (file.open(QIODevice::WriteOnly)) {
             file.write(doc.toJson());
-            emit favoritesExported(m_selectedIcons.size());
+            emit favoritesExported(static_cast<int>(m_selectedIcons.size()));
         }
     }
 }
-void IconExportDialog::onImportSettings()
-{
+void IconExportDialog::onImportSettings() {
     QString fileName = QFileDialog::getOpenFileName(
-        this,
-        tr("Import Export Settings"),
+        this, tr("Import Export Settings"),
         QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
-        tr("Settings Files (*.ini *.conf);;All Files (*)")
-    );
+        tr("Settings Files (*.ini *.conf);;All Files (*)"));
 
     if (!fileName.isEmpty()) {
         QSettings importSettings(fileName, QSettings::IniFormat);
@@ -1134,14 +1092,12 @@ void IconExportDialog::onImportSettings()
     }
 }
 
-void IconExportDialog::onExportSettings()
-{
+void IconExportDialog::onExportSettings() {
     QString fileName = QFileDialog::getSaveFileName(
-        this,
-        tr("Export Settings"),
-        QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/export_settings.ini",
-        tr("Settings Files (*.ini *.conf);;All Files (*)")
-    );
+        this, tr("Export Settings"),
+        QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) +
+            "/export_settings.ini",
+        tr("Settings Files (*.ini *.conf);;All Files (*)"));
 
     if (!fileName.isEmpty()) {
         QSettings exportSettings(fileName, QSettings::IniFormat);
@@ -1160,8 +1116,7 @@ void IconExportDialog::onExportSettings()
     }
 }
 
-void IconExportDialog::onCloudProviderChanged()
-{
+void IconExportDialog::onCloudProviderChanged() {
     if (m_cloudProviderCombo) {
         QString provider = m_cloudProviderCombo->currentText();
 
@@ -1174,30 +1129,27 @@ void IconExportDialog::onCloudProviderChanged()
     }
 }
 
-void IconExportDialog::onUploadToCloud()
-{
+void IconExportDialog::onUploadToCloud() {
     if (m_cloudProviderCombo) {
         QString provider = m_cloudProviderCombo->currentText();
 
         if (provider.isEmpty() || provider == tr("None")) {
-            QMessageBox::information(this, tr("Upload to Cloud"), tr("Please select a cloud provider first."));
+            QMessageBox::information(this, tr("Upload to Cloud"),
+                                     tr("Please select a cloud provider first."));
             return;
         }
 
         // Placeholder for cloud upload functionality
-        QMessageBox::information(
-            this,
-            tr("Upload to Cloud"),
-            tr("Cloud upload functionality is not yet implemented.\n"
-               "Selected provider: %1").arg(provider)
-        );
+        QMessageBox::information(this, tr("Upload to Cloud"),
+                                 tr("Cloud upload functionality is not yet implemented.\n"
+                                    "Selected provider: %1")
+                                     .arg(provider));
 
         emit cloudUploadRequested(provider);
     }
 }
 
-void IconExportDialog::onExportWorkerFinished()
-{
+void IconExportDialog::onExportWorkerFinished() {
     m_exportInProgress = false;
     m_exportPaused = false;
 
@@ -1213,8 +1165,7 @@ void IconExportDialog::onExportWorkerFinished()
     emit exportFinished();
 }
 
-void IconExportDialog::onExportWorkerProgress(int current, int total, const QString& currentFile)
-{
+void IconExportDialog::onExportWorkerProgress(int current, int total, const QString& currentFile) {
     if (m_progressBar) {
         m_progressBar->setMaximum(total);
         m_progressBar->setValue(current);
@@ -1222,15 +1173,16 @@ void IconExportDialog::onExportWorkerProgress(int current, int total, const QStr
     }
 
     if (m_statusLabel) {
-        m_statusLabel->setText(tr("Exporting: %1 (%2 of %3)").arg(currentFile).arg(current).arg(total));
+        m_statusLabel->setText(
+            tr("Exporting: %1 (%2 of %3)").arg(currentFile).arg(current).arg(total));
     }
 
     emit exportProgress(current, total, currentFile);
 }
 
-void IconExportDialog::onExportWorkerError(const QString& error)
-{
-    QMessageBox::critical(this, tr("Export Error"), tr("An error occurred during export:\n%1").arg(error));
+void IconExportDialog::onExportWorkerError(const QString& error) {
+    QMessageBox::critical(this, tr("Export Error"),
+                          tr("An error occurred during export:\n%1").arg(error));
 
     // Stop export process
     m_exportInProgress = false;
@@ -1245,8 +1197,7 @@ void IconExportDialog::onExportWorkerError(const QString& error)
 }
 
 // Helper method implementations
-QString IconExportDialog::generateFileName(const QString& iconName) const
-{
+QString IconExportDialog::generateFileName(const QString& iconName) const {
     QString pattern = m_namingPattern;
     pattern.replace("{name}", iconName);
     pattern.replace("{size}", QString::number(m_iconSize));
@@ -1255,8 +1206,7 @@ QString IconExportDialog::generateFileName(const QString& iconName) const
     return pattern + "." + m_exportFormat.toLower();
 }
 
-void IconExportDialog::updateUI()
-{
+void IconExportDialog::updateUI() {
     // Update UI controls to reflect current settings
     if (m_sizeSpinBox) {
         m_sizeSpinBox->setValue(m_iconSize);
@@ -1278,8 +1228,7 @@ void IconExportDialog::updateUI()
     }
 }
 
-void IconExportDialog::updateBackgroundControls()
-{
+void IconExportDialog::updateBackgroundControls() {
     // Show/hide background controls based on background type
     bool showColorControls = (m_backgroundType == SolidBackground);
     bool showGradientControls = (m_backgroundType == GradientBackground);
@@ -1299,8 +1248,7 @@ void IconExportDialog::updateBackgroundControls()
     }
 }
 
-void IconExportDialog::updateIconList()
-{
+void IconExportDialog::updateIconList() {
     // Update the icon list display
     if (m_iconListWidget) {
         m_iconListWidget->clear();
@@ -1316,8 +1264,7 @@ void IconExportDialog::updateIconList()
     }
 }
 
-void IconExportDialog::loadPreset(const QString& presetName)
-{
+void IconExportDialog::loadPreset(const QString& presetName) {
     QSettings settings;
     settings.beginGroup("ExportPresets");
 
@@ -1325,8 +1272,10 @@ void IconExportDialog::loadPreset(const QString& presetName)
         m_iconSize = settings.value(presetName + "/iconSize", 64).toInt();
         m_exportFormat = settings.value(presetName + "/format", "PNG").toString();
         m_quality = settings.value(presetName + "/quality", 100).toInt();
-        m_backgroundColor = settings.value(presetName + "/backgroundColor", QColor(Qt::transparent)).value<QColor>();
-        m_backgroundType = static_cast<BackgroundType>(settings.value(presetName + "/backgroundType", 0).toInt());
+        m_backgroundColor = settings.value(presetName + "/backgroundColor", QColor(Qt::transparent))
+                                .value<QColor>();
+        m_backgroundType =
+            static_cast<BackgroundType>(settings.value(presetName + "/backgroundType", 0).toInt());
         m_namingPattern = settings.value(presetName + "/namingPattern", "{name}").toString();
 
         updateUI();

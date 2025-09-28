@@ -19,53 +19,55 @@
 #ifndef ICONGRIDWIDGET_H
 #define ICONGRIDWIDGET_H
 
-#include <QWidget>
-#include <QScrollArea>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGridLayout>
-#include <QLabel>
-#include <QProgressBar>
-#include <QTimer>
-#include <QScrollBar>
-#include <QResizeEvent>
-#include <QWheelEvent>
-#include <QKeyEvent>
-#include <QMouseEvent>
-#include <QPaintEvent>
-#include <QRubberBand>
-#include <QItemSelectionModel>
 #include <QAbstractItemModel>
-#include <QStyledItemDelegate>
-#include <QListView>
-#include <QStandardItemModel>
-#include <QPropertyAnimation>
-#include <QGraphicsOpacityEffect>
-#include <QGraphicsDropShadowEffect>
-#include <QMimeData>
-#include <QDrag>
-#include <QElapsedTimer>
-#include <QCache>
-#include <QPixmapCache>
-#include <QThreadPool>
-#include <QRunnable>
 #include <QAbstractListModel>
-#include <QModelIndex>
-#include <QVariant>
-#include <QStringList>
-#include <QSet>
-#include <QHash>
-#include <QStyleOptionViewItem>
-#include <QPainter>
-#include <QSplitter>
+#include <QCache>
+#include <QDrag>
 #include <QEasingCurve>
+#include <QElapsedTimer>
+#include <QGraphicsDropShadowEffect>
+#include <QGraphicsOpacityEffect>
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QHash>
+#include <QItemSelectionModel>
+#include <QKeyEvent>
+#include <QLabel>
+#include <QListView>
+#include <QMimeData>
+#include <QModelIndex>
+#include <QMouseEvent>
 #include <QObject>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QPixmapCache>
+#include <QProgressBar>
+#include <QPropertyAnimation>
+#include <QResizeEvent>
+#include <QRubberBand>
+#include <QRunnable>
+#include <QScrollArea>
+#include <QScrollBar>
+#include <QSet>
+#include <QSplitter>
+#include <QStandardItemModel>
+#include <QStringList>
+#include <QStyleOptionViewItem>
+#include <QStyledItemDelegate>
+#include <QThreadPool>
+#include <QTimer>
+#include <QVBoxLayout>
+#include <QVariant>
+#include <QWheelEvent>
+#include <QWidget>
 
-#include <QtLucide/QtLucide.h>
+
 #include "core/managers/IconMetadataManager.h"
 #include "core/models/IconItem.h"
+#include <QtLucide/QtLucide.h>
 #include <memory>
 #include <unordered_set>
+
 
 // Forward declarations
 class IconGridDelegate;
@@ -76,31 +78,30 @@ class FavoritesManager;
 /**
  * @brief Enhanced model for icon data with advanced caching and virtual scrolling
  */
-class IconGridModel : public QAbstractListModel
-{
+class IconGridModel : public QAbstractListModel {
     Q_OBJECT
 
 public:
-    explicit IconGridModel(QObject *parent = nullptr);
+    explicit IconGridModel(QObject* parent = nullptr);
     ~IconGridModel();
 
     // QAbstractItemModel interface
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+    int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+    Qt::ItemFlags flags(const QModelIndex& index) const override;
+    bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) override;
 
     // Enhanced custom methods
     void setIconNames(const QStringList& iconNames);
     void setIconSize(int size);
-    void setIconSize(const QSize& size);  // Added for compatibility
+    void setIconSize(const QSize& size); // Added for compatibility
     void setMetadataManager(IconMetadataManager* manager);
     void setLucide(lucide::QtLucide* lucide);
     void setShowIconNames(bool show);
     void setHighlightSearchTerm(const QString& term);
     void setFavorites(const QStringList& favorites);
-    void setFilteredIcons(const QStringList& iconNames);  // Added for compatibility
-    void clearFilter();  // Added for compatibility
+    void setFilteredIcons(const QStringList& iconNames); // Added for compatibility
+    void clearFilter();                                  // Added for compatibility
 
     QString iconNameAt(int index) const;
     QStringList iconNames() const;
@@ -143,8 +144,8 @@ signals:
     void dataPreloaded(int start, int count);
     void cacheUpdated();
     void favoritesUpdated();
-    void filteredIconsChanged();  // Added for compatibility
-    void filterCleared();  // Added for compatibility
+    void filteredIconsChanged(); // Added for compatibility
+    void filterCleared();        // Added for compatibility
 
 private:
     void updateSearchHighlights();
@@ -162,8 +163,8 @@ private:
     QSet<QString> m_favorites;
 
     // Filtering system
-    QStringList m_filteredIcons;  // Added for compatibility
-    bool m_isFiltered;  // Added for compatibility
+    QStringList m_filteredIcons; // Added for compatibility
+    bool m_isFiltered;           // Added for compatibility
 
     // Caching system
     mutable QCache<QString, QPixmap> m_pixmapCache;
@@ -179,25 +180,23 @@ private:
 /**
  * @brief Enhanced delegate for rendering icon items with advanced visual effects
  */
-class IconGridDelegate : public QStyledItemDelegate
-{
+class IconGridDelegate : public QStyledItemDelegate {
     Q_OBJECT
 
 public:
-    explicit IconGridDelegate(QObject *parent = nullptr);
+    explicit IconGridDelegate(QObject* parent = nullptr);
     ~IconGridDelegate();
 
     // QStyledItemDelegate interface
-    void paint(QPainter *painter, const QStyleOptionViewItem &option,
-               const QModelIndex &index) const override;
-    QSize sizeHint(const QStyleOptionViewItem &option,
-                   const QModelIndex &index) const override;
-    bool editorEvent(QEvent *event, QAbstractItemModel *model,
-                     const QStyleOptionViewItem &option, const QModelIndex &index) override;
+    void paint(QPainter* painter, const QStyleOptionViewItem& option,
+               const QModelIndex& index) const override;
+    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+    bool editorEvent(QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option,
+                     const QModelIndex& index) override;
 
     // Enhanced custom methods
     void setIconSize(int size);
-    void setIconSize(const QSize& size);  // Added for compatibility
+    void setIconSize(const QSize& size); // Added for compatibility
     void setShowIconNames(bool show);
     void setAnimationsEnabled(bool enabled);
     void setHighlightColor(const QColor& color);
@@ -226,14 +225,20 @@ signals:
     void favoriteToggled(const QString& iconName);
 
 private:
-    void paintBackground(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
-    void paintIcon(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
-    void paintText(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
-    void paintOverlay(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+    void paintBackground(QPainter* painter, const QStyleOptionViewItem& option,
+                         const QModelIndex& index) const;
+    void paintIcon(QPainter* painter, const QStyleOptionViewItem& option,
+                   const QModelIndex& index) const;
+    void paintText(QPainter* painter, const QStyleOptionViewItem& option,
+                   const QModelIndex& index) const;
+    void paintOverlay(QPainter* painter, const QStyleOptionViewItem& option,
+                      const QModelIndex& index) const;
     void paintSelection(QPainter* painter, const QStyleOptionViewItem& option) const;
     void paintHover(QPainter* painter, const QStyleOptionViewItem& option) const;
-    void paintFavoriteButton(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
-    void paintHighlight(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+    void paintFavoriteButton(QPainter* painter, const QStyleOptionViewItem& option,
+                             const QModelIndex& index) const;
+    void paintHighlight(QPainter* painter, const QStyleOptionViewItem& option,
+                        const QModelIndex& index) const;
 
     QString formatIconName(const QString& name) const;
     QFont getTextFont() const;
@@ -263,17 +268,11 @@ private:
 /**
  * @brief Enhanced main widget for displaying icons with advanced features
  */
-class IconGridWidget : public QWidget
-{
+class IconGridWidget : public QWidget {
     Q_OBJECT
 
 public:
-    enum ViewMode {
-        GridView = 0,
-        ListView = 1,
-        CompactView = 2,
-        DetailedView = 3
-    };
+    enum ViewMode { GridView = 0, ListView = 1, CompactView = 2, DetailedView = 3 };
     Q_ENUM(ViewMode)
 
     enum SelectionMode {
@@ -284,13 +283,10 @@ public:
     };
     Q_ENUM(SelectionMode)
 
-    enum ScrollMode {
-        ScrollPerItem = 0,
-        ScrollPerPixel = 1
-    };
+    enum ScrollMode { ScrollPerItem = 0, ScrollPerPixel = 1 };
     Q_ENUM(ScrollMode)
 
-    explicit IconGridWidget(QWidget *parent = nullptr);
+    explicit IconGridWidget(QWidget* parent = nullptr);
     ~IconGridWidget();
 
     // Core functionality
@@ -304,7 +300,7 @@ public:
     void setShowIconNames(bool show);
     void setItemSpacing(int spacing);
     void setItemMargins(int margins);
-    void setColumnsCount(int columns);  // -1 for auto-calculate
+    void setColumnsCount(int columns); // -1 for auto-calculate
 
     // Selection
     void setSelectionMode(SelectionMode mode);
@@ -358,7 +354,7 @@ public:
     void showContextMenu(const QPoint& position);
 
 public slots:
-    void refresh() { refreshIcons(); }  // Alias for refreshIcons
+    void refresh() { refreshIcons(); } // Alias for refreshIcons
     void refreshIcons();
     void updateIconSizes();
     void updateFavorites();
@@ -378,33 +374,34 @@ signals:
     void selectionChanged(const QStringList& selectedIcons);
     void favoriteToggled(const QString& iconName, bool favorite);
     void iconSizeChanged(int size);
-    void filteredIconsChanged(int count);  // Added for compatibility
-    void filterCleared();  // Added for compatibility
+    void filteredIconsChanged(int count); // Added for compatibility
+    void filterCleared();                 // Added for compatibility
     void viewModeChanged(ViewMode mode);
+    void visibleRangeChanged(int startIndex, int endIndex);
+    void scrollPositionChanged(int value, int maximum);
+    void nearBottomReached();
     void itemCountChanged(int count);
     void visibleItemCountChanged(int count);
     void loadingStarted();
     void loadingFinished();
     void performanceMetricsUpdated(const QVariantMap& metrics);
     void favoritesUpdated(int count);
-    void scrollPositionChanged(int value, int maximum);
-    void nearBottomReached();
 
 protected:
-    void keyPressEvent(QKeyEvent *event) override;
-    void wheelEvent(QWheelEvent *event) override;
-    void resizeEvent(QResizeEvent *event) override;
-    void paintEvent(QPaintEvent *event) override;
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
-    void mouseDoubleClickEvent(QMouseEvent *event) override;
-    void contextMenuEvent(QContextMenuEvent *event) override;
-    void dragEnterEvent(QDragEnterEvent *event) override;
-    void dragMoveEvent(QDragMoveEvent *event) override;
-    void dropEvent(QDropEvent *event) override;
-    void focusInEvent(QFocusEvent *event) override;
-    void focusOutEvent(QFocusEvent *event) override;
+    void keyPressEvent(QKeyEvent* event) override;
+    void wheelEvent(QWheelEvent* event) override;
+    void resizeEvent(QResizeEvent* event) override;
+    void paintEvent(QPaintEvent* event) override;
+    void mousePressEvent(QMouseEvent* event) override;
+    void mouseMoveEvent(QMouseEvent* event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
+    void mouseDoubleClickEvent(QMouseEvent* event) override;
+    void contextMenuEvent(QContextMenuEvent* event) override;
+    void dragEnterEvent(QDragEnterEvent* event) override;
+    void dragMoveEvent(QDragMoveEvent* event) override;
+    void dropEvent(QDropEvent* event) override;
+    void focusInEvent(QFocusEvent* event) override;
+    void focusOutEvent(QFocusEvent* event) override;
 
 private slots:
     void onIconClicked(const QString& iconName, const QPoint& position);
@@ -465,8 +462,8 @@ private:
     QLabel* m_emptyLabel;
     QProgressBar* m_loadingProgress;
     QLabel* m_statusLabel;
-    QWidget* m_gridView;  // Grid view widget
-    FavoritesManager* m_favoritesManager;  // Favorites manager
+    QWidget* m_gridView;                  // Grid view widget
+    FavoritesManager* m_favoritesManager; // Favorites manager
 
     // Model and delegate
     std::unique_ptr<IconGridModel> m_model;
@@ -474,7 +471,7 @@ private:
 
     // Enhanced settings and state
     int m_iconSize;
-    int m_margin;  // Added for compatibility
+    int m_margin; // Added for compatibility
     ViewMode m_viewMode;
     SelectionMode m_selectionMode;
     ScrollMode m_scrollMode;
@@ -494,7 +491,7 @@ private:
     int m_columnsCount;
     QSize m_itemSize;
     QSize m_viewportSize;
-    int m_spacing;  // Grid spacing
+    int m_spacing; // Grid spacing
 
     // Performance optimization
     QTimer* m_updateTimer;
@@ -523,12 +520,12 @@ private:
     static constexpr int ZOOM_STEP = 8;
     static constexpr int DEFAULT_ITEM_SPACING = 8;
     static constexpr int DEFAULT_ITEM_MARGINS = 4;
-    static constexpr int UPDATE_DELAY = 50;  // ms
-    static constexpr int PERFORMANCE_UPDATE_INTERVAL = 1000;  // ms
-    static constexpr int ANIMATION_DURATION = 200;  // ms
-    static constexpr int HOVER_ANIMATION_DURATION = 150;  // ms
-    static constexpr int PRELOAD_BUFFER = 50;  // items
-    static constexpr int MAX_VISIBLE_ITEMS = 1000;  // for performance
+    static constexpr int UPDATE_DELAY = 50;                  // ms
+    static constexpr int PERFORMANCE_UPDATE_INTERVAL = 1000; // ms
+    static constexpr int ANIMATION_DURATION = 200;           // ms
+    static constexpr int HOVER_ANIMATION_DURATION = 150;     // ms
+    static constexpr int PRELOAD_BUFFER = 50;                // items
+    static constexpr int MAX_VISIBLE_ITEMS = 1000;           // for performance
 };
 
 #endif // ICONGRIDWIDGET_H
