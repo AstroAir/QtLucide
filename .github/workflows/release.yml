@@ -221,7 +221,7 @@ jobs:
           QtLucide-${{ needs.create-release.outputs.tag_name }}-${{ matrix.artifact-name }}-sbom.spdx.json
 
     - name: Attest build provenance
-      uses: actions/attest-build-provenance@v1
+      uses: actions/attest-build-provenance@v3
       with:
         subject-path: |
           QtLucide-${{ needs.create-release.outputs.tag_name }}-${{ matrix.artifact-name }}-qt${{ matrix.qt-version }}.${{ matrix.package-ext }}
@@ -284,7 +284,7 @@ jobs:
         output-file: container-sbom.spdx.json
 
     - name: Attest container provenance
-      uses: actions/attest-build-provenance@v1
+      uses: actions/attest-build-provenance@v3
       with:
         subject-name: ghcr.io/${{ github.repository }}
         subject-digest: ${{ steps.build.outputs.digest }}
