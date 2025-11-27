@@ -257,6 +257,14 @@ void TestErrorHandling::testCorruptedSvgData() {
     // Create a custom painter that returns corrupted SVG data
     class CorruptedSvgPainter : public lucide::QtLucideIconPainter {
     public:
+        [[nodiscard]] lucide::QtLucideIconPainter* clone() const override {
+            return new CorruptedSvgPainter();
+        }
+
+        [[nodiscard]] QString iconText() const override {
+            return QStringLiteral("corrupted-svg-painter");
+        }
+
         void paint(lucide::QtLucide* lucide, QPainter* painter, const QRect& rect, QIcon::Mode mode,
                    QIcon::State state, const QVariantMap& options) override {
             Q_UNUSED(lucide)
@@ -319,6 +327,14 @@ void TestErrorHandling::testInvalidCustomPainter() {
     // Create a painter that does nothing
     class InvalidPainter : public lucide::QtLucideIconPainter {
     public:
+        [[nodiscard]] lucide::QtLucideIconPainter* clone() const override {
+            return new InvalidPainter();
+        }
+
+        [[nodiscard]] QString iconText() const override {
+            return QStringLiteral("invalid-painter");
+        }
+
         void paint(lucide::QtLucide* lucide, QPainter* painter, const QRect& rect, QIcon::Mode mode,
                    QIcon::State state, const QVariantMap& options) override {
             Q_UNUSED(lucide)
@@ -348,6 +364,14 @@ void TestErrorHandling::testCustomPainterExceptions() {
     // Create a painter that might throw exceptions
     class ExceptionPainter : public lucide::QtLucideIconPainter {
     public:
+        [[nodiscard]] lucide::QtLucideIconPainter* clone() const override {
+            return new ExceptionPainter();
+        }
+
+        [[nodiscard]] QString iconText() const override {
+            return QStringLiteral("exception-painter");
+        }
+
         void paint(lucide::QtLucide* lucide, QPainter* painter, const QRect& rect, QIcon::Mode mode,
                    QIcon::State state, const QVariantMap& options) override {
             Q_UNUSED(lucide)

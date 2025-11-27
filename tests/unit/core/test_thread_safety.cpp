@@ -248,6 +248,14 @@ void TestThreadSafety::testCustomPainterRegistrationSafety() {
 
     class TestPainter : public lucide::QtLucideIconPainter {
     public:
+        [[nodiscard]] lucide::QtLucideIconPainter* clone() const override {
+            return new TestPainter();
+        }
+
+        [[nodiscard]] QString iconText() const override {
+            return QStringLiteral("test-thread-painter");
+        }
+
         void paint(lucide::QtLucide* lucide, QPainter* painter, const QRect& rect, QIcon::Mode mode,
                    QIcon::State state, const QVariantMap& options) override {
             Q_UNUSED(lucide)
@@ -436,6 +444,14 @@ void TestThreadSafety::testCustomPainterRaceCondition() {
 
     class RacePainter : public lucide::QtLucideIconPainter {
     public:
+        [[nodiscard]] lucide::QtLucideIconPainter* clone() const override {
+            return new RacePainter();
+        }
+
+        [[nodiscard]] QString iconText() const override {
+            return QStringLiteral("race-painter");
+        }
+
         void paint(lucide::QtLucide* lucide, QPainter* painter, const QRect& rect, QIcon::Mode mode,
                    QIcon::State state, const QVariantMap& options) override {
             Q_UNUSED(lucide)

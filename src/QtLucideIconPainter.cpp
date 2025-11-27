@@ -24,6 +24,14 @@ QtLucideSvgIconPainter::QtLucideSvgIconPainter() = default;
 
 QtLucideSvgIconPainter::~QtLucideSvgIconPainter() = default;
 
+QtLucideIconPainter* QtLucideSvgIconPainter::clone() const {
+    return new QtLucideSvgIconPainter();
+}
+
+QString QtLucideSvgIconPainter::iconText() const {
+    return QStringLiteral("svg-icon-painter");
+}
+
 void QtLucideSvgIconPainter::paint(QtLucide* lucide, QPainter* painter, const QRect& rect,
                                    QIcon::Mode mode, QIcon::State state,
                                    const QVariantMap& options) {
@@ -52,10 +60,17 @@ void QtLucideSvgIconPainter::paint(QtLucide* lucide, QPainter* painter, const QR
     QVariant colorVariant = optionValueForModeAndState("color", mode, state, options);
     QColor color = colorVariant.value<QColor>();
 
-    if (color.isValid()) {
-        // Process SVG to apply color
-        svgData = processColorizedSvg(svgData, color);
+    // Fallback color handling for disabled mode if no specific color set
+    if (!color.isValid()) {
+        color = Qt::black; // Default fallback
+    } else if (mode == QIcon::Disabled && !options.contains("color-disabled")) {
+        // Auto-generate disabled color if not explicitly set
+        color = color.lighter(150);
+        color.setAlpha(128);
     }
+
+    // Process SVG to apply color
+    svgData = processColorizedSvg(svgData, color);
 
     // Create SVG renderer
     QSvgRenderer renderer(svgData);
@@ -64,20 +79,31 @@ void QtLucideSvgIconPainter::paint(QtLucide* lucide, QPainter* painter, const QR
         return;
     }
 
+    // Apply opacity if specified
+    qreal opacity = options.value("opacity", 1.0).toReal();
+    if (opacity < 1.0 && opacity >= 0.0) {
+        painter->setOpacity(painter->opacity() * opacity);
+    }
+
     // Apply scale factor
     constexpr double defaultScaleFactor = 0.9;
     double scaleFactor = options.value("scale-factor", defaultScaleFactor).toDouble();
-    if (scaleFactor > 0.0 && scaleFactor != 1.0) {
+
+    // Clamp scale factor to reasonable range
+    scaleFactor = qBound(0.1, scaleFactor, 10.0);
+
+    QRect targetRect = rect;
+    if (scaleFactor != 1.0) {
         int scaledWidth = static_cast<int>(rect.width() * scaleFactor);
         int scaledHeight = static_cast<int>(rect.height() * scaleFactor);
 
-        QRect scaledRect(rect.x() + ((rect.width() - scaledWidth) / 2),
-                         rect.y() + ((rect.height() - scaledHeight) / 2), scaledWidth, scaledHeight);
-
-        renderer.render(painter, scaledRect);
-    } else {
-        renderer.render(painter, rect);
+        targetRect =
+            QRect(rect.x() + ((rect.width() - scaledWidth) / 2),
+                  rect.y() + ((rect.height() - scaledHeight) / 2), scaledWidth, scaledHeight);
     }
+
+    // Render the SVG
+    renderer.render(painter, targetRect);
 }
 
 QStringList QtLucideSvgIconPainter::optionKeysForModeAndState(const QString& key, QIcon::Mode mode,

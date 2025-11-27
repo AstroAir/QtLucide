@@ -93,6 +93,14 @@ void TestSvgRendering::testCustomPainter() {
     // Create a custom painter for testing
     class TestIconPainter : public lucide::QtLucideIconPainter {
     public:
+        [[nodiscard]] lucide::QtLucideIconPainter* clone() const override {
+            return new TestIconPainter();
+        }
+
+        [[nodiscard]] QString iconText() const override {
+            return QStringLiteral("test-icon-painter");
+        }
+
         void paint(lucide::QtLucide* lucide, QPainter* painter, const QRect& rect, QIcon::Mode mode,
                    QIcon::State state, const QVariantMap& options) override {
             Q_UNUSED(lucide)

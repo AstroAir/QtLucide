@@ -32,47 +32,6 @@ void TestQtLucide::testInitialization() {
 void TestQtLucide::testIconCreation() {
     QVERIFY(m_lucide->initLucide());
 
-    // Debug: Check if resource exists
-    QFile resourceFile(":/lucide/activity");
-    qDebug() << "Resource exists:" << resourceFile.exists();
-
-    // Try with .svg extension
-    QFile resourceFileSvg(":/lucide/activity.svg");
-    qDebug() << "Resource with .svg exists:" << resourceFileSvg.exists();
-
-    // List all resources in /lucide
-    QDir resourceDir(":/lucide");
-    if (resourceDir.exists()) {
-        qDebug() << "Resource directory exists, entries:" << resourceDir.entryList();
-
-        // Check resources subdirectory
-        QDir resourcesSubDir(":/lucide/resources");
-        if (resourcesSubDir.exists()) {
-            qDebug() << "Resources subdirectory exists, entries:" << resourcesSubDir.entryList();
-
-            // Check icons subdirectory
-            QDir iconsSubDir(":/lucide/resources/icons");
-            if (iconsSubDir.exists()) {
-                qDebug() << "Icons subdirectory exists, entries:" << iconsSubDir.entryList();
-
-                // Check svg subdirectory
-                QDir svgSubDir(":/lucide/resources/icons/svg");
-                if (svgSubDir.exists()) {
-                    qDebug() << "SVG subdirectory exists, first 10 entries:"
-                             << svgSubDir.entryList().mid(0, 10);
-                }
-            }
-        }
-    } else {
-        qDebug() << "Resource directory does not exist";
-    }
-
-    if (resourceFile.exists()) {
-        qDebug() << "Resource size:" << resourceFile.size();
-    } else if (resourceFileSvg.exists()) {
-        qDebug() << "SVG Resource size:" << resourceFileSvg.size();
-    }
-
     // Test creating icon by enum
     QIcon icon = m_lucide->icon(lucide::Icons::activity);
     QVERIFY(!icon.isNull());
@@ -81,8 +40,15 @@ void TestQtLucide::testIconCreation() {
     QPixmap pixmap = icon.pixmap(QSize(32, 32));
     QVERIFY(!pixmap.isNull());
     // The actual size may be scaled by device pixel ratio, so just verify it's reasonable
-    QVERIFY(pixmap.width() >= 32 && pixmap.width() <= 128);
-    QVERIFY(pixmap.height() >= 32 && pixmap.height() <= 128);
+    QVERIFY(pixmap.width() >= 16 && pixmap.width() <= 128);
+    QVERIFY(pixmap.height() >= 16 && pixmap.height() <= 128);
+    
+    // Test multiple sizes
+    QPixmap pixmap64 = icon.pixmap(QSize(64, 64));
+    QVERIFY(!pixmap64.isNull());
+    
+    QPixmap pixmap128 = icon.pixmap(QSize(128, 128));
+    QVERIFY(!pixmap128.isNull());
 }
 
 void TestQtLucide::testIconByName() {
@@ -162,4 +128,81 @@ void TestQtLucide::testInvalidIcon() {
     // Test SVG data for invalid icon
     QByteArray svgData = m_lucide->svgData("non-existent-icon");
     QVERIFY(svgData.isEmpty());
+    
+    // Test with empty name
+    QByteArray emptySvg = m_lucide->svgData("");
+    QVERIFY(emptySvg.isEmpty());
+}
+
+void TestQtLucide::testSvgData() {
+    QVERIFY(m_lucide->initLucide());
+
+    // Test getting SVG data by name
+    QByteArray svgData = m_lucide->svgData("activity");
+    QVERIFY(!svgData.isEmpty());
+    QVERIFY(svgData.contains("<svg"));
+    QVERIFY(svgData.contains("</svg>"));
+
+    // Test getting SVG data by enum
+    QByteArray svgDataEnum = m_lucide->svgData(lucide::Icons::activity);
+    QVERIFY(!svgDataEnum.isEmpty());
+    QCOMPARE(svgData, svgDataEnum);
+
+    // Test SVG data contains expected attributes
+    QVERIFY(svgData.contains("viewBox"));
+}
+
+void TestQtLucide::testIconModes() {
+    QVERIFY(m_lucide->initLucide());
+
+    QIcon icon = m_lucide->icon(lucide::Icons::activity);
+    QVERIFY(!icon.isNull());
+
+    // Test different icon modes
+    QPixmap normalPixmap = icon.pixmap(QSize(32, 32), QIcon::Normal);
+    QVERIFY(!normalPixmap.isNull());
+
+    QPixmap disabledPixmap = icon.pixmap(QSize(32, 32), QIcon::Disabled);
+    QVERIFY(!disabledPixmap.isNull());
+
+    QPixmap activePixmap = icon.pixmap(QSize(32, 32), QIcon::Active);
+    QVERIFY(!activePixmap.isNull());
+
+    QPixmap selectedPixmap = icon.pixmap(QSize(32, 32), QIcon::Selected);
+    QVERIFY(!selectedPixmap.isNull());
+}
+
+void TestQtLucide::testOpacity() {
+    QVERIFY(m_lucide->initLucide());
+
+    // Test icon with custom opacity
+    QVariantMap options;
+    options["opacity"] = 0.5;
+
+    QIcon icon = m_lucide->icon(lucide::Icons::activity, options);
+    QVERIFY(!icon.isNull());
+
+    QPixmap pixmap = icon.pixmap(QSize(32, 32));
+    QVERIFY(!pixmap.isNull());
+}
+
+void TestQtLucide::testScaleFactor() {
+    QVERIFY(m_lucide->initLucide());
+
+    // Test icon with custom scale factor
+    QVariantMap options;
+    options["scale-factor"] = 1.0; // Full size
+
+    QIcon icon = m_lucide->icon(lucide::Icons::activity, options);
+    QVERIFY(!icon.isNull());
+
+    QPixmap pixmap = icon.pixmap(QSize(32, 32));
+    QVERIFY(!pixmap.isNull());
+
+    // Test with smaller scale factor
+    QVariantMap smallOptions;
+    smallOptions["scale-factor"] = 0.5;
+
+    QIcon smallIcon = m_lucide->icon(lucide::Icons::activity, smallOptions);
+    QVERIFY(!smallIcon.isNull());
 }

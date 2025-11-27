@@ -27,6 +27,10 @@ private slots:
     void testCustomOptions();
     void testAvailableIcons();
     void testInvalidIcon();
+    void testSvgData();
+    void testIconModes();
+    void testOpacity();
+    void testScaleFactor();
 
 private:
     lucide::QtLucide* m_lucide;

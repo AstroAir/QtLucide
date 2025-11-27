@@ -8,7 +8,9 @@
 // Include test class headers
 #include "unit/core/test_boundary_conditions.h"
 #include "unit/core/test_error_handling.h"
+#include "unit/core/test_icon_engine.h"
 #include "unit/core/test_icon_loading.h"
+#include "unit/core/test_icon_painter.h"
 #include "unit/core/test_memory_management.h"
 #include "unit/core/test_qtlucide.h"
 #include "unit/core/test_svg_rendering.h"
@@ -22,6 +24,16 @@ int main(int argc, char* argv[]) {
     // Run all test classes
     {
         TestQtLucide test;
+        result |= QTest::qExec(&test, argc, argv);
+    }
+
+    {
+        TestIconEngine test;
+        result |= QTest::qExec(&test, argc, argv);
+    }
+
+    {
+        TestIconPainter test;
         result |= QTest::qExec(&test, argc, argv);
     }
 

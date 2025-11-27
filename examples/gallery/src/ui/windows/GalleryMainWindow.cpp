@@ -687,15 +687,32 @@ void GalleryMainWindow::setupCentralWidget() {
     QWidget* centerPanel = createCenterPanel();
     QWidget* rightPanel = createRightPanel();
 
+    // Set minimum widths to prevent panels from being squeezed out
+    leftPanel->setMinimumWidth(200);
+    centerPanel->setMinimumWidth(400);
+    rightPanel->setMinimumWidth(250);
+
+    // Set size policies for proper resizing behavior
+    leftPanel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    centerPanel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    rightPanel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+
     m_mainSplitter->addWidget(leftPanel);
     m_mainSplitter->addWidget(centerPanel);
     m_mainSplitter->addWidget(rightPanel);
 
-    // Set splitter sizes
-    m_mainSplitter->setSizes({300, 800, 400});
+    // Prevent panels from being collapsed
+    m_mainSplitter->setCollapsible(0, false);
+    m_mainSplitter->setCollapsible(1, false);
+    m_mainSplitter->setCollapsible(2, false);
+
+    // Set stretch factors: center panel expands, side panels stay fixed
     m_mainSplitter->setStretchFactor(0, 0);
     m_mainSplitter->setStretchFactor(1, 1);
     m_mainSplitter->setStretchFactor(2, 0);
+
+    // Set initial splitter sizes (will be adjusted based on window size)
+    m_mainSplitter->setSizes({250, 600, 300});
 
     // Apply splitter style
     m_mainSplitter->setStyleSheet(getSplitterStyle());

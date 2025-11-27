@@ -21,7 +21,15 @@ public:
     static int instanceCount;
 
     TestPainter() { instanceCount++; }
-    ~TestPainter() { instanceCount--; }
+    ~TestPainter() override { instanceCount--; }
+
+    [[nodiscard]] lucide::QtLucideIconPainter* clone() const override {
+        return new TestPainter();
+    }
+
+    [[nodiscard]] QString iconText() const override {
+        return QStringLiteral("test-painter");
+    }
 
     void paint(lucide::QtLucide* lucide, QPainter* painter, const QRect& rect, QIcon::Mode mode,
                QIcon::State state, const QVariantMap& options) override {
@@ -38,7 +46,15 @@ public:
     static int instanceCount;
 
     ReplacementPainter() { instanceCount++; }
-    ~ReplacementPainter() { instanceCount--; }
+    ~ReplacementPainter() override { instanceCount--; }
+
+    [[nodiscard]] lucide::QtLucideIconPainter* clone() const override {
+        return new ReplacementPainter();
+    }
+
+    [[nodiscard]] QString iconText() const override {
+        return QStringLiteral("replacement-painter");
+    }
 
     void paint(lucide::QtLucide* lucide, QPainter* painter, const QRect& rect, QIcon::Mode mode,
                QIcon::State state, const QVariantMap& options) override {
@@ -525,6 +541,14 @@ void TestMemoryManagement::testMemoryFragmentation() {
 void TestMemoryManagement::testCustomPainterMemoryManagement() {
     class MemoryTestPainter : public lucide::QtLucideIconPainter {
     public:
+        [[nodiscard]] lucide::QtLucideIconPainter* clone() const override {
+            return new MemoryTestPainter();
+        }
+
+        [[nodiscard]] QString iconText() const override {
+            return QStringLiteral("memory-test-painter");
+        }
+
         void paint(lucide::QtLucide* lucide, QPainter* painter, const QRect& rect, QIcon::Mode mode,
                    QIcon::State state, const QVariantMap& options) override {
             Q_UNUSED(lucide)
@@ -591,6 +615,14 @@ void TestMemoryManagement::testCustomPainterLifetime() {
     {
         class LifetimePainter : public lucide::QtLucideIconPainter {
         public:
+            [[nodiscard]] lucide::QtLucideIconPainter* clone() const override {
+                return new LifetimePainter();
+            }
+
+            [[nodiscard]] QString iconText() const override {
+                return QStringLiteral("lifetime-painter");
+            }
+
             void paint(lucide::QtLucide* lucide, QPainter* painter, const QRect& rect,
                        QIcon::Mode mode, QIcon::State state, const QVariantMap& options) override {
                 Q_UNUSED(lucide)

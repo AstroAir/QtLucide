@@ -575,6 +575,14 @@ void TestBoundaryConditions::testEnumOverflow() {
 void TestBoundaryConditions::testPainterWithExtremeParameters() {
     class ExtremePainter : public lucide::QtLucideIconPainter {
     public:
+        [[nodiscard]] lucide::QtLucideIconPainter* clone() const override {
+            return new ExtremePainter();
+        }
+
+        [[nodiscard]] QString iconText() const override {
+            return QStringLiteral("extreme-painter");
+        }
+
         void paint(lucide::QtLucide* lucide, QPainter* painter, const QRect& rect, QIcon::Mode mode,
                    QIcon::State state, const QVariantMap& options) override {
             Q_UNUSED(lucide)
@@ -609,6 +617,14 @@ void TestBoundaryConditions::testPainterWithExtremeParameters() {
 void TestBoundaryConditions::testPainterMemoryLimits() {
     class MemoryIntensivePainter : public lucide::QtLucideIconPainter {
     public:
+        [[nodiscard]] lucide::QtLucideIconPainter* clone() const override {
+            return new MemoryIntensivePainter();
+        }
+
+        [[nodiscard]] QString iconText() const override {
+            return QStringLiteral("memory-intensive-painter");
+        }
+
         void paint(lucide::QtLucide* lucide, QPainter* painter, const QRect& rect, QIcon::Mode mode,
                    QIcon::State state, const QVariantMap& options) override {
             Q_UNUSED(lucide)
@@ -638,6 +654,14 @@ void TestBoundaryConditions::testPainterMemoryLimits() {
 void TestBoundaryConditions::testPainterPerformanceLimits() {
     class SlowPainter : public lucide::QtLucideIconPainter {
     public:
+        [[nodiscard]] lucide::QtLucideIconPainter* clone() const override {
+            return new SlowPainter();
+        }
+
+        [[nodiscard]] QString iconText() const override {
+            return QStringLiteral("slow-painter");
+        }
+
         void paint(lucide::QtLucide* lucide, QPainter* painter, const QRect& rect, QIcon::Mode mode,
                    QIcon::State state, const QVariantMap& options) override {
             Q_UNUSED(lucide)

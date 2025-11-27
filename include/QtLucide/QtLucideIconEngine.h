@@ -154,6 +154,41 @@ public:
      */
     [[nodiscard]] QString key() const override;
 
+    /**
+     * @brief Returns the actual size of the icon for the given parameters
+     * @param size Requested size
+     * @param mode Icon mode
+     * @param state Icon state
+     * @return The actual size the icon will be rendered at
+     * @details For vector-based icons like SVG, this typically returns the
+     *          requested size since SVGs scale perfectly.
+     * @since 1.0
+     */
+    [[nodiscard]] QSize actualSize(const QSize& size, QIcon::Mode mode, QIcon::State state) override;
+
+    /**
+     * @brief Returns a list of available icon sizes
+     * @return List of sizes; empty for scalable icons
+     * @details Since Lucide icons are SVG-based and infinitely scalable,
+     *          this returns an empty list indicating any size is supported.
+     * @since 1.0
+     */
+    [[nodiscard]] QList<QSize> availableSizes(QIcon::Mode mode = QIcon::Normal, QIcon::State state = QIcon::Off) override;
+
+    /**
+     * @brief Returns the icon name if available
+     * @return Icon name string or empty string
+     * @since 1.0
+     */
+    [[nodiscard]] QString iconName() override;
+
+    /**
+     * @brief Check if this icon engine is null (has no valid icon)
+     * @return true if the engine has no valid icon data
+     * @since 1.0
+     */
+    [[nodiscard]] bool isNull() override;
+
 private:
     /**
      * @brief Generate a cache key for the given parameters

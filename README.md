@@ -180,8 +180,11 @@ The main class for managing Lucide icons.
 - `bool initLucide()` - Initialize the icon system
 - `QIcon icon(const QString& name, const QVariantMap& options = {})` - Create icon by name
 - `QIcon icon(Icons iconId, const QVariantMap& options = {})` - Create icon by enum
+- `QIcon icon(QtLucideIconPainter* painter, const QVariantMap& options = {})` - Create icon with custom painter
+- `void give(const QString& name, QtLucideIconPainter* painter)` - Register a custom painter
 - `void setDefaultOption(const QString& name, const QVariant& value)` - Set default option
 - `QStringList availableIcons() const` - Get list of available icons
+- `QByteArray svgData(const QString& name) const` - Get raw SVG data for an icon
 
 #### Options
 
@@ -190,6 +193,36 @@ The main class for managing Lucide icons.
 - `color-active` - Color for active state
 - `color-selected` - Color for selected state
 - `scale-factor` - Scale factor (0.1 to 2.0, default: 0.9)
+
+### Custom Painters
+
+You can create custom icon painters for specialized rendering:
+
+```cpp
+#include <QtLucide/QtLucideIconPainter.h>
+
+class MyCustomPainter : public lucide::QtLucideIconPainter {
+public:
+    QtLucideIconPainter* clone() const override {
+        return new MyCustomPainter();
+    }
+    
+    QString iconText() const override {
+        return QStringLiteral("my-custom-icon");
+    }
+    
+    void paint(lucide::QtLucide* lucide, QPainter* painter, const QRect& rect,
+               QIcon::Mode mode, QIcon::State state, const QVariantMap& options) override {
+        // Custom painting logic
+        painter->fillRect(rect, Qt::blue);
+    }
+};
+
+// Register and use custom painter
+MyCustomPainter* painter = new MyCustomPainter();
+lucide->give("my-icon", painter);  // QtLucide takes ownership
+QIcon icon = lucide->icon("my-icon");  // Use like any other icon
+```
 
 ## Migration from QtAwesome
 

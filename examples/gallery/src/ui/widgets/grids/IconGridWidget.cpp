@@ -977,23 +977,15 @@ void IconGridWidget::setupHeader() {
 }
 
 void IconGridWidget::setupViewArea() {
-    // Enhanced scroll area with modern design
-    m_scrollArea = new QScrollArea();
-    m_scrollArea->setWidgetResizable(true);
-    m_scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    m_scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    m_scrollArea->setFrameShape(QFrame::NoFrame);
-
-    // Viewport widget
+    // Create viewport widget directly (QListView has its own scrolling)
     m_viewport = new QWidget();
-    m_scrollArea->setWidget(m_viewport);
 
     // Viewport layout
     m_viewportLayout = new QVBoxLayout(m_viewport);
     m_viewportLayout->setContentsMargins(0, 0, 0, 0);
     m_viewportLayout->setSpacing(0);
 
-    m_layout->addWidget(m_scrollArea);
+    m_layout->addWidget(m_viewport, 1); // Add stretch factor to fill available space
 }
 
 void IconGridWidget::setupFooter() {
@@ -1018,6 +1010,8 @@ void IconGridWidget::setupView() {
     m_listView = new QListView(m_viewport);
     m_listView->setViewMode(QListView::IconMode);
     m_listView->setResizeMode(QListView::Adjust);
+    m_listView->setWrapping(true);  // Enable wrapping for grid layout
+    m_listView->setFlow(QListView::LeftToRight);  // Flow items left to right
     m_listView->setUniformItemSizes(true);
     m_listView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     m_listView->setSelectionBehavior(QAbstractItemView::SelectItems);
@@ -1027,6 +1021,7 @@ void IconGridWidget::setupView() {
     m_listView->setDragEnabled(m_dragEnabled);
     m_listView->setAcceptDrops(m_dropEnabled);
     m_listView->setDropIndicatorShown(true);
+    m_listView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     // Set custom delegate
     m_delegate = std::make_unique<IconGridDelegate>(this);
@@ -1089,8 +1084,8 @@ void IconGridWidget::applyModernStyling() {
                   "border: none; "
                   "border-radius: 12px; "
                   "} "
-                  "QScrollArea { "
-                  "background-color: transparent; "
+                  "QListView { "
+                  "background-color: #FFFFFF; "
                   "border: none; "
                   "} "
                   "QScrollBar:vertical { "

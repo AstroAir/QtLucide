@@ -64,12 +64,36 @@ class QtLucide;
 class QtLucideIconPainter {
 public:
     /**
+     * @brief Default constructor
+     * @since 1.0
+     */
+    QtLucideIconPainter() = default;
+
+    /**
      * @brief Virtual destructor for proper cleanup
      * @details Ensures proper cleanup of derived painter classes when
      *          deleted through base class pointers.
      * @since 1.0
      */
     virtual ~QtLucideIconPainter();
+
+    /**
+     * @brief Create a copy of this painter
+     * @return New painter instance (caller takes ownership)
+     * @details Creates a deep copy of this painter for use in cloned icon engines.
+     *          Derived classes must implement this to return a proper copy.
+     * @since 1.0
+     */
+    [[nodiscard]] virtual QtLucideIconPainter* clone() const = 0;
+
+    /**
+     * @brief Get a unique identifier for this painter instance
+     * @return String identifier used for caching and debugging
+     * @details Returns a unique string that identifies this painter configuration.
+     *          Used by the icon engine for cache key generation.
+     * @since 1.0
+     */
+    [[nodiscard]] virtual QString iconText() const = 0;
 
     /**
      * @brief Paint the icon with the given parameters
@@ -170,6 +194,20 @@ public:
      * @since 1.0
      */
     ~QtLucideSvgIconPainter() override;
+
+    /**
+     * @brief Create a copy of this painter
+     * @return New QtLucideSvgIconPainter instance
+     * @since 1.0
+     */
+    [[nodiscard]] QtLucideIconPainter* clone() const override;
+
+    /**
+     * @brief Get a unique identifier for this painter
+     * @return String "svg-icon-painter"
+     * @since 1.0
+     */
+    [[nodiscard]] QString iconText() const override;
 
     /**
      * @brief Renders an SVG icon with the specified parameters

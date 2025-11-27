@@ -14,6 +14,8 @@
 #include <QDebug>
 #include <QDir>
 #include <QFile>
+#include <QMutex>
+#include <QMutexLocker>
 #include <QPalette>
 #include <QResource>
 #include <QSet>
@@ -25,11 +27,22 @@ extern int qCleanupResources_lucide_icons();
 
 namespace lucide {
 
-QtLucide::QtLucide(QObject* parent)
-    : QObject(parent) {
-    // Initialize resources
-    const int resourceResult = qInitResources_lucide_icons();
-    qDebug() << "Resource initialization result:" << resourceResult;
+// Static mutex for thread-safe resource initialization
+static QMutex s_resourceMutex;
+static bool s_resourcesInitialized = false;
+
+QtLucide::QtLucide(QObject* parent) : QObject(parent) {
+    // Thread-safe resource initialization (only once across all instances)
+    {
+        QMutexLocker locker(&s_resourceMutex);
+        if (!s_resourcesInitialized) {
+            const int resourceResult = qInitResources_lucide_icons();
+            if (resourceResult == 0) {
+                qWarning() << "QtLucide: Failed to initialize icon resources";
+            }
+            s_resourcesInitialized = true;
+        }
+    }
 
     // Initialize default options
     resetDefaultOptions();
@@ -37,14 +50,14 @@ QtLucide::QtLucide(QObject* parent)
 
 QtLucide::~QtLucide() {
     delete m_svgIconPainter;
+    m_svgIconPainter = nullptr;
 
     // Clean up custom painters
-    for (auto* painter : m_customPainters) {
-        delete painter;
-    }
+    qDeleteAll(m_customPainters);
+    m_customPainters.clear();
 
-    // Cleanup resources
-    qCleanupResources_lucide_icons();
+    // Note: We don't cleanup resources here as other QtLucide instances may still use them
+    // Resources are cleaned up when the application exits
 }
 
 bool QtLucide::initLucide() {
@@ -97,7 +110,16 @@ QIcon QtLucide::icon(const QString& name, const QVariantMap& options) {
         for (auto it = options.begin(); it != options.end(); ++it) {
             mergedOptions[it.key()] = it.value();
         }
+        // Mark as custom painter so isNull() works correctly
+        mergedOptions["customPainter"] = true;
+        mergedOptions["customPainterName"] = name;
         return QIcon(new QtLucideIconEngine(this, m_customPainters[name], mergedOptions));
+    }
+
+    // Check if QtLucide is initialized for built-in icons
+    if (!m_initialized) {
+        qWarning() << "QtLucide not initialized. Call initLucide() first.";
+        return {};
     }
 
     // Convert name to icon ID
@@ -121,14 +143,29 @@ QIcon QtLucide::icon(QtLucideIconPainter* painter, const QVariantMap& options) {
         mergedOptions[it.key()] = it.value();
     }
 
+    // Mark as custom painter so isNull() works correctly
+    mergedOptions["customPainter"] = true;
+
     return QIcon(new QtLucideIconEngine(this, painter, mergedOptions));
 }
 
 void QtLucide::give(const QString& name, QtLucideIconPainter* painter) {
-    if (m_customPainters.contains(name)) {
-        delete m_customPainters[name];
+    if (name.isEmpty()) {
+        qWarning() << "QtLucide::give() called with empty name";
+        delete painter; // Clean up since we're not storing it
+        return;
     }
-    m_customPainters[name] = painter;
+
+    if (painter == nullptr) {
+        qWarning() << "QtLucide::give() called with null painter for name:" << name;
+        return;
+    }
+
+    // Delete existing painter with same name if present
+    if (m_customPainters.contains(name)) {
+        delete m_customPainters.take(name);
+    }
+    m_customPainters.insert(name, painter);
 }
 
 QByteArray QtLucide::svgData(Icons iconId) const {
@@ -141,14 +178,25 @@ QByteArray QtLucide::svgData(Icons iconId) const {
 }
 
 QByteArray QtLucide::svgData(const QString& name) const {
+    if (name.isEmpty()) {
+        return {};
+    }
+
     const QString resourcePath = QString(":/lucide/%1").arg(name);
 
     // Try QResource first (more reliable for Qt resources)
     const QResource resource(resourcePath);
     if (resource.isValid()) {
         const uchar* data = resource.data();
-        if (data != nullptr && resource.size() > 0) {
-            return {reinterpret_cast<const char*>(data), resource.size()};
+        const qint64 size = resource.size();
+        if (data != nullptr && size > 0) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            // Qt6: Handle compressed resources
+            if (resource.compressionAlgorithm() != QResource::NoCompression) {
+                return qUncompress(data, static_cast<int>(size));
+            }
+#endif
+            return QByteArray(reinterpret_cast<const char*>(data), static_cast<int>(size));
         }
     }
 
@@ -156,16 +204,21 @@ QByteArray QtLucide::svgData(const QString& name) const {
     QFile file(resourcePath);
     if (file.open(QIODevice::ReadOnly)) {
         const QByteArray data = file.readAll();
+        file.close();
         if (!data.isEmpty()) {
             return data;
         }
     }
 
-    // Only warn if both methods fail (indicates a real problem)
+    // Only warn once per path to avoid log spam
     static QSet<QString> warnedPaths;
-    if (!warnedPaths.contains(resourcePath)) {
-        qWarning() << "SVG resource could not be loaded:" << resourcePath;
-        warnedPaths.insert(resourcePath);
+    static QMutex warnMutex;
+    {
+        QMutexLocker locker(&warnMutex);
+        if (!warnedPaths.contains(resourcePath)) {
+            qWarning() << "SVG resource could not be loaded:" << resourcePath;
+            warnedPaths.insert(resourcePath);
+        }
     }
 
     return {};
@@ -181,14 +234,19 @@ void QtLucide::resetDefaultOptions() {
     m_defaultOptions.clear();
 
     // Set default colors based on application palette
-    const QPalette palette = QApplication::palette();
+    // Use QGuiApplication if QApplication is not available
+    QPalette palette;
+    if (qApp != nullptr) {
+        palette = qApp->palette();
+    }
 
     m_defaultOptions["color"] = palette.color(QPalette::Normal, QPalette::Text);
     m_defaultOptions["color-disabled"] = palette.color(QPalette::Disabled, QPalette::Text);
     m_defaultOptions["color-active"] = palette.color(QPalette::Active, QPalette::Text);
-    m_defaultOptions["color-selected"] = palette.color(QPalette::Active, QPalette::Text);
+    m_defaultOptions["color-selected"] = palette.color(QPalette::Active, QPalette::HighlightedText);
 
     m_defaultOptions["scale-factor"] = 0.9;
+    m_defaultOptions["opacity"] = 1.0;
 
     emit defaultOptionsReset();
 }

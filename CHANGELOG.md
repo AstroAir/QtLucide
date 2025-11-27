@@ -13,11 +13,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Code of conduct for community participation
 - Issue and pull request templates
 - Code formatting configuration (.clang-format, .editorconfig)
+- Custom icon painter support with `give()` method for registering custom painters
+- Custom painter name tracking in icon options for debugging
 
 ### Changed
 - Improved project structure and documentation
+- Enhanced `QtLucideIconEngine::isNull()` to properly handle custom painters
+- Custom painters no longer require an `iconId` to be considered valid
 
 ### Fixed
+- Fixed custom painter icons incorrectly returning `isNull() == true`
+- Fixed thread safety tests failing due to custom painter null check issue
+- Fixed boundary condition tests for custom painters
+- Fixed memory management tests for custom painter lifecycle
+- Fixed UI responsiveness tests to properly skip when GalleryMainWindow is unavailable
 - Various minor improvements and bug fixes
 
 ## [1.0.0] - 2025-01-XX

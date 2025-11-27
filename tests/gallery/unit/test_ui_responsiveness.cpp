@@ -398,6 +398,7 @@ void TestUIResponsiveness::testBreakpoints_TabletLayout() {
 }
 
 void TestUIResponsiveness::testBreakpoints_DesktopLayout() {
+    SKIP_UI_TESTS;
     QVERIFY(m_mainWindow != nullptr);
 
     QSize desktopSize = getOptimalSizeForBreakpoint("desktop");
@@ -421,6 +422,7 @@ void TestUIResponsiveness::testBreakpoints_DesktopLayout() {
 }
 
 void TestUIResponsiveness::testBreakpoints_UltraWideLayout() {
+    SKIP_UI_TESTS;
     QVERIFY(m_mainWindow != nullptr);
 
     QSize ultrawideSize = getOptimalSizeForBreakpoint("ultrawide");
@@ -440,6 +442,7 @@ void TestUIResponsiveness::testBreakpoints_UltraWideLayout() {
 
 // Component Scaling Tests
 void TestUIResponsiveness::testComponentScaling_IconGrid() {
+    SKIP_UI_TESTS;
     QVERIFY(m_mainWindow != nullptr);
 
     IconGridWidget* grid = m_mainWindow->findChild<IconGridWidget*>();
@@ -465,6 +468,7 @@ void TestUIResponsiveness::testComponentScaling_IconGrid() {
 }
 
 void TestUIResponsiveness::testComponentScaling_ThumbnailGrid() {
+    SKIP_UI_TESTS;
     QVERIFY(m_mainWindow != nullptr);
 
     IconThumbnailGridWidget* thumbnailGrid = m_mainWindow->findChild<IconThumbnailGridWidget*>();
@@ -491,6 +495,7 @@ void TestUIResponsiveness::testComponentScaling_ThumbnailGrid() {
 }
 
 void TestUIResponsiveness::testComponentScaling_Sidebar() {
+    SKIP_UI_TESTS;
     QVERIFY(m_mainWindow != nullptr);
 
     CategorySidebarWidget* sidebar = m_mainWindow->findChild<CategorySidebarWidget*>();
@@ -517,6 +522,7 @@ void TestUIResponsiveness::testComponentScaling_Sidebar() {
 }
 
 void TestUIResponsiveness::testComponentScaling_SearchWidget() {
+    SKIP_UI_TESTS;
     QVERIFY(m_mainWindow != nullptr);
 
     SearchWidget* search = m_mainWindow->findChild<SearchWidget*>();
@@ -542,6 +548,7 @@ void TestUIResponsiveness::testComponentScaling_SearchWidget() {
 
 // Layout Reflow Tests
 void TestUIResponsiveness::testLayoutReflow_GridColumns() {
+    SKIP_UI_TESTS;
     QVERIFY(m_mainWindow != nullptr);
 
     IconGridWidget* grid = m_mainWindow->findChild<IconGridWidget*>();
@@ -567,6 +574,7 @@ void TestUIResponsiveness::testLayoutReflow_GridColumns() {
 }
 
 void TestUIResponsiveness::testLayoutReflow_SplitterAdjustment() {
+    SKIP_UI_TESTS;
     QVERIFY(m_mainWindow != nullptr);
 
     QSplitter* splitter = m_mainWindow->findChild<QSplitter*>();
@@ -598,6 +606,7 @@ void TestUIResponsiveness::testLayoutReflow_SplitterAdjustment() {
 }
 
 void TestUIResponsiveness::testLayoutReflow_ContentWrapping() {
+    SKIP_UI_TESTS;
     QVERIFY(m_mainWindow != nullptr);
 
     // Test content wrapping behavior
@@ -616,6 +625,7 @@ void TestUIResponsiveness::testLayoutReflow_ContentWrapping() {
 }
 
 void TestUIResponsiveness::testLayoutReflow_ScrollbarAppearance() {
+    SKIP_UI_TESTS;
     QVERIFY(m_mainWindow != nullptr);
 
     IconGridWidget* grid = m_mainWindow->findChild<IconGridWidget*>();
@@ -639,6 +649,7 @@ void TestUIResponsiveness::testLayoutReflow_ScrollbarAppearance() {
 
 // Performance Tests
 void TestUIResponsiveness::testPerformance_ResizeSpeed() {
+    SKIP_UI_TESTS;
     QVERIFY(m_mainWindow != nullptr);
 
     QElapsedTimer timer;
@@ -658,6 +669,7 @@ void TestUIResponsiveness::testPerformance_ResizeSpeed() {
 }
 
 void TestUIResponsiveness::testPerformance_LayoutCalculation() {
+    SKIP_UI_TESTS;
     QVERIFY(m_mainWindow != nullptr);
 
     QElapsedTimer timer;
@@ -676,6 +688,7 @@ void TestUIResponsiveness::testPerformance_LayoutCalculation() {
 }
 
 void TestUIResponsiveness::testPerformance_RenderingDuringResize() {
+    SKIP_UI_TESTS;
     QVERIFY(m_mainWindow != nullptr);
 
     QElapsedTimer timer;
@@ -693,6 +706,7 @@ void TestUIResponsiveness::testPerformance_RenderingDuringResize() {
 }
 
 void TestUIResponsiveness::testPerformance_MemoryUsageDuringResize() {
+    SKIP_UI_TESTS;
     QVERIFY(m_mainWindow != nullptr);
 
     // Perform multiple resize operations

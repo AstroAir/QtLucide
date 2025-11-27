@@ -5,6 +5,8 @@ find_package(Qt6 REQUIRED COMPONENTS Test)
 # Core unit test sources
 set(CORE_UNIT_TEST_SOURCES
     unit/core/test_qtlucide.cpp
+    unit/core/test_icon_engine.cpp
+    unit/core/test_icon_painter.cpp
     unit/core/test_icon_loading.cpp
     unit/core/test_svg_rendering.cpp
     unit/core/test_error_handling.cpp
@@ -16,6 +18,8 @@ set(CORE_UNIT_TEST_SOURCES
 # Core unit test headers
 set(CORE_UNIT_TEST_HEADERS
     unit/core/test_qtlucide.h
+    unit/core/test_icon_engine.h
+    unit/core/test_icon_painter.h
     unit/core/test_icon_loading.h
     unit/core/test_svg_rendering.h
     unit/core/test_error_handling.h

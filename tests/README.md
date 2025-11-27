@@ -6,7 +6,7 @@ This document describes the reorganized test structure for the QtLucide project,
 
 The test suite is organized into logical categories based on testing scope and purpose:
 
-```
+```txt
 tests/
 ├── unit/                           # Individual component/class unit tests
 │   ├── core/                      # Core QtLucide functionality tests
@@ -27,15 +27,21 @@ tests/
 ### Unit Tests (`tests/unit/`)
 
 **Core Unit Tests** (`tests/unit/core/`)
-- `test_qtlucide.cpp/h` - Core QtLucide API functionality
-- `test_icon_loading.cpp/h` - Icon loading mechanisms
-- `test_svg_rendering.cpp/h` - SVG rendering functionality
-- `test_error_handling.cpp/h` - Error handling and recovery
-- `test_thread_safety.cpp/h` - Thread safety validation
-- `test_boundary_conditions.cpp/h` - Edge cases and boundary testing
-- `test_memory_management.cpp/h` - Memory allocation and cleanup
+
+| Test File | Implementation File | Coverage |
+|-----------|---------------------|----------|
+| `test_qtlucide.cpp/h` | `src/QtLucide.cpp` | Core API: initialization, icon creation, options, availableIcons |
+| `test_icon_engine.cpp/h` | `src/QtLucideIconEngine.cpp` | Icon engine: paint, pixmap, clone, caching, isNull, actualSize |
+| `test_icon_painter.cpp/h` | `src/QtLucideIconPainter.cpp` | Painters: SVG processing, color handling, custom painters |
+| `test_icon_loading.cpp/h` | `src/QtLucide.cpp` | SVG data loading, resource access, pixmap generation |
+| `test_svg_rendering.cpp/h` | `src/QtLucideIconPainter.cpp` | SVG rendering quality, color replacement |
+| `test_error_handling.cpp/h` | All core files | Invalid inputs, null parameters, edge cases |
+| `test_thread_safety.cpp/h` | All core files | Concurrent access, resource mutex |
+| `test_boundary_conditions.cpp/h` | All core files | Extreme values, limits |
+| `test_memory_management.cpp/h` | All core files | Allocation, cleanup, leaks |
 
 **Component Unit Tests** (`tests/unit/components/`)
+
 - `test_theme_manager.cpp/h` - Theme management system
 - `test_batch_export_manager.cpp/h` - Export management system
 - `test_icon_metadata_manager.cpp/h` - Metadata handling
@@ -45,26 +51,32 @@ tests/
 - `test_import_dialog.cpp/h` - Import dialog component
 
 ### Integration Tests (`tests/integration/`)
+
 - `test_integration.cpp/h` - General cross-component integration
 - `test_ui_components.cpp/h` - UI component interaction testing
 
 ### Functional Tests (`tests/functional/`)
+
 - `test_export_functionality.cpp/h` - End-to-end export workflows
 - `test_image_gallery_functionality.cpp` - Gallery functionality testing
 - `test_accessibility.cpp/h` - Accessibility compliance validation
 
 ### Performance Tests (`tests/performance/`)
+
 - `test_performance_regression.cpp/h` - Performance regression testing
 
 ### Platform Tests (`tests/platform/`)
+
 - `test_platform_specific.cpp/h` - Platform-specific functionality
 
 ### Gallery Tests (`tests/gallery/`)
+
 Gallery-specific tests maintain their existing well-organized structure with basic, component, integration, and performance categories.
 
 ## Building and Running Tests
 
 ### Build Configuration
+
 ```bash
 # Configure with tests enabled
 cmake -S . -B build -DQTLUCIDE_BUILD_TESTS=ON
@@ -75,6 +87,7 @@ cmake --build build --target QtLucideGalleryBasicTests
 ```
 
 ### Running Tests
+
 ```bash
 # Run all tests
 ctest --test-dir build
@@ -88,6 +101,7 @@ ctest --test-dir build --output-on-failure
 ```
 
 ### Available Test Targets
+
 - `QtLucideCoreUnitTests` - Core functionality unit tests
 - `QtLucideGalleryBasicTests` - Basic gallery functionality
 - `QtLucideGalleryComponentTests` - Gallery component tests
@@ -96,10 +110,12 @@ ctest --test-dir build --output-on-failure
 ## Test Dependencies
 
 ### Currently Enabled
+
 - **Core Unit Tests**: Fully functional, no external dependencies
 - **Gallery Tests**: Functional with gallery application dependencies
 
 ### Currently Disabled
+
 - **Component Unit Tests**: Require gallery dependencies
 - **Integration Tests**: Require gallery dependencies  
 - **Functional Tests**: Require gallery dependencies
@@ -109,6 +125,7 @@ ctest --test-dir build --output-on-failure
 ## Adding New Tests
 
 ### Guidelines
+
 1. **Choose the appropriate category** based on test scope:
    - Unit tests for individual components/classes
    - Integration tests for cross-component functionality
@@ -128,6 +145,7 @@ ctest --test-dir build --output-on-failure
 ## Migration Notes
 
 This reorganized structure was created to improve:
+
 - **Discoverability**: Easy to find specific types of tests
 - **Maintainability**: Clear separation of concerns
 - **Scalability**: Easy to add new test categories
