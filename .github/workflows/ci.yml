@@ -148,7 +148,7 @@ jobs:
 
     - name: Upload coverage to Codecov
       if: matrix.coverage == true
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
         file: build/coverage.info
         flags: unittests
@@ -305,10 +305,10 @@ jobs:
         fi
 
     - name: Setup Pages
-      uses: actions/configure-pages@v4
+      uses: actions/configure-pages@v5
 
     - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
+      uses: actions/upload-pages-artifact@v4
       with:
         path: './site'
 
