@@ -1,0 +1,24 @@
+---
+alwaysApply: true
+---
+# QtLucide Project Structure
+
+The project is organized into key top-level directories:
+
+- `src/`: C++ sources for the QtLucide library implementation.
+- `include/QtLucide/`: Public headers (API surface). Generated headers also live here.
+- `resources/`: Lucide SVGs and generated resource metadata such as `.qrc` and JSON.
+- `tests/`: Qt Test suite integrated via CTest/Meson.
+- `examples/`: Sample apps and gallery used by tests and development.
+- `tools/`: Resource generation and validation scripts (e.g., [tools/generate_headers.py](mdc:tools/generate_headers.py)).
+- `scripts/`: Cross-platform build wrappers (e.g., [scripts/build.py](mdc:scripts/build.py), [scripts/build_cmake.py](mdc:scripts/build_cmake.py)).
+- Build system configs: top-level [CMakeLists.txt](mdc:CMakeLists.txt), [meson.build](mdc:meson.build), and `cmake/`.
+- Docs and configs: `docs/`, [.clang-format](mdc:.clang-format), [.editorconfig](mdc:.editorconfig).
+
+Entry points:
+
+- Core library sources in [`src/`](mdc:src) with public API headers in [`include/QtLucide/`](mdc:include/QtLucide).
+- Icon resources rooted at [`resources/icons`](mdc:resources/icons) with the compiled resource file [resources/icons/lucide_icons.qrc](mdc:resources/icons/lucide_icons.qrc).
+
+Use this rule to quickly navigate modules and understand where new files should live.
+

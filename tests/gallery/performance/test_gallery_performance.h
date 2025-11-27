@@ -8,8 +8,7 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-class TestGalleryPerformance : public QObject
-{
+class TestGalleryPerformance : public QObject {
     Q_OBJECT
 
 private slots:

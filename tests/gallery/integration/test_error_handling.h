@@ -8,8 +8,7 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-class TestErrorHandling : public QObject
-{
+class TestErrorHandling : public QObject {
     Q_OBJECT
 
 private slots:

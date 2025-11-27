@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cmake:*)",
+      "Bash(xmake build:*)",
+      "Bash(tree:*)",
+      "Bash(cmd /c \"dir /ad /b | findstr build\")",
+      "Bash(rm:*)",
+      "Bash(find:*)",
+      "Bash(py:*)",
+      "Bash(mkdir:*)",
+      "Bash(python3:*)",
+      "Bash(pacman:*)",
+      "Bash(xmake config:*)",
+      "Bash(xmake generate-resources:*)",
+      "Bash(where:*)",
+      "Bash(D:msys64mingw64binpython.exe toolsbuild_resources.py .)",
+      "Bash(/d/msys64/mingw64/bin/python.exe:*)",
+      "Bash(xmake run:*)",
+      "Bash(xmake f:*)",
+      "Bash(findstr:*)",
+      "Read(//c/Users/Max Qian/AppData/Local/.xmake/packages/q/qt6base/6.9.1/3737f2ff96ac4a65ad8301fbd7499550/6.9.1/msvc2022_64/lib/**)",
+      "Bash(xmake require:*)",
+      "Read(//d/msys64/mingw64/qt6-static/lib/**)",
+      "Bash(xmake clean:*)",
+      "Bash(xmake:*)",
+      "Bash(xargs:*)",
+      "Bash(clang-tidy:*)",
+      "Read(//d/msys64/mingw64/qt6-static/include/qt6/**)",
+      "Bash(g++:*)",
+      "Bash(D:msys64mingw64binx86_64-w64-mingw32-g++.exe:*)",
+      "Bash(\"D:\\msys64\\mingw64\\bin\\x86_64-w64-mingw32-g++.exe\":*)",
+      "Read(//d/msys64/mingw64/qt6-static/include/**)",
+      "Read(//d/msys64/mingw64/qt6-static/**)",
+      "Bash(D:/msys64/mingw64/bin/x86_64-w64-mingw32-g++.exe:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

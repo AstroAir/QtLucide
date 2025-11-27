@@ -56,7 +56,6 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-
 #include "IconMetadataManager.h"
 #include "core/GalleryTypes.h"
 

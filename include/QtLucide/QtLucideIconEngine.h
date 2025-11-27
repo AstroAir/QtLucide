@@ -92,7 +92,7 @@ public:
      *          instance is not affected.
      * @since 1.0
      */
-    virtual ~QtLucideIconEngine();
+    ~QtLucideIconEngine() override;
 
     // QIconEngine interface implementation
 
@@ -127,7 +127,7 @@ public:
      * @see paint(), renderPixmap()
      * @since 1.0
      */
-    QPixmap pixmap(const QSize& size, QIcon::Mode mode, QIcon::State state) override;
+    [[nodiscard]] QPixmap pixmap(const QSize& size, QIcon::Mode mode, QIcon::State state) override;
 
     /**
      * @brief Create a copy of this icon engine
@@ -140,7 +140,7 @@ public:
      * @note The cloned engine starts with an empty pixmap cache
      * @since 1.0
      */
-    QIconEngine* clone() const override;
+    [[nodiscard]] QIconEngine* clone() const override;
 
     /**
      * @brief Get a unique key identifying this engine type
@@ -152,7 +152,7 @@ public:
      * @note This is part of the QIconEngine interface
      * @since 1.0
      */
-    QString key() const override;
+    [[nodiscard]] QString key() const override;
 
 private:
     /**
@@ -162,7 +162,7 @@ private:
      * @param state Icon state
      * @return Unique cache key string
      */
-    QString cacheKey(const QSize& size, QIcon::Mode mode, QIcon::State state) const;
+    [[nodiscard]] QString cacheKey(const QSize& size, QIcon::Mode mode, QIcon::State state) const;
 
     /**
      * @brief Render a new pixmap with the given parameters
@@ -171,7 +171,7 @@ private:
      * @param state Icon state
      * @return Newly rendered pixmap
      */
-    QPixmap renderPixmap(const QSize& size, QIcon::Mode mode, QIcon::State state);
+    [[nodiscard]] QPixmap renderPixmap(const QSize& size, QIcon::Mode mode, QIcon::State state);
 
     QtLucide* m_lucide;                            ///< @brief QtLucide instance (not owned)
     QtLucideIconPainter* m_painter;                ///< @brief Icon painter (owned)

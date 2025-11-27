@@ -193,7 +193,7 @@ void IconThumbnailItem::paintEvent(QPaintEvent* event) {
         // Star icon
         painter.setPen(Qt::black);
         painter.setFont(QFont("Arial", 10, QFont::Bold));
-        painter.drawText(favoriteRect, Qt::AlignCenter, "★");
+        painter.drawText(favoriteRect, Qt::AlignCenter, "\u2605");
     }
 }
 
@@ -291,7 +291,7 @@ IconThumbnailGridWidget::IconThumbnailGridWidget(QWidget* parent)
       m_gridLayout(nullptr), m_firstVisibleIndex(0), m_lastVisibleIndex(-1),
       m_thumbnailSize(DEFAULT_THUMBNAIL_SIZE), m_columnsPerRow(0),
       m_itemSpacing(DEFAULT_ITEM_SPACING), m_contentMargin(DEFAULT_CONTENT_MARGIN),
-      m_updateTimer(new QTimer(this)), m_needsUpdate(false) {
+      m_manualThumbnailSize(false), m_updateTimer(new QTimer(this)), m_needsUpdate(false) {
     GALLERY_LOG_INFO(galleryInit, "IconThumbnailGridWidget constructor started");
 
     setupUI();
@@ -394,6 +394,7 @@ void IconThumbnailGridWidget::setThumbnailSize(int size) {
 
     if (m_thumbnailSize != size) {
         m_thumbnailSize = size;
+        m_manualThumbnailSize = true; // Mark as manually set
 
         // Update all visible items
         for (auto it = m_visibleItems.begin(); it != m_visibleItems.end(); ++it) {
@@ -510,13 +511,16 @@ void IconThumbnailGridWidget::calculateLayout() {
     }
 
     // Get responsive screen size and adjust thumbnail size accordingly
-    GalleryLayout::ResponsiveLayout::ScreenSize screenSize =
-        GalleryLayout::ResponsiveLayout::getScreenSize(this);
-    int responsiveThumbnailSize = GalleryLayout::ResponsiveLayout::getThumbnailSize(screenSize);
+    // Only apply responsive sizing if thumbnail size was not manually set
+    if (!m_manualThumbnailSize) {
+        GalleryLayout::ResponsiveLayout::ScreenSize screenSize =
+            GalleryLayout::ResponsiveLayout::getScreenSize(this);
+        int responsiveThumbnailSize = GalleryLayout::ResponsiveLayout::getThumbnailSize(screenSize);
 
-    // Update thumbnail size if it differs significantly from current
-    if (qAbs(m_thumbnailSize - responsiveThumbnailSize) > 16) {
-        m_thumbnailSize = responsiveThumbnailSize;
+        // Update thumbnail size if it differs significantly from current
+        if (qAbs(m_thumbnailSize - responsiveThumbnailSize) > 16) {
+            m_thumbnailSize = responsiveThumbnailSize;
+        }
     }
 
     int viewportWidth = m_scrollArea->viewport()->width();

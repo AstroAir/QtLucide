@@ -66,11 +66,9 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-
 #include "IconMetadataManager.h"
 #include <QtLucide/QtLucide.h>
 #include <memory>
-
 
 // Forward declarations
 class IconPreviewWidget;

@@ -30,55 +30,34 @@ Q_LOGGING_CATEGORY(galleryCache, "gallery.cache")
 Q_LOGGING_CATEGORY(galleryAnimation, "gallery.animation")
 Q_LOGGING_CATEGORY(galleryMetadata, "gallery.metadata")
 
-/**
- * @brief Background logging worker for asynchronous log processing
- */
-class LogWorker : public QObject {
-    Q_OBJECT
+// LogWorker implementation
+LogWorker::LogWorker(QObject* parent) : QObject(parent), m_processTimer(new QTimer(this)) {
+    m_processTimer->setInterval(GalleryLogger::LOG_PROCESS_INTERVAL_MS);
+    connect(m_processTimer, &QTimer::timeout, this, &LogWorker::processLogQueue);
+    m_processTimer->start();
+}
 
-public:
-    explicit LogWorker(QObject* parent = nullptr)
-        : QObject(parent), m_processTimer(new QTimer(this)) {
-        m_processTimer->setInterval(GalleryLogger::LOG_PROCESS_INTERVAL_MS);
-        connect(m_processTimer, &QTimer::timeout, this, &LogWorker::processLogQueue);
-        m_processTimer->start();
+void LogWorker::enqueueLogEntry(const QString& formattedMessage) {
+    QMutexLocker locker(&m_queueMutex);
+    m_logQueue.enqueue(formattedMessage);
+    m_queueCondition.wakeOne();
+}
+
+void LogWorker::stop() {
+    m_stopRequested = true;
+    m_queueCondition.wakeAll();
+    m_processTimer->stop();
+}
+
+void LogWorker::processLogQueue() {
+    QMutexLocker locker(&m_queueMutex);
+    while (!m_logQueue.isEmpty() && !m_stopRequested) {
+        QString message = m_logQueue.dequeue();
+        locker.unlock();
+        emit logProcessed(message);
+        locker.relock();
     }
-
-    ~LogWorker() = default;
-
-    void enqueueLogEntry(const QString& formattedMessage) {
-        QMutexLocker locker(&m_queueMutex);
-        m_logQueue.enqueue(formattedMessage);
-        m_queueCondition.wakeOne();
-    }
-
-    void stop() {
-        m_stopRequested = true;
-        m_queueCondition.wakeAll();
-        m_processTimer->stop();
-    }
-
-public slots:
-    void processLogQueue() {
-        QMutexLocker locker(&m_queueMutex);
-        while (!m_logQueue.isEmpty() && !m_stopRequested) {
-            QString message = m_logQueue.dequeue();
-            locker.unlock();
-            emit logProcessed(message);
-            locker.relock();
-        }
-    }
-
-signals:
-    void logProcessed(const QString& message);
-
-private:
-    QQueue<QString> m_logQueue;
-    QMutex m_queueMutex;
-    QWaitCondition m_queueCondition;
-    bool m_stopRequested = false;
-    QTimer* m_processTimer;
-};
+}
 
 // Static members
 GalleryLogger* GalleryLogger::s_instance = nullptr;
@@ -146,10 +125,9 @@ bool GalleryLogger::initialize(bool enableFileLogging, bool enableConsoleLogging
         setupLogFile();
     }
 
-    // Setup asynchronous logging
-    if (m_asyncLogging) {
-        setupAsyncLogging();
-    }
+    // Disable async logging during initialization to avoid threading issues
+    bool wasAsync = m_asyncLogging;
+    m_asyncLogging = false;
 
     // Start auto-flush timer
     m_flushTimer->start();
@@ -170,6 +148,13 @@ bool GalleryLogger::initialize(bool enableFileLogging, bool enableConsoleLogging
     }
 
     logMemoryUsage("Logger initialization");
+
+    // Re-enable async logging after initialization is complete
+    if (wasAsync) {
+        m_asyncLogging = true;
+        setupAsyncLogging();
+    }
+
     return true;
 }
 
@@ -430,7 +415,8 @@ void GalleryLogger::setupAsyncLogging() {
         });
 
         m_logThread->start();
-        info(galleryMain(), "Asynchronous logging initialized");
+        // Don't log during async setup to avoid recursion
+        qDebug() << "Asynchronous logging initialized";
     }
 }
 
@@ -573,6 +559,3 @@ void GalleryLogger::updatePerformanceMetrics() {
     // This method can be called periodically to update performance metrics
     // Implementation can be expanded as needed
 }
-
-// Include the MOC file for the LogWorker class
-#include "GalleryLogger.moc"

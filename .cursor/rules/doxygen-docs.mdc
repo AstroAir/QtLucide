@@ -1,0 +1,13 @@
+---
+globs: include/QtLucide/**/*.h
+description: Doxygen documentation guidance for public headers
+---
+# Doxygen and Public API Docs
+
+- Public headers are under [`include/QtLucide/`](mdc:include/QtLucide). Document public classes, methods, enums, and free functions with Doxygen-style comments.
+- Keep docs concise and accurate; prefer explaining rationale or non-obvious behavior over restating names.
+- Reference relevant docs in [`docs/api`](mdc:docs/api) and ensure examples compile against the public API.
+- Do not document generated headers directly; instead document the generators and usage:
+  - Generated: [`include/QtLucide/QtLucideEnums.h`](mdc:include/QtLucide/QtLucideEnums.h), [`include/QtLucide/QtLucideStrings.h`](mdc:include/QtLucide/QtLucideStrings.h)
+  - Generators: [`tools/generate_headers.py`](mdc:tools/generate_headers.py)
+

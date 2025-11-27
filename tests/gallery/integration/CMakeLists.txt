@@ -5,6 +5,8 @@
 set(INTEGRATION_TEST_SOURCES
     test_gallery_integration.cpp
     test_application_startup.cpp
+    test_icon_integration.cpp
+    test_image_gallery.cpp
     integration_test_runner.cpp
     # Include concrete implementation sources for gallery classes
     ../../../examples/gallery/src/ui/themes/ThemeManager.cpp

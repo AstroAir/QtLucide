@@ -1,0 +1,16 @@
+---
+alwaysApply: false
+description: Ensure feature parity between CMake and Meson builds
+---
+# CMake/Meson Parity and Build Consistency
+
+- Top-level build systems: [`CMakeLists.txt`](mdc:CMakeLists.txt) and [`meson.build`](mdc:meson.build). Library subdir mirrors exist in [`src/CMakeLists.txt`](mdc:src/CMakeLists.txt) and [`src/meson.build`](mdc:src/meson.build).
+- Examples and tests have corresponding build descriptions under [`examples/`](mdc:examples) and [`tests/`](mdc:tests) for both CMake and Meson.
+- Resource generation:
+  - CMake invokes resource generation automatically (see [`build_all_resources.py`](mdc:build_all_resources.py) and `tools/` helpers).
+  - Meson uses [`tools/build_resources_meson.py`](mdc:tools/build_resources_meson.py).
+- When adding sources or headers, update both CMake and Meson build files:
+  - CMake: add to the appropriate `add_library`/`target_sources` in [`src/CMakeLists.txt`](mdc:src/CMakeLists.txt) or example/test `CMakeLists.txt`.
+  - Meson: add to the `sources`/`headers` arrays in [`src/meson.build`](mdc:src/meson.build) and corresponding `meson.build` files.
+- Keep compile definitions, include directories, and Qt dependencies aligned across both systems.
+

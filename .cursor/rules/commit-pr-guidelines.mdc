@@ -1,0 +1,13 @@
+---
+alwaysApply: true
+description: Conventional Commits and PR requirements
+---
+# Commits and Pull Requests
+
+- Use Conventional Commits, e.g., `feat(icons): add theme support`, `fix(rendering): correct SVG scaling on HiDPI`.
+- Before submitting PRs:
+  - Run formatters and ensure tests pass: see [Build and Test Quickstart](mdc:.cursor/rules/build-and-test.mdc).
+  - Update [`CHANGELOG.md`](mdc:CHANGELOG.md) and docs when applicable.
+  - Include a clear description, link related issues, and attach screenshots for UI/icon changes.
+- Security/configuration tips: ensure Qt6 (Core/Gui/Widgets/Svg) and Python 3 are installed; Windows users can use [`scripts/*.bat`](mdc:scripts).
+

@@ -94,7 +94,7 @@ public:
      *          QtLucide instance remain valid after destruction.
      * @since 1.0
      */
-    virtual ~QtLucide();
+    ~QtLucide() override;
 
     /**
      * @brief Initialize the QtLucide icon system
@@ -174,7 +174,7 @@ public:
      * @see setDefaultOption(), resetDefaultOptions()
      * @since 1.0
      */
-    QVariant defaultOption(const QString& name) const;
+    [[nodiscard]] QVariant defaultOption(const QString& name) const;
 
     /**
      * @brief Create an icon from a Lucide icon identifier
@@ -211,7 +211,7 @@ public:
      * @see icon(const QString&), Icons, setDefaultOption()
      * @since 1.0
      */
-    QIcon icon(Icons iconId, const QVariantMap& options = QVariantMap());
+    [[nodiscard]] QIcon icon(Icons iconId, const QVariantMap& options = QVariantMap());
 
     /**
      * @brief Create an icon from a string name
@@ -246,7 +246,7 @@ public:
      * @see icon(Icons), availableIcons(), stringToIconId()
      * @since 1.0
      */
-    QIcon icon(const QString& name, const QVariantMap& options = QVariantMap());
+    [[nodiscard]] QIcon icon(const QString& name, const QVariantMap& options = QVariantMap());
 
     /**
      * @brief Create an icon using a custom painter
@@ -271,7 +271,7 @@ public:
      * @see QtLucideIconPainter, give()
      * @since 1.0
      */
-    QIcon icon(QtLucideIconPainter* painter, const QVariantMap& options = QVariantMap());
+    [[nodiscard]] QIcon icon(QtLucideIconPainter* painter, const QVariantMap& options = QVariantMap());
 
     /**
      * @brief Register a custom icon painter with a name
@@ -328,7 +328,7 @@ public:
      * @see svgData(const QString&), icon()
      * @since 1.0
      */
-    QByteArray svgData(Icons iconId) const;
+    [[nodiscard]] QByteArray svgData(Icons iconId) const;
 
     /**
      * @brief Get the raw SVG data for a Lucide icon by name
@@ -350,7 +350,7 @@ public:
      * @see svgData(Icons), availableIcons()
      * @since 1.0
      */
-    QByteArray svgData(const QString& name) const;
+    [[nodiscard]] QByteArray svgData(const QString& name) const;
 
     /**
      * @brief Get a list of all available Lucide icon names
@@ -377,7 +377,7 @@ public:
      * @see icon(const QString&), ICON_COUNT
      * @since 1.0
      */
-    QStringList availableIcons() const;
+    [[nodiscard]] QStringList availableIcons() const;
 
 Q_SIGNALS:
     /**
@@ -432,23 +432,21 @@ private:
      * @param name Icon name in kebab-case format
      * @return Corresponding Icons enum value, or invalid enum if not found
      */
-    Icons stringToIconId(const QString& name) const;
+    [[nodiscard]] Icons stringToIconId(const QString& name) const;
 
     /**
      * @brief Convert an icon enum value to its corresponding name string
      * @param iconId Icon enum value
      * @return Corresponding icon name string, or empty string if invalid
      */
-    QString iconIdToString(Icons iconId) const;
+    [[nodiscard]] QString iconIdToString(Icons iconId) const;
 
-
-
-    QHash<QString, Icons> m_nameToIconMap; ///< @brief Maps icon names to enum values
-    QHash<Icons, QString> m_iconToNameMap; ///< @brief Maps enum values to icon names
+    QHash<QString, Icons> m_nameToIconMap;              ///< @brief Maps icon names to enum values
+    QHash<Icons, QString> m_iconToNameMap;              ///< @brief Maps enum values to icon names
     QHash<QString, QtLucideIconPainter*> m_customPainters; ///< @brief Custom registered painters
     QVariantMap m_defaultOptions;                          ///< @brief Default rendering options
-    QtLucideIconPainter* m_svgIconPainter;                 ///< @brief Default SVG icon painter
-    bool m_initialized; ///< @brief Whether initLucide() has been called
+    QtLucideIconPainter* m_svgIconPainter{nullptr};       ///< @brief Default SVG icon painter
+    bool m_initialized{false};                             ///< @brief Whether initLucide() has been called
 };
 
 } // namespace lucide

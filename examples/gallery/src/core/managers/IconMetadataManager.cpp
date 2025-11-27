@@ -30,6 +30,22 @@ IconMetadataManager::~IconMetadataManager() {
     }
 }
 
+bool IconMetadataManager::initialize() {
+    // Initialize the metadata manager
+    // This is a simple initialization that can be called before loadMetadata()
+    GALLERY_LOG_INFO(galleryMetadata, "Initializing IconMetadataManager");
+
+    // Clear any existing data
+    m_iconMetadata.clear();
+    m_allCategories.clear();
+    m_allTags.clear();
+    m_allIconNames.clear();
+    m_isLoaded = false;
+
+    GALLERY_LOG_INFO(galleryMetadata, "IconMetadataManager initialized successfully");
+    return true;
+}
+
 bool IconMetadataManager::loadMetadata() {
     if (m_isLoaded) {
         GALLERY_LOG_DEBUG(galleryMetadata, "Metadata already loaded, skipping");
@@ -39,19 +55,37 @@ bool IconMetadataManager::loadMetadata() {
     GALLERY_LOG_INFO(galleryMetadata, "Starting metadata loading");
     GALLERY_START_TIMER("Total metadata loading");
 
-    // Load synchronously for simplicity
+    // Load synchronously but with better error handling
     QWriteLocker locker(&m_dataLock);
 
     bool success = true;
 
     GALLERY_LOG_DEBUG(galleryMetadata, "Loading icons metadata");
-    success &= loadIconsMetadata();
+    try {
+        success &= loadIconsMetadata();
+    } catch (const std::exception& e) {
+        GALLERY_LOG_ERROR(galleryMetadata,
+                          QString("Exception loading icons metadata: %1").arg(e.what()));
+        success = false;
+    }
 
     GALLERY_LOG_DEBUG(galleryMetadata, "Loading categories metadata");
-    success &= loadCategoriesMetadata();
+    try {
+        success &= loadCategoriesMetadata();
+    } catch (const std::exception& e) {
+        GALLERY_LOG_ERROR(galleryMetadata,
+                          QString("Exception loading categories metadata: %1").arg(e.what()));
+        // Continue with fallback
+    }
 
     GALLERY_LOG_DEBUG(galleryMetadata, "Loading tags metadata");
-    success &= loadTagsMetadata();
+    try {
+        success &= loadTagsMetadata();
+    } catch (const std::exception& e) {
+        GALLERY_LOG_ERROR(galleryMetadata,
+                          QString("Exception loading tags metadata: %1").arg(e.what()));
+        // Continue with fallback
+    }
 
     if (success) {
         GALLERY_LOG_INFO(galleryMetadata, "Building search index");
@@ -86,9 +120,11 @@ bool IconMetadataManager::loadMetadata() {
 }
 
 bool IconMetadataManager::loadIconsMetadata() {
+    GALLERY_LOG_DEBUG(galleryMetadata, "Attempting to load icons metadata from resources");
     QJsonDocument doc = loadJsonFile(":/lucide/metadata/icons.json");
     if (doc.isNull()) {
-        qWarning() << "Failed to load icons metadata, creating fallback data";
+        GALLERY_LOG_WARNING(galleryMetadata,
+                            "Failed to load icons metadata from resources, creating fallback data");
         // Create minimal fallback metadata
         createFallbackIconMetadata();
         return true; // Return true to allow application to continue with limited functionality
@@ -245,7 +281,8 @@ QJsonDocument IconMetadataManager::loadJsonFile(const QString& resourcePath) con
 
     QFile file(resourcePath);
     if (!file.open(QIODevice::ReadOnly)) {
-        qWarning() << "Failed to open resource file:" << resourcePath << "Error:" << file.errorString();
+        qWarning() << "Failed to open resource file:" << resourcePath
+                   << "Error:" << file.errorString();
         return QJsonDocument();
     }
 
@@ -259,11 +296,13 @@ QJsonDocument IconMetadataManager::loadJsonFile(const QString& resourcePath) con
     QJsonDocument doc = QJsonDocument::fromJson(data, &error);
 
     if (error.error != QJsonParseError::NoError) {
-        qWarning() << "JSON parse error in" << resourcePath << "at offset" << error.offset << ":" << error.errorString();
+        qWarning() << "JSON parse error in" << resourcePath << "at offset" << error.offset << ":"
+                   << error.errorString();
         return QJsonDocument();
     }
 
-    qDebug() << "Successfully loaded JSON resource:" << resourcePath << "Size:" << data.size() << "bytes";
+    qDebug() << "Successfully loaded JSON resource:" << resourcePath << "Size:" << data.size()
+             << "bytes";
     return doc;
 }
 
@@ -271,10 +310,9 @@ void IconMetadataManager::createFallbackIconMetadata() {
     qWarning() << "Creating fallback icon metadata - limited functionality will be available";
 
     // Create basic metadata for common icons that should exist
-    QStringList commonIcons = {
-        "home", "user", "settings", "search", "heart", "star", "plus", "minus",
-        "edit", "delete", "save", "download", "upload", "refresh", "info", "warning"
-    };
+    QStringList commonIcons = {"home",   "user",    "settings", "search", "heart", "star",
+                               "plus",   "minus",   "edit",     "delete", "save",  "download",
+                               "upload", "refresh", "info",     "warning"};
 
     m_iconMetadata.clear();
     m_allIconNames.clear();

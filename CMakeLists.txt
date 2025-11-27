@@ -41,12 +41,16 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 # Add subdirectories
 add_subdirectory(src)
 
+# Enable testing before adding examples so example smoke tests can be registered
+if(QTLUCIDE_BUILD_TESTS)
+    enable_testing()
+endif()
+
 if(QTLUCIDE_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
 if(QTLUCIDE_BUILD_TESTS)
-    enable_testing()
     add_subdirectory(tests)
 endif()
 

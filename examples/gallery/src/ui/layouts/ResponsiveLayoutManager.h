@@ -42,19 +42,22 @@ class ResponsiveLayoutManager : public QObject {
 
 public:
     enum ScreenSize {
-        Mobile = 0,  // < 768px width
-        Tablet = 1,  // 768-1024px width
-        Desktop = 2, // 1024-1440px width
-        Large = 3,   // 1440-1920px width
-        XLarge = 4   // > 1920px width
+        Mobile = 0,      // < 640px width (phones)
+        MobileLarge = 1, // 640-768px width (large phones)
+        Tablet = 2,      // 768-1024px width (tablets)
+        Desktop = 3,     // 1024-1366px width (laptops)
+        Large = 4,       // 1366-1920px width (desktops)
+        XLarge = 5,      // 1920-2560px width (large monitors)
+        XXLarge = 6      // > 2560px width (ultra-wide/4K+)
     };
     Q_ENUM(ScreenSize)
 
     enum LayoutMode {
-        CompactMode = 0,  // Single column, minimal spacing
-        StandardMode = 1, // Two columns, standard spacing
-        WideMode = 2,     // Three columns, generous spacing
-        UltraWideMode = 3 // Four+ columns, maximum spacing
+        CompactMode = 0,    // Single column, minimal spacing (mobile)
+        StandardMode = 1,   // Two columns, standard spacing (tablet)
+        WideMode = 2,       // Three columns, generous spacing (desktop)
+        UltraWideMode = 3,  // Four columns, maximum spacing (large)
+        ExtremeWideMode = 4 // Five+ columns, ultra spacing (ultra-wide)
     };
     Q_ENUM(LayoutMode)
 
@@ -82,9 +85,11 @@ public:
     ScreenSize currentScreenSize() const { return m_currentScreenSize; }
     LayoutMode currentLayoutMode() const { return m_currentLayoutMode; }
     QSize currentScreenResolution() const;
-    bool isMobileLayout() const { return m_currentScreenSize == Mobile; }
+    bool isMobileLayout() const { return m_currentScreenSize <= MobileLarge; }
     bool isTabletLayout() const { return m_currentScreenSize == Tablet; }
     bool isDesktopLayout() const { return m_currentScreenSize >= Desktop; }
+    bool isLargeLayout() const { return m_currentScreenSize >= Large; }
+    bool isUltraWideLayout() const { return m_currentScreenSize >= XLarge; }
 
     // Layout configuration
     void setLayoutMode(LayoutMode mode);
@@ -114,18 +119,31 @@ public:
     bool animationsEnabled() const { return m_animationsEnabled; }
     void setAnimationDuration(int duration) { m_animationDuration = duration; }
     int animationDuration() const { return m_animationDuration; }
+    void animateLayoutTransition(LayoutMode fromMode, LayoutMode toMode);
 
     // Layout utilities
     QMargins getOptimalMargins() const;
     int getOptimalSpacing() const;
     int getOptimalItemSize() const;
     QSize getOptimalThumbnailSize() const;
+    int getOptimalCollapsedWidth() const;
+    int getOptimalExpandedWidth() const;
+    int getOptimalVisibleWidth() const;
 
-    // Responsive breakpoints
-    static int getMobileBreakpoint() { return 768; }
-    static int getTabletBreakpoint() { return 1024; }
-    static int getDesktopBreakpoint() { return 1440; }
-    static int getLargeBreakpoint() { return 1920; }
+    // Enhanced responsive breakpoints (modern standards)
+    static int getMobileBreakpoint() { return 640; }      // Small phones
+    static int getMobileLargeBreakpoint() { return 768; } // Large phones
+    static int getTabletBreakpoint() { return 1024; }     // Tablets
+    static int getDesktopBreakpoint() { return 1366; }    // Laptops
+    static int getLargeBreakpoint() { return 1920; }      // Desktops
+    static int getXLargeBreakpoint() { return 2560; }     // Large monitors
+
+    // Utility methods for breakpoint checking
+    static ScreenSize getScreenSizeForWidth(int width);
+    static LayoutMode getOptimalLayoutModeForScreenSize(ScreenSize screenSize);
+    static int getOptimalColumnsForScreenSize(ScreenSize screenSize);
+    static int getOptimalSpacingForScreenSize(ScreenSize screenSize);
+    static QMargins getOptimalMarginsForScreenSize(ScreenSize screenSize);
 
 public slots:
     void onScreenSizeChanged();
@@ -140,6 +158,7 @@ signals:
     void layoutUpdated();
     void panelStateChanged(const QString& panelName, PanelState newState);
     void splitterSizesChanged(const QString& splitterName, const QList<int>& sizes);
+    void initializationCompleted(ScreenSize screenSize, LayoutMode layoutMode);
 
 protected:
     bool eventFilter(QObject* watched, QEvent* event) override;
@@ -148,6 +167,12 @@ private slots:
     void onAnimationFinished();
     void onSplitterMoved();
     void checkScreenSize();
+    void onLayoutAnimationFinished();
+    void onStateAnimationFinished();
+    void onScreenAdded(QScreen* screen);
+    void onScreenRemoved(QScreen* screen);
+    void onPrimaryScreenChanged(QScreen* screen);
+    void updatePerformanceMetrics();
 
 private:
     // Layout detection and calculation
@@ -160,6 +185,9 @@ private:
     void animatePanelTransition(QWidget* panel, PanelState fromState, PanelState toState);
     void animateSplitterResize(QSplitter* splitter, const QList<int>& newSizes);
     void animateLayoutTransition();
+    void createMajorLayoutTransition(LayoutMode fromMode, LayoutMode toMode);
+    void createMinorLayoutTransition(LayoutMode fromMode, LayoutMode toMode);
+    QPropertyAnimation* createPanelSizeAnimation(QWidget* panel, PanelState targetState);
 
     // Layout application
     void applyGridLayout();
@@ -171,6 +199,7 @@ private:
     void connectSignals();
     void saveCurrentLayout();
     void restoreLayout();
+    void initializeResponsiveStates();
 
     // Core components
     QWidget* m_mainWidget;
@@ -193,14 +222,25 @@ private:
     int m_animationDuration;
     QHash<QWidget*, QPropertyAnimation*> m_activeAnimations;
     QParallelAnimationGroup* m_layoutAnimationGroup;
+    QSequentialAnimationGroup* m_stateAnimationGroup;
+    QEasingCurve m_animationEasingCurve;
 
     // Screen monitoring
     QTimer* m_screenCheckTimer;
+    QTimer* m_performanceTimer;
     QSize m_lastScreenSize;
 
     // Layout history for undo/redo
     QList<LayoutConfig> m_layoutHistory;
     int m_currentHistoryIndex;
+
+    // Enhanced mode flags
+    bool m_touchMode;
+    bool m_highPerformanceMode;
+    bool m_accessibilityMode;
+    bool m_debugMode;
+    bool m_performanceMonitoringEnabled;
+    int m_resizeDebounceTime;
 
     // Constants
     static constexpr int DEFAULT_ANIMATION_DURATION = 300;

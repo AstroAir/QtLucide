@@ -61,13 +61,10 @@
 #include <QWheelEvent>
 #include <QWidget>
 
-
 #include "core/managers/IconMetadataManager.h"
 #include "core/models/IconItem.h"
 #include <QtLucide/QtLucide.h>
 #include <memory>
-#include <unordered_set>
-
 
 // Forward declarations
 class IconGridDelegate;
@@ -122,6 +119,10 @@ public:
     void clearCache();
     void setCacheLimit(int limit);
 
+    // Performance metrics
+    int getCacheHits() const { return m_cacheHits; }
+    int getCacheMisses() const { return m_cacheMisses; }
+
     // Custom roles
     enum CustomRoles {
         IconNameRole = Qt::UserRole + 1,
@@ -144,16 +145,19 @@ signals:
     void dataPreloaded(int start, int count);
     void cacheUpdated();
     void favoritesUpdated();
-    void filteredIconsChanged(); // Added for compatibility
-    void filterCleared();        // Added for compatibility
+    void filterCleared();                 // Added for compatibility
+    void filteredIconsChanged(int count); // Added for compatibility
+    void itemCountChanged(int count);
 
 private:
     void updateSearchHighlights();
     void precomputeDisplayData();
     QString createCacheKey(const QString& iconName, int size) const;
+    QString formatIconName(const QString& name) const;
+    QPixmap getIconPixmap(const QString& iconName, int size) const;
 
     QStringList m_iconNames;
-    std::unordered_set<QString> m_selectedIcons;
+    QSet<QString> m_selectedIcons;
     int m_iconSize;
     bool m_showIconNames;
     QString m_highlightTerm;
@@ -217,6 +221,7 @@ public:
 public slots:
     void onAnimationFinished();
     void updateHoverState();
+    void startHoverAnimation(const QString& iconName, bool entering);
 
 signals:
     void iconClicked(const QString& iconName, const QPoint& position);
@@ -415,15 +420,23 @@ private slots:
     void onAnimationFinished();
     void updateVisibleItems();
     void updatePerformanceMetrics();
+    void onItemEntered(const QModelIndex& index);
+    void onItemClicked(const QModelIndex& index);
+    void onItemDoubleClicked(const QModelIndex& index);
+    void scheduleUpdate();
 
 private:
     // Enhanced UI setup methods
     void setupUI();
+    void setupHeader();
+    void setupViewArea();
+    void setupFooter();
     void setupModel();
     void setupView();
     void setupScrollArea();
     void setupAnimations();
     void setupPerformanceMonitoring();
+    void applyModernStyling();
 
     // Layout and rendering
     void updateViewSettings();
@@ -432,6 +445,8 @@ private:
     void calculateOptimalColumns();
     void calculateItemPositions();
     void updateViewport();
+    void updateStylingForViewMode();
+    void updateEmptyState();
 
     // Selection and interaction
     void handleItemClick(const QString& iconName, const QPoint& position);
@@ -458,8 +473,10 @@ private:
     QVBoxLayout* m_layout;
     QScrollArea* m_scrollArea;
     QWidget* m_viewport;
+    QVBoxLayout* m_viewportLayout;
     QListView* m_listView;
     QLabel* m_emptyLabel;
+    QWidget* m_emptyWidget;
     QProgressBar* m_loadingProgress;
     QLabel* m_statusLabel;
     QWidget* m_gridView;                  // Grid view widget

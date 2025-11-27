@@ -9,27 +9,26 @@
  * - Dynamic resizing and reflow
  */
 
-#include <QtTest/QtTest>
 #include <QApplication>
-#include <QtTest/QSignalSpy>
-#include <QTimer>
+#include <QElapsedTimer>
+#include <QGridLayout>
 #include <QPixmap>
+#include <QResizeEvent>
+#include <QScrollArea>
 #include <QStringList>
 #include <QTemporaryDir>
-#include <QElapsedTimer>
-#include <QScrollArea>
-#include <QGridLayout>
-#include <QResizeEvent>
+#include <QTimer>
+#include <QtTest/QSignalSpy>
+#include <QtTest/QtTest>
 
 // Include Gallery components
-#include "ui/widgets/grids/IconThumbnailGridWidget.h"
-#include "ui/widgets/grids/IconGridWidget.h"
-#include "core/managers/IconMetadataManager.h"
 #include "core/managers/ContentManager.h"
+#include "core/managers/IconMetadataManager.h"
+#include "ui/widgets/grids/IconGridWidget.h"
+#include "ui/widgets/grids/IconThumbnailGridWidget.h"
 #include <QtLucide/QtLucide.h>
 
-class TestThumbnailGrid : public QObject
-{
+class TestThumbnailGrid : public QObject {
     Q_OBJECT
 
 private slots:
@@ -99,8 +98,7 @@ private:
     int countVisibleThumbnails(IconThumbnailGridWidget* widget);
 };
 
-void TestThumbnailGrid::initTestCase()
-{
+void TestThumbnailGrid::initTestCase() {
     // Initialize QtLucide
     m_lucide = new lucide::QtLucide(this);
     QVERIFY(m_lucide->initLucide());
@@ -120,32 +118,27 @@ void TestThumbnailGrid::initTestCase()
     qDebug() << "Large icon set size:" << m_largeIconSet.size();
 }
 
-void TestThumbnailGrid::cleanupTestCase()
-{
+void TestThumbnailGrid::cleanupTestCase() {
     delete m_tempDir;
     qDebug() << "Thumbnail grid test environment cleaned up";
 }
 
-void TestThumbnailGrid::init()
-{
+void TestThumbnailGrid::init() {
     // Reset state before each test
 }
 
-void TestThumbnailGrid::cleanup()
-{
+void TestThumbnailGrid::cleanup() {
     // Clean up after each test
 }
 
-void TestThumbnailGrid::setupTestData()
-{
+void TestThumbnailGrid::setupTestData() {
     m_testIconNames = getTestIconNames(100);
     m_largeIconSet = getTestIconNames(1000);
     QVERIFY(!m_testIconNames.isEmpty());
     QVERIFY(!m_largeIconSet.isEmpty());
 }
 
-QStringList TestThumbnailGrid::getTestIconNames(int count)
-{
+QStringList TestThumbnailGrid::getTestIconNames(int count) {
     QStringList allIcons = m_lucide->availableIcons();
     if (allIcons.size() < count) {
         return allIcons;
@@ -153,24 +146,21 @@ QStringList TestThumbnailGrid::getTestIconNames(int count)
     return allIcons.mid(0, count);
 }
 
-void TestThumbnailGrid::simulateResize(QWidget* widget, const QSize& newSize)
-{
+void TestThumbnailGrid::simulateResize(QWidget* widget, const QSize& newSize) {
     widget->resize(newSize);
     QResizeEvent resizeEvent(newSize, widget->size());
     QApplication::sendEvent(widget, &resizeEvent);
     QTest::qWait(100); // Allow layout to update
 }
 
-void TestThumbnailGrid::simulateScroll(QScrollArea* scrollArea, int deltaY)
-{
+void TestThumbnailGrid::simulateScroll(QScrollArea* scrollArea, int deltaY) {
     QScrollBar* vScrollBar = scrollArea->verticalScrollBar();
     int currentValue = vScrollBar->value();
     vScrollBar->setValue(currentValue + deltaY);
     QTest::qWait(50); // Allow scroll to process
 }
 
-bool TestThumbnailGrid::waitForThumbnailGeneration(IconThumbnailGridWidget* widget, int timeout)
-{
+bool TestThumbnailGrid::waitForThumbnailGeneration(IconThumbnailGridWidget* widget, int timeout) {
     QElapsedTimer timer;
     timer.start();
 
@@ -187,8 +177,7 @@ bool TestThumbnailGrid::waitForThumbnailGeneration(IconThumbnailGridWidget* widg
     return false;
 }
 
-int TestThumbnailGrid::countVisibleThumbnails(IconThumbnailGridWidget* widget)
-{
+int TestThumbnailGrid::countVisibleThumbnails(IconThumbnailGridWidget* widget) {
     // This would need access to widget's internal state
     // For now, return a reasonable estimate based on widget size and thumbnail size
     QSize widgetSize = widget->size();
@@ -202,8 +191,7 @@ int TestThumbnailGrid::countVisibleThumbnails(IconThumbnailGridWidget* widget)
 }
 
 // Thumbnail Generation Tests
-void TestThumbnailGrid::testThumbnailGeneration_BasicGeneration()
-{
+void TestThumbnailGrid::testThumbnailGeneration_BasicGeneration() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setContentManager(m_contentManager);
     widget->setIconMetadataManager(m_iconMetadataManager);
@@ -221,8 +209,7 @@ void TestThumbnailGrid::testThumbnailGeneration_BasicGeneration()
     delete widget;
 }
 
-void TestThumbnailGrid::testThumbnailGeneration_DifferentSizes()
-{
+void TestThumbnailGrid::testThumbnailGeneration_DifferentSizes() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setContentManager(m_contentManager);
     widget->setIconMetadataManager(m_iconMetadataManager);
@@ -242,8 +229,7 @@ void TestThumbnailGrid::testThumbnailGeneration_DifferentSizes()
     delete widget;
 }
 
-void TestThumbnailGrid::testThumbnailGeneration_Caching()
-{
+void TestThumbnailGrid::testThumbnailGeneration_Caching() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setContentManager(m_contentManager);
     widget->setIconMetadataManager(m_iconMetadataManager);
@@ -260,7 +246,7 @@ void TestThumbnailGrid::testThumbnailGeneration_Caching()
     // Second load - should use cached thumbnails
     timer.restart();
     widget->setIconList(QStringList()); // Clear
-    widget->setIconList(testSet); // Reload same icons
+    widget->setIconList(testSet);       // Reload same icons
     QVERIFY(waitForThumbnailGeneration(widget, 2000));
     qint64 secondLoadTime = timer.elapsed();
 
@@ -274,8 +260,7 @@ void TestThumbnailGrid::testThumbnailGeneration_Caching()
     delete widget;
 }
 
-void TestThumbnailGrid::testThumbnailGeneration_AsyncLoading()
-{
+void TestThumbnailGrid::testThumbnailGeneration_AsyncLoading() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setContentManager(m_contentManager);
     widget->setIconMetadataManager(m_iconMetadataManager);
@@ -292,8 +277,7 @@ void TestThumbnailGrid::testThumbnailGeneration_AsyncLoading()
     delete widget;
 }
 
-void TestThumbnailGrid::testThumbnailGeneration_ErrorHandling()
-{
+void TestThumbnailGrid::testThumbnailGeneration_ErrorHandling() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setContentManager(m_contentManager);
     widget->setIconMetadataManager(m_iconMetadataManager);
@@ -317,8 +301,7 @@ void TestThumbnailGrid::testThumbnailGeneration_ErrorHandling()
 }
 
 // Grid Layout Tests
-void TestThumbnailGrid::testGridLayout_BasicLayout()
-{
+void TestThumbnailGrid::testGridLayout_BasicLayout() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setContentManager(m_contentManager);
     widget->setIconMetadataManager(m_iconMetadataManager);
@@ -335,8 +318,7 @@ void TestThumbnailGrid::testGridLayout_BasicLayout()
     delete widget;
 }
 
-void TestThumbnailGrid::testGridLayout_ResponsiveColumns()
-{
+void TestThumbnailGrid::testGridLayout_ResponsiveColumns() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setContentManager(m_contentManager);
     widget->setIconMetadataManager(m_iconMetadataManager);
@@ -358,8 +340,7 @@ void TestThumbnailGrid::testGridLayout_ResponsiveColumns()
     delete widget;
 }
 
-void TestThumbnailGrid::testGridLayout_ItemSpacing()
-{
+void TestThumbnailGrid::testGridLayout_ItemSpacing() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setContentManager(m_contentManager);
     widget->setIconMetadataManager(m_iconMetadataManager);
@@ -377,8 +358,7 @@ void TestThumbnailGrid::testGridLayout_ItemSpacing()
     delete widget;
 }
 
-void TestThumbnailGrid::testGridLayout_ContentMargins()
-{
+void TestThumbnailGrid::testGridLayout_ContentMargins() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setContentManager(m_contentManager);
     widget->setIconMetadataManager(m_iconMetadataManager);
@@ -386,11 +366,7 @@ void TestThumbnailGrid::testGridLayout_ContentMargins()
 
     // Test that margins are handled internally by layout calculation
     // We can't directly set margins, but we can verify layout works with different sizes
-    QList<QSize> testSizes = {
-        QSize(300, 200),
-        QSize(500, 400),
-        QSize(700, 500)
-    };
+    QList<QSize> testSizes = {QSize(300, 200), QSize(500, 400), QSize(700, 500)};
 
     for (const QSize& size : testSizes) {
         widget->resize(size);
@@ -403,8 +379,7 @@ void TestThumbnailGrid::testGridLayout_ContentMargins()
     delete widget;
 }
 
-void TestThumbnailGrid::testGridLayout_AspectRatio()
-{
+void TestThumbnailGrid::testGridLayout_AspectRatio() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setContentManager(m_contentManager);
     widget->setIconMetadataManager(m_iconMetadataManager);
@@ -431,8 +406,7 @@ void TestThumbnailGrid::testGridLayout_AspectRatio()
 }
 
 // Virtual Scrolling Tests
-void TestThumbnailGrid::testVirtualScrolling_BasicScrolling()
-{
+void TestThumbnailGrid::testVirtualScrolling_BasicScrolling() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setContentManager(m_contentManager);
     widget->setIconMetadataManager(m_iconMetadataManager);
@@ -457,8 +431,7 @@ void TestThumbnailGrid::testVirtualScrolling_BasicScrolling()
     delete widget;
 }
 
-void TestThumbnailGrid::testVirtualScrolling_Performance()
-{
+void TestThumbnailGrid::testVirtualScrolling_Performance() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setContentManager(m_contentManager);
     widget->setIconMetadataManager(m_iconMetadataManager);
@@ -489,8 +462,7 @@ void TestThumbnailGrid::testVirtualScrolling_Performance()
     delete widget;
 }
 
-void TestThumbnailGrid::testVirtualScrolling_VisibleRange()
-{
+void TestThumbnailGrid::testVirtualScrolling_VisibleRange() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setContentManager(m_contentManager);
     widget->setIconMetadataManager(m_iconMetadataManager);
@@ -510,8 +482,7 @@ void TestThumbnailGrid::testVirtualScrolling_VisibleRange()
     delete widget;
 }
 
-void TestThumbnailGrid::testVirtualScrolling_BufferManagement()
-{
+void TestThumbnailGrid::testVirtualScrolling_BufferManagement() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setContentManager(m_contentManager);
     widget->setIconMetadataManager(m_iconMetadataManager);
@@ -530,8 +501,7 @@ void TestThumbnailGrid::testVirtualScrolling_BufferManagement()
     delete widget;
 }
 
-void TestThumbnailGrid::testVirtualScrolling_LargeDatasets()
-{
+void TestThumbnailGrid::testVirtualScrolling_LargeDatasets() {
     IconThumbnailGridWidget* widget = new IconThumbnailGridWidget();
     widget->setContentManager(m_contentManager);
     widget->setIconMetadataManager(m_iconMetadataManager);
@@ -544,7 +514,8 @@ void TestThumbnailGrid::testVirtualScrolling_LargeDatasets()
     widget->setIconList(m_largeIconSet);
 
     qint64 loadTime = timer.elapsed();
-    qDebug() << "Large dataset (" << m_largeIconSet.size() << " icons) loaded in" << loadTime << "ms";
+    qDebug() << "Large dataset (" << m_largeIconSet.size() << " icons) loaded in" << loadTime
+             << "ms";
 
     // Should load within reasonable time
     QVERIFY(loadTime < 5000);
@@ -554,6 +525,61 @@ void TestThumbnailGrid::testVirtualScrolling_LargeDatasets()
     QVERIFY(widget != nullptr);
 
     delete widget;
+}
+
+// Selection and Navigation Tests (stub implementations)
+void TestThumbnailGrid::testSelection_SingleSelection() {
+    QSKIP("Test not yet implemented");
+}
+
+void TestThumbnailGrid::testSelection_MultiSelection() {
+    QSKIP("Test not yet implemented");
+}
+
+void TestThumbnailGrid::testSelection_KeyboardNavigation() {
+    QSKIP("Test not yet implemented");
+}
+
+void TestThumbnailGrid::testSelection_MouseSelection() {
+    QSKIP("Test not yet implemented");
+}
+
+void TestThumbnailGrid::testSelection_SelectionPersistence() {
+    QSKIP("Test not yet implemented");
+}
+
+// Dynamic Resizing Tests (stub implementations)
+void TestThumbnailGrid::testResizing_WindowResize() {
+    QSKIP("Test not yet implemented");
+}
+
+void TestThumbnailGrid::testResizing_ThumbnailSizeChange() {
+    QSKIP("Test not yet implemented");
+}
+
+void TestThumbnailGrid::testResizing_LayoutReflow() {
+    QSKIP("Test not yet implemented");
+}
+
+void TestThumbnailGrid::testResizing_ResponsiveBreakpoints() {
+    QSKIP("Test not yet implemented");
+}
+
+// Performance Tests (stub implementations)
+void TestThumbnailGrid::testPerformance_LoadingSpeed() {
+    QSKIP("Test not yet implemented");
+}
+
+void TestThumbnailGrid::testPerformance_ScrollingSmooth() {
+    QSKIP("Test not yet implemented");
+}
+
+void TestThumbnailGrid::testPerformance_MemoryUsage() {
+    QSKIP("Test not yet implemented");
+}
+
+void TestThumbnailGrid::testPerformance_RenderingSpeed() {
+    QSKIP("Test not yet implemented");
 }
 
 QTEST_MAIN(TestThumbnailGrid)

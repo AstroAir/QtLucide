@@ -67,7 +67,6 @@
 #include <QTreeWidget>
 #include <QVBoxLayout>
 
-
 #include <QtLucide/QtLucide.h>
 #include <memory>
 
@@ -77,7 +76,6 @@ class IconMetadataManager;
 // Include manager stubs and export worker
 #include "../../core/BatchExportManager.h"
 #include "../../core/managers/ManagerStubs.h"
-
 
 /**
  * @brief Enhanced export dialog with comprehensive export and import capabilities

@@ -1,0 +1,16 @@
+---
+alwaysApply: true
+description: Policies for generated headers and icon resources
+---
+# Generated Files and Resources Policy
+
+- Do not manually edit generated headers: [include/QtLucide/QtLucideEnums.h](mdc:include/QtLucide/QtLucideEnums.h), [include/QtLucide/QtLucideStrings.h](mdc:include/QtLucide/QtLucideStrings.h).
+- Regenerate headers and resources using scripts in [`tools/`](mdc:tools):
+  - [`tools/generate_headers.py`](mdc:tools/generate_headers.py)
+  - [`tools/generate_qrc.py`](mdc:tools/generate_qrc.py)
+  - [`tools/process_lucide_icons.py`](mdc:tools/process_lucide_icons.py)
+  - [`build_all_resources.py`](mdc:build_all_resources.py)
+- Icon sources live under [`resources/icons/svg`](mdc:resources/icons/svg) with metadata in [`resources/icons/metadata`](mdc:resources/icons/metadata) and compiled QRC at [`resources/icons/lucide_icons.qrc`](mdc:resources/icons/lucide_icons.qrc).
+
+Windows helpers: [`build_resources.bat`](mdc:build_resources.bat) and build scripts in [`scripts/`](mdc:scripts).
+

@@ -169,7 +169,7 @@ public:
      * @details Cleans up any internal resources used for SVG processing.
      * @since 1.0
      */
-    virtual ~QtLucideSvgIconPainter();
+    ~QtLucideSvgIconPainter() override;
 
     /**
      * @brief Renders an SVG icon with the specified parameters
@@ -203,7 +203,7 @@ private:
      * @param state Icon state
      * @return List of option keys to try in priority order
      */
-    QStringList optionKeysForModeAndState(const QString& key, QIcon::Mode mode, QIcon::State state);
+    [[nodiscard]] QStringList optionKeysForModeAndState(const QString& key, QIcon::Mode mode, QIcon::State state);
 
     /**
      * @brief Get the best option value for the given mode and state
@@ -213,8 +213,8 @@ private:
      * @param options Available options
      * @return Best matching option value, or invalid QVariant if not found
      */
-    QVariant optionValueForModeAndState(const QString& baseKey, QIcon::Mode mode,
-                                        QIcon::State state, const QVariantMap& options);
+    [[nodiscard]] QVariant optionValueForModeAndState(const QString& baseKey, QIcon::Mode mode,
+                                                      QIcon::State state, const QVariantMap& options);
 
     /**
      * @brief Process SVG data to replace colors
@@ -222,7 +222,7 @@ private:
      * @param color Target color for replacement
      * @return Processed SVG data with color replacements
      */
-    QByteArray processColorizedSvg(const QByteArray& svgData, const QColor& color);
+    [[nodiscard]] QByteArray processColorizedSvg(const QByteArray& svgData, const QColor& color);
 };
 
 } // namespace lucide

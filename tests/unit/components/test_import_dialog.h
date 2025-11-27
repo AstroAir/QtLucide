@@ -5,12 +5,11 @@
 #ifndef TEST_IMPORT_DIALOG_H
 #define TEST_IMPORT_DIALOG_H
 
+#include "ui/dialogs/ImportDialog.h"
 #include <QObject>
 #include <QtTest/QtTest>
-#include "ui/dialogs/ImportDialog.h"
 
-class TestImportDialog : public QObject
-{
+class TestImportDialog : public QObject {
     Q_OBJECT
 
 private slots:

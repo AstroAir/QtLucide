@@ -9,7 +9,6 @@
 #include <QInputDialog>
 #include <QVBoxLayout>
 
-
 // SearchLineEdit Implementation
 SearchLineEdit::SearchLineEdit(QWidget* parent)
     : QLineEdit(parent), m_metadataManager(nullptr), m_completer(nullptr),

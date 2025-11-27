@@ -5,12 +5,11 @@
 #ifndef TEST_RESPONSIVE_LAYOUT_MANAGER_H
 #define TEST_RESPONSIVE_LAYOUT_MANAGER_H
 
+#include "ui/layouts/ResponsiveLayoutManager.h"
 #include <QObject>
 #include <QtTest/QtTest>
-#include "ui/layouts/ResponsiveLayoutManager.h"
 
-class TestResponsiveLayoutManager : public QObject
-{
+class TestResponsiveLayoutManager : public QObject {
     Q_OBJECT
 
 private slots:

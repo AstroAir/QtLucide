@@ -3,50 +3,43 @@
  */
 
 #include "test_error_handling.h"
-#include <QStandardPaths>
 #include <QDir>
+#include <QStandardPaths>
 
-void TestErrorHandling::initTestCase()
-{
-    m_testDataDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/QtLucideErrorTests";
+void TestErrorHandling::initTestCase() {
+    m_testDataDir =
+        QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/QtLucideErrorTests";
     QDir().mkpath(m_testDataDir);
 }
 
-void TestErrorHandling::cleanupTestCase()
-{
+void TestErrorHandling::cleanupTestCase() {
     QDir(m_testDataDir).removeRecursively();
 }
 
-void TestErrorHandling::init()
-{
+void TestErrorHandling::init() {
     // Setup for each test
 }
 
-void TestErrorHandling::cleanup()
-{
+void TestErrorHandling::cleanup() {
     // Cleanup after each test
 }
 
-void TestErrorHandling::testInvalidFileHandling()
-{
+void TestErrorHandling::testInvalidFileHandling() {
     // Test handling of invalid files
     QVERIFY(true);
 }
 
-void TestErrorHandling::testNetworkErrorHandling()
-{
+void TestErrorHandling::testNetworkErrorHandling() {
     // Test network error handling
     QVERIFY(true);
 }
 
-void TestErrorHandling::testMemoryErrorHandling()
-{
+void TestErrorHandling::testMemoryErrorHandling() {
     // Test memory error handling
     QVERIFY(true);
 }
 
-void TestErrorHandling::testGracefulDegradation()
-{
+void TestErrorHandling::testGracefulDegradation() {
     // Test graceful degradation
     QVERIFY(true);
 }

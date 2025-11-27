@@ -178,7 +178,22 @@ QString TestImageBrowsing::createCorruptedImage() {
 }
 
 QString TestImageBrowsing::createLargeImage() {
-    return createTestImage("PNG", QSize(2048, 2048));
+    QString fileName = m_tempDir->path() + "/test_image_large.png";
+
+    QImage image(QSize(2048, 2048), QImage::Format_RGB32);
+    image.fill(Qt::blue);
+
+    // Add some pattern to make it interesting
+    QPainter painter(&image);
+    painter.setPen(Qt::red);
+    painter.setBrush(Qt::yellow);
+    painter.drawEllipse(512, 512, 1024, 1024);
+    painter.end();
+
+    if (image.save(fileName, "PNG")) {
+        return fileName;
+    }
+    return QString();
 }
 
 bool TestImageBrowsing::isImageFormatSupported(const QString& format) {
@@ -288,7 +303,8 @@ void TestImageBrowsing::testImageLoading_ValidImages() {
         QSignalSpy loadedSpy(viewer, &ImageViewerWidget::loadingFinished);
         viewer->setCurrentImage(m_testImagePNG);
 
-        QVERIFY(loadedSpy.wait(1000));
+        // Signal is emitted synchronously, so check count directly or wait briefly
+        QVERIFY(loadedSpy.count() > 0 || loadedSpy.wait(100));
         QCOMPARE(loadedSpy.count(), 1);
     }
 
@@ -303,8 +319,8 @@ void TestImageBrowsing::testImageLoading_InvalidImages() {
         QSignalSpy errorSpy(viewer, &ImageViewerWidget::loadingFailed);
         viewer->setCurrentImage(m_testImageCorrupted);
 
-        // Should either emit error or handle gracefully
-        QVERIFY(errorSpy.wait(1000) || viewer->getCurrentImage().isEmpty());
+        // Signal is emitted synchronously, check count directly or wait briefly
+        QVERIFY(errorSpy.count() > 0 || errorSpy.wait(100) || viewer->getCurrentImage().isEmpty());
     }
 
     delete viewer;

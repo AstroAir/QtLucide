@@ -10,27 +10,26 @@
  * - State persistence
  */
 
-#include <QtTest/QtTest>
 #include <QApplication>
-#include <QtTest/QSignalSpy>
+#include <QHBoxLayout>
+#include <QMouseEvent>
+#include <QResizeEvent>
 #include <QSplitter>
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QResizeEvent>
-#include <QMouseEvent>
+#include <QtTest/QSignalSpy>
+#include <QtTest/QtTest>
 
 // Include Gallery components
+#include "core/managers/ContentManager.h"
+#include "core/managers/IconMetadataManager.h"
 #include "ui/widgets/panels/CategorySidebarWidget.h"
 #include "ui/widgets/panels/FileBrowserWidget.h"
 #include "ui/widgets/search/CategoryFilterWidget.h"
-#include "core/managers/IconMetadataManager.h"
-#include "core/managers/ContentManager.h"
 #include <QtLucide/QtLucide.h>
 
-class TestSidebarFunctionality : public QObject
-{
+class TestSidebarFunctionality : public QObject {
     Q_OBJECT
 
 private slots:
@@ -100,8 +99,7 @@ private:
     bool verifySidebarWidth(CategorySidebarWidget* sidebar, int expectedWidth, int tolerance = 10);
 };
 
-void TestSidebarFunctionality::initTestCase()
-{
+void TestSidebarFunctionality::initTestCase() {
     // Initialize QtLucide
     m_lucide = new lucide::QtLucide(this);
     QVERIFY(m_lucide->initLucide());
@@ -117,34 +115,22 @@ void TestSidebarFunctionality::initTestCase()
     qDebug() << "Test icons:" << m_testIconNames.size();
 }
 
-void TestSidebarFunctionality::cleanupTestCase()
-{
+void TestSidebarFunctionality::cleanupTestCase() {
     qDebug() << "Sidebar functionality test environment cleaned up";
 }
 
-void TestSidebarFunctionality::init()
-{
+void TestSidebarFunctionality::init() {
     // Reset state before each test
 }
 
-void TestSidebarFunctionality::cleanup()
-{
+void TestSidebarFunctionality::cleanup() {
     // Clean up after each test
 }
 
-void TestSidebarFunctionality::setupTestData()
-{
+void TestSidebarFunctionality::setupTestData() {
     // Setup test categories
-    m_testCategories = {
-        "Navigation",
-        "UI Elements",
-        "System",
-        "Media",
-        "Communication",
-        "Files & Folders",
-        "Arrows",
-        "Shapes"
-    };
+    m_testCategories = {"Navigation",    "UI Elements",     "System", "Media",
+                        "Communication", "Files & Folders", "Arrows", "Shapes"};
 
     // Get test icons
     QStringList allIcons = m_lucide->availableIcons();
@@ -154,8 +140,8 @@ void TestSidebarFunctionality::setupTestData()
     QVERIFY(!m_testIconNames.isEmpty());
 }
 
-void TestSidebarFunctionality::setupSidebarWithSplitter(CategorySidebarWidget* sidebar, QWidget* mainContent)
-{
+void TestSidebarFunctionality::setupSidebarWithSplitter(CategorySidebarWidget* sidebar,
+                                                        QWidget* mainContent) {
     QSplitter* splitter = new QSplitter(Qt::Horizontal);
     splitter->addWidget(sidebar);
     splitter->addWidget(mainContent);
@@ -165,29 +151,31 @@ void TestSidebarFunctionality::setupSidebarWithSplitter(CategorySidebarWidget* s
     splitter->show();
 }
 
-void TestSidebarFunctionality::simulateMouseDrag(QWidget* widget, const QPoint& from, const QPoint& to)
-{
-    QMouseEvent pressEvent(QEvent::MouseButtonPress, from, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+void TestSidebarFunctionality::simulateMouseDrag(QWidget* widget, const QPoint& from,
+                                                 const QPoint& to) {
+    QMouseEvent pressEvent(QEvent::MouseButtonPress, from, Qt::LeftButton, Qt::LeftButton,
+                           Qt::NoModifier);
     QApplication::sendEvent(widget, &pressEvent);
 
     QMouseEvent moveEvent(QEvent::MouseMove, to, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
     QApplication::sendEvent(widget, &moveEvent);
 
-    QMouseEvent releaseEvent(QEvent::MouseButtonRelease, to, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    QMouseEvent releaseEvent(QEvent::MouseButtonRelease, to, Qt::LeftButton, Qt::LeftButton,
+                             Qt::NoModifier);
     QApplication::sendEvent(widget, &releaseEvent);
 
     QTest::qWait(100); // Allow UI to update
 }
 
-void TestSidebarFunctionality::simulateDoubleClick(QWidget* widget, const QPoint& position)
-{
-    QMouseEvent doubleClickEvent(QEvent::MouseButtonDblClick, position, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+void TestSidebarFunctionality::simulateDoubleClick(QWidget* widget, const QPoint& position) {
+    QMouseEvent doubleClickEvent(QEvent::MouseButtonDblClick, position, Qt::LeftButton,
+                                 Qt::LeftButton, Qt::NoModifier);
     QApplication::sendEvent(widget, &doubleClickEvent);
     QTest::qWait(100);
 }
 
-QTreeWidgetItem* TestSidebarFunctionality::findCategoryItem(QTreeWidget* tree, const QString& category)
-{
+QTreeWidgetItem* TestSidebarFunctionality::findCategoryItem(QTreeWidget* tree,
+                                                            const QString& category) {
     for (int i = 0; i < tree->topLevelItemCount(); ++i) {
         QTreeWidgetItem* item = tree->topLevelItem(i);
         if (item->text(0) == category) {
@@ -197,34 +185,33 @@ QTreeWidgetItem* TestSidebarFunctionality::findCategoryItem(QTreeWidget* tree, c
     return nullptr;
 }
 
-bool TestSidebarFunctionality::verifySidebarWidth(CategorySidebarWidget* sidebar, int expectedWidth, int tolerance)
-{
+bool TestSidebarFunctionality::verifySidebarWidth(CategorySidebarWidget* sidebar, int expectedWidth,
+                                                  int tolerance) {
     int actualWidth = sidebar->width();
     return qAbs(actualWidth - expectedWidth) <= tolerance;
 }
 
 // Sidebar Visibility Tests
-void TestSidebarFunctionality::testSidebarVisibility_ShowHide()
-{
+void TestSidebarFunctionality::testSidebarVisibility_ShowHide() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
 
-    // Test initial visibility
-    QVERIFY(sidebar->isVisible());
-
-    // Test hide
-    sidebar->hide();
+    // Widgets are not visible by default in Qt unless shown or added to a visible parent
+    // Test initial visibility (should be hidden)
     QVERIFY(!sidebar->isVisible());
 
     // Test show
     sidebar->show();
     QVERIFY(sidebar->isVisible());
 
+    // Test hide
+    sidebar->hide();
+    QVERIFY(!sidebar->isVisible());
+
     delete sidebar;
 }
 
-void TestSidebarFunctionality::testSidebarVisibility_Toggle()
-{
+void TestSidebarFunctionality::testSidebarVisibility_Toggle() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
 
@@ -240,8 +227,7 @@ void TestSidebarFunctionality::testSidebarVisibility_Toggle()
     delete sidebar;
 }
 
-void TestSidebarFunctionality::testSidebarVisibility_InitialState()
-{
+void TestSidebarFunctionality::testSidebarVisibility_InitialState() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
 
@@ -249,32 +235,32 @@ void TestSidebarFunctionality::testSidebarVisibility_InitialState()
     QVERIFY(sidebar->width() > 0);
     QVERIFY(sidebar->height() >= 0);
 
-    // Test that sidebar has content
-    QVERIFY(sidebar->findChild<QTreeWidget*>() != nullptr);
+    // Test that sidebar has content (CategorySidebarWidget uses QScrollArea, not QTreeWidget)
+    QVERIFY(sidebar->findChild<QScrollArea*>() != nullptr);
 
     delete sidebar;
 }
 
-void TestSidebarFunctionality::testSidebarVisibility_StateSignals()
-{
+void TestSidebarFunctionality::testSidebarVisibility_StateSignals() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
 
-    QSignalSpy visibilitySpy(sidebar, &QWidget::visibilityChanged);
+    // Note: QWidget doesn't have a visibilityChanged signal in Qt6
+    // We test visibility state directly instead
+    QVERIFY(!sidebar->isVisible()); // Initially hidden
 
-    // Change visibility and check signals
-    sidebar->hide();
+    // Change visibility and check state
     sidebar->show();
+    QVERIFY(sidebar->isVisible());
 
-    // Should have visibility change signals
-    QVERIFY(visibilitySpy.count() >= 0); // May or may not emit depending on implementation
+    sidebar->hide();
+    QVERIFY(!sidebar->isVisible());
 
     delete sidebar;
 }
 
 // Resizable Sidebar Tests
-void TestSidebarFunctionality::testResizableSidebar_SplitterFunctionality()
-{
+void TestSidebarFunctionality::testResizableSidebar_SplitterFunctionality() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
 
@@ -301,8 +287,7 @@ void TestSidebarFunctionality::testResizableSidebar_SplitterFunctionality()
     delete splitter; // This will delete child widgets too
 }
 
-void TestSidebarFunctionality::testResizableSidebar_MinMaxSizes()
-{
+void TestSidebarFunctionality::testResizableSidebar_MinMaxSizes() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
 
@@ -321,8 +306,7 @@ void TestSidebarFunctionality::testResizableSidebar_MinMaxSizes()
     delete sidebar;
 }
 
-void TestSidebarFunctionality::testResizableSidebar_ProportionalResize()
-{
+void TestSidebarFunctionality::testResizableSidebar_ProportionalResize() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
 
@@ -349,8 +333,7 @@ void TestSidebarFunctionality::testResizableSidebar_ProportionalResize()
     delete splitter;
 }
 
-void TestSidebarFunctionality::testResizableSidebar_DoubleClickCollapse()
-{
+void TestSidebarFunctionality::testResizableSidebar_DoubleClickCollapse() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
 
@@ -377,8 +360,7 @@ void TestSidebarFunctionality::testResizableSidebar_DoubleClickCollapse()
 }
 
 // Category Navigation Tests
-void TestSidebarFunctionality::testCategoryNavigation_TreeStructure()
-{
+void TestSidebarFunctionality::testCategoryNavigation_TreeStructure() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
     sidebar->show();
@@ -397,8 +379,7 @@ void TestSidebarFunctionality::testCategoryNavigation_TreeStructure()
     delete sidebar;
 }
 
-void TestSidebarFunctionality::testCategoryNavigation_ItemSelection()
-{
+void TestSidebarFunctionality::testCategoryNavigation_ItemSelection() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
     sidebar->show();
@@ -419,8 +400,7 @@ void TestSidebarFunctionality::testCategoryNavigation_ItemSelection()
     delete sidebar;
 }
 
-void TestSidebarFunctionality::testCategoryNavigation_ExpandCollapse()
-{
+void TestSidebarFunctionality::testCategoryNavigation_ExpandCollapse() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
     sidebar->show();
@@ -444,8 +424,7 @@ void TestSidebarFunctionality::testCategoryNavigation_ExpandCollapse()
     delete sidebar;
 }
 
-void TestSidebarFunctionality::testCategoryNavigation_KeyboardNavigation()
-{
+void TestSidebarFunctionality::testCategoryNavigation_KeyboardNavigation() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
     sidebar->show();
@@ -469,14 +448,14 @@ void TestSidebarFunctionality::testCategoryNavigation_KeyboardNavigation()
 }
 
 // Visual Hierarchy Tests
-void TestSidebarFunctionality::testVisualHierarchy_Styling()
-{
+void TestSidebarFunctionality::testVisualHierarchy_Styling() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
     sidebar->show();
 
     // Test that sidebar has proper styling
-    QVERIFY(!sidebar->styleSheet().isEmpty() || sidebar->palette().color(QPalette::Window).isValid());
+    QVERIFY(!sidebar->styleSheet().isEmpty() ||
+            sidebar->palette().color(QPalette::Window).isValid());
 
     // Test tree widget styling
     QTreeWidget* tree = sidebar->findChild<QTreeWidget*>();
@@ -488,8 +467,7 @@ void TestSidebarFunctionality::testVisualHierarchy_Styling()
     delete sidebar;
 }
 
-void TestSidebarFunctionality::testVisualHierarchy_IconsAndText()
-{
+void TestSidebarFunctionality::testVisualHierarchy_IconsAndText() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
     sidebar->show();
@@ -510,8 +488,7 @@ void TestSidebarFunctionality::testVisualHierarchy_IconsAndText()
     delete sidebar;
 }
 
-void TestSidebarFunctionality::testVisualHierarchy_HoverEffects()
-{
+void TestSidebarFunctionality::testVisualHierarchy_HoverEffects() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
     sidebar->show();
@@ -522,7 +499,8 @@ void TestSidebarFunctionality::testVisualHierarchy_HoverEffects()
         QVERIFY(tree->hasMouseTracking() || !tree->hasMouseTracking()); // Either is fine
 
         // Test that tree can handle mouse events
-        QMouseEvent enterEvent(QEvent::Enter, QPoint(50, 50), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+        QMouseEvent enterEvent(QEvent::Enter, QPoint(50, 50), Qt::NoButton, Qt::NoButton,
+                               Qt::NoModifier);
         QApplication::sendEvent(tree, &enterEvent);
 
         QTest::qWait(50);
@@ -532,8 +510,7 @@ void TestSidebarFunctionality::testVisualHierarchy_HoverEffects()
     delete sidebar;
 }
 
-void TestSidebarFunctionality::testVisualHierarchy_SelectionHighlight()
-{
+void TestSidebarFunctionality::testVisualHierarchy_SelectionHighlight() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
     sidebar->show();
@@ -557,8 +534,7 @@ void TestSidebarFunctionality::testVisualHierarchy_SelectionHighlight()
 }
 
 // Interaction Tests
-void TestSidebarFunctionality::testInteraction_WithMainContent()
-{
+void TestSidebarFunctionality::testInteraction_WithMainContent() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
 
@@ -589,8 +565,7 @@ void TestSidebarFunctionality::testInteraction_WithMainContent()
     delete splitter;
 }
 
-void TestSidebarFunctionality::testInteraction_FilterPropagation()
-{
+void TestSidebarFunctionality::testInteraction_FilterPropagation() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
 
@@ -609,8 +584,7 @@ void TestSidebarFunctionality::testInteraction_FilterPropagation()
     delete sidebar;
 }
 
-void TestSidebarFunctionality::testInteraction_SelectionSync()
-{
+void TestSidebarFunctionality::testInteraction_SelectionSync() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
 
@@ -631,8 +605,7 @@ void TestSidebarFunctionality::testInteraction_SelectionSync()
     delete sidebar;
 }
 
-void TestSidebarFunctionality::testInteraction_ContextMenu()
-{
+void TestSidebarFunctionality::testInteraction_ContextMenu() {
     CategorySidebarWidget* sidebar = new CategorySidebarWidget();
     sidebar->setIconMetadataManager(m_iconMetadataManager);
     sidebar->show();
@@ -641,8 +614,7 @@ void TestSidebarFunctionality::testInteraction_ContextMenu()
     if (tree) {
         // Test context menu policy
         Qt::ContextMenuPolicy policy = tree->contextMenuPolicy();
-        QVERIFY(policy == Qt::DefaultContextMenu ||
-                policy == Qt::CustomContextMenu ||
+        QVERIFY(policy == Qt::DefaultContextMenu || policy == Qt::CustomContextMenu ||
                 policy == Qt::NoContextMenu);
 
         // Test right-click context menu (if enabled)
@@ -659,5 +631,34 @@ void TestSidebarFunctionality::testInteraction_ContextMenu()
     delete sidebar;
 }
 
+// State Persistence Tests (stub implementations)
+void TestSidebarFunctionality::testStatePersistence_SidebarWidth() {
+    QSKIP("Test not yet implemented");
+}
+
+void TestSidebarFunctionality::testStatePersistence_ExpandedCategories() {
+    QSKIP("Test not yet implemented");
+}
+
+void TestSidebarFunctionality::testStatePersistence_SelectedCategory() {
+    QSKIP("Test not yet implemented");
+}
+
+void TestSidebarFunctionality::testStatePersistence_VisibilityState() {
+    QSKIP("Test not yet implemented");
+}
+
+void TestSidebarFunctionality::testPerformance_LargeCategoryTree() {
+    QSKIP("Test not yet implemented");
+}
+
+void TestSidebarFunctionality::testPerformance_ResizeResponsiveness() {
+    QSKIP("Test not yet implemented");
+}
+
+void TestSidebarFunctionality::testPerformance_ScrollingSmooth() {
+    QSKIP("Test not yet implemented");
+}
+
 QTEST_MAIN(TestSidebarFunctionality)
-#include "test_sidebar_functionality.moc"
+#include "test_sidebar.moc"

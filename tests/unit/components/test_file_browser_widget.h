@@ -5,12 +5,11 @@
 #ifndef TEST_FILE_BROWSER_WIDGET_H
 #define TEST_FILE_BROWSER_WIDGET_H
 
+#include "ui/widgets/panels/FileBrowserWidget.h"
 #include <QObject>
 #include <QtTest/QtTest>
-#include "ui/widgets/panels/FileBrowserWidget.h"
 
-class TestFileBrowserWidget : public QObject
-{
+class TestFileBrowserWidget : public QObject {
     Q_OBJECT
 
 private slots:

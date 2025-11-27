@@ -16,7 +16,6 @@
 #include <QStandardPaths>
 #include <QSvgRenderer>
 
-
 IconExportDialog::IconExportDialog(lucide::QtLucide* lucide, IconMetadataManager* metadataManager,
                                    QWidget* parent)
     : QDialog(parent), m_lucide(lucide), m_metadataManager(metadataManager), m_mainLayout(nullptr),

@@ -218,6 +218,7 @@ private:
     int m_columnsPerRow;
     int m_itemSpacing;
     int m_contentMargin;
+    bool m_manualThumbnailSize; // Track if thumbnail size was manually set
 
     // Performance
     QTimer* m_updateTimer;

@@ -22,13 +22,11 @@ QtLucideIconEngine::QtLucideIconEngine(QtLucide* lucide, QtLucideIconPainter* pa
                                        const QVariantMap& options)
     : m_lucide(lucide), m_painter(painter), m_options(options) {}
 
-QtLucideIconEngine::~QtLucideIconEngine() {
-    // Note: We don't delete m_lucide or m_painter as they are owned by QtLucide
-}
+QtLucideIconEngine::~QtLucideIconEngine() = default;
 
 void QtLucideIconEngine::paint(QPainter* painter, const QRect& rect, QIcon::Mode mode,
                                QIcon::State state) {
-    if (!m_painter || !m_lucide) {
+    if (m_painter == nullptr || m_lucide == nullptr) {
         return;
     }
 
@@ -38,7 +36,7 @@ void QtLucideIconEngine::paint(QPainter* painter, const QRect& rect, QIcon::Mode
 
 QPixmap QtLucideIconEngine::pixmap(const QSize& size, QIcon::Mode mode, QIcon::State state) {
     // Check cache first
-    QString key = cacheKey(size, mode, state);
+    const QString key = cacheKey(size, mode, state);
     if (m_pixmapCache.contains(key)) {
         return m_pixmapCache[key];
     }
@@ -65,8 +63,8 @@ QString QtLucideIconEngine::key() const {
 QString QtLucideIconEngine::cacheKey(const QSize& size, QIcon::Mode mode,
                                      QIcon::State state) const {
     // Create a unique key for caching
-    QString iconKey = m_options.value("iconId", "unknown").toString();
-    QString colorKey = m_options.value("color", "default").toString();
+    const QString iconKey = m_options.value("iconId", "unknown").toString();
+    const QString colorKey = m_options.value("color", "default").toString();
 
     return QString("%1_%2x%3_%4_%5_%6")
         .arg(iconKey)
@@ -78,19 +76,19 @@ QString QtLucideIconEngine::cacheKey(const QSize& size, QIcon::Mode mode,
 }
 
 QPixmap QtLucideIconEngine::renderPixmap(const QSize& size, QIcon::Mode mode, QIcon::State state) {
-    if (!m_painter || !m_lucide) {
-        return QPixmap();
+    if (m_painter == nullptr || m_lucide == nullptr) {
+        return {};
     }
 
     // Create pixmap with device pixel ratio support
     qreal devicePixelRatio = 1.0;
 
     // Try to get device pixel ratio from current screen
-    if (QGuiApplication::primaryScreen()) {
+    if (QGuiApplication::primaryScreen() != nullptr) {
         devicePixelRatio = QGuiApplication::primaryScreen()->devicePixelRatio();
     }
 
-    QSize pixmapSize = size * devicePixelRatio;
+    const QSize pixmapSize = size * devicePixelRatio;
     QPixmap pixmap(pixmapSize);
     pixmap.setDevicePixelRatio(devicePixelRatio);
     pixmap.fill(Qt::transparent);
@@ -100,7 +98,7 @@ QPixmap QtLucideIconEngine::renderPixmap(const QSize& size, QIcon::Mode mode, QI
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
 
-    QRect rect(QPoint(0, 0), size);
+    const QRect rect(QPoint(0, 0), size);
     m_painter->paint(m_lucide, &painter, rect, mode, state, m_options);
 
     return pixmap;

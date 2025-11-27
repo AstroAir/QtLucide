@@ -252,7 +252,8 @@ void PreferencesDialog::setupGeneralTab() {
     QHBoxLayout* langLayout = new QHBoxLayout();
     langLayout->addWidget(new QLabel("Language:"));
     m_languageCombo = new QComboBox();
-    m_languageCombo->addItems({"English", "简体中文", "Français", "Deutsch", "Español"});
+    m_languageCombo->addItems(
+        {"English", "\u7b80\u4f53\u4e2d\u6587", "Fran\u00e7ais", "Deutsch", "Espa\u00f1ol"});
     langLayout->addWidget(m_languageCombo);
     langLayout->addStretch();
 

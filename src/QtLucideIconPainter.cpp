@@ -16,13 +16,13 @@
 
 namespace lucide {
 
-QtLucideIconPainter::~QtLucideIconPainter() {}
+QtLucideIconPainter::~QtLucideIconPainter() = default;
 
 // QtLucideSvgIconPainter implementation
 
-QtLucideSvgIconPainter::QtLucideSvgIconPainter() {}
+QtLucideSvgIconPainter::QtLucideSvgIconPainter() = default;
 
-QtLucideSvgIconPainter::~QtLucideSvgIconPainter() {}
+QtLucideSvgIconPainter::~QtLucideSvgIconPainter() = default;
 
 void QtLucideSvgIconPainter::paint(QtLucide* lucide, QPainter* painter, const QRect& rect,
                                    QIcon::Mode mode, QIcon::State state,
@@ -32,14 +32,14 @@ void QtLucideSvgIconPainter::paint(QtLucide* lucide, QPainter* painter, const QR
     }
 
     // Get the icon ID from options
-    bool ok;
-    int iconIdInt = options.value("iconId", -1).toInt(&ok);
-    if (!ok || iconIdInt < 0) {
+    bool isValid;
+    int iconIdInt = options.value("iconId", -1).toInt(&isValid);
+    if (!isValid || iconIdInt < 0) {
         qWarning() << "Invalid icon ID in QtLucideSvgIconPainter::paint";
         return;
     }
 
-    Icons iconId = static_cast<Icons>(iconIdInt);
+    auto iconId = static_cast<Icons>(iconIdInt);
 
     // Get SVG data
     QByteArray svgData = lucide->svgData(iconId);
@@ -65,13 +65,14 @@ void QtLucideSvgIconPainter::paint(QtLucide* lucide, QPainter* painter, const QR
     }
 
     // Apply scale factor
-    double scaleFactor = options.value("scale-factor", 0.9).toDouble();
+    constexpr double defaultScaleFactor = 0.9;
+    double scaleFactor = options.value("scale-factor", defaultScaleFactor).toDouble();
     if (scaleFactor > 0.0 && scaleFactor != 1.0) {
         int scaledWidth = static_cast<int>(rect.width() * scaleFactor);
         int scaledHeight = static_cast<int>(rect.height() * scaleFactor);
 
-        QRect scaledRect(rect.x() + (rect.width() - scaledWidth) / 2,
-                         rect.y() + (rect.height() - scaledHeight) / 2, scaledWidth, scaledHeight);
+        QRect scaledRect(rect.x() + ((rect.width() - scaledWidth) / 2),
+                         rect.y() + ((rect.height() - scaledHeight) / 2), scaledWidth, scaledHeight);
 
         renderer.render(painter, scaledRect);
     } else {
@@ -144,10 +145,10 @@ QByteArray QtLucideSvgIconPainter::processColorizedSvg(const QByteArray& svgData
     svgString.replace("fill=\"currentColor\"", QString("fill=\"%1\"").arg(colorString));
 
     // Handle stroke and fill attributes that might use currentColor
-    QRegularExpression strokeRegex("stroke\\s*=\\s*[\"']currentColor[\"']");
+    QRegularExpression strokeRegex(R"(stroke\s*=\s*["']currentColor["'])");
     svgString.replace(strokeRegex, QString("stroke=\"%1\"").arg(colorString));
 
-    QRegularExpression fillRegex("fill\\s*=\\s*[\"']currentColor[\"']");
+    QRegularExpression fillRegex(R"(fill\s*=\s*["']currentColor["'])");
     svgString.replace(fillRegex, QString("fill=\"%1\"").arg(colorString));
 
     return svgString.toUtf8();

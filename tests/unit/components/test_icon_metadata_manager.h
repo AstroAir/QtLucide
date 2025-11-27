@@ -5,12 +5,11 @@
 #ifndef TEST_ICON_METADATA_MANAGER_H
 #define TEST_ICON_METADATA_MANAGER_H
 
+#include "core/managers/IconMetadataManager.h"
 #include <QObject>
 #include <QtTest/QtTest>
-#include "core/managers/IconMetadataManager.h"
 
-class TestIconMetadataManager : public QObject
-{
+class TestIconMetadataManager : public QObject {
     Q_OBJECT
 
 private slots:

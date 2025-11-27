@@ -5,12 +5,11 @@
 #ifndef TEST_GALLERY_UI_INTERACTIONS_H
 #define TEST_GALLERY_UI_INTERACTIONS_H
 
+#include "ui/windows/GalleryMainWindow.h"
 #include <QObject>
 #include <QtTest/QtTest>
-#include "ui/windows/GalleryMainWindow.h"
 
-class TestGalleryUIInteractions : public QObject
-{
+class TestGalleryUIInteractions : public QObject {
     Q_OBJECT
 
 private slots:

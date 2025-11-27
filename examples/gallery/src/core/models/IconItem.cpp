@@ -406,7 +406,7 @@ void IconItem::paintEvent(QPaintEvent* event) {
         QRect favoriteRect(rect.right() - 20, rect.top() + 4, 16, 16);
         painter.fillRect(favoriteRect, FAVORITE_COLOR);
         painter.setPen(Qt::white);
-        painter.drawText(favoriteRect, Qt::AlignCenter, "★");
+        painter.drawText(favoriteRect, Qt::AlignCenter, "\u2605");
     }
 }
 

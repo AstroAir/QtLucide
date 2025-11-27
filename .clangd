@@ -1,0 +1,45 @@
+# QtLucide clangd configuration
+# Enables proper indexing and IntelliSense for the project
+
+CompileFlags:
+  # Use the compilation database
+  CompilationDatabase: .
+
+  # Add additional flags if needed
+  Add:
+    # Enable all warnings for better code quality
+    - -Wall
+    - -Wextra
+
+# Index configuration
+Index:
+  # Enable background indexing
+  Background: Build
+
+# Diagnostics configuration
+Diagnostics:
+  # Suppress some common Qt-related warnings
+  Suppress:
+    - "unused-parameter"
+    - "missing-field-initializers"
+  
+  # Enable clang-tidy checks
+  ClangTidy:
+    Add:
+      - modernize-*
+      - readability-*
+      - performance-*
+    Remove:
+      - modernize-use-trailing-return-type
+      - readability-magic-numbers
+
+# InlayHints configuration
+InlayHints:
+  Enabled: Yes
+  ParameterNames: Yes
+  DeducedTypes: Yes
+
+# Hover configuration
+Hover:
+  ShowAKA: Yes
+

@@ -13,11 +13,11 @@
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
-#include <QThread>
 #include <QFile>
 #include <QPalette>
 #include <QResource>
 #include <QSet>
+#include <QThread>
 
 // Forward declare resource initialization functions
 extern int qInitResources_lucide_icons();
@@ -26,9 +26,9 @@ extern int qCleanupResources_lucide_icons();
 namespace lucide {
 
 QtLucide::QtLucide(QObject* parent)
-    : QObject(parent), m_svgIconPainter(nullptr), m_initialized(false) {
+    : QObject(parent) {
     // Initialize resources
-    int resourceResult = qInitResources_lucide_icons();
+    const int resourceResult = qInitResources_lucide_icons();
     qDebug() << "Resource initialization result:" << resourceResult;
 
     // Initialize default options
@@ -39,7 +39,7 @@ QtLucide::~QtLucide() {
     delete m_svgIconPainter;
 
     // Clean up custom painters
-    for (auto painter : m_customPainters) {
+    for (auto* painter : m_customPainters) {
         delete painter;
     }
 
@@ -75,7 +75,7 @@ QVariant QtLucide::defaultOption(const QString& name) const {
 QIcon QtLucide::icon(Icons iconId, const QVariantMap& options) {
     if (!m_initialized) {
         qWarning() << "QtLucide not initialized. Call initLucide() first.";
-        return QIcon();
+        return {};
     }
 
     // Merge default options with provided options
@@ -101,19 +101,19 @@ QIcon QtLucide::icon(const QString& name, const QVariantMap& options) {
     }
 
     // Convert name to icon ID
-    Icons iconId = stringToIconId(name);
-    if (iconId == static_cast<Icons>(-1)) {
+    const Icons iconId = stringToIconId(name);
+    if (iconId == Icons::a_arrow_down && !m_nameToIconMap.contains(name)) {
         qWarning() << "Unknown icon name:" << name;
-        return QIcon();
+        return {};
     }
 
     return icon(iconId, options);
 }
 
 QIcon QtLucide::icon(QtLucideIconPainter* painter, const QVariantMap& options) {
-    if (!painter) {
+    if (painter == nullptr) {
         qWarning() << "Null painter provided to QtLucide::icon()";
-        return QIcon();
+        return {};
     }
 
     QVariantMap mergedOptions = m_defaultOptions;
@@ -132,30 +132,30 @@ void QtLucide::give(const QString& name, QtLucideIconPainter* painter) {
 }
 
 QByteArray QtLucide::svgData(Icons iconId) const {
-    QString iconName = iconIdToString(iconId);
+    const QString iconName = iconIdToString(iconId);
     if (iconName.isEmpty()) {
-        return QByteArray();
+        return {};
     }
 
     return svgData(iconName);
 }
 
 QByteArray QtLucide::svgData(const QString& name) const {
-    QString resourcePath = QString(":/lucide/%1").arg(name);
+    const QString resourcePath = QString(":/lucide/%1").arg(name);
 
     // Try QResource first (more reliable for Qt resources)
-    QResource resource(resourcePath);
+    const QResource resource(resourcePath);
     if (resource.isValid()) {
         const uchar* data = resource.data();
-        if (data && resource.size() > 0) {
-            return QByteArray(reinterpret_cast<const char*>(data), resource.size());
+        if (data != nullptr && resource.size() > 0) {
+            return {reinterpret_cast<const char*>(data), resource.size()};
         }
     }
 
     // Fallback to QFile if QResource fails (can happen under stress)
     QFile file(resourcePath);
     if (file.open(QIODevice::ReadOnly)) {
-        QByteArray data = file.readAll();
+        const QByteArray data = file.readAll();
         if (!data.isEmpty()) {
             return data;
         }
@@ -168,7 +168,7 @@ QByteArray QtLucide::svgData(const QString& name) const {
         warnedPaths.insert(resourcePath);
     }
 
-    return QByteArray();
+    return {};
 }
 
 QStringList QtLucide::availableIcons() const {
@@ -181,7 +181,7 @@ void QtLucide::resetDefaultOptions() {
     m_defaultOptions.clear();
 
     // Set default colors based on application palette
-    QPalette palette = QApplication::palette();
+    const QPalette palette = QApplication::palette();
 
     m_defaultOptions["color"] = palette.color(QPalette::Normal, QPalette::Text);
     m_defaultOptions["color-disabled"] = palette.color(QPalette::Disabled, QPalette::Text);
@@ -199,7 +199,7 @@ void QtLucide::initializeIconMap() {
 }
 
 Icons QtLucide::stringToIconId(const QString& name) const {
-    return m_nameToIconMap.value(name, static_cast<Icons>(-1));
+    return m_nameToIconMap.value(name, Icons::a_arrow_down);
 }
 
 QString QtLucide::iconIdToString(Icons iconId) const {

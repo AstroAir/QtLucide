@@ -367,7 +367,7 @@ void IconSearchWidget::setupButtons() {
 
     // Clear button with icon
     m_clearButton = new QToolButton;
-    m_clearButton->setText("✕");
+    m_clearButton->setText("\u2715");
     m_clearButton->setToolTip("Clear search (Esc)");
     m_clearButton->setFixedSize(28, 28);
     m_clearButton->setStyleSheet(buttonStyle);
@@ -419,7 +419,7 @@ void IconSearchWidget::setupButtons() {
 
     // Advanced search button
     m_advancedButton = new QToolButton;
-    m_advancedButton->setText("⚙");
+    m_advancedButton->setText("\u2699");
     m_advancedButton->setToolTip("Advanced search options");
     m_advancedButton->setFixedSize(28, 28);
     m_advancedButton->setStyleSheet(buttonStyle);

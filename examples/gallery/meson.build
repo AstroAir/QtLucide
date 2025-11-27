@@ -44,6 +44,12 @@ gallery_sources = [
     'src/ui/layouts/ResponsiveLayoutManager.h',
     'src/ui/layouts/ResponsiveLayoutManager.cpp',
 
+    # UI controllers
+    'src/ui/controllers/SearchController.h',
+    'src/ui/controllers/SearchController.cpp',
+    'src/ui/controllers/PerformanceMonitor.h',
+    'src/ui/controllers/PerformanceMonitor.cpp',
+
     # UI widgets - grids
     'src/ui/widgets/grids/IconGridWidget.h',
     'src/ui/widgets/grids/IconGridWidget.cpp',
@@ -155,6 +161,7 @@ qtlucide_gallery = executable('QtLucideGallery',
         'src/core/models',
         'src/ui',
         'src/ui/themes',
+        'src/ui/controllers',
         'src/ui/widgets',
         'src/ui/widgets/grids',
         'src/ui/widgets/panels',

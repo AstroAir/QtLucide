@@ -6,20 +6,19 @@
 #ifndef TEST_APPLICATION_STARTUP_H
 #define TEST_APPLICATION_STARTUP_H
 
-#include <QObject>
-#include <QtTest/QtTest>
 #include <QApplication>
-#include <QWidget>
+#include <QObject>
 #include <QTimer>
+#include <QWidget>
+#include <QtTest/QtTest>
 
 // Gallery concrete implementation includes
-#include "../../../examples/gallery/src/ui/themes/ThemeManager.h"
-#include "../../../examples/gallery/src/core/managers/IconMetadataManager.h"
 #include "../../../examples/gallery/src/core/BatchExportManager.h"
+#include "../../../examples/gallery/src/core/managers/IconMetadataManager.h"
+#include "../../../examples/gallery/src/ui/themes/ThemeManager.h"
 #include "../../../examples/gallery/src/ui/windows/GalleryMainWindow.h"
 
-class TestApplicationStartup : public QObject
-{
+class TestApplicationStartup : public QObject {
     Q_OBJECT
 
 private slots:
@@ -33,17 +32,17 @@ private slots:
     void testGalleryMainWindowInitialization();
     void testGalleryMainWindowShow();
     void testGalleryMainWindowClose();
-    
+
     // Component initialization tests
     void testThemeManagerInitialization();
     void testIconMetadataManagerInitialization();
     void testDefaultThemeLoading();
     void testResourcesAvailable();
-    
+
     // Memory management tests
     void testGalleryMainWindowDestruction();
     void testComponentCleanup();
-    
+
     // Configuration tests
     void testDefaultSettings();
     void testSettingsLoad();

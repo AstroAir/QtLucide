@@ -21,3 +21,9 @@ set_target_properties(QtLucideExample PROPERTIES
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE TRUE
 )
+
+# Add smoke test for automated testing (if tests are enabled)
+if(QTLUCIDE_BUILD_TESTS)
+    add_test(NAME QtLucideExampleSmoke COMMAND $<TARGET_FILE:QtLucideExample> --smoke)
+    set_tests_properties(QtLucideExampleSmoke PROPERTIES LABELS "example;smoke")
+endif()

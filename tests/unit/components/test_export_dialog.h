@@ -5,12 +5,11 @@
 #ifndef TEST_EXPORT_DIALOG_H
 #define TEST_EXPORT_DIALOG_H
 
+#include "ui/dialogs/ExportDialog.h"
 #include <QObject>
 #include <QtTest/QtTest>
-#include "ui/dialogs/ExportDialog.h"
 
-class TestExportDialog : public QObject
-{
+class TestExportDialog : public QObject {
     Q_OBJECT
 
 private slots:

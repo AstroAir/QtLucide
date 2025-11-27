@@ -20,6 +20,7 @@
 #include <QStandardPaths>
 #include <QStyleFactory>
 #include <QTimer>
+#include <fstream>
 
 #include "../core/utils/GalleryLogger.h"
 #include "../ui/windows/GalleryMainWindow.h"
@@ -27,7 +28,8 @@
 
 static bool hasArg(int argc, char* argv[], const char* flag) {
     for (int i = 1; i < argc; ++i) {
-        if (QString::fromLatin1(argv[i]) == QLatin1String(flag)) return true;
+        if (QString::fromLatin1(argv[i]) == QLatin1String(flag))
+            return true;
     }
     return false;
 }
@@ -58,7 +60,30 @@ QSplashScreen* createSplashScreen() {
 }
 
 int main(int argc, char* argv[]) {
+    // Write to a debug file to confirm main() is called
+    {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "=== NEW RUN ===" << std::endl;
+        debugFile << "main() called with " << argc << " arguments" << std::endl;
+        for (int i = 0; i < argc; ++i) {
+            debugFile << "argv[" << i << "] = " << argv[i] << std::endl;
+        }
+        debugFile.flush();
+    }
+
+    {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "About to check smoke mode" << std::endl;
+        debugFile.flush();
+    }
+
     const bool smokeMode = hasArg(argc, argv, "--smoke");
+
+    {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "Smoke mode: " << (smokeMode ? "true" : "false") << std::endl;
+        debugFile.flush();
+    }
 
     if (smokeMode) {
         // Headless-friendly smoke run: use QApplication but don't create any windows
@@ -74,59 +99,241 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
+    {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "Not in smoke mode, continuing with normal execution" << std::endl;
+        debugFile.flush();
+    }
+
+    {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "About to create QApplication" << std::endl;
+        debugFile.flush();
+    }
+
     QApplication app(argc, argv);
 
-    // Setup application properties
-    setupApplicationProperties(app);
+    {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "QApplication created successfully" << std::endl;
+        debugFile.flush();
+    }
 
-    // Initialize logging
+    // Setup application properties
+    try {
+        {
+            std::ofstream debugFile("debug_main.txt", std::ios::app);
+            debugFile << "About to call setupApplicationProperties" << std::endl;
+            debugFile.flush();
+        }
+
+        setupApplicationProperties(app);
+
+        {
+            std::ofstream debugFile("debug_main.txt", std::ios::app);
+            debugFile << "Application properties set" << std::endl;
+            debugFile.flush();
+        }
+    } catch (const std::exception& e) {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "Exception in setupApplicationProperties: " << e.what() << std::endl;
+        debugFile.flush();
+        return 1;
+    } catch (...) {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "Unknown exception in setupApplicationProperties" << std::endl;
+        debugFile.flush();
+        return 1;
+    }
+
+    {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "Passed setupApplicationProperties try-catch block" << std::endl;
+        debugFile.flush();
+    }
+
+    // Initialize logging (with our threading fixes)
+    {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "About to initialize GalleryLogger" << std::endl;
+        debugFile.flush();
+    }
+
     GalleryLogger::instance()->initialize();
-    GALLERY_LOG_INFO(galleryMain, "Starting QtLucide Gallery application");
+
+    {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "GalleryLogger initialized successfully" << std::endl;
+        debugFile.flush();
+    }
+
+    // Skip GALLERY_LOG_INFO for now to avoid potential issues
+    // GALLERY_LOG_INFO(galleryMain, "Starting QtLucide Gallery application");
+
+    {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "Skipping Gallery log message for now" << std::endl;
+        debugFile.flush();
+    }
 
     // Create and show splash screen
+    {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "About to create splash screen" << std::endl;
+        debugFile.flush();
+    }
+
     QSplashScreen* splash = createSplashScreen();
+
+    {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "Splash screen created successfully" << std::endl;
+        debugFile.flush();
+    }
+
     splash->showMessage("Initializing QtLucide...", Qt::AlignBottom | Qt::AlignCenter, Qt::white);
     app.processEvents();
 
+    {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "Splash screen message set and events processed" << std::endl;
+        debugFile.flush();
+    }
+
+    {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "About to proceed to QtLucide initialization section" << std::endl;
+        debugFile.flush();
+    }
+
     // Initialize QtLucide
+    {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "About to initialize QtLucide" << std::endl;
+        debugFile.flush();
+    }
+
     lucide::QtLucide lucide;
+
+    {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "QtLucide instance created" << std::endl;
+        debugFile.flush();
+    }
+
     if (!lucide.initLucide()) {
+        {
+            std::ofstream debugFile("debug_main.txt", std::ios::app);
+            debugFile << "QtLucide initialization failed" << std::endl;
+            debugFile.flush();
+        }
         QMessageBox::critical(nullptr, "Error",
                               "Failed to initialize QtLucide library.\n"
                               "The application will continue with limited functionality.");
-        GALLERY_LOG_ERROR(galleryMain, "Failed to initialize QtLucide library");
+    } else {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "QtLucide initialized successfully" << std::endl;
+        debugFile.flush();
+
+        debugFile << "Exiting QtLucide success block" << std::endl;
+        debugFile.flush();
+    }
+
+    {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "About to update splash message" << std::endl;
+        debugFile.flush();
     }
 
     splash->showMessage("Creating main window...", Qt::AlignBottom | Qt::AlignCenter, Qt::white);
     app.processEvents();
 
+    {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "Splash message updated and events processed" << std::endl;
+        debugFile.flush();
+    }
+
+    {
+        std::ofstream debugFile("debug_main.txt", std::ios::app);
+        debugFile << "About to create main window" << std::endl;
+        debugFile.flush();
+    }
+
     // Create main window
-    qDebug() << "Creating GalleryMainWindow...";
     try {
-        GalleryMainWindow mainWindow;
-        qDebug() << "GalleryMainWindow created successfully";
+        {
+            std::ofstream debugFile("debug_main.txt", std::ios::app);
+            debugFile << "About to call GalleryMainWindow constructor" << std::endl;
+            debugFile.flush();
+        }
+
+        GalleryMainWindow mainWindow(&lucide);
+
+        {
+            std::ofstream debugFile("debug_main.txt", std::ios::app);
+            debugFile << "GalleryMainWindow created successfully" << std::endl;
+            debugFile.flush();
+        }
+
+        {
+            std::ofstream debugFile("debug_main.txt", std::ios::app);
+            debugFile << "About to show splash loading complete message" << std::endl;
+            debugFile.flush();
+        }
 
         splash->showMessage("Loading complete!", Qt::AlignBottom | Qt::AlignCenter, Qt::white);
         app.processEvents();
 
+        {
+            std::ofstream debugFile("debug_main.txt", std::ios::app);
+            debugFile << "Splash message updated and events processed" << std::endl;
+            debugFile.flush();
+        }
+
         // Show main window and hide splash
-        qDebug() << "Showing main window...";
+        {
+            std::ofstream debugFile("debug_main.txt", std::ios::app);
+            debugFile << "About to show main window" << std::endl;
+            debugFile.flush();
+        }
+
         mainWindow.show();
-        qDebug() << "Main window shown";
+
+        {
+            std::ofstream debugFile("debug_main.txt", std::ios::app);
+            debugFile << "Main window shown successfully" << std::endl;
+            debugFile.flush();
+        }
+
         splash->finish(&mainWindow);
         splash->deleteLater();
-        qDebug() << "Splash screen finished";
 
-        GALLERY_LOG_INFO(galleryMain, "QtLucide Gallery started successfully");
+        {
+            std::ofstream debugFile("debug_main.txt", std::ios::app);
+            debugFile << "About to call GALLERY_LOG_INFO" << std::endl;
+            debugFile.flush();
+        }
+
+        // GALLERY_LOG_INFO(galleryMain, "QtLucide Gallery started successfully");
+        // Temporarily comment out the logging call to see if it's causing issues
+
+        {
+            std::ofstream debugFile("debug_main.txt", std::ios::app);
+            debugFile << "About to enter app.exec()" << std::endl;
+            debugFile.flush();
+        }
 
         return app.exec();
     } catch (const std::exception& e) {
         qCritical() << "Exception caught:" << e.what();
-        QMessageBox::critical(nullptr, "Error", QString("Application failed to start: %1").arg(e.what()));
+        QMessageBox::critical(nullptr, "Error",
+                              QString("Application failed to start: %1").arg(e.what()));
         return 1;
     } catch (...) {
         qCritical() << "Unknown exception caught";
-        QMessageBox::critical(nullptr, "Error", "Application failed to start due to an unknown error");
+        QMessageBox::critical(nullptr, "Error",
+                              "Application failed to start due to an unknown error");
         return 1;
     }
 }

@@ -424,7 +424,7 @@ void IconDetailsPanel::setupHeaderSection() {
     m_nameLabel->setStyleSheet("font-size: 14px; font-weight: bold;");
 
     m_favoriteButton = new QToolButton(m_headerFrame);
-    m_favoriteButton->setText("♥");
+    m_favoriteButton->setText("\u2665");
     m_favoriteButton->setCheckable(true);
 
     m_headerLayout->addWidget(m_iconLabel);
@@ -574,7 +574,7 @@ void IconDetailsPanel::updateFavoriteStatus() {
     if (m_metadataManager && !m_currentIconName.isEmpty()) {
         bool isFavorite = m_metadataManager->isFavorite(m_currentIconName);
         m_favoriteButton->setChecked(isFavorite);
-        m_favoriteButton->setText(isFavorite ? "♥" : "♡");
+        m_favoriteButton->setText(isFavorite ? "\u2665" : "\u2661");
     }
 }
 

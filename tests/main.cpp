@@ -6,13 +6,13 @@
 #include <QtTest/QtTest>
 
 // Include test class headers
-#include "test_boundary_conditions.h"
-#include "test_error_handling.h"
-#include "test_icon_loading.h"
-#include "test_memory_management.h"
-#include "test_qtlucide.h"
-#include "test_svg_rendering.h"
-#include "test_thread_safety.h"
+#include "unit/core/test_boundary_conditions.h"
+#include "unit/core/test_error_handling.h"
+#include "unit/core/test_icon_loading.h"
+#include "unit/core/test_memory_management.h"
+#include "unit/core/test_qtlucide.h"
+#include "unit/core/test_svg_rendering.h"
+#include "unit/core/test_thread_safety.h"
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);

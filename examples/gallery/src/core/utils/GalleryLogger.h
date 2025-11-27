@@ -44,8 +44,32 @@ Q_DECLARE_LOGGING_CATEGORY(galleryCache)
 Q_DECLARE_LOGGING_CATEGORY(galleryAnimation)
 Q_DECLARE_LOGGING_CATEGORY(galleryMetadata)
 
-// Forward declaration
-class LogWorker;
+/**
+ * @brief Background logging worker for asynchronous log processing
+ */
+class LogWorker : public QObject {
+    Q_OBJECT
+
+public:
+    explicit LogWorker(QObject* parent = nullptr);
+    ~LogWorker() = default;
+
+    void enqueueLogEntry(const QString& formattedMessage);
+    void stop();
+
+public slots:
+    void processLogQueue();
+
+signals:
+    void logProcessed(const QString& message);
+
+private:
+    QQueue<QString> m_logQueue;
+    QMutex m_queueMutex;
+    QWaitCondition m_queueCondition;
+    bool m_stopRequested = false;
+    QTimer* m_processTimer;
+};
 
 /**
  * @brief Enhanced logging system for the Gallery application

@@ -18,8 +18,7 @@
  * @details Validates that all required libraries, Qt modules, and dependencies
  *          are available and properly configured for the gallery application.
  */
-class TestLibraryAvailability : public QObject
-{
+class TestLibraryAvailability : public QObject {
     Q_OBJECT
 
 private slots:
@@ -27,7 +26,7 @@ private slots:
      * @brief Initialize test case environment
      */
     void initTestCase();
-    
+
     /**
      * @brief Clean up test case environment
      */
@@ -39,31 +38,31 @@ private slots:
      * @details Verifies that Qt Core module is available and functional
      */
     void testQtCoreAvailability();
-    
+
     /**
      * @brief Test Qt Widgets module availability
      * @details Verifies that Qt Widgets module is available and functional
      */
     void testQtWidgetsAvailability();
-    
+
     /**
      * @brief Test Qt SVG module availability
      * @details Verifies that Qt SVG module is available and functional
      */
     void testQtSvgAvailability();
-    
+
     /**
      * @brief Test Qt Concurrent module availability
      * @details Verifies that Qt Concurrent module is available and functional
      */
     void testQtConcurrentAvailability();
-    
+
     /**
      * @brief Test Qt Network module availability
      * @details Verifies that Qt Network module is available and functional
      */
     void testQtNetworkAvailability();
-    
+
     /**
      * @brief Test Qt Test module availability
      * @details Verifies that Qt Test module is available and functional
@@ -76,13 +75,13 @@ private slots:
      * @details Verifies that QtLucide library is available and can be loaded
      */
     void testQtLucideLibraryAvailability();
-    
+
     /**
      * @brief Test QtLucide headers availability
      * @details Verifies that QtLucide headers are available and can be included
      */
     void testQtLucideHeadersAvailability();
-    
+
     /**
      * @brief Test QtLucide icon resources
      * @details Verifies that QtLucide icon resources are available
@@ -95,13 +94,13 @@ private slots:
      * @details Verifies that gallery core components can be instantiated
      */
     void testGalleryCoreComponentsAvailability();
-    
+
     /**
      * @brief Test gallery UI components availability
      * @details Verifies that gallery UI components can be instantiated
      */
     void testGalleryUIComponentsAvailability();
-    
+
     /**
      * @brief Test gallery manager components availability
      * @details Verifies that gallery manager components can be instantiated
@@ -114,13 +113,13 @@ private slots:
      * @details Verifies that Qt version meets minimum requirements
      */
     void testMinimumQtVersionRequirement();
-    
+
     /**
      * @brief Test C++ standard support
      * @details Verifies that C++17 standard is supported
      */
     void testCppStandardSupport();
-    
+
     /**
      * @brief Test platform compatibility
      * @details Verifies platform-specific requirements are met
@@ -133,13 +132,13 @@ private slots:
      * @details Verifies that icon resource files are available
      */
     void testIconResourceFiles();
-    
+
     /**
      * @brief Test theme resource files
      * @details Verifies that theme resource files are available
      */
     void testThemeResourceFiles();
-    
+
     /**
      * @brief Test translation resource files
      * @details Verifies that translation resource files are available
@@ -154,40 +153,40 @@ private:
      * @return true if module is available
      */
     bool isQtModuleAvailable(const QString& moduleName);
-    
+
     /**
      * @brief Check if library file exists
      * @param libraryName Name of the library to check
      * @return true if library file exists
      */
     bool isLibraryFileAvailable(const QString& libraryName);
-    
+
     /**
      * @brief Check if header file can be included
      * @param headerName Name of the header to check
      * @return true if header can be included
      */
     bool isHeaderAvailable(const QString& headerName);
-    
+
     /**
      * @brief Check if resource file exists
      * @param resourcePath Path to the resource file
      * @return true if resource file exists
      */
     bool isResourceFileAvailable(const QString& resourcePath);
-    
+
     /**
      * @brief Get Qt version information
      * @return Qt version string
      */
     QString getQtVersionInfo();
-    
+
     /**
      * @brief Get compiler information
      * @return Compiler information string
      */
     QString getCompilerInfo();
-    
+
     /**
      * @brief Get platform information
      * @return Platform information string

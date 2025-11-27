@@ -1,0 +1,20 @@
+---
+globs: tests/**
+description: Qt Test conventions and project test layout
+---
+# Qt Test Conventions and Layout
+
+- Framework: Qt Test (`Qt6::Test`). The main test entry is [`tests/main.cpp`](mdc:tests/main.cpp).
+- Structure: tests are grouped by domain: [`tests/unit`](mdc:tests/unit), [`tests/integration`](mdc:tests/integration), [`tests/functional`](mdc:tests/functional), [`tests/performance`](mdc:tests/performance), [`tests/platform`](mdc:tests/platform), and gallery-centric tests under [`tests/gallery`](mdc:tests/gallery).
+- Build integration:
+  - CMake: list tests in [`tests/CMakeLists.txt`](mdc:tests/CMakeLists.txt) and nested `CMakeLists.txt` files.
+  - Meson: configured via [`tests/meson.build`](mdc:tests/meson.build) and subdirs.
+- Determinism: keep tests deterministic; some heavy UI tests are disabled until stabilized (see notes in [`tests/main.cpp`](mdc:tests/main.cpp)).
+- Examples can be built and reused by tests (see [`examples/`](mdc:examples)).
+
+Run locally:
+
+```bash
+ctest --test-dir build --output-on-failure
+```
+

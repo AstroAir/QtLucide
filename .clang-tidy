@@ -1,0 +1,37 @@
+# QtLucide clang-tidy configuration
+# Focus on basic code quality without requiring full Qt environment
+
+# Disable checks that require full compilation
+Checks: >
+  modernize-*,
+  performance-*,
+  readability-*,
+  bugprone-*,
+  concurrency-*,
+  misc-*,
+  -modernize-use-trailing-return-type,
+  -readability-magic-numbers,
+  -bugprone-easily-swappable-parameters,
+  -readability-convert-member-functions-to-static
+
+# Warning level
+WarningsAsErrors: ''
+
+# Header filter - only check project files
+HeaderFilterRegex: '.*'
+
+# Format code after applying fixes
+FormatStyle: file
+
+CheckOptions:
+  # Modernize checks
+  - { key: modernize-use-nullptr.NullMacros, value: 'NULL' }
+  - { key: modernize-loop-convert.MinConfidence, value: 'reasonable' }
+  - { key: modernize-replace-auto-ptr.IncludeStyle, value: 'llvm' }
+  - { key: modernize-use-emplace.UseEmplace, value: 'true' }
+
+  # Performance checks
+  - { key: performance-unnecessary-copy-initialization.AllowedTypes, value: '' }
+
+  # Readability checks - disable identifier naming for now
+  - { key: readability-identifier-naming.Enabled, value: 'false' }

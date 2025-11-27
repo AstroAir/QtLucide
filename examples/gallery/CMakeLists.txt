@@ -67,6 +67,12 @@ set(GALLERY_SOURCES
     src/ui/layouts/ResponsiveLayoutManager.h
     src/ui/layouts/ResponsiveLayoutManager.cpp
 
+    # UI controllers
+    src/ui/controllers/SearchController.h
+    src/ui/controllers/SearchController.cpp
+    src/ui/controllers/PerformanceMonitor.h
+    src/ui/controllers/PerformanceMonitor.cpp
+
     # UI widgets - grids
     src/ui/widgets/grids/IconGridWidget.h
     src/ui/widgets/grids/IconGridWidget.cpp
@@ -146,6 +152,7 @@ target_include_directories(QtLucideGallery PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/models
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ui
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/themes
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/controllers
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/widgets
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/widgets/grids
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/widgets/panels

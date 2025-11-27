@@ -67,12 +67,12 @@ target("QtLucide")
 
     -- Add Qt include directories manually for Windows
     if is_plat("windows") then
-        add_includedirs("D:/msys64/mingw64/include/qt6")
-        add_includedirs("D:/msys64/mingw64/include/qt6/QtCore")
-        add_includedirs("D:/msys64/mingw64/include/qt6/QtGui")
-        add_includedirs("D:/msys64/mingw64/include/qt6/QtWidgets")
-        add_includedirs("D:/msys64/mingw64/include/qt6/QtSvg")
-        add_linkdirs("D:/msys64/mingw64/lib")
+        add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6/QtCore")
+        add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6/QtGui")
+        add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6/QtWidgets")
+        add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6/QtSvg")
+        add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6")
+        add_linkdirs("D:/msys64/mingw64/qt6-static/lib")
         add_links("Qt6Core", "Qt6Gui", "Qt6Widgets", "Qt6Svg")
     else
         add_frameworks("QtCore", "QtGui", "QtWidgets", "QtSvg")
@@ -154,11 +154,11 @@ if has_config("examples") then
 
         -- Add Qt include directories manually for Windows
         if is_plat("windows") then
-            add_includedirs("D:/msys64/mingw64/include/qt6")
-            add_includedirs("D:/msys64/mingw64/include/qt6/QtCore")
-            add_includedirs("D:/msys64/mingw64/include/qt6/QtGui")
-            add_includedirs("D:/msys64/mingw64/include/qt6/QtWidgets")
-            add_linkdirs("D:/msys64/mingw64/lib")
+            add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6/QtCore")
+            add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6/QtGui")
+            add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6/QtWidgets")
+            add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6")
+            add_linkdirs("D:/msys64/mingw64/qt6-static/lib")
             add_links("Qt6Core", "Qt6Gui", "Qt6Widgets")
         end
 
@@ -179,7 +179,7 @@ if has_config("examples") then
         end
     target_end()
 
-    -- Gallery example
+    -- Gallery example - Complete QtLucide Gallery Application
     target("QtLucideGallery")
         set_kind("binary")
         add_packages("qt6base")
@@ -190,21 +190,129 @@ if has_config("examples") then
 
         -- Add Qt include directories manually for Windows
         if is_plat("windows") then
-            add_includedirs("D:/msys64/mingw64/include/qt6")
-            add_includedirs("D:/msys64/mingw64/include/qt6/QtCore")
-            add_includedirs("D:/msys64/mingw64/include/qt6/QtGui")
-            add_includedirs("D:/msys64/mingw64/include/qt6/QtWidgets")
-            add_linkdirs("D:/msys64/mingw64/lib")
-            add_links("Qt6Core", "Qt6Gui", "Qt6Widgets")
+            add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6/QtCore")
+            add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6/QtGui")
+            add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6/QtWidgets")
+            add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6/QtSvg")
+            add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6/QtConcurrent")
+            add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6/QtNetwork")
+            add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6")
+            add_linkdirs("D:/msys64/mingw64/qt6-static/lib")
+            add_links("Qt6Core", "Qt6Gui", "Qt6Widgets", "Qt6Svg", "Qt6Concurrent", "Qt6Network")
         end
 
-        -- Note: XMake gallery configuration needs to be updated to match the new directory structure
-        -- The gallery example uses a complex directory structure that would require extensive XMake configuration
-        -- For now, this target is disabled. Use CMake or Meson for building the gallery example.
+        -- Gallery source files (all 58 files)
+        -- Configuration
+        add_files("examples/gallery/src/config/LayoutConfig.h")
+
+        -- Core functionality
+        add_files("examples/gallery/src/core/GalleryTypes.h")
+        add_files("examples/gallery/src/core/BatchExportManager.h")
+        add_files("examples/gallery/src/core/BatchExportManager.cpp")
+        add_files("examples/gallery/src/core/ExportProgressWidget.cpp")
+
+        -- Core managers
+        add_files("examples/gallery/src/core/managers/ContentManager.h")
+        add_files("examples/gallery/src/core/managers/ContentManager.cpp")
+        add_files("examples/gallery/src/core/managers/IconMetadataManager.h")
+        add_files("examples/gallery/src/core/managers/IconMetadataManager.cpp")
+        add_files("examples/gallery/src/core/managers/ImageMetadataManager.h")
+        add_files("examples/gallery/src/core/managers/ImageMetadataManager.cpp")
+        add_files("examples/gallery/src/core/managers/ManagerStubs.h")
+        add_files("examples/gallery/src/core/managers/ManagerStubs.cpp")
+        add_files("examples/gallery/src/core/managers/FavoritesManager.h")
+        add_files("examples/gallery/src/core/managers/FavoritesManager.cpp")
+
+        -- Core models
+        add_files("examples/gallery/src/core/models/IconItem.h")
+        add_files("examples/gallery/src/core/models/IconItem.cpp")
+
+        -- Core utils
+        add_files("examples/gallery/src/core/utils/GalleryLogger.h")
+        add_files("examples/gallery/src/core/utils/GalleryLogger.cpp")
+        add_files("examples/gallery/src/core/utils/ErrorHandler.h")
+        add_files("examples/gallery/src/core/utils/ErrorHandler.cpp")
+
+        -- UI themes
+        add_files("examples/gallery/src/ui/themes/ThemeManager.h")
+        add_files("examples/gallery/src/ui/themes/ThemeManager.cpp")
+
+        -- UI layouts
+        add_files("examples/gallery/src/ui/layouts/ResponsiveLayoutManager.h")
+        add_files("examples/gallery/src/ui/layouts/ResponsiveLayoutManager.cpp")
+
+        -- UI controllers
+        add_files("examples/gallery/src/ui/controllers/SearchController.h")
+        add_files("examples/gallery/src/ui/controllers/SearchController.cpp")
+        add_files("examples/gallery/src/ui/controllers/PerformanceMonitor.h")
+        add_files("examples/gallery/src/ui/controllers/PerformanceMonitor.cpp")
+
+        -- UI widgets - grids
+        add_files("examples/gallery/src/ui/widgets/grids/IconGridWidget.h")
+        add_files("examples/gallery/src/ui/widgets/grids/IconGridWidget.cpp")
+        add_files("examples/gallery/src/ui/widgets/grids/IconThumbnailGridWidget.h")
+        add_files("examples/gallery/src/ui/widgets/grids/IconThumbnailGridWidget.cpp")
+
+        -- UI widgets - search
+        add_files("examples/gallery/src/ui/widgets/search/SearchWidget.h")
+        add_files("examples/gallery/src/ui/widgets/search/SearchWidget.cpp")
+        add_files("examples/gallery/src/ui/widgets/search/IconSearchWidget.h")
+        add_files("examples/gallery/src/ui/widgets/search/IconSearchWidget.cpp")
+        add_files("examples/gallery/src/ui/widgets/search/CategoryFilterWidget.h")
+        add_files("examples/gallery/src/ui/widgets/search/CategoryFilterWidget.cpp")
+
+        -- UI widgets - panels
+        add_files("examples/gallery/src/ui/widgets/panels/CategorySidebarWidget.h")
+        add_files("examples/gallery/src/ui/widgets/panels/CategorySidebarWidget.cpp")
+        add_files("examples/gallery/src/ui/widgets/panels/IconDetailsPanel.h")
+        add_files("examples/gallery/src/ui/widgets/panels/IconDetailsPanel.cpp")
+        add_files("examples/gallery/src/ui/widgets/panels/FileBrowserWidget.h")
+        add_files("examples/gallery/src/ui/widgets/panels/FileBrowserWidget.cpp")
+
+        -- UI widgets - viewers
+        add_files("examples/gallery/src/ui/widgets/viewers/ImageViewerWidget.h")
+        add_files("examples/gallery/src/ui/widgets/viewers/ImageViewerWidget.cpp")
+
+        -- UI dialogs
+        add_files("examples/gallery/src/ui/dialogs/ExportDialog.h")
+        add_files("examples/gallery/src/ui/dialogs/ExportDialog.cpp")
+        add_files("examples/gallery/src/ui/dialogs/ImportDialog.h")
+        add_files("examples/gallery/src/ui/dialogs/ImportDialog.cpp")
+        add_files("examples/gallery/src/ui/dialogs/IconExportDialog.h")
+        add_files("examples/gallery/src/ui/dialogs/IconExportDialog.cpp")
+        add_files("examples/gallery/src/ui/dialogs/PreferencesDialog.h")
+        add_files("examples/gallery/src/ui/dialogs/PreferencesDialog.cpp")
+
+        -- UI windows
+        add_files("examples/gallery/src/ui/windows/GalleryMainWindow.h")
+        add_files("examples/gallery/src/ui/windows/GalleryMainWindow.cpp")
+
+        -- Main application
         add_files("examples/gallery/src/main/main.cpp")
 
-        add_deps("QtLucide")
+        -- Gallery include directories
         add_includedirs("include")
+        add_includedirs("examples/gallery/src")
+        add_includedirs("examples/gallery/src/core")
+        add_includedirs("examples/gallery/src/core/utils")
+        add_includedirs("examples/gallery/src/core/managers")
+        add_includedirs("examples/gallery/src/core/models")
+        add_includedirs("examples/gallery/src/ui")
+        add_includedirs("examples/gallery/src/ui/themes")
+        add_includedirs("examples/gallery/src/ui/controllers")
+        add_includedirs("examples/gallery/src/ui/widgets")
+        add_includedirs("examples/gallery/src/ui/widgets/grids")
+        add_includedirs("examples/gallery/src/ui/widgets/panels")
+        add_includedirs("examples/gallery/src/ui/widgets/search")
+        add_includedirs("examples/gallery/src/ui/widgets/viewers")
+        add_includedirs("examples/gallery/src/ui/dialogs")
+        add_includedirs("examples/gallery/src/ui/layouts")
+        add_includedirs("examples/gallery/src/ui/windows")
+        add_includedirs("examples/gallery/src/main")
+        add_includedirs("examples/gallery/src/config")
+
+        -- Link QtLucide
+        add_deps("QtLucide")
 
         -- Set output name
         set_basename("QtLucide Gallery")
@@ -237,41 +345,63 @@ if has_config("tests") then
 
         -- Add Qt include directories manually for Windows
         if is_plat("windows") then
-            add_includedirs("D:/msys64/mingw64/include/qt6")
-            add_includedirs("D:/msys64/mingw64/include/qt6/QtCore")
-            add_includedirs("D:/msys64/mingw64/include/qt6/QtGui")
-            add_includedirs("D:/msys64/mingw64/include/qt6/QtWidgets")
-            add_includedirs("D:/msys64/mingw64/include/qt6/QtSvg")
-            add_includedirs("D:/msys64/mingw64/include/qt6/QtSvgWidgets")
-            add_includedirs("D:/msys64/mingw64/include/qt6/QtTest")
-            add_linkdirs("D:/msys64/mingw64/lib")
+            add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6/QtCore")
+            add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6/QtGui")
+            add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6/QtWidgets")
+            add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6/QtSvg")
+            add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6/QtSvgWidgets")
+            add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6/QtTest")
+            add_includedirs("D:/msys64/mingw64/qt6-static/include/qt6")
+            add_linkdirs("D:/msys64/mingw64/qt6-static/lib")
             add_links("Qt6Core", "Qt6Gui", "Qt6Widgets", "Qt6Svg", "Qt6SvgWidgets", "Qt6Test")
         end
 
-        -- Test sources
+        -- Test sources - unit/core tests
         add_files("tests/main.cpp")
-        add_files("tests/test_qtlucide.cpp")
-        add_files("tests/test_icon_loading.cpp")
-        add_files("tests/test_svg_rendering.cpp")
-        add_files("tests/test_gallery_icon_loading.cpp")
+        add_files("tests/unit/core/test_qtlucide.cpp")
+        add_files("tests/unit/core/test_icon_loading.cpp")
+        add_files("tests/unit/core/test_svg_rendering.cpp")
+        add_files("tests/unit/core/test_error_handling.cpp")
+        add_files("tests/unit/core/test_memory_management.cpp")
+        add_files("tests/unit/core/test_boundary_conditions.cpp")
+        add_files("tests/unit/core/test_thread_safety.cpp")
 
         -- Include gallery sources needed for tests
-        add_files("examples/gallery/GalleryLogger.cpp")
-        add_files("examples/gallery/IconMetadataManager.cpp")
-        add_files("examples/gallery/IconItem.cpp")
+        add_files("examples/gallery/src/core/utils/GalleryLogger.cpp")
+        add_files("examples/gallery/src/core/managers/IconMetadataManager.cpp")
+        add_files("examples/gallery/src/core/models/IconItem.cpp")
 
         -- Test headers that need MOC
-        add_files("tests/test_qtlucide.h")
-        add_files("tests/test_icon_loading.h")
-        add_files("tests/test_svg_rendering.h")
-        add_files("tests/test_gallery_icon_loading.h")
-        add_files("examples/gallery/GalleryLogger.h")
-        add_files("examples/gallery/IconMetadataManager.h")
-        add_files("examples/gallery/IconItem.h")
+        add_files("tests/unit/core/test_qtlucide.h")
+        add_files("tests/unit/core/test_icon_loading.h")
+        add_files("tests/unit/core/test_svg_rendering.h")
+        add_files("tests/unit/core/test_error_handling.h")
+        add_files("tests/unit/core/test_memory_management.h")
+        add_files("tests/unit/core/test_boundary_conditions.h")
+        add_files("tests/unit/core/test_thread_safety.h")
+        add_files("examples/gallery/src/core/utils/GalleryLogger.h")
+        add_files("examples/gallery/src/core/managers/IconMetadataManager.h")
+        add_files("examples/gallery/src/core/models/IconItem.h")
 
         add_deps("QtLucide")
         add_includedirs("include")
-        add_includedirs("examples/gallery")
+        add_includedirs("examples/gallery/src")
+        add_includedirs("examples/gallery/src/core")
+        add_includedirs("examples/gallery/src/core/utils")
+        add_includedirs("examples/gallery/src/core/managers")
+        add_includedirs("examples/gallery/src/core/models")
+        add_includedirs("examples/gallery/src/ui")
+        add_includedirs("examples/gallery/src/ui/themes")
+        add_includedirs("examples/gallery/src/ui/layouts")
+        add_includedirs("examples/gallery/src/ui/widgets")
+        add_includedirs("examples/gallery/src/ui/widgets/grids")
+        add_includedirs("examples/gallery/src/ui/widgets/search")
+        add_includedirs("examples/gallery/src/ui/widgets/panels")
+        add_includedirs("examples/gallery/src/ui/widgets/viewers")
+        add_includedirs("examples/gallery/src/ui/dialogs")
+        add_includedirs("examples/gallery/src/ui/windows")
+        add_includedirs("examples/gallery/src/main")
+        add_includedirs("examples/gallery/src/config")
 
         -- Link Qt Test framework
         add_frameworks("QtTest")
