@@ -1,193 +1,208 @@
 /**
- * QtLucide Gallery Application - Search Controller
- *
- * Manages all search and filtering functionality for the gallery application.
- * Provides centralized search logic, filter management, and search history.
- *
- * Features:
- * - Text-based icon search with fuzzy matching
- * - Category and tag filtering
- * - Favorites and recent icons filtering
- * - Search history management
- * - Saved filter profiles
- * - Advanced search options
+ * @file SearchController.h
+ * @brief Search functionality controller with debouncing
+ * @details This file contains the SearchController class which handles debounced
+ *          search input, performs icon name and tag matching, and manages search results.
+ * @author Max Qian
+ * @date 2025
+ * @version 1.0
+ * @copyright MIT Licensed - Copyright 2025 Max Qian. All Rights Reserved.
  */
 
-#ifndef SEARCHCONTROLLER_H
-#define SEARCHCONTROLLER_H
+#ifndef SEARCH_CONTROLLER_H
+#define SEARCH_CONTROLLER_H
 
 #include <QObject>
-#include <QSettings>
 #include <QString>
 #include <QStringList>
-#include <QVariantMap>
+#include <QTimer>
+#include <memory>
 
-// Forward declarations
-class SearchWidget;
-class IconSearchWidget;
-class CategoryFilterWidget;
-class IconMetadataManager;
-class FavoritesManager;
+namespace gallery {
+
+// Forward declaration
+class ContentManager;
 
 /**
- * @brief Controller for search and filtering operations
+ * @class SearchController
+ * @brief Manages search functionality with debouncing
+ * @details This class provides debounced search capabilities across icon names and tags.
+ *          It uses a timer to delay search execution (300ms by default) to avoid
+ *          excessive filtering while the user is still typing.
  *
- * This controller manages all search-related functionality, including:
- * - Search query processing
- * - Filter application and management
- * - Search history tracking
- * - Saved filter profiles
+ * @par Features:
+ * - Debounced search with configurable delay
+ * - Search across icon names and tags
+ * - Case-sensitive and case-insensitive modes
+ * - Search highlighting information
+ * - Performance optimized with minimal CPU usage during typing
+ *
+ * @par Usage:
+ * @code
+ * SearchController searchCtrl(contentManager);
+ * searchCtrl.setSearchDelay(300);
+ *
+ * connect(&searchCtrl, &SearchController::searchResultsReady,
+ *         this, &MyWidget::updateSearchResults);
+ *
+ * // Called as user types
+ * searchCtrl.search("lucide");
+ *
+ * // Get results
+ * QStringList results = searchCtrl.getLastResults();
+ * @endcode
  */
 class SearchController : public QObject {
     Q_OBJECT
 
 public:
     /**
-     * @brief Construct a new Search Controller
-     * @param metadataManager Icon metadata manager for search operations
-     * @param favoritesManager Favorites manager for favorites filtering
-     * @param settings Application settings for persistence
-     * @param parent Parent QObject for memory management
+     * @brief Construct SearchController
+     * @param contentManager The content manager to search within
+     * @param parent The parent QObject
      */
-    explicit SearchController(IconMetadataManager* metadataManager,
-                              FavoritesManager* favoritesManager, QSettings* settings,
-                              QObject* parent = nullptr);
-    ~SearchController();
+    explicit SearchController(ContentManager *contentManager, QObject *parent = nullptr);
 
-    // Widget management
-    void setSearchWidget(SearchWidget* widget);
-    void setIconSearchWidget(IconSearchWidget* widget);
-    void setCategoryFilterWidget(CategoryFilterWidget* widget);
+    /**
+     * @brief Destructor
+     */
+    ~SearchController() override;
 
-    // Search operations
-    void performSearch(const QString& query);
-    void clearSearch();
-    QStringList getFilteredIcons() const;
-    QString getCurrentSearchText() const;
+    /**
+     * @brief Set the debounce delay in milliseconds
+     * @param delayMs The delay duration (default: 300ms)
+     */
+    void setSearchDelay(int delayMs);
 
-    // Filter management
-    void applyCategoryFilter(const QStringList& categories);
-    void applyTagFilter(const QStringList& tags);
-    void applyContributorFilter(const QStringList& contributors);
-    void setFavoritesFilterEnabled(bool enabled);
-    void setRecentFilterEnabled(bool enabled);
-    void clearAllFilters();
+    /**
+     * @brief Get the current debounce delay
+     * @return Delay in milliseconds
+     */
+    [[nodiscard]] int getSearchDelay() const { return m_searchDelay; }
 
-    // Filter profiles
-    bool saveCurrentFilter(const QString& name);
-    bool loadSavedFilter(const QString& name);
-    QStringList getSavedFilterNames() const;
-    bool deleteSavedFilter(const QString& name);
+    /**
+     * @brief Set case sensitivity for search
+     * @param caseSensitive true for case-sensitive, false for case-insensitive
+     */
+    void setCaseSensitive(bool caseSensitive);
 
-    // Search history
-    void addToSearchHistory(const QString& query);
-    QStringList getSearchHistory() const;
-    void clearSearchHistory();
+    /**
+     * @brief Get case sensitivity setting
+     * @return true if case-sensitive, false otherwise
+     */
+    [[nodiscard]] bool isCaseSensitive() const { return m_caseSensitive; }
 
-    // Advanced search
-    void showAdvancedSearch();
-    void setFuzzySearchEnabled(bool enabled);
-    void setSearchInDescriptions(bool enabled);
+    /**
+     * @brief Perform a search with debouncing
+     * @param searchText The text to search for
+     *
+     * This method is debounced - the actual search will be delayed by the
+     * configured delay period. Calling this multiple times will reset the timer.
+     */
+    void search(const QString &searchText);
+
+    /**
+     * @brief Perform immediate search without debouncing
+     * @param searchText The text to search for
+     * @return List of matching icon names
+     *
+     * This method performs the search immediately without any delay.
+     */
+    QStringList searchImmediate(const QString &searchText);
+
+    /**
+     * @brief Clear the search and reset to all icons
+     */
+    void clear();
+
+    /**
+     * @brief Get the last search results
+     * @return List of icon names matching the last search
+     */
+    [[nodiscard]] QStringList getLastResults() const { return m_lastResults; }
+
+    /**
+     * @brief Get the current search text
+     * @return Current search query
+     */
+    [[nodiscard]] QString getCurrentSearchText() const { return m_currentSearchText; }
+
+    /**
+     * @brief Check if search results contain matches
+     * @return true if there are matching results, false if no matches
+     */
+    [[nodiscard]] bool hasResults() const { return !m_lastResults.isEmpty(); }
+
+    /**
+     * @brief Get the count of search results
+     * @return Number of icons in the last results
+     */
+    [[nodiscard]] int getResultCount() const { return m_lastResults.count(); }
+
+    /**
+     * @brief Get highlight information for a search result
+     * @param iconName The icon name to get highlight info for
+     * @return Pair of (matchType, highlightPositions) where matchType is
+     *         0 for name match, 1 for tag match
+     *
+     * This can be used by UI to highlight matching portions of icon names/tags.
+     */
+    [[nodiscard]] QPair<int, QList<int>> getHighlightInfo(const QString &iconName) const;
 
 signals:
     /**
-     * @brief Emitted when search results change
-     * @param filteredIcons List of icon names matching current filters
-     * @param totalIcons Total number of available icons
+     * @brief Emitted when search results are ready
+     * @param results List of icon names matching the search criteria
+     * @param searchText The search text that produced these results
+     *
+     * This signal is emitted after the debounce delay when a new search is performed.
      */
-    void searchResultsChanged(const QStringList& filteredIcons, int totalIcons);
+    void searchResultsReady(const QStringList &results, const QString &searchText);
 
     /**
-     * @brief Emitted when filter state changes
-     * @param activeFilters Map of active filter types and their values
+     * @brief Emitted when search text changes
+     * @param searchText The new search text
      */
-    void filtersChanged(const QVariantMap& activeFilters);
+    void searchTextChanged(const QString &searchText);
 
     /**
-     * @brief Emitted when search history is updated
-     * @param history List of recent search queries
+     * @brief Emitted when search is cleared
      */
-    void searchHistoryUpdated(const QStringList& history);
+    void searchCleared();
 
+private slots:
     /**
-     * @brief Emitted to request status bar update
-     * @param message Status message to display
+     * @brief Perform the actual search after debounce delay
      */
-    void statusMessageRequested(const QString& message);
-
-public slots:
-    // Slots for widget signals
-    void onSearchTextChanged(const QString& text);
-    void onSearchClicked();
-    void onClearSearchClicked();
-    void onCategoryFilterChanged(const QStringList& categories);
-    void onTagFilterChanged(const QStringList& tags);
-    void onContributorFilterChanged(const QStringList& contributors);
-    void onFavoritesFilterToggled(bool enabled);
-    void onRecentFilterToggled(bool enabled);
-    void onClearAllFiltersClicked();
-    void onSaveCurrentFilterClicked();
-    void onLoadSavedFilterClicked();
-    void onSearchHistorySelected(const QString& query);
-    void onAdvancedSearchRequested();
+    void performSearch();
 
 private:
-    // Search implementation
-    void executeSearch();
-    QStringList fuzzySearch(const QString& query, const QStringList& items);
-    bool matchesSearchQuery(const QString& iconName, const QString& query);
-    void updateSearchResults();
+    /**
+     * @brief Perform case-sensitive icon name matching
+     * @param searchText The search text
+     * @param iconNames The icon names to search through
+     * @return Matching icon names
+     */
+    [[nodiscard]] QStringList matchIconNames(const QString &searchText,
+                                             const QStringList &iconNames) const;
 
-    // Filter implementation
-    void applyActiveFilters();
-    QStringList applyFilters(const QStringList& icons);
-    bool passesFilters(const QString& iconName);
+    /**
+     * @brief Perform case-sensitive tag matching
+     * @param searchText The search text
+     * @return Icon names with matching tags
+     */
+    [[nodiscard]] QStringList matchIconTags(const QString &searchText) const;
 
-    // Persistence
-    void loadSearchHistory();
-    void saveSearchHistory();
-    void loadSavedFilters();
-    void saveSavedFilters();
-
-    // Helper methods
-    void connectWidgetSignals();
-    void updateWidgetStates();
-    QVariantMap getActiveFiltersMap() const;
-
-    // Dependencies
-    IconMetadataManager* m_metadataManager;
-    FavoritesManager* m_favoritesManager;
-    QSettings* m_settings;
-
-    // Widgets (not owned)
-    SearchWidget* m_searchWidget;
-    IconSearchWidget* m_iconSearchWidget;
-    CategoryFilterWidget* m_categoryFilterWidget;
-
-    // Search state
-    QString m_currentSearchText;
-    QStringList m_filteredIcons;
-    QStringList m_allIcons;
-
-    // Filter state
-    QStringList m_activeCategories;
-    QStringList m_activeTags;
-    QStringList m_activeContributors;
-    bool m_favoritesFilterEnabled;
-    bool m_recentFilterEnabled;
-
-    // Search options
-    bool m_fuzzySearchEnabled;
-    bool m_searchInDescriptions;
-
-    // History and saved filters
-    QStringList m_searchHistory;
-    QMap<QString, QVariantMap> m_savedFilters;
-
-    // Constants
-    static constexpr int MAX_SEARCH_HISTORY = 20;
-    static constexpr const char* SEARCH_HISTORY_KEY = "SearchHistory";
-    static constexpr const char* SAVED_FILTERS_KEY = "SavedFilters";
+    // Member variables
+    ContentManager *m_contentManager = nullptr;         ///< Content manager reference
+    std::unique_ptr<QTimer> m_searchTimer;              ///< Debounce timer
+    QString m_currentSearchText;                        ///< Current search query
+    QString m_pendingSearchText;                        ///< Pending search query
+    QStringList m_lastResults;                          ///< Last search results
+    int m_searchDelay = 300;                            ///< Debounce delay in ms
+    bool m_caseSensitive = false;                       ///< Case sensitivity flag
 };
 
-#endif // SEARCHCONTROLLER_H
+}  // namespace gallery
+
+#endif  // SEARCH_CONTROLLER_H

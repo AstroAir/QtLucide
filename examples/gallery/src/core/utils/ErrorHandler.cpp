@@ -1,349 +1,258 @@
 /**
- * QtLucide Gallery Application - Error Handler Implementation
+ * @file ErrorHandler.cpp
+ * @brief Implementation of the ErrorHandler utility class
+ * @details Provides centralized error handling for the gallery application
+ * @author Max Qian
+ * @date 2025
+ * @version 1.0
+ * @copyright MIT Licensed - Copyright 2025 Max Qian. All Rights Reserved.
  */
 
 #include "ErrorHandler.h"
 #include "GalleryLogger.h"
 
-#include <QApplication>
-#include <QDateTime>
-#include <QDir>
-#include <QFileInfo>
-#include <QImageReader>
-#include <QMimeDatabase>
-#include <QMimeType>
-#include <QRegularExpression>
-#include <QStandardPaths>
-#include <QStorageInfo>
+#include <QDebug>
 
-// Static instance
-ErrorHandler* ErrorHandler::s_instance = nullptr;
+namespace gallery {
 
 ErrorHandler::ErrorHandler(QObject* parent)
-    : QObject(parent), m_maxHistorySize(1000), m_showUserDialogs(true), m_logToFile(true) {}
-
-ErrorHandler* ErrorHandler::instance() {
-    if (!s_instance) {
-        s_instance = new ErrorHandler();
-    }
-    return s_instance;
+    : QObject(parent) {
+    GalleryLogger::debug("error_handler", "ErrorHandler instance created");
 }
 
-void ErrorHandler::reportError(const QString& message, ErrorSeverity severity,
-                               ErrorCategory category, const QString& context,
-                               const QString& details) {
+ErrorHandler::~ErrorHandler() {
+    GalleryLogger::debug("error_handler", "ErrorHandler instance destroyed");
+}
+
+void ErrorHandler::reportError(const ErrorInfo& error) {
+    m_lastError = error;
+    m_hasError = true;
+
+    // Log the error
+    logError(error);
+
+    // Emit the signal
+    Q_EMIT errorOccurred(error);
+
+    // Emit critical signal if applicable
+    if (error.severity == ErrorSeverity::Critical) {
+        Q_EMIT criticalErrorOccurred(error.userMessage);
+    }
+}
+
+void ErrorHandler::reportError(ErrorType type, const QString& userMessage,
+                              const QString& technicalMessage) {
     ErrorInfo error;
-    error.message = message;
-    error.details = details;
-    error.context = context;
-    error.severity = severity;
-    error.category = category;
-    error.timestamp = QDateTime::currentDateTime().toString(Qt::ISODate);
+    error.type = type;
+    error.userMessage = userMessage;
+    error.technicalMessage = technicalMessage;
+    error.severity = (type == ErrorType::OutOfMemory || type == ErrorType::Unknown)
+                         ? ErrorSeverity::Critical
+                         : ErrorSeverity::Error;
 
-    instance()->addToHistory(error);
-    instance()->logError(error);
+    reportError(error);
+}
 
-    // Emit signals
-    emit instance() -> errorReported(error);
-    if (severity == ErrorSeverity::Critical) {
-        emit instance() -> criticalErrorReported(error);
+void ErrorHandler::reportFileError(ErrorType type, const QString& filePath,
+                                  const QString& details) {
+    ErrorInfo error;
+    error.type = type;
+    error.context = filePath;
+
+    QString typeStr = errorTypeToString(type);
+
+    switch (type) {
+        case ErrorType::FileNotFound:
+            error.userMessage = "File not found";
+            error.technicalMessage = QString("File '%1' does not exist").arg(filePath);
+            error.suggestedAction = "Check the file path and try again";
+            break;
+
+        case ErrorType::FileReadError:
+            error.userMessage = "Cannot read file";
+            error.technicalMessage =
+                QString("Failed to read file '%1': %2").arg(filePath, details);
+            error.suggestedAction = "Check file permissions and try again";
+            break;
+
+        case ErrorType::FileWriteError:
+            error.userMessage = "Cannot write file";
+            error.technicalMessage =
+                QString("Failed to write to file '%1': %2").arg(filePath, details);
+            error.suggestedAction = "Check disk space and file permissions";
+            break;
+
+        case ErrorType::PermissionDenied:
+            error.userMessage = "Permission denied";
+            error.technicalMessage =
+                QString("Permission denied accessing '%1'").arg(filePath);
+            error.suggestedAction = "Check file permissions and try again";
+            break;
+
+        default:
+            error.userMessage = QString("File operation failed: %1").arg(typeStr);
+            error.technicalMessage = QString("File operation failed for '%1': %2")
+                                         .arg(filePath, details);
+            break;
+    }
+
+    error.severity = ErrorSeverity::Error;
+    reportError(error);
+}
+
+ErrorInfo ErrorHandler::lastError() const {
+    return m_lastError;
+}
+
+bool ErrorHandler::hasError() const {
+    return m_hasError;
+}
+
+void ErrorHandler::clearError() {
+    if (m_hasError) {
+        m_hasError = false;
+        m_lastError = ErrorInfo();
+        GalleryLogger::debug("error_handler", "Error cleared");
+        Q_EMIT errorCleared();
     }
 }
 
-void ErrorHandler::reportException(const GalleryException& exception, ErrorSeverity severity,
-                                   ErrorCategory category) {
-    reportError(exception.message(), severity, category, exception.context());
+QString ErrorHandler::getUserMessage(ErrorType type) {
+    switch (type) {
+        case ErrorType::FileNotFound:
+            return "The requested file could not be found";
+
+        case ErrorType::FileReadError:
+            return "Error reading file. Please check the file and try again";
+
+        case ErrorType::FileWriteError:
+            return "Error writing file. Check disk space and permissions";
+
+        case ErrorType::PermissionDenied:
+            return "Permission denied. You do not have sufficient privileges";
+
+        case ErrorType::InvalidFormat:
+            return "The file format is invalid or not supported";
+
+        case ErrorType::CorruptedData:
+            return "Data is corrupted. Please try using a valid file";
+
+        case ErrorType::OutOfMemory:
+            return "Not enough memory to complete the operation";
+
+        case ErrorType::OperationFailed:
+            return "The operation failed. Please try again";
+
+        case ErrorType::InvalidInput:
+            return "Invalid input provided. Please check your input and try again";
+
+        case ErrorType::NotInitialized:
+            return "A required component has not been initialized";
+
+        case ErrorType::AlreadyExists:
+            return "This item already exists";
+
+        case ErrorType::Timeout:
+            return "The operation timed out. Please try again";
+
+        case ErrorType::Unknown:
+            return "An unknown error occurred";
+
+        default:
+            return "An unexpected error occurred";
+    }
 }
 
-void ErrorHandler::reportSystemError(const QString& operation, const QString& systemError,
-                                     ErrorCategory category) {
-    QString message = QString("System error during %1: %2").arg(operation).arg(systemError);
-    reportError(message, ErrorSeverity::Error, category);
-}
+ErrorType ErrorHandler::errorTypeFromDescription(const QString& description) {
+    QString lower = description.toLower();
 
-void ErrorHandler::showErrorDialog(QWidget* parent, const QString& title, const QString& message,
-                                   const QString& details) {
-    if (!instance()->m_showUserDialogs)
-        return;
-
-    QMessageBox msgBox(parent);
-    msgBox.setIcon(QMessageBox::Critical);
-    msgBox.setWindowTitle(title);
-    msgBox.setText(message);
-    if (!details.isEmpty()) {
-        msgBox.setDetailedText(details);
-    }
-    msgBox.setStandardButtons(QMessageBox::Ok);
-    msgBox.exec();
-}
-
-void ErrorHandler::showWarningDialog(QWidget* parent, const QString& title,
-                                     const QString& message) {
-    if (!instance()->m_showUserDialogs)
-        return;
-
-    QMessageBox::warning(parent, title, message);
-}
-
-void ErrorHandler::showInfoDialog(QWidget* parent, const QString& title, const QString& message) {
-    if (!instance()->m_showUserDialogs)
-        return;
-
-    QMessageBox::information(parent, title, message);
-}
-
-QMessageBox::StandardButton ErrorHandler::showQuestionDialog(QWidget* parent, const QString& title,
-                                                             const QString& message,
-                                                             QMessageBox::StandardButtons buttons) {
-    if (!instance()->m_showUserDialogs)
-        return QMessageBox::No;
-
-    return QMessageBox::question(parent, title, message, buttons);
-}
-
-bool ErrorHandler::validateFilePath(const QString& filePath, QString* errorMessage) {
-    if (filePath.isEmpty()) {
-        if (errorMessage)
-            *errorMessage = "File path is empty";
-        return false;
+    if (lower.contains("not found") || lower.contains("no such")) {
+        return ErrorType::FileNotFound;
+    } else if (lower.contains("read") && lower.contains("error")) {
+        return ErrorType::FileReadError;
+    } else if (lower.contains("write") && lower.contains("error")) {
+        return ErrorType::FileWriteError;
+    } else if (lower.contains("permission")) {
+        return ErrorType::PermissionDenied;
+    } else if (lower.contains("format")) {
+        return ErrorType::InvalidFormat;
+    } else if (lower.contains("corrupt")) {
+        return ErrorType::CorruptedData;
+    } else if (lower.contains("memory")) {
+        return ErrorType::OutOfMemory;
+    } else if (lower.contains("timeout")) {
+        return ErrorType::Timeout;
+    } else if (lower.contains("invalid")) {
+        return ErrorType::InvalidInput;
+    } else if (lower.contains("exists")) {
+        return ErrorType::AlreadyExists;
     }
 
-    QFileInfo fileInfo(filePath);
-    if (!fileInfo.exists()) {
-        if (errorMessage)
-            *errorMessage = QString("File does not exist: %1").arg(filePath);
-        return false;
-    }
-
-    if (!fileInfo.isFile()) {
-        if (errorMessage)
-            *errorMessage = QString("Path is not a file: %1").arg(filePath);
-        return false;
-    }
-
-    if (!fileInfo.isReadable()) {
-        if (errorMessage)
-            *errorMessage = QString("File is not readable: %1").arg(filePath);
-        return false;
-    }
-
-    return true;
-}
-
-bool ErrorHandler::validateDirectoryPath(const QString& dirPath, QString* errorMessage) {
-    if (dirPath.isEmpty()) {
-        if (errorMessage)
-            *errorMessage = "Directory path is empty";
-        return false;
-    }
-
-    QDir dir(dirPath);
-    if (!dir.exists()) {
-        if (errorMessage)
-            *errorMessage = QString("Directory does not exist: %1").arg(dirPath);
-        return false;
-    }
-
-    QFileInfo dirInfo(dirPath);
-    if (!dirInfo.isReadable()) {
-        if (errorMessage)
-            *errorMessage = QString("Directory is not readable: %1").arg(dirPath);
-        return false;
-    }
-
-    return true;
-}
-
-bool ErrorHandler::validateFileName(const QString& fileName, QString* errorMessage) {
-    if (fileName.isEmpty()) {
-        if (errorMessage)
-            *errorMessage = "File name is empty";
-        return false;
-    }
-
-    // Check for invalid characters
-    QRegularExpression invalidChars(R"([<>:"/\\|?*])");
-    if (invalidChars.match(fileName).hasMatch()) {
-        if (errorMessage)
-            *errorMessage = QString("File name contains invalid characters: %1").arg(fileName);
-        return false;
-    }
-
-    // Check length
-    if (fileName.length() > 255) {
-        if (errorMessage)
-            *errorMessage = "File name is too long (max 255 characters)";
-        return false;
-    }
-
-    return true;
-}
-
-bool ErrorHandler::validateImageFile(const QString& filePath, QString* errorMessage) {
-    if (!validateFilePath(filePath, errorMessage)) {
-        return false;
-    }
-
-    QMimeDatabase mimeDb;
-    QMimeType mimeType = mimeDb.mimeTypeForFile(filePath);
-
-    if (!mimeType.name().startsWith("image/")) {
-        if (errorMessage)
-            *errorMessage = QString("File is not an image: %1").arg(filePath);
-        return false;
-    }
-
-    // Try to read the image
-    QImageReader reader(filePath);
-    if (!reader.canRead()) {
-        if (errorMessage)
-            *errorMessage =
-                QString("Cannot read image file: %1 - %2").arg(filePath).arg(reader.errorString());
-        return false;
-    }
-
-    return true;
-}
-
-bool ErrorHandler::validateIconName(const QString& iconName, QString* errorMessage) {
-    if (iconName.isEmpty()) {
-        if (errorMessage)
-            *errorMessage = "Icon name is empty";
-        return false;
-    }
-
-    // Check for valid icon name pattern (lowercase, hyphens, numbers)
-    QRegularExpression validPattern("^[a-z0-9-]+$");
-    if (!validPattern.match(iconName).hasMatch()) {
-        if (errorMessage)
-            *errorMessage = QString("Invalid icon name format: %1").arg(iconName);
-        return false;
-    }
-
-    return true;
-}
-
-bool ErrorHandler::validateExportSettings(const QVariantMap& settings, QStringList* errors) {
-    QStringList validationErrors;
-
-    // Check output directory
-    QString outputDir = settings.value("outputDirectory").toString();
-    if (outputDir.isEmpty()) {
-        validationErrors << "Output directory is not specified";
-    } else if (!QDir(outputDir).exists()) {
-        validationErrors << "Output directory does not exist";
-    }
-
-    // Check icon size
-    int iconSize = settings.value("iconSize", 0).toInt();
-    if (iconSize <= 0 || iconSize > 2048) {
-        validationErrors << "Icon size must be between 1 and 2048 pixels";
-    }
-
-    // Check format
-    QString format = settings.value("format").toString();
-    QStringList supportedFormats = {"PNG", "SVG", "JPG", "JPEG", "BMP", "ICO"};
-    if (!supportedFormats.contains(format.toUpper())) {
-        validationErrors << QString("Unsupported export format: %1").arg(format);
-    }
-
-    if (errors)
-        *errors = validationErrors;
-    return validationErrors.isEmpty();
-}
-
-bool ErrorHandler::ensureDirectoryExists(const QString& dirPath, QString* errorMessage) {
-    QDir dir;
-    if (!dir.mkpath(dirPath)) {
-        if (errorMessage)
-            *errorMessage = QString("Failed to create directory: %1").arg(dirPath);
-        return false;
-    }
-    return true;
-}
-
-bool ErrorHandler::checkDiskSpace(const QString& path, qint64 requiredBytes,
-                                  QString* errorMessage) {
-    QStorageInfo storage(path);
-    if (!storage.isValid()) {
-        if (errorMessage)
-            *errorMessage = QString("Cannot access storage information for: %1").arg(path);
-        return false;
-    }
-
-    if (storage.bytesAvailable() < requiredBytes) {
-        if (errorMessage) {
-            *errorMessage = QString("Insufficient disk space. Required: %1 MB, Available: %2 MB")
-                                .arg(requiredBytes / 1024 / 1024)
-                                .arg(storage.bytesAvailable() / 1024 / 1024);
-        }
-        return false;
-    }
-
-    return true;
-}
-
-bool ErrorHandler::checkFilePermissions(const QString& filePath, QFileDevice::Permissions required,
-                                        QString* errorMessage) {
-    QFileInfo fileInfo(filePath);
-    if (!fileInfo.exists()) {
-        if (errorMessage)
-            *errorMessage = QString("File does not exist: %1").arg(filePath);
-        return false;
-    }
-
-    QFile::Permissions current = fileInfo.permissions();
-    if ((current & required) != required) {
-        if (errorMessage)
-            *errorMessage = QString("Insufficient file permissions: %1").arg(filePath);
-        return false;
-    }
-
-    return true;
-}
-
-void ErrorHandler::addToHistory(const ErrorInfo& error) {
-    m_errorHistory.append(error);
-
-    // Limit history size
-    while (m_errorHistory.size() > m_maxHistorySize) {
-        m_errorHistory.removeFirst();
-    }
+    return ErrorType::Unknown;
 }
 
 void ErrorHandler::logError(const ErrorInfo& error) {
-    if (!m_logToFile)
-        return;
+    LogLevel level;
 
-    QString logMessage = formatErrorMessage(error);
-
-    // Use the gallery logger if available
     switch (error.severity) {
         case ErrorSeverity::Info:
-            GALLERY_LOG_INFO(galleryMain, logMessage);
+            level = LogLevel::Info;
             break;
         case ErrorSeverity::Warning:
-            GALLERY_LOG_WARNING(galleryMain, logMessage);
+            level = LogLevel::Warning;
             break;
         case ErrorSeverity::Error:
-            GALLERY_LOG_ERROR(galleryMain, logMessage);
+            level = LogLevel::Error;
             break;
         case ErrorSeverity::Critical:
-            GALLERY_LOG_CRITICAL(galleryMain, logMessage);
+            level = LogLevel::Critical;
+            break;
+        default:
+            level = LogLevel::Error;
             break;
     }
-}
 
-QString ErrorHandler::formatErrorMessage(const ErrorInfo& error) const {
-    QString message = QString("[%1] %2").arg(error.timestamp).arg(error.message);
+    QString typeStr = errorTypeToString(error.type);
+    QString logMessage = QString("[%1] %2").arg(typeStr, error.technicalMessage);
 
     if (!error.context.isEmpty()) {
-        message += QString(" (Context: %1)").arg(error.context);
+        logMessage += QString(" (Context: %1)").arg(error.context);
     }
 
-    if (!error.details.isEmpty()) {
-        message += QString(" - Details: %1").arg(error.details);
-    }
-
-    return message;
+    GalleryLogger::log(level, "error_handler", logMessage);
 }
+
+QString ErrorHandler::errorTypeToString(ErrorType type) {
+    switch (type) {
+        case ErrorType::FileNotFound:
+            return "FileNotFound";
+        case ErrorType::FileReadError:
+            return "FileReadError";
+        case ErrorType::FileWriteError:
+            return "FileWriteError";
+        case ErrorType::PermissionDenied:
+            return "PermissionDenied";
+        case ErrorType::InvalidFormat:
+            return "InvalidFormat";
+        case ErrorType::CorruptedData:
+            return "CorruptedData";
+        case ErrorType::OutOfMemory:
+            return "OutOfMemory";
+        case ErrorType::OperationFailed:
+            return "OperationFailed";
+        case ErrorType::InvalidInput:
+            return "InvalidInput";
+        case ErrorType::NotInitialized:
+            return "NotInitialized";
+        case ErrorType::AlreadyExists:
+            return "AlreadyExists";
+        case ErrorType::Timeout:
+            return "Timeout";
+        case ErrorType::Unknown:
+            return "Unknown";
+        default:
+            return "UnknownError";
+    }
+}
+
+} // namespace gallery

@@ -181,10 +181,14 @@ static const QString OPACITY = "opacity";
 
 ### Default Values
 
+Default values are derived from the application palette at initialization:
+
 ```cpp
-// Default option values
-QColor DEFAULT_COLOR = Qt::black;
-QColor DEFAULT_DISABLED_COLOR = Qt::gray;
+// Default option values (from QPalette)
+QColor DEFAULT_COLOR = palette.color(QPalette::Normal, QPalette::Text);
+QColor DEFAULT_DISABLED_COLOR = palette.color(QPalette::Disabled, QPalette::Text);
+QColor DEFAULT_ACTIVE_COLOR = palette.color(QPalette::Active, QPalette::Text);
+QColor DEFAULT_SELECTED_COLOR = palette.color(QPalette::Active, QPalette::HighlightedText);
 double DEFAULT_SCALE_FACTOR = 0.9;
 double DEFAULT_OPACITY = 1.0;
 ```
@@ -193,12 +197,13 @@ double DEFAULT_OPACITY = 1.0;
 
 | Option | Type | Range | Default |
 |--------|------|-------|---------|
-| `color` | `QColor` | Any valid QColor | `Qt::black` |
-| `color-disabled` | `QColor` | Any valid QColor | Lighter primary |
-| `color-active` | `QColor` | Any valid QColor | Primary color |
-| `color-selected` | `QColor` | Any valid QColor | Primary color |
-| `scale-factor` | `double` | 0.1 to 2.0 | 0.9 |
+| `color` | `QColor` | Any valid QColor | `QPalette::Text` |
+| `color-disabled` | `QColor` | Any valid QColor | `QPalette::Text` (Disabled) |
+| `color-active` | `QColor` | Any valid QColor | `QPalette::Text` (Active) |
+| `color-selected` | `QColor` | Any valid QColor | `QPalette::HighlightedText` |
+| `scale-factor` | `double` | 0.1 to 10.0 | 0.9 |
 | `opacity` | `double` | 0.0 to 1.0 | 1.0 |
+| `stroke-width` | `double` | 0.5 to 4.0 | 2.0 |
 
 ## Version Information
 
@@ -286,26 +291,37 @@ namespace lucide {
     constexpr int MIN_ICON_SIZE = 8;      // Minimum renderable size
     constexpr int MAX_ICON_SIZE = 1024;   // Maximum renderable size
     constexpr double MIN_SCALE_FACTOR = 0.1;  // Minimum scale factor
-    constexpr double MAX_SCALE_FACTOR = 2.0;  // Maximum scale factor
+    constexpr double MAX_SCALE_FACTOR = 10.0; // Maximum scale factor
+    constexpr double MIN_STROKE_WIDTH = 0.5;  // Minimum stroke width
+    constexpr double MAX_STROKE_WIDTH = 4.0;  // Maximum stroke width
+    constexpr double DEFAULT_STROKE_WIDTH = 2.0; // Default stroke width
 }
 ```
 
-## Error Codes
+## Error Handling
 
-### Return Values
+### Invalid Icon Handling
 
 ```cpp
-// Icon ID for invalid/not found icons
-constexpr Icons INVALID_ICON = static_cast<Icons>(-1);
+// When an invalid icon name is requested
+QIcon icon = lucide.icon("nonexistent-icon");
+if (icon.isNull()) {
+    qWarning() << "Icon not found";
+}
 
-// Return codes for initialization
-enum class InitResult {
-    Success = 0,
-    ResourceLoadFailed = 1,
-    QtNotAvailable = 2,
-    UnknownError = 99
-};
+// The default fallback icon ID used internally
+// When stringToIconId fails, it returns Icons::a_arrow_down
+Icons fallbackId = lucide.stringToIconId("invalid");  // Returns Icons::a_arrow_down
 ```
+
+### Initialization Warnings
+
+QtLucide logs warnings for:
+
+- Failed resource initialization
+- Invalid icon IDs in painter
+- Missing SVG data
+- Null painter or lucide instance
 
 ## See Also
 

@@ -1,283 +1,205 @@
 /**
- * QtLucide Gallery Application - Responsive Layout Manager
- *
- * Advanced layout management system that provides:
- * - Responsive design with breakpoints
- * - Adaptive grid layouts with optimal column calculation
- * - Smart sidebar and panel management
- * - Smooth layout transitions and animations
- * - Screen size detection and optimization
- * - Dynamic spacing and sizing adjustments
- * - Mobile-friendly responsive behavior
+ * @file ResponsiveLayoutManager.h
+ * @brief Responsive layout management for dynamic column calculation
+ * @details This file contains the ResponsiveLayoutManager class which calculates
+ *          optimal grid column counts based on viewport width and icon size.
+ * @author Max Qian
+ * @date 2025
+ * @version 1.0
+ * @copyright MIT Licensed - Copyright 2025 Max Qian. All Rights Reserved.
  */
 
-#ifndef RESPONSIVELAYOUTMANAGER_H
-#define RESPONSIVELAYOUTMANAGER_H
+#ifndef RESPONSIVE_LAYOUT_MANAGER_H
+#define RESPONSIVE_LAYOUT_MANAGER_H
 
-#include <QApplication>
-#include <QEasingCurve>
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QHash>
-#include <QMargins>
 #include <QObject>
-#include <QParallelAnimationGroup>
-#include <QPropertyAnimation>
-#include <QResizeEvent>
-#include <QScreen>
-#include <QScrollArea>
-#include <QSequentialAnimationGroup>
 #include <QSize>
-#include <QSplitter>
-#include <QTimer>
-#include <QVBoxLayout>
-#include <QVariant>
-#include <QWidget>
+
+namespace gallery {
 
 /**
- * @brief Advanced responsive layout management for the Gallery application
+ * @class ResponsiveLayoutManager
+ * @brief Manages responsive grid layout calculations
+ * @details This class calculates the optimal number of columns for an icon grid
+ *          based on the viewport width, icon size, and spacing constraints.
+ *          It emits signals when the layout needs to be updated.
+ *
+ * @par Features:
+ * - Automatic column calculation based on viewport size
+ * - Minimum width constraints for icons
+ * - Responsive behavior on window resize
+ * - Signal-based notification system
+ *
+ * @par Usage:
+ * @code
+ * ResponsiveLayoutManager layoutMgr;
+ * layoutMgr.setViewportSize(1200, 800);
+ * layoutMgr.setIconSize(48);
+ * int cols = layoutMgr.getColumnCount();
+ *
+ * connect(&layoutMgr, &ResponsiveLayoutManager::layoutChanged,
+ *         this, &MyWidget::updateLayout);
+ * @endcode
  */
 class ResponsiveLayoutManager : public QObject {
     Q_OBJECT
 
 public:
-    enum ScreenSize {
-        Mobile = 0,      // < 640px width (phones)
-        MobileLarge = 1, // 640-768px width (large phones)
-        Tablet = 2,      // 768-1024px width (tablets)
-        Desktop = 3,     // 1024-1366px width (laptops)
-        Large = 4,       // 1366-1920px width (desktops)
-        XLarge = 5,      // 1920-2560px width (large monitors)
-        XXLarge = 6      // > 2560px width (ultra-wide/4K+)
-    };
-    Q_ENUM(ScreenSize)
+    /**
+     * @brief Construct ResponsiveLayoutManager
+     * @param parent The parent QObject
+     */
+    explicit ResponsiveLayoutManager(QObject *parent = nullptr);
 
-    enum LayoutMode {
-        CompactMode = 0,    // Single column, minimal spacing (mobile)
-        StandardMode = 1,   // Two columns, standard spacing (tablet)
-        WideMode = 2,       // Three columns, generous spacing (desktop)
-        UltraWideMode = 3,  // Four columns, maximum spacing (large)
-        ExtremeWideMode = 4 // Five+ columns, ultra spacing (ultra-wide)
-    };
-    Q_ENUM(LayoutMode)
+    /**
+     * @brief Set the viewport/container size
+     * @param width The viewport width in pixels
+     * @param height The viewport height in pixels
+     */
+    void setViewportSize(int width, int height);
 
-    enum PanelState { Hidden = 0, Collapsed = 1, Visible = 2, Expanded = 3 };
-    Q_ENUM(PanelState)
+    /**
+     * @brief Set the icon size
+     * @param size The icon size in pixels (both width and height)
+     */
+    void setIconSize(int size);
 
-    struct LayoutConfig {
-        ScreenSize screenSize;
-        LayoutMode layoutMode;
-        int columns;
-        int itemSize;
-        int spacing;
-        QMargins margins;
-        bool showSidebar;
-        bool showDetailsPanel;
-        PanelState sidebarState;
-        PanelState detailsState;
-        QList<int> splitterSizes;
-    };
+    /**
+     * @brief Set the spacing between icons
+     * @param spacing The spacing in pixels
+     */
+    void setSpacing(int spacing);
 
-    explicit ResponsiveLayoutManager(QWidget* mainWidget, QObject* parent = nullptr);
-    ~ResponsiveLayoutManager();
+    /**
+     * @brief Set the minimum icon width
+     * @param minWidth Minimum icon width in pixels (default: 24)
+     */
+    void setMinimumIconWidth(int minWidth);
 
-    // Screen size and layout detection
-    ScreenSize currentScreenSize() const { return m_currentScreenSize; }
-    LayoutMode currentLayoutMode() const { return m_currentLayoutMode; }
-    QSize currentScreenResolution() const;
-    bool isMobileLayout() const { return m_currentScreenSize <= MobileLarge; }
-    bool isTabletLayout() const { return m_currentScreenSize == Tablet; }
-    bool isDesktopLayout() const { return m_currentScreenSize >= Desktop; }
-    bool isLargeLayout() const { return m_currentScreenSize >= Large; }
-    bool isUltraWideLayout() const { return m_currentScreenSize >= XLarge; }
+    /**
+     * @brief Set the padding around the grid
+     * @param left Padding on the left
+     * @param top Padding on the top
+     * @param right Padding on the right
+     * @param bottom Padding on the bottom
+     */
+    void setPadding(int left, int top, int right, int bottom);
 
-    // Layout configuration
-    void setLayoutMode(LayoutMode mode);
-    void setAdaptiveMode(bool enabled) { m_adaptiveMode = enabled; }
-    bool adaptiveMode() const { return m_adaptiveMode; }
+    /**
+     * @brief Get the optimal column count for the current configuration
+     * @return The calculated number of columns
+     */
+    [[nodiscard]] int getColumnCount() const;
 
-    // Grid layout management
-    void setGridWidget(QWidget* gridWidget);
-    void setOptimalColumns(int itemWidth, int minColumns = 1, int maxColumns = 10);
-    int calculateOptimalColumns(int containerWidth, int itemWidth, int spacing = 8) const;
-    void updateGridLayout();
+    /**
+     * @brief Get the current viewport width
+     * @return Width in pixels
+     */
+    [[nodiscard]] int getViewportWidth() const { return m_viewportWidth; }
 
-    // Splitter management
-    void addSplitter(const QString& name, QSplitter* splitter);
-    void setSplitterSizes(const QString& name, const QList<int>& sizes);
-    QList<int> getSplitterSizes(const QString& name) const;
-    void setSplitterCollapsible(const QString& name, int index, bool collapsible);
+    /**
+     * @brief Get the current viewport height
+     * @return Height in pixels
+     */
+    [[nodiscard]] int getViewportHeight() const { return m_viewportHeight; }
 
-    // Panel management
-    void addPanel(const QString& name, QWidget* panel, PanelState initialState = Visible);
-    void setPanelState(const QString& name, PanelState state, bool animated = true);
-    PanelState getPanelState(const QString& name) const;
-    void togglePanel(const QString& name, bool animated = true);
+    /**
+     * @brief Get the current icon size
+     * @return Icon size in pixels
+     */
+    [[nodiscard]] int getIconSize() const { return m_iconSize; }
 
-    // Animation settings
-    void setAnimationsEnabled(bool enabled) { m_animationsEnabled = enabled; }
-    bool animationsEnabled() const { return m_animationsEnabled; }
-    void setAnimationDuration(int duration) { m_animationDuration = duration; }
-    int animationDuration() const { return m_animationDuration; }
-    void animateLayoutTransition(LayoutMode fromMode, LayoutMode toMode);
+    /**
+     * @brief Get the current spacing
+     * @return Spacing in pixels
+     */
+    [[nodiscard]] int getSpacing() const { return m_spacing; }
 
-    // Layout utilities
-    QMargins getOptimalMargins() const;
-    int getOptimalSpacing() const;
-    int getOptimalItemSize() const;
-    QSize getOptimalThumbnailSize() const;
-    int getOptimalCollapsedWidth() const;
-    int getOptimalExpandedWidth() const;
-    int getOptimalVisibleWidth() const;
+    /**
+     * @brief Get the actual width available for the grid
+     * @return Available width after padding
+     */
+    [[nodiscard]] int getAvailableWidth() const;
 
-    // Enhanced responsive breakpoints (modern standards)
-    static int getMobileBreakpoint() { return 640; }      // Small phones
-    static int getMobileLargeBreakpoint() { return 768; } // Large phones
-    static int getTabletBreakpoint() { return 1024; }     // Tablets
-    static int getDesktopBreakpoint() { return 1366; }    // Laptops
-    static int getLargeBreakpoint() { return 1920; }      // Desktops
-    static int getXLargeBreakpoint() { return 2560; }     // Large monitors
+    /**
+     * @brief Get the row count based on total items and column count
+     * @param totalItems Total number of items to display
+     * @return Number of rows needed
+     */
+    [[nodiscard]] int getRowCount(int totalItems) const;
 
-    // Utility methods for breakpoint checking
-    static ScreenSize getScreenSizeForWidth(int width);
-    static LayoutMode getOptimalLayoutModeForScreenSize(ScreenSize screenSize);
-    static int getOptimalColumnsForScreenSize(ScreenSize screenSize);
-    static int getOptimalSpacingForScreenSize(ScreenSize screenSize);
-    static QMargins getOptimalMarginsForScreenSize(ScreenSize screenSize);
+    /**
+     * @brief Check if layout needs updating
+     * @param newWidth New viewport width
+     * @param newHeight New viewport height
+     * @return true if column count would change, false otherwise
+     */
+    [[nodiscard]] bool needsUpdate(int newWidth, int newHeight) const;
 
-public slots:
-    void onScreenSizeChanged();
-    void onWindowResized(const QSize& newSize);
-    void updateLayout();
-    void optimizeForCurrentScreen();
-    void resetToDefaults();
+    /**
+     * @brief Calculate the ideal viewport width for a given column count
+     * @param columns Number of columns desired
+     * @return Recommended viewport width
+     */
+    [[nodiscard]] int getWidthForColumns(int columns) const;
 
 signals:
-    void screenSizeChanged(ScreenSize newSize, ScreenSize oldSize);
-    void layoutModeChanged(LayoutMode newMode, LayoutMode oldMode);
-    void layoutUpdated();
-    void panelStateChanged(const QString& panelName, PanelState newState);
-    void splitterSizesChanged(const QString& splitterName, const QList<int>& sizes);
-    void initializationCompleted(ScreenSize screenSize, LayoutMode layoutMode);
+    /**
+     * @brief Emitted when the responsive layout changes
+     * @param columnCount The new column count
+     * @param rowCount The number of rows (if item count is known)
+     *
+     * This signal indicates that the grid layout needs to be recalculated
+     * due to a viewport size change that would affect the column count.
+     */
+    void layoutChanged(int columnCount, int rowCount = 0);
 
-protected:
-    bool eventFilter(QObject* watched, QEvent* event) override;
+    /**
+     * @brief Emitted when viewport size changes
+     * @param width New viewport width
+     * @param height New viewport height
+     */
+    void viewportSizeChanged(int width, int height);
 
-private slots:
-    void onAnimationFinished();
-    void onSplitterMoved();
-    void checkScreenSize();
-    void onLayoutAnimationFinished();
-    void onStateAnimationFinished();
-    void onScreenAdded(QScreen* screen);
-    void onScreenRemoved(QScreen* screen);
-    void onPrimaryScreenChanged(QScreen* screen);
-    void updatePerformanceMetrics();
-
-private:
-    // Layout detection and calculation
-    ScreenSize detectScreenSize() const;
-    LayoutMode calculateOptimalLayoutMode() const;
-    LayoutConfig createLayoutConfig() const;
-    void applyLayoutConfig(const LayoutConfig& config);
-
-    // Animation helpers
-    void animatePanelTransition(QWidget* panel, PanelState fromState, PanelState toState);
-    void animateSplitterResize(QSplitter* splitter, const QList<int>& newSizes);
-    void animateLayoutTransition();
-    void createMajorLayoutTransition(LayoutMode fromMode, LayoutMode toMode);
-    void createMinorLayoutTransition(LayoutMode fromMode, LayoutMode toMode);
-    QPropertyAnimation* createPanelSizeAnimation(QWidget* panel, PanelState targetState);
-
-    // Layout application
-    void applyGridLayout();
-    void applySplitterLayout();
-    void applyPanelLayout();
-    void applySpacingAndMargins();
-
-    // Utility methods
-    void connectSignals();
-    void saveCurrentLayout();
-    void restoreLayout();
-    void initializeResponsiveStates();
-
-    // Core components
-    QWidget* m_mainWidget;
-    QWidget* m_gridWidget;
-
-    // Layout state
-    ScreenSize m_currentScreenSize;
-    LayoutMode m_currentLayoutMode;
-    LayoutConfig m_currentConfig;
-    bool m_adaptiveMode;
-
-    // Managed components
-    QHash<QString, QSplitter*> m_splitters;
-    QHash<QString, QWidget*> m_panels;
-    QHash<QString, PanelState> m_panelStates;
-    QHash<QString, QList<int>> m_splitterSizes;
-
-    // Animation system
-    bool m_animationsEnabled;
-    int m_animationDuration;
-    QHash<QWidget*, QPropertyAnimation*> m_activeAnimations;
-    QParallelAnimationGroup* m_layoutAnimationGroup;
-    QSequentialAnimationGroup* m_stateAnimationGroup;
-    QEasingCurve m_animationEasingCurve;
-
-    // Screen monitoring
-    QTimer* m_screenCheckTimer;
-    QTimer* m_performanceTimer;
-    QSize m_lastScreenSize;
-
-    // Layout history for undo/redo
-    QList<LayoutConfig> m_layoutHistory;
-    int m_currentHistoryIndex;
-
-    // Enhanced mode flags
-    bool m_touchMode;
-    bool m_highPerformanceMode;
-    bool m_accessibilityMode;
-    bool m_debugMode;
-    bool m_performanceMonitoringEnabled;
-    int m_resizeDebounceTime;
-
-    // Constants
-    static constexpr int DEFAULT_ANIMATION_DURATION = 300;
-    static constexpr int SCREEN_CHECK_INTERVAL = 1000; // 1 second
-    static constexpr int MIN_PANEL_WIDTH = 200;
-    static constexpr int MIN_PANEL_HEIGHT = 150;
-    static constexpr int DEFAULT_SPACING = 8;
-    static constexpr int MOBILE_SPACING = 4;
-    static constexpr int DESKTOP_SPACING = 12;
-};
-
-/**
- * @brief Helper class for responsive widgets
- */
-class ResponsiveWidget : public QObject {
-    Q_OBJECT
-
-public:
-    explicit ResponsiveWidget(QWidget* widget, ResponsiveLayoutManager* manager,
-                              QObject* parent = nullptr);
-    ~ResponsiveWidget();
-
-    void setBreakpointBehavior(ResponsiveLayoutManager::ScreenSize breakpoint,
-                               const QVariantMap& properties);
-    void setAdaptiveProperty(const QString& property, const QVariantMap& values);
-
-private slots:
-    void onScreenSizeChanged(ResponsiveLayoutManager::ScreenSize newSize,
-                             ResponsiveLayoutManager::ScreenSize oldSize);
+    /**
+     * @brief Emitted when icon size changes
+     * @param size New icon size
+     */
+    void iconSizeChanged(int size);
 
 private:
-    void applyPropertiesForScreenSize(ResponsiveLayoutManager::ScreenSize screenSize);
+    /**
+     * @brief Calculate the column count
+     * @return The optimal column count
+     */
+    [[nodiscard]] int calculateColumnCount() const;
 
-    QWidget* m_widget;
-    ResponsiveLayoutManager* m_manager;
-    QHash<ResponsiveLayoutManager::ScreenSize, QVariantMap> m_breakpointProperties;
-    QHash<QString, QVariantMap> m_adaptiveProperties;
+    /**
+     * @brief Emit layout changed signal if needed
+     * @param previousColumns The previous column count
+     * @param newColumns The new column count
+     */
+    void emitLayoutChangedIfNeeded(int previousColumns, int newColumns);
+
+    // Viewport configuration
+    int m_viewportWidth = 1200;                 ///< Current viewport width
+    int m_viewportHeight = 800;                 ///< Current viewport height
+
+    // Icon configuration
+    int m_iconSize = 48;                        ///< Current icon size
+    int m_spacing = 12;                         ///< Spacing between icons
+    int m_minimumIconWidth = 24;                ///< Minimum icon width
+
+    // Padding configuration
+    int m_paddingLeft = 8;                      ///< Left padding
+    int m_paddingTop = 8;                       ///< Top padding
+    int m_paddingRight = 8;                     ///< Right padding
+    int m_paddingBottom = 8;                    ///< Bottom padding
+
+    // Cached values
+    mutable int m_cachedColumnCount = 0;        ///< Cached column count
 };
 
-#endif // RESPONSIVELAYOUTMANAGER_H
+}  // namespace gallery
+
+#endif  // RESPONSIVE_LAYOUT_MANAGER_H

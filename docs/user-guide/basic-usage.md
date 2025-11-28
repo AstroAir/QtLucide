@@ -19,7 +19,11 @@ if (!lucide.initLucide()) {
 }
 ```
 
-!!! tip "Initialization Best Practices" - Initialize QtLucide once at application startup - Always check the return value of `initLucide()` - Consider using a singleton pattern for application-wide access
+!!! tip "Initialization Best Practices"
+    - Initialize QtLucide once at application startup
+    - Always check the return value of `initLucide()`
+    - Consider using a singleton pattern for application-wide access
+    - Default colors are derived from `QApplication::palette()` automatically
 
 ### Creating Your First Icon
 
@@ -72,7 +76,9 @@ Customize icons with various options:
 ```cpp
 QVariantMap options;
 options["color"] = QColor(Qt::red);
-options["scale-factor"] = 1.2;
+options["scale-factor"] = 1.2;      // Range: 0.1-10.0, default: 0.9
+options["opacity"] = 0.8;            // Range: 0.0-1.0, default: 1.0
+options["stroke-width"] = 2.5;       // Range: 0.5-4.0, default: 2.0
 
 QIcon customIcon = lucide.icon("heart", options);
 ```
@@ -291,12 +297,18 @@ Set default options to avoid repetitive customization:
 ```cpp
 void setupIconDefaults()
 {
+    // Default colors are already set from QPalette at initialization
+    // You can override them:
     lucide.setDefaultOption("color", QColor(64, 64, 64));
     lucide.setDefaultOption("scale-factor", 1.1);
+    lucide.setDefaultOption("stroke-width", 2.0);
 
     // All subsequent icons will use these defaults
     QIcon icon1 = lucide.icon("home");     // Uses gray color and 1.1 scale
     QIcon icon2 = lucide.icon("settings"); // Uses gray color and 1.1 scale
+    
+    // Reset to palette-based defaults
+    lucide.resetDefaultOptions();
 }
 ```
 

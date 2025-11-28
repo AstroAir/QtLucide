@@ -33,9 +33,11 @@ namespace lucide {
         QByteArray svgData(Icons iconId) const;
         QByteArray svgData(const QString& name) const;
 
-        // Utility
-        QString iconIdToString(Icons iconId) const;
-        Icons stringToIconId(const QString& name) const;
+    signals:
+        void defaultOptionsReset();
+
+    public slots:
+        void resetDefaultOptions();
     };
 }
 ```
@@ -314,67 +316,70 @@ Gets the raw SVG data for an icon by name.
 
 **Returns:** SVG data as QByteArray, or empty array if invalid
 
-## Utility Methods
+## Signals
 
-### QString iconIdToString(Icons iconId) const
+### void defaultOptionsReset()
 
-Converts an icon enum to its string name.
+Emitted when `resetDefaultOptions()` is called. Allows connected objects to respond to option changes.
 
-**Parameters:**
+## Slots
 
-- `iconId` - Icon enum value
+### void resetDefaultOptions()
 
-**Returns:** Icon name string, or empty string if invalid
+Resets all default options to system defaults based on the application palette.
 
-**Example:**
+**Default Values After Reset:**
 
-```cpp
-QString name = lucide.iconIdToString(lucide::Icons::heart);
-qDebug() << "Icon name:" << name;  // Outputs: "heart"
-```
-
-### Icons stringToIconId(const QString& name) const
-
-Converts an icon name to its enum value.
-
-**Parameters:**
-
-- `name` - Icon name string
-
-**Returns:** Icon enum value, or `static_cast<Icons>(-1)` if invalid
+- `color` - `QPalette::Text` (Normal)
+- `color-disabled` - `QPalette::Text` (Disabled)
+- `color-active` - `QPalette::Text` (Active)
+- `color-selected` - `QPalette::HighlightedText` (Active)
+- `scale-factor` - `0.9`
+- `opacity` - `1.0`
 
 **Example:**
 
 ```cpp
-lucide::Icons iconId = lucide.stringToIconId("heart");
-if (iconId != static_cast<lucide::Icons>(-1)) {
-    QIcon icon = lucide.icon(iconId);
-}
+// Connect to signal
+connect(&lucide, &lucide::QtLucide::defaultOptionsReset, this, [this]() {
+    qDebug() << "Options were reset";
+    refreshIcons();
+});
+
+// Reset options
+lucide.resetDefaultOptions();
 ```
 
 ## Supported Options
 
-| Option           | Type     | Description                  | Default         | Range            |
-| ---------------- | -------- | ---------------------------- | --------------- | ---------------- |
-| `color`          | `QColor` | Primary icon color           | `Qt::black`     | Any valid QColor |
-| `color-disabled` | `QColor` | Color for disabled state     | Lighter primary | Any valid QColor |
-| `color-active`   | `QColor` | Color for active/hover state | Primary color   | Any valid QColor |
-| `color-selected` | `QColor` | Color for selected state     | Primary color   | Any valid QColor |
-| `scale-factor`   | `double` | Size multiplier              | `0.9`           | `0.1` to `2.0`   |
-| `opacity`        | `double` | Icon opacity                 | `1.0`           | `0.0` to `1.0`   |
+| Option           | Type     | Description                  | Default                   | Range            |
+| ---------------- | -------- | ---------------------------- | ------------------------- | ---------------- |
+| `color`          | `QColor` | Primary icon color           | `QPalette::Text`          | Any valid QColor |
+| `color-disabled` | `QColor` | Color for disabled state     | `QPalette::Text` (Disabled) or auto-lightened | Any valid QColor |
+| `color-active`   | `QColor` | Color for active/hover state | `QPalette::Text` (Active) | Any valid QColor |
+| `color-selected` | `QColor` | Color for selected state     | `QPalette::HighlightedText` | Any valid QColor |
+| `scale-factor`   | `double` | Size multiplier              | `0.9`                     | `0.1` to `10.0`  |
+| `opacity`        | `double` | Icon opacity                 | `1.0`                     | `0.0` to `1.0`   |
+| `stroke-width`   | `double` | SVG stroke width             | `2.0`                     | `0.5` to `4.0`   |
+
+!!! note "Palette-Based Defaults"
+    Default colors are derived from `QApplication::palette()` at initialization time. This ensures icons automatically match your application's theme.
 
 ## Performance Notes
 
-- **Icon caching**: Icons are automatically cached based on name, size, and options
+- **Icon caching**: Icons are automatically cached based on name, size, mode, state, and options
 - **Enum vs String**: Using enum values is slightly faster than string names
 - **Default options**: Setting default options reduces memory usage for similar icons
-- **Custom painters**: Custom painters bypass caching and are rendered each time
+- **Custom painters**: Custom painters are cached like built-in icons
+- **Cache key**: Includes `iconId`, size, mode, state, color, scale-factor, opacity, and stroke-width
 
 ## Thread Safety
 
+- **Resource initialization**: Thread-safe (protected by mutex)
 - **Icon creation**: Thread-safe after `initLucide()` is called
 - **Configuration**: `setDefaultOption()` and `give()` are not thread-safe
 - **Information methods**: All const methods are thread-safe
+- **SVG data access**: Thread-safe with warning deduplication
 
 ## See Also
 

@@ -32,7 +32,16 @@
       "Bash(\"D:\\msys64\\mingw64\\bin\\x86_64-w64-mingw32-g++.exe\":*)",
       "Read(//d/msys64/mingw64/qt6-static/include/**)",
       "Read(//d/msys64/mingw64/qt6-static/**)",
-      "Bash(D:/msys64/mingw64/bin/x86_64-w64-mingw32-g++.exe:*)"
+      "Bash(D:/msys64/mingw64/bin/x86_64-w64-mingw32-g++.exe:*)",
+      "Bash(test:*)",
+      "Bash(git -C \"D:\\Project\\QtLucide\" show HEAD:examples/CMakeLists.txt)",
+      "Bash(git -C \"D:\\Project\\QtLucide\" log --oneline -20 -- examples/gallery/)",
+      "Bash(git -C \"D:\\Project\\QtLucide\" show b3e7a3d --stat)",
+      "Bash(git -C \"D:\\Project\\QtLucide\" show b3e7a3d --name-only)",
+      "Bash(git -C \"D:\\Project\\QtLucide\" show 79c1e56:examples/gallery/CMakeLists.txt)",
+      "Bash(git -C \"D:\\Project\\QtLucide\" show 79c1e56:examples/gallery/src/main/main.cpp)",
+      "Bash(git -C:*)",
+      "WebFetch(domain:lucide.dev)"
     ],
     "deny": [],
     "ask": []

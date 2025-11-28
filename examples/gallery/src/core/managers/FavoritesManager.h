@@ -1,253 +1,132 @@
 /**
- * QtLucide Gallery Application - Favorites Manager
- *
- * Comprehensive favorites/bookmarks system with:
- * - Persistent storage of favorite icons
- * - Favorites collections/groups
- * - Import/export of favorites
- * - Recently viewed icons tracking
- * - Usage statistics and analytics
- * - Favorites synchronization
+ * @file FavoritesManager.h
+ * @brief Manager for handling user favorite icons
+ * @details This file contains the FavoritesManager class which manages favorite icons
+ *          with persistent storage using QSettings.
+ * @author Max Qian
+ * @date 2025
+ * @version 1.0
+ * @copyright MIT Licensed - Copyright 2025 Max Qian. All Rights Reserved.
  */
 
-#ifndef FAVORITESMANAGER_H
-#define FAVORITESMANAGER_H
+#ifndef FAVORITES_MANAGER_H
+#define FAVORITES_MANAGER_H
 
-#include <QDateTime>
-#include <QDir>
-#include <QFile>
-#include <QHash>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QMutex>
 #include <QObject>
-#include <QReadWriteLock>
-#include <QSettings>
-#include <QStandardPaths>
+#include <QString>
 #include <QStringList>
-#include <QTimer>
+#include <QSettings>
+#include <memory>
 
-// Forward declarations
-class IconMetadataManager;
-
-/**
- * @brief Individual favorite item with metadata
- */
-struct FavoriteItem {
-    QString iconName;
-    QString displayName;
-    QString description;
-    QDateTime dateAdded;
-    QDateTime lastAccessed;
-    int accessCount = 0;
-    QStringList tags;
-    QString collection;
-    QHash<QString, QVariant> customData;
-
-    FavoriteItem() = default;
-    explicit FavoriteItem(const QString& name)
-        : iconName(name), dateAdded(QDateTime::currentDateTime()) {}
-
-    bool isValid() const { return !iconName.isEmpty(); }
-
-    // Serialization
-    QJsonObject toJson() const;
-    void fromJson(const QJsonObject& json);
-};
+namespace gallery {
 
 /**
- * @brief Favorites collection/group
- */
-struct FavoriteCollection {
-    QString name;
-    QString displayName;
-    QString description;
-    QStringList iconNames;
-    QDateTime dateCreated;
-    QDateTime dateModified;
-    QString color;
-    QString icon;
-    bool isDefault = false;
-
-    FavoriteCollection() = default;
-    explicit FavoriteCollection(const QString& collectionName)
-        : name(collectionName), displayName(collectionName),
-          dateCreated(QDateTime::currentDateTime()) {}
-
-    bool isValid() const { return !name.isEmpty(); }
-
-    // Serialization
-    QJsonObject toJson() const;
-    void fromJson(const QJsonObject& json);
-};
-
-/**
- * @brief Recently viewed item with access tracking
- */
-struct RecentItem {
-    QString iconName;
-    QDateTime lastAccessed;
-    int accessCount = 1;
-    qint64 totalViewTime = 0; // milliseconds
-
-    RecentItem() = default;
-    explicit RecentItem(const QString& name)
-        : iconName(name), lastAccessed(QDateTime::currentDateTime()) {}
-
-    bool isValid() const { return !iconName.isEmpty(); }
-
-    // Serialization
-    QJsonObject toJson() const;
-    void fromJson(const QJsonObject& json);
-};
-
-/**
- * @brief Comprehensive favorites and usage tracking manager
+ * @class FavoritesManager
+ * @brief Manager for user favorite icons with persistent storage
+ * @details This class manages a list of favorite icons and persists them using
+ *          QSettings in the application data location.
  */
 class FavoritesManager : public QObject {
     Q_OBJECT
 
 public:
-    explicit FavoritesManager(QObject* parent = nullptr);
-    ~FavoritesManager();
+    /**
+     * @brief Construct FavoritesManager
+     * @param parent The parent QObject
+     */
+    explicit FavoritesManager(QObject *parent = nullptr);
 
-    // Manager setup
-    void setIconMetadataManager(IconMetadataManager* manager);
+    /**
+     * @brief Destructor
+     */
+    ~FavoritesManager() override;
 
-    // Initialization and persistence
-    bool loadFavorites();
-    bool saveFavorites();
-    void setAutoSave(bool enabled);
-    bool autoSave() const { return m_autoSave; }
+    /**
+     * @brief Check if an icon is in favorites
+     * @param iconName The icon name to check
+     * @return true if icon is in favorites, false otherwise
+     */
+    bool isFavorite(const QString &iconName) const;
 
-    // Favorites management
-    void addFavorite(const QString& iconName, const QString& collection = QString());
-    void removeFavorite(const QString& iconName);
-    bool isFavorite(const QString& iconName) const;
-    void toggleFavorite(const QString& iconName);
+    /**
+     * @brief Add an icon to favorites
+     * @param iconName The icon name to add
+     * @return true if icon was added or already in favorites, false if invalid
+     */
+    bool addFavorite(const QString &iconName);
 
-    QStringList getFavorites() const;
-    QStringList getFavorites(const QString& collection) const;
-    FavoriteItem getFavoriteItem(const QString& iconName) const;
+    /**
+     * @brief Remove an icon from favorites
+     * @param iconName The icon name to remove
+     * @return true if icon was removed or not in favorites, false if invalid
+     */
+    bool removeFavorite(const QString &iconName);
 
+    /**
+     * @brief Get all favorite icons
+     * @return List of all favorite icon names
+     */
+    QStringList favorites() const;
+
+    /**
+     * @brief Get the count of favorite icons
+     * @return Number of favorite icons
+     */
+    int favoritesCount() const;
+
+    /**
+     * @brief Clear all favorites
+     */
     void clearFavorites();
-    void clearFavorites(const QString& collection);
 
-    // Collections management
-    void createCollection(const QString& name, const QString& displayName = QString());
-    void removeCollection(const QString& name);
-    void renameCollection(const QString& oldName, const QString& newName);
-
-    QStringList getCollections() const;
-    FavoriteCollection getCollection(const QString& name) const;
-    void setCollectionProperty(const QString& name, const QString& property, const QVariant& value);
-
-    void moveToCollection(const QString& iconName, const QString& collection);
-    void copyToCollection(const QString& iconName, const QString& collection);
-
-    // Recently viewed tracking
-    void recordAccess(const QString& iconName, qint64 viewTime = 0);
-    QStringList getRecentlyViewed(int limit = 50) const;
-    RecentItem getRecentItem(const QString& iconName) const;
-    void clearRecentHistory();
-
-    // Usage statistics
-    int getTotalFavorites() const;
-    int getFavoritesCount(const QString& collection) const;
-    int getAccessCount(const QString& iconName) const;
-    qint64 getTotalViewTime(const QString& iconName) const;
-
-    QStringList getMostUsedIcons(int limit = 10) const;
-    QStringList getMostRecentIcons(int limit = 10) const;
-    QHash<QString, int> getUsageStatistics() const;
-
-    // Import/Export
-    bool exportFavorites(const QString& filePath) const;
-    bool importFavorites(const QString& filePath);
-    bool exportCollection(const QString& collection, const QString& filePath) const;
-    bool importCollection(const QString& filePath);
-
-    // Search and filtering
-    QStringList searchFavorites(const QString& searchText) const;
-    QStringList filterFavorites(const QStringList& categories, const QStringList& tags) const;
-
-    // Backup and sync
-    bool createBackup(const QString& backupPath = QString()) const;
-    bool restoreBackup(const QString& backupPath);
-    QStringList getAvailableBackups() const;
+    /**
+     * @brief Toggle favorite status of an icon
+     * @param iconName The icon name
+     * @return true if icon is now a favorite, false if removed from favorites
+     */
+    bool toggleFavorite(const QString &iconName);
 
 signals:
-    void favoriteAdded(const QString& iconName, const QString& collection);
-    void favoriteRemoved(const QString& iconName);
-    void favoriteToggled(const QString& iconName, bool isFavorite);
-    void favoritesChanged();
+    /**
+     * @brief Signal emitted when an icon is added to favorites
+     * @param iconName The name of the icon added
+     */
+    void favoriteAdded(const QString &iconName);
 
-    void collectionCreated(const QString& name);
-    void collectionRemoved(const QString& name);
-    void collectionRenamed(const QString& oldName, const QString& newName);
-    void collectionsChanged();
+    /**
+     * @brief Signal emitted when an icon is removed from favorites
+     * @param iconName The name of the icon removed
+     */
+    void favoriteRemoved(const QString &iconName);
 
-    void recentItemAdded(const QString& iconName);
-    void recentHistoryChanged();
-
-    void dataChanged();
-    void saveCompleted(bool success);
-    void loadCompleted(bool success);
-
-private slots:
-    void onAutoSaveTimer();
+    /**
+     * @brief Signal emitted when all favorites are cleared
+     */
+    void favoritesCleared();
 
 private:
-    void setupDefaultCollections();
-    void updateFavoriteItem(const QString& iconName);
-    void updateRecentItem(const QString& iconName, qint64 viewTime);
-    void cleanupOldRecents();
+    /**
+     * @brief Save favorites to persistent storage
+     */
+    void saveFavorites() const;
 
-    QString getFavoritesFilePath() const;
-    QString getBackupDirectory() const;
-    QString generateBackupFileName() const;
+    /**
+     * @brief Load favorites from persistent storage
+     */
+    void loadFavorites();
 
-    bool saveToFile(const QString& filePath) const;
-    bool loadFromFile(const QString& filePath);
+    /**
+     * @brief Initialize settings
+     */
+    void initializeSettings();
 
-    QJsonObject serializeData() const;
-    bool deserializeData(const QJsonObject& data);
-
-    // Core data
-    QHash<QString, FavoriteItem> m_favorites;
-    QHash<QString, FavoriteCollection> m_collections;
-    QHash<QString, RecentItem> m_recentItems;
-    QStringList m_recentOrder; // Ordered list for quick access
-
-    // Managers
-    IconMetadataManager* m_iconMetadataManager;
-
-    // Settings and persistence
-    QSettings* m_settings;
-    QTimer* m_autoSaveTimer;
-    bool m_autoSave;
-    bool m_dataChanged;
-
-    // Thread safety
-    mutable QReadWriteLock m_dataLock;
-
-    // Configuration
-    int m_maxRecentItems;
-    int m_autoSaveInterval; // seconds
-    int m_maxBackups;
-
-    // File paths
-    QString m_dataDirectory;
-    QString m_favoritesFile;
-    QString m_backupDirectory;
-
-    static const QString DEFAULT_COLLECTION;
-    static const QString RECENT_COLLECTION;
-    static const QString MOST_USED_COLLECTION;
-    static const int DEFAULT_MAX_RECENT_ITEMS = 100;
-    static const int DEFAULT_AUTO_SAVE_INTERVAL = 30; // seconds
-    static const int DEFAULT_MAX_BACKUPS = 10;
+    // Member variables
+    std::unique_ptr<QSettings> m_settings;
+    QStringList m_favorites;
+    static constexpr const char *SETTINGS_GROUP = "Favorites";
+    static constexpr const char *FAVORITES_KEY = "FavoriteIcons";
 };
 
-#endif // FAVORITESMANAGER_H
+}  // namespace gallery
+
+#endif  // FAVORITES_MANAGER_H

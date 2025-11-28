@@ -1,179 +1,254 @@
 /**
- * QtLucide Gallery Application - Performance Monitor
- *
- * Monitors and tracks application performance metrics including:
- * - Frame rate (FPS)
- * - Memory usage
- * - CPU usage
- * - Event processing time
- * - Resource utilization
- *
- * Provides performance warnings and optimization suggestions.
+ * @file PerformanceMonitor.h
+ * @brief Performance monitoring for rendering and memory tracking
+ * @details This file contains the PerformanceMonitor class which tracks render times,
+ *          frame rates, and optional memory usage for performance analysis.
+ * @author Max Qian
+ * @date 2025
+ * @version 1.0
+ * @copyright MIT Licensed - Copyright 2025 Max Qian. All Rights Reserved.
  */
 
-#ifndef PERFORMANCEMONITOR_H
-#define PERFORMANCEMONITOR_H
+#ifndef PERFORMANCE_MONITOR_H
+#define PERFORMANCE_MONITOR_H
 
-#include <QElapsedTimer>
 #include <QObject>
 #include <QString>
-#include <QTimer>
-#include <QVariantMap>
+#include <QElapsedTimer>
+#include <QList>
+#include <cstdint>
+
+namespace gallery {
 
 /**
- * @brief Performance monitoring and optimization controller
+ * @class PerformanceMonitor
+ * @brief Monitors application rendering and memory performance
+ * @details This class provides performance measurement capabilities for tracking
+ *          render times, calculating average performance metrics, and monitoring
+ *          frame rates. It can optionally track memory usage.
  *
- * This controller tracks various performance metrics and provides
- * warnings when performance thresholds are exceeded.
+ * @par Features:
+ * - Measurement start/stop with elapsed time tracking
+ * - Rolling average calculations for render times
+ * - Frame rate calculations (FPS)
+ * - Optional memory usage tracking
+ * - Performance statistics and reporting
+ * - Signal-based performance notifications
+ *
+ * @par Usage:
+ * @code
+ * PerformanceMonitor monitor;
+ * monitor.setMaxSamples(60);  // Keep last 60 samples
+ *
+ * // Measure rendering
+ * monitor.startMeasurement("icon_render");
+ * renderIcons();
+ * monitor.endMeasurement("icon_render");
+ *
+ * // Get statistics
+ * double avgTime = monitor.getAverageRenderTime("icon_render");
+ * double fps = monitor.getFrameRate();
+ *
+ * connect(&monitor, &PerformanceMonitor::performanceWarning,
+ *         this, &MyWidget::handleSlowPerformance);
+ * @endcode
  */
 class PerformanceMonitor : public QObject {
     Q_OBJECT
 
 public:
     /**
-     * @brief Performance levels for adaptive quality
+     * @brief Construct PerformanceMonitor
+     * @param parent The parent QObject
      */
-    enum PerformanceLevel {
-        HighPerformance = 0,    // >60 FPS, low memory usage
-        MediumPerformance = 1,  // 30-60 FPS, moderate memory
-        LowPerformance = 2,     // <30 FPS, high memory usage
-        CriticalPerformance = 3 // Severe performance issues
-    };
-    Q_ENUM(PerformanceLevel)
+    explicit PerformanceMonitor(QObject *parent = nullptr);
 
     /**
-     * @brief Construct a new Performance Monitor
-     * @param parent Parent QObject for memory management
+     * @brief Destructor
      */
-    explicit PerformanceMonitor(QObject* parent = nullptr);
-    ~PerformanceMonitor();
+    ~PerformanceMonitor() override;
 
-    // Monitoring control
-    void startMonitoring();
-    void stopMonitoring();
-    bool isMonitoring() const;
-    void setMonitoringInterval(int milliseconds);
+    /**
+     * @brief Set the maximum number of samples to keep
+     * @param maxSamples Maximum number of measurements to store (default: 100)
+     */
+    void setMaxSamples(int maxSamples);
 
-    // Metrics access
-    QVariantMap getCurrentMetrics() const;
-    int getCurrentFPS() const;
-    qint64 getCurrentMemoryUsage() const;
-    double getCurrentCPUUsage() const;
-    PerformanceLevel getCurrentPerformanceLevel() const;
+    /**
+     * @brief Set the target FPS for performance baseline
+     * @param fps Target frames per second (default: 60)
+     */
+    void setTargetFPS(int fps);
 
-    // Thresholds
-    void setFPSWarningThreshold(int fps);
-    void setMemoryWarningThreshold(qint64 bytes);
-    void setCPUWarningThreshold(double percentage);
+    /**
+     * @brief Start a performance measurement
+     * @param label Label for this measurement (e.g., "icon_render")
+     *
+     * This method starts timing a measurement. Call endMeasurement() to complete it.
+     */
+    void startMeasurement(const QString &label = QString());
 
-    // Optimization
-    void enableHardwareAcceleration(bool enabled);
-    void setAdaptiveQuality(bool enabled);
-    void cleanupUnusedResources();
+    /**
+     * @brief End the current measurement
+     * @param label Label matching the startMeasurement call
+     * @return Elapsed time in milliseconds
+     *
+     * This method ends timing and records the measurement.
+     */
+    double endMeasurement(const QString &label = QString());
 
-    // Profiling
-    void startProfiling(const QString& operation);
-    void endProfiling(const QString& operation);
-    qint64 getProfilingTime(const QString& operation) const;
+    /**
+     * @brief Get the average render time for a given label
+     * @param label The measurement label
+     * @return Average time in milliseconds
+     */
+    [[nodiscard]] double getAverageRenderTime(const QString &label = QString()) const;
+
+    /**
+     * @brief Get the minimum render time recorded
+     * @param label The measurement label
+     * @return Minimum time in milliseconds
+     */
+    [[nodiscard]] double getMinimumRenderTime(const QString &label = QString()) const;
+
+    /**
+     * @brief Get the maximum render time recorded
+     * @param label The measurement label
+     * @return Maximum time in milliseconds
+     */
+    [[nodiscard]] double getMaximumRenderTime(const QString &label = QString()) const;
+
+    /**
+     * @brief Get the last recorded render time
+     * @param label The measurement label
+     * @return Last time in milliseconds
+     */
+    [[nodiscard]] double getLastRenderTime(const QString &label = QString()) const;
+
+    /**
+     * @brief Calculate the current frame rate
+     * @return Frames per second based on recent measurements
+     */
+    [[nodiscard]] double getFrameRate() const;
+
+    /**
+     * @brief Get total number of measurements recorded
+     * @return Number of measurements
+     */
+    [[nodiscard]] int getMeasurementCount() const;
+
+    /**
+     * @brief Get the number of samples in the buffer
+     * @param label The measurement label
+     * @return Number of samples for this label
+     */
+    [[nodiscard]] int getSampleCount(const QString &label = QString()) const;
+
+    /**
+     * @brief Check if performance is meeting target FPS
+     * @return true if average frame rate meets target, false otherwise
+     */
+    [[nodiscard]] bool isPerformanceGood() const;
+
+    /**
+     * @brief Get performance status as a percentage
+     * @return 100 = perfect, <100 = slow, >100 = fast
+     */
+    [[nodiscard]] int getPerformancePercentage() const;
+
+    /**
+     * @brief Get optional memory usage in MB
+     * @return Memory usage, or -1 if not supported on this platform
+     */
+    [[nodiscard]] double getMemoryUsageMB() const;
+
+    /**
+     * @brief Get process memory usage (includes heap)
+     * @return Memory in MB, or -1 if not available
+     */
+    [[nodiscard]] double getProcessMemoryMB() const;
+
+    /**
+     * @brief Reset all measurements
+     */
+    void reset();
+
+    /**
+     * @brief Reset measurements for a specific label
+     * @param label The measurement label
+     */
+    void resetLabel(const QString &label);
+
+    /**
+     * @brief Enable or disable memory tracking
+     * @param enabled true to enable memory tracking
+     */
+    void setMemoryTrackingEnabled(bool enabled);
+
+    /**
+     * @brief Get a formatted performance report
+     * @return String containing performance statistics
+     */
+    [[nodiscard]] QString getPerformanceReport() const;
 
 signals:
     /**
-     * @brief Emitted when performance metrics are updated
-     * @param metrics Map of metric names to values
-     */
-    void metricsUpdated(const QVariantMap& metrics);
-
-    /**
-     * @brief Emitted when performance level changes
-     * @param level New performance level
-     */
-    void performanceLevelChanged(PerformanceLevel level);
-
-    /**
-     * @brief Emitted when FPS drops below threshold
+     * @brief Emitted when performance drops below target
      * @param currentFPS Current frames per second
-     * @param threshold Warning threshold
+     * @param targetFPS Target frames per second
      */
-    void fpsWarning(int currentFPS, int threshold);
+    void performanceWarning(double currentFPS, double targetFPS);
 
     /**
-     * @brief Emitted when memory usage exceeds threshold
-     * @param currentUsage Current memory usage in bytes
-     * @param threshold Warning threshold in bytes
+     * @brief Emitted when a measurement is completed
+     * @param label The measurement label
+     * @param timeMs Time taken in milliseconds
      */
-    void memoryWarning(qint64 currentUsage, qint64 threshold);
+    void measurementCompleted(const QString &label, double timeMs);
 
     /**
-     * @brief Emitted when CPU usage exceeds threshold
-     * @param currentUsage Current CPU usage percentage
-     * @param threshold Warning threshold percentage
+     * @brief Emitted when performance improves
+     * @param currentFPS Current frames per second
      */
-    void cpuWarning(double currentUsage, double threshold);
-
-    /**
-     * @brief Emitted for general performance warnings
-     * @param message Warning message
-     */
-    void performanceWarning(const QString& message);
-
-private slots:
-    void updateMetrics();
-    void checkThresholds();
+    void performanceImproved(double currentFPS);
 
 private:
-    // Metric calculation
-    void calculateFPS();
-    void calculateMemoryUsage();
-    void calculateCPUUsage();
-    void updatePerformanceLevel();
+    /**
+     * @brief Check and emit performance warnings if needed
+     */
+    void checkPerformanceStatus();
 
-    // Helper methods
-    qint64 getProcessMemoryUsage() const;
-    double getProcessCPUUsage() const;
-    void emitWarningsIfNeeded();
+    /**
+     * @brief Get the current process memory usage
+     * @return Memory in bytes
+     */
+    [[nodiscard]] uint64_t getCurrentMemoryBytes() const;
 
-    // Monitoring state
-    bool m_isMonitoring;
-    QTimer* m_updateTimer;
-    int m_monitoringInterval;
+    struct MeasurementSample {
+        QString label;
+        double timeMs = 0.0;
+        uint64_t timestamp = 0;
+    };
 
-    // Metrics
-    int m_currentFPS;
-    qint64 m_currentMemoryUsage;
-    double m_currentCPUUsage;
-    PerformanceLevel m_currentPerformanceLevel;
+    // Performance tracking
+    QElapsedTimer m_currentTimer;                           ///< Current measurement timer
+    QList<MeasurementSample> m_samples;                     ///< Sample history buffer
+    int m_maxSamples = 100;                                 ///< Maximum samples to keep
+    int m_targetFPS = 60;                                   ///< Target FPS for baseline
 
-    // FPS tracking
-    QElapsedTimer m_fpsTimer;
-    int m_frameCount;
-    qint64 m_lastFPSUpdate;
+    // Statistics
+    QString m_currentLabel;                                 ///< Current measurement label
+    double m_lastFPS = 60.0;                                ///< Last calculated FPS
+    bool m_wasPerformanceGood = true;                       ///< Track performance state
 
     // Memory tracking
-    qint64 m_peakMemoryUsage;
-    qint64 m_averageMemoryUsage;
+    bool m_memoryTrackingEnabled = false;                   ///< Whether to track memory
+    double m_peakMemoryMB = 0.0;                            ///< Peak memory recorded
 
-    // CPU tracking
-    qint64 m_lastCPUTime;
-    qint64 m_lastSystemTime;
-
-    // Thresholds
-    int m_fpsWarningThreshold;
-    qint64 m_memoryWarningThreshold;
-    double m_cpuWarningThreshold;
-
-    // Optimization settings
-    bool m_hardwareAccelerationEnabled;
-    bool m_adaptiveQualityEnabled;
-
-    // Profiling
-    QMap<QString, QElapsedTimer> m_profilingTimers;
-    QMap<QString, qint64> m_profilingResults;
-
-    // Constants
-    static constexpr int DEFAULT_MONITORING_INTERVAL = 1000; // 1 second
-    static constexpr int DEFAULT_FPS_THRESHOLD = 30;
-    static constexpr qint64 DEFAULT_MEMORY_THRESHOLD = 512 * 1024 * 1024; // 512 MB
-    static constexpr double DEFAULT_CPU_THRESHOLD = 80.0;                 // 80%
+    // Performance thresholds
+    static constexpr double PERFORMANCE_WARNING_THRESHOLD = 0.85;  ///< 85% of target FPS
 };
 
-#endif // PERFORMANCEMONITOR_H
+}  // namespace gallery
+
+#endif  // PERFORMANCE_MONITOR_H

@@ -5,11 +5,12 @@
 set(PERFORMANCE_TEST_SOURCES
     test_gallery_performance.cpp
     test_performance.cpp
+    test_icon_rendering_performance.cpp
 
     # Include concrete implementation sources for gallery classes
     ../../../examples/gallery/src/ui/themes/ThemeManager.cpp
     ../../../examples/gallery/src/core/managers/IconMetadataManager.cpp
-    ../../../examples/gallery/src/core/managers/ImageMetadataManager.cpp
+    ../../../examples/gallery/src/core/managers/ManagerStubs.cpp
     ../../../examples/gallery/src/core/managers/ContentManager.cpp
     ../../../examples/gallery/src/core/managers/FavoritesManager.cpp
     ../../../examples/gallery/src/core/utils/GalleryLogger.cpp
@@ -28,10 +29,11 @@ set(PERFORMANCE_TEST_SOURCES
 # Performance test headers
 set(PERFORMANCE_TEST_HEADERS
     test_gallery_performance.h
+    test_icon_rendering_performance.h
 
     ../../../examples/gallery/src/ui/themes/ThemeManager.h
     ../../../examples/gallery/src/core/managers/IconMetadataManager.h
-    ../../../examples/gallery/src/core/managers/ImageMetadataManager.h
+    ../../../examples/gallery/src/core/managers/ManagerStubs.h
     ../../../examples/gallery/src/core/managers/ContentManager.h
     ../../../examples/gallery/src/core/managers/FavoritesManager.h
     ../../../examples/gallery/src/core/utils/GalleryLogger.h
@@ -62,6 +64,10 @@ set_tests_properties(QtLucideGalleryPerformanceTests PROPERTIES
 
 message(STATUS "Gallery Performance Tests configured:")
 message(STATUS "  - Test executable: QtLucideGalleryPerformanceTests")
-message(STATUS "  - Test count: 2 test files")
+message(STATUS "  - Test count: 3 test files")
+message(STATUS "  - Test files:")
+message(STATUS "    * test_gallery_performance.cpp")
+message(STATUS "    * test_performance.cpp")
+message(STATUS "    * test_icon_rendering_performance.cpp (NEW)")
 message(STATUS "  - Run with: ctest -L gallery.performance")
 

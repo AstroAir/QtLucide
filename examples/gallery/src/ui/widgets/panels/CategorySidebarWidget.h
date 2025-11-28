@@ -18,7 +18,7 @@
 #include <QColor>
 #include <memory>
 
-#include "../../core/GalleryTypes.h"
+#include "GalleryTypes.h"
 
 class QLabel;
 class QPushButton;

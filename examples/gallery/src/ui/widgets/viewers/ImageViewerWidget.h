@@ -1,271 +1,191 @@
 /**
- * QtLucide Gallery Application - Enhanced Image Viewer Widget
- *
- * A comprehensive image viewer with zoom, pan, rotation, and slideshow capabilities.
- * Supports all common image formats and provides smooth animations.
+ * @file ImageViewerWidget.h
+ * @brief Simple icon/image viewer widget
+ * @details Provides a widget for displaying icons with zoom controls and
+ *          background color selection.
+ * @author QtLucide Contributors
+ * @date 2025
+ * @version 1.0
+ * @copyright MIT Licensed
  */
 
-#ifndef IMAGEVIEWERWIDGET_H
-#define IMAGEVIEWERWIDGET_H
+#ifndef IMAGE_VIEWER_WIDGET_H
+#define IMAGE_VIEWER_WIDGET_H
 
-#include <QAction>
-#include <QComboBox>
-#include <QFileInfo>
-#include <QGestureEvent>
-#include <QGraphicsOpacityEffect>
-#include <QGraphicsPixmapItem>
-#include <QGraphicsScene>
-#include <QGraphicsView>
-#include <QHBoxLayout>
-#include <QKeyEvent>
-#include <QLabel>
-#include <QMimeDatabase>
-#include <QMouseEvent>
-#include <QMovie>
-#include <QPaintEvent>
-#include <QPixmap>
-#include <QProgressBar>
-#include <QPropertyAnimation>
-#include <QPushButton>
-#include <QResizeEvent>
-#include <QScrollArea>
-#include <QScrollBar>
-#include <QSlider>
-#include <QSpinBox>
-#include <QTimer>
-#include <QToolBar>
-#include <QVBoxLayout>
-#include <QWheelEvent>
 #include <QWidget>
+#include <QString>
+#include <QPixmap>
+#include <QColor>
 
-#include "ContentManager.h"
+class QLabel;
+class QPushButton;
+class QSlider;
+class QComboBox;
+class QVBoxLayout;
+class QHBoxLayout;
+
+namespace gallery {
 
 /**
- * @brief Enhanced graphics view for image display with zoom and pan
+ * @enum BackgroundMode
+ * @brief Background display mode for the viewer
  */
-class ImageGraphicsView : public QGraphicsView {
-    Q_OBJECT
-
-public:
-    explicit ImageGraphicsView(QWidget* parent = nullptr);
-
-    void setPixmap(const QPixmap& pixmap);
-    void setZoomFactor(double factor);
-    void fitToWindow();
-    void fitToWidth();
-    void fitToHeight();
-    void actualSize();
-
-    double getZoomFactor() const { return m_zoomFactor; }
-    bool hasImage() const { return m_pixmapItem != nullptr; }
-
-public slots:
-    void zoomIn();
-    void zoomOut();
-    void resetZoom();
-    void rotateLeft();
-    void rotateRight();
-    void flipHorizontal();
-    void flipVertical();
-
-signals:
-    void zoomChanged(double factor);
-    void imageClicked(const QPoint& position);
-    void imageDoubleClicked(const QPoint& position);
-
-protected:
-    void wheelEvent(QWheelEvent* event) override;
-    void mousePressEvent(QMouseEvent* event) override;
-    void mouseMoveEvent(QMouseEvent* event) override;
-    void mouseReleaseEvent(QMouseEvent* event) override;
-    void mouseDoubleClickEvent(QMouseEvent* event) override;
-    void keyPressEvent(QKeyEvent* event) override;
-    void resizeEvent(QResizeEvent* event) override;
-    bool event(QEvent* event) override;
-
-private:
-    void updateTransform();
-    void centerImage();
-
-    QGraphicsScene* m_scene;
-    QGraphicsPixmapItem* m_pixmapItem;
-    double m_zoomFactor;
-    int m_rotation;
-    bool m_flippedHorizontal;
-    bool m_flippedVertical;
-
-    // Pan support
-    bool m_panning;
-    QPoint m_lastPanPoint;
-
-    // Animation
-    QPropertyAnimation* m_zoomAnimation;
+enum class BackgroundMode {
+    Transparent = 0,  ///< Transparent background (checkered pattern)
+    White = 1,        ///< White background
+    Black = 2         ///< Black background
 };
 
 /**
- * @brief Main image viewer widget with full functionality
+ * @class ImageViewerWidget
+ * @brief Widget for viewing and previewing icons/images
+ * @details Provides functionality to:
+ *          - Display a single icon at custom size
+ *          - Zoom in/out with controls
+ *          - Change background color (transparent, white, black)
+ *          - Display icon information
+ *
+ * @par Usage:
+ * @code
+ * ImageViewerWidget viewer;
+ * viewer.setImage(pixmap);
+ * viewer.setZoomLevel(100);
+ * @endcode
  */
 class ImageViewerWidget : public QWidget {
     Q_OBJECT
 
 public:
-    enum ViewMode { FitToWindow, FitToWidth, FitToHeight, ActualSize, CustomZoom };
-    Q_ENUM(ViewMode)
-
-    enum SlideshowSpeed {
-        VerySlow = 10000, // 10 seconds
-        Slow = 5000,      // 5 seconds
-        Normal = 3000,    // 3 seconds
-        Fast = 1500,      // 1.5 seconds
-        VeryFast = 1000   // 1 second
-    };
-    Q_ENUM(SlideshowSpeed)
-
+    /**
+     * @brief Construct an ImageViewerWidget
+     * @param parent Parent widget
+     */
     explicit ImageViewerWidget(QWidget* parent = nullptr);
-    ~ImageViewerWidget();
 
-    // Content management
-    void setContentManager(ContentManager* manager);
-    void setImageList(const QStringList& imageList);
-    void setCurrentImage(const QString& identifier);
+    /**
+     * @brief Destructor
+     */
+    ~ImageViewerWidget() override;
 
-    // Display properties
-    void setViewMode(ViewMode mode);
-    void setZoomFactor(double factor);
-    void setBackgroundColor(const QColor& color);
-    void setShowImageInfo(bool show);
+    /**
+     * @brief Set the image/icon to display
+     * @param pixmap The QPixmap to display
+     */
+    void setImage(const QPixmap& pixmap);
 
-    // Navigation
-    void showNextImage();
-    void showPreviousImage();
-    void showFirstImage();
-    void showLastImage();
-    void showImageAt(int index);
+    /**
+     * @brief Set the zoom level
+     * @param zoomPercent Zoom level as percentage (50-400)
+     */
+    void setZoomLevel(int zoomPercent);
 
-    // Slideshow
-    void startSlideshow();
-    void stopSlideshow();
-    void setSlideshowSpeed(SlideshowSpeed speed);
-    bool isSlideshowActive() const { return m_slideshowTimer->isActive(); }
+    /**
+     * @brief Get the current zoom level
+     * @return Current zoom level as percentage
+     */
+    [[nodiscard]] int getZoomLevel() const;
 
-    // Transformations
-    void rotateLeft();
-    void rotateRight();
-    void flipHorizontal();
-    void flipVertical();
-    void resetTransformations();
+    /**
+     * @brief Set the background mode
+     * @param mode The background mode to use
+     */
+    void setBackgroundMode(BackgroundMode mode);
 
-    // Getters
-    QString getCurrentImage() const { return m_currentImage; }
-    int getCurrentIndex() const { return m_currentIndex; }
-    int getImageCount() const { return static_cast<int>(m_imageList.size()); }
-    ViewMode getViewMode() const { return m_viewMode; }
-    double getZoomFactor() const;
+    /**
+     * @brief Get the current background mode
+     * @return Current background mode
+     */
+    [[nodiscard]] BackgroundMode getBackgroundMode() const;
 
-public slots:
+    /**
+     * @brief Set image information text
+     * @param info Text to display (e.g., "Icon: house (48x48)")
+     */
+    void setImageInfo(const QString& info);
+
+Q_SIGNALS:
+    /**
+     * @brief Emitted when zoom level changes
+     * @param zoomPercent The new zoom level
+     */
+    void zoomChanged(int zoomPercent);
+
+    /**
+     * @brief Emitted when background mode changes
+     * @param mode The new background mode
+     */
+    void backgroundChanged(BackgroundMode mode);
+
+private Q_SLOTS:
+    /**
+     * @brief Called when zoom in button is clicked
+     */
     void onZoomIn();
+
+    /**
+     * @brief Called when zoom out button is clicked
+     */
     void onZoomOut();
-    void onResetZoom();
-    void onFitToWindow();
-    void onFitToWidth();
-    void onFitToHeight();
-    void onActualSize();
-    void onToggleFullscreen();
-    void onToggleImageInfo();
 
-signals:
-    void imageChanged(const QString& identifier, int index);
-    void zoomChanged(double factor);
-    void viewModeChanged(ViewMode mode);
-    void slideshowStateChanged(bool active);
-    void loadingStarted(const QString& identifier);
-    void imageLoaded(const QString& identifier); // Added for compatibility
-    void loadingFinished(const QString& identifier);
-    void loadingFailed(const QString& identifier, const QString& error);
-
-private slots:
-    void onSlideshowTimer();
-    void onImageLoaded();
+    /**
+     * @brief Called when zoom slider value changes
+     * @param value The new slider value
+     */
     void onZoomSliderChanged(int value);
-    void onViewModeChanged();
+
+    /**
+     * @brief Called when background selection changes
+     * @param index The selected background mode index
+     */
+    void onBackgroundChanged(int index);
+
+    /**
+     * @brief Reset zoom to 100%
+     */
+    void onZoomReset();
 
 private:
-    // UI setup
+    /**
+     * @brief Initialize the widget UI
+     */
     void setupUI();
-    void setupToolbar();
-    void setupImageView();
-    void setupInfoPanel();
-    void setupAnimations();
 
-    // Image loading
-    void loadCurrentImage();
-    void loadImageAsync(const QString& identifier);
-    void displayImage(const QPixmap& pixmap);
-    void displayError(const QString& message);
+    /**
+     * @brief Update the displayed image based on current zoom and background
+     */
+    void updateDisplay();
 
-    // Navigation helpers
-    void updateNavigationActions();
-    void updateImageInfo();
-    void updateWindowTitle();
+    /**
+     * @brief Create a checkered pattern for transparent backgrounds
+     * @param size The size of the pattern
+     * @return QPixmap with checkered pattern
+     */
+    [[nodiscard]] QPixmap createCheckerPattern(int size) const;
 
-    // Animation helpers
-    void animateTransition();
-    void fadeIn();
-    void fadeOut();
+    /**
+     * @brief Apply background color to image
+     * @param source The source pixmap
+     * @param bg The background color
+     * @return Pixmap with background applied
+     */
+    [[nodiscard]] QPixmap applyBackground(const QPixmap& source, const QColor& bg) const;
 
-    // Core components
-    ContentManager* m_contentManager;
-    ImageGraphicsView* m_imageView;
-    QScrollArea* m_scrollArea;
-
-    // Toolbar and controls
-    QToolBar* m_toolbar;
-    QAction* m_previousAction;
-    QAction* m_nextAction;
-    QAction* m_zoomInAction;
-    QAction* m_zoomOutAction;
-    QAction* m_fitToWindowAction;
-    QAction* m_actualSizeAction;
-    QAction* m_rotateLeftAction;
-    QAction* m_rotateRightAction;
-    QAction* m_flipHorizontalAction;
-    QAction* m_flipVerticalAction;
-    QAction* m_slideshowAction;
-    QAction* m_fullscreenAction;
-    QAction* m_infoAction;
-
-    QSlider* m_zoomSlider;
-    QLabel* m_zoomLabel; // Added for compatibility
-    QComboBox* m_viewModeCombo;
-    QProgressBar* m_loadingProgress;
-
-    // Info panel
-    QWidget* m_infoPanel;
-    QLabel* m_imageInfoLabel;
-    QLabel* m_navigationLabel;
-
-    // Data
-    QStringList m_imageList;
-    QString m_currentImage;
-    int m_currentIndex;
-    ViewMode m_viewMode;
-
-    // Slideshow
-    QTimer* m_slideshowTimer;
-    SlideshowSpeed m_slideshowSpeed;
-
-    // Animation
-    QPropertyAnimation* m_fadeAnimation;
-    QGraphicsOpacityEffect* m_opacityEffect;
+    // UI Components
+    QLabel* m_imageLabel;               ///< Label displaying the image
+    QLabel* m_infoLabel;                ///< Information label
+    QPushButton* m_zoomInButton;        ///< Zoom in button
+    QPushButton* m_zoomOutButton;       ///< Zoom out button
+    QPushButton* m_zoomResetButton;     ///< Reset zoom button
+    QSlider* m_zoomSlider;              ///< Zoom level slider
+    QLabel* m_zoomLabel;                ///< Zoom percentage label
+    QComboBox* m_backgroundCombo;       ///< Background mode selection
 
     // State
-    bool m_isFullscreen;
-    bool m_showImageInfo;
-    QColor m_backgroundColor;
-
-    // Loading
-    bool m_isLoading;
-    QMovie* m_loadingMovie;
+    QPixmap m_originalPixmap;           ///< Original image
+    int m_zoomLevel;                    ///< Current zoom level (%)
+    BackgroundMode m_backgroundMode;    ///< Current background mode
 };
 
-#endif // IMAGEVIEWERWIDGET_H
+} // namespace gallery
+
+#endif // IMAGE_VIEWER_WIDGET_H

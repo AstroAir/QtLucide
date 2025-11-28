@@ -8,6 +8,9 @@ Explore QtLucide's advanced capabilities including custom painters, caching stra
 
 QtLucide uses a flexible painter system that allows you to create completely custom icon rendering logic. The `QtLucideIconPainter` abstract base class provides the interface for custom implementations.
 
+!!! note "Painter Ownership"
+    When you pass a painter to `give()` or `icon()`, QtLucide takes ownership. Do not delete the painter manually or use it elsewhere after passing it.
+
 ### Creating Custom Painters
 
 #### Basic Custom Painter
@@ -172,6 +175,9 @@ QIcon starIcon = lucide.icon("star-text");
 QIcon heartIcon = lucide.icon("heart-text");
 QIcon glowIcon = lucide.icon("glow-star");
 ```
+
+!!! warning "Replacing Painters"
+    If you call `give()` with a name that already exists, the old painter is deleted and replaced with the new one.
 
 ## Advanced Caching Strategies
 
@@ -342,10 +348,9 @@ class IconFactory
 public:
     enum IconStyle {
         Default,
-        Outlined,
-        Filled,
-        Rounded,
-        Sharp
+        Thin,
+        Bold,
+        Subtle
     };
     
     static QIcon createIcon(const QString& name, IconStyle style = Default,
@@ -355,21 +360,18 @@ public:
         options["color"] = color;
         
         switch (style) {
-            case Outlined:
-                options["stroke-width"] = 2.0;
+            case Thin:
+                options["stroke-width"] = 1.5;  // Range: 0.5-4.0
                 break;
-            case Filled:
-                options["fill"] = true;
+            case Bold:
+                options["stroke-width"] = 3.0;
                 break;
-            case Rounded:
-                options["stroke-linecap"] = "round";
-                options["stroke-linejoin"] = "round";
-                break;
-            case Sharp:
-                options["stroke-linecap"] = "square";
-                options["stroke-linejoin"] = "miter";
+            case Subtle:
+                options["stroke-width"] = 1.5;
+                options["opacity"] = 0.7;
                 break;
             default:
+                options["stroke-width"] = 2.0;  // Default
                 break;
         }
         

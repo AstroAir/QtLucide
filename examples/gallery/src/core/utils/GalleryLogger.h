@@ -1,259 +1,232 @@
 /**
- * QtLucide Gallery Application - Enhanced Logging System
- *
- * A modern, high-performance logging system with improved architecture,
- * better performance monitoring, and enhanced thread safety.
+ * @file GalleryLogger.h
+ * @brief Logging utility for the QtLucide gallery application
+ * @details This file provides a simple logging interface using Qt's debug system
+ *          with support for different log levels and message categories.
+ * @author Max Qian
+ * @date 2025
+ * @version 1.0
+ * @copyright MIT Licensed - Copyright 2025 Max Qian. All Rights Reserved.
  */
 
-#ifndef GALLERYLOGGER_H
-#define GALLERYLOGGER_H
+#ifndef GALLERY_LOGGER_H
+#define GALLERY_LOGGER_H
 
-#include <QAtomicInt>
-#include <QDateTime>
-#include <QDebug>
-#include <QDir>
-#include <QElapsedTimer>
-#include <QFile>
-#include <QHash>
-#include <QLoggingCategory>
-#include <QMutex>
-#include <QObject>
-#include <QQueue>
-#include <QStandardPaths>
 #include <QString>
-#include <QStringList>
-#include <QTextStream>
-#include <QThread>
-#include <QTimer>
-#include <QWaitCondition>
+#include <QMessageLogger>
 
-#include <memory>
-
-// Enhanced logging categories for different components
-Q_DECLARE_LOGGING_CATEGORY(galleryMain)
-Q_DECLARE_LOGGING_CATEGORY(galleryInit)
-Q_DECLARE_LOGGING_CATEGORY(galleryUI)
-Q_DECLARE_LOGGING_CATEGORY(galleryIcon)
-Q_DECLARE_LOGGING_CATEGORY(gallerySearch)
-Q_DECLARE_LOGGING_CATEGORY(galleryFilter)
-Q_DECLARE_LOGGING_CATEGORY(galleryExport)
-Q_DECLARE_LOGGING_CATEGORY(gallerySettings)
-Q_DECLARE_LOGGING_CATEGORY(galleryPerf)
-Q_DECLARE_LOGGING_CATEGORY(galleryMemory)
-Q_DECLARE_LOGGING_CATEGORY(galleryCache)
-Q_DECLARE_LOGGING_CATEGORY(galleryAnimation)
-Q_DECLARE_LOGGING_CATEGORY(galleryMetadata)
+namespace gallery {
 
 /**
- * @brief Background logging worker for asynchronous log processing
+ * @brief Log level enumeration
+ * @details Defines different levels of logging severity
  */
-class LogWorker : public QObject {
-    Q_OBJECT
-
-public:
-    explicit LogWorker(QObject* parent = nullptr);
-    ~LogWorker() = default;
-
-    void enqueueLogEntry(const QString& formattedMessage);
-    void stop();
-
-public slots:
-    void processLogQueue();
-
-signals:
-    void logProcessed(const QString& message);
-
-private:
-    QQueue<QString> m_logQueue;
-    QMutex m_queueMutex;
-    QWaitCondition m_queueCondition;
-    bool m_stopRequested = false;
-    QTimer* m_processTimer;
+enum class LogLevel {
+    Debug = 0,      ///< Debug information for developers
+    Info = 1,       ///< General information messages
+    Warning = 2,    ///< Warning messages about potential issues
+    Error = 3,      ///< Error messages indicating failures
+    Critical = 4    ///< Critical errors requiring immediate attention
 };
 
 /**
- * @brief Enhanced logging system for the Gallery application
+ * @brief Logging utility class for the gallery application
+ * @details Provides static methods for logging with category support and different
+ *          severity levels. Uses Qt's built-in debug system with QLoggingCategory.
+ * @ingroup Gallery
  *
- * Features:
- * - Asynchronous logging for better performance
- * - Multiple log levels with fine-grained control
- * - Console and file output with formatting options
- * - Advanced performance timing measurements
- * - Memory usage tracking with detailed statistics
- * - Thread-safe operation with minimal contention
- * - Automatic log rotation with compression
- * - Structured logging with enhanced categories
- * - Real-time log filtering and searching
- * - Integration with Qt's logging framework
+ * @par Usage:
+ * @code
+ * GalleryLogger::debug("search", "Search query received");
+ * GalleryLogger::warning("export", "Export directory not found");
+ * GalleryLogger::error("core", "Failed to load icons");
+ * @endcode
  */
-class GalleryLogger : public QObject {
-    Q_OBJECT
-
+class GalleryLogger {
 public:
-    enum LogLevel { Trace = 0, Debug = 1, Info = 2, Warning = 3, Error = 4, Critical = 5 };
-    Q_ENUM(LogLevel)
+    /**
+     * @brief Log a debug message
+     * @param category Message category (e.g., "search", "export", "core")
+     * @param message The message to log
+     * @details Debug messages are used for detailed diagnostic information
+     *          and are typically only shown in debug builds
+     *
+     * @example
+     * @code
+     * GalleryLogger::debug("ui", "Window resized to 1024x768");
+     * @endcode
+     */
+    static void debug(const QString& category, const QString& message);
 
-    enum OutputTarget {
-        Console = 0x01,
-        File = 0x02,
-        Network = 0x04,
-        Both = Console | File,
-        All = Console | File | Network
-    };
-    Q_DECLARE_FLAGS(OutputTargets, OutputTarget)
+    /**
+     * @brief Log an info message
+     * @param category Message category (e.g., "search", "export", "core")
+     * @param message The message to log
+     * @details Info messages provide general information about application progress
+     *
+     * @example
+     * @code
+     * GalleryLogger::info("core", "QtLucide initialized successfully");
+     * @endcode
+     */
+    static void info(const QString& category, const QString& message);
 
-    enum LogFormat { Simple, Detailed, Json, Xml };
-    Q_ENUM(LogFormat)
+    /**
+     * @brief Log a warning message
+     * @param category Message category (e.g., "search", "export", "core")
+     * @param message The message to log
+     * @details Warning messages indicate potential issues that should be investigated
+     *
+     * @example
+     * @code
+     * GalleryLogger::warning("export", "Export path does not exist");
+     * @endcode
+     */
+    static void warning(const QString& category, const QString& message);
 
-    // Constants
-    static constexpr qint64 DEFAULT_MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
-    static constexpr int DEFAULT_MAX_BACKUP_FILES = 10;
-    static constexpr int FLUSH_INTERVAL_MS = 3000;      // 3 seconds
-    static constexpr int LOG_PROCESS_INTERVAL_MS = 100; // 100ms
+    /**
+     * @brief Log an error message
+     * @param category Message category (e.g., "search", "export", "core")
+     * @param message The message to log
+     * @details Error messages indicate failures in operations
+     *
+     * @example
+     * @code
+     * GalleryLogger::error("core", "Failed to load icon metadata");
+     * @endcode
+     */
+    static void error(const QString& category, const QString& message);
 
-    // Singleton access
-    static GalleryLogger* instance();
-    static void cleanup();
+    /**
+     * @brief Log a critical message
+     * @param category Message category (e.g., "search", "export", "core")
+     * @param message The message to log
+     * @details Critical messages indicate severe errors requiring immediate attention
+     *
+     * @example
+     * @code
+     * GalleryLogger::critical("core", "Out of memory - application may crash");
+     * @endcode
+     */
+    static void critical(const QString& category, const QString& message);
 
-    // Initialization and configuration
-    bool initialize(bool enableFileLogging = true, bool enableConsoleLogging = true);
-    void setLogLevel(LogLevel level);
-    void setOutputTargets(OutputTargets targets);
-    void setLogFormat(LogFormat format);
-    void setMaxFileSize(qint64 maxSize);
-    void setMaxBackupFiles(int maxFiles);
-    void setAsyncLogging(bool enabled);
+    /**
+     * @brief Log a message with specified level
+     * @param level The logging level for this message
+     * @param category Message category (e.g., "search", "export", "core")
+     * @param message The message to log
+     * @details Allows logging with explicit level specification
+     *
+     * @example
+     * @code
+     * LogLevel level = LogLevel::Warning;
+     * GalleryLogger::log(level, "ui", "Widget not found");
+     * @endcode
+     */
+    static void log(LogLevel level, const QString& category, const QString& message);
 
-    // Enhanced logging methods
-    void log(LogLevel level, const QLoggingCategory& category, const QString& message);
-    void trace(const QLoggingCategory& category, const QString& message);
-    void debug(const QLoggingCategory& category, const QString& message);
-    void info(const QLoggingCategory& category, const QString& message);
-    void warning(const QLoggingCategory& category, const QString& message);
-    void error(const QLoggingCategory& category, const QString& message);
-    void critical(const QLoggingCategory& category, const QString& message);
+    /**
+     * @brief Format a message with arguments
+     * @param format Format string (like QString::arg())
+     * @param args Variable arguments to substitute
+     * @return Formatted message string
+     * @details Helper method to create formatted messages easily
+     *
+     * @example
+     * @code
+     * QString msg = GalleryLogger::format("Loaded %1 icons from %2");
+     * msg = msg.arg("1634").arg("/usr/share/icons");
+     * GalleryLogger::info("core", msg);
+     * @endcode
+     */
+    static QString formatMessage(const QString& format);
 
-    // Performance monitoring with enhanced features
-    void startTimer(const QString& name, const QString& context = QString());
-    qint64 endTimer(const QString& name);
-    void logMemoryUsage(const QString& context = QString());
-    void logPerformanceMetrics();
+    /**
+     * @brief Enable or disable logging
+     * @param enabled true to enable logging, false to disable
+     * @details When disabled, log messages are ignored
+     * @default true
+     *
+     * @example
+     * @code
+     * GalleryLogger::setEnabled(false);  // Disable logging in release builds
+     * @endcode
+     */
+    static void setEnabled(bool enabled);
 
-    // Advanced features
-    void setLogFilter(const QString& filter);
-    void clearLogFilter();
-    QStringList getRecentLogs(int count = 100) const;
-    void exportLogs(const QString& filePath, const QDateTime& from = QDateTime(),
-                    const QDateTime& to = QDateTime());
+    /**
+     * @brief Check if logging is enabled
+     * @return true if logging is enabled, false otherwise
+     *
+     * @example
+     * @code
+     * if (GalleryLogger::isEnabled()) {
+     *     GalleryLogger::debug("core", "Debug info");
+     * }
+     * @endcode
+     */
+    static bool isEnabled();
 
-    // Getters
-    LogLevel logLevel() const { return m_logLevel; }
-    QString getLogFilePath() const { return m_logFilePath; }
-    bool isFileLoggingEnabled() const { return m_outputTargets & File; }
-    bool isConsoleLoggingEnabled() const { return m_outputTargets & Console; }
-    bool isAsyncLoggingEnabled() const { return m_asyncLogging; }
-    LogFormat logFormat() const { return m_logFormat; }
+    /**
+     * @brief Set the minimum log level to display
+     * @param level Messages at or above this level will be shown
+     * @default Debug (all messages shown)
+     *
+     * @example
+     * @code
+     * // Only show warnings, errors, and critical messages
+     * GalleryLogger::setMinimumLevel(LogLevel::Warning);
+     * @endcode
+     */
+    static void setMinimumLevel(LogLevel level);
 
-public slots:
-    void flush();
-    void rotateLogFile();
-    void clearLogFile();
-
-signals:
-    void logMessage(GalleryLogger::LogLevel level, const QString& category, const QString& message);
-    void logFileRotated(const QString& newFilePath);
-    void performanceMetricsUpdated(const QVariantMap& metrics);
+    /**
+     * @brief Get the current minimum log level
+     * @return The current minimum logging level
+     *
+     * @example
+     * @code
+     * LogLevel current = GalleryLogger::minimumLevel();
+     * @endcode
+     */
+    static LogLevel minimumLevel();
 
 private:
-    explicit GalleryLogger(QObject* parent = nullptr);
-    ~GalleryLogger();
+    /**
+     * @brief Private constructor to prevent instantiation
+     * @details This class is designed to be used as a namespace for static methods only
+     */
+    GalleryLogger() = delete;
 
-    void setupLogFile();
-    void setupAsyncLogging();
-    void writeToFile(const QString& formattedMessage);
-    void writeToConsole(LogLevel level, const QString& formattedMessage);
-    QString formatMessage(LogLevel level, const QLoggingCategory& category, const QString& message);
-    QString formatMessageJson(LogLevel level, const QLoggingCategory& category,
-                              const QString& message);
-    QString levelToString(LogLevel level);
-    void checkLogRotation();
-    void performLogRotation();
-    QString generateLogFileName();
-    void updatePerformanceMetrics();
+    /**
+     * @brief Deleted copy constructor
+     */
+    GalleryLogger(const GalleryLogger&) = delete;
 
-    static GalleryLogger* s_instance;
-    static QMutex s_instanceMutex;
+    /**
+     * @brief Deleted assignment operator
+     */
+    GalleryLogger& operator=(const GalleryLogger&) = delete;
 
-    // Configuration
-    LogLevel m_logLevel;
-    OutputTargets m_outputTargets;
-    LogFormat m_logFormat;
-    qint64 m_maxFileSize;
-    int m_maxBackupFiles;
-    bool m_asyncLogging;
+    /**
+     * @brief Check if a message should be logged
+     * @param level The logging level of the message
+     * @return true if the message should be logged, false otherwise
+     */
+    static bool shouldLog(LogLevel level);
 
-    // File handling
-    QString m_logFilePath;
-    QString m_logDirectory;
-    std::unique_ptr<QFile> m_logFile;
-    std::unique_ptr<QTextStream> m_logStream;
+    /**
+     * @brief Internal logging implementation
+     * @param level The logging level
+     * @param category The message category
+     * @param message The message to log
+     */
+    static void logInternal(LogLevel level, const QString& category, const QString& message);
 
-    // Thread safety
-    mutable QMutex m_logMutex;
-
-    // Asynchronous logging
-    QThread* m_logThread;
-    LogWorker* m_logWorker;
-
-    // Performance monitoring
-    struct TimerInfo {
-        QElapsedTimer timer;
-        QString context;
-        qint64 totalTime = 0;
-        int callCount = 0;
-    };
-    QHash<QString, TimerInfo> m_timers;
-    QMutex m_timerMutex;
-
-    // Log filtering and history
-    QString m_logFilter;
-    QQueue<QString> m_recentLogs;
-    mutable QMutex m_historyMutex;
-    static constexpr int MAX_RECENT_LOGS = 1000;
-
-    // Auto-flush timer
-    QTimer* m_flushTimer;
-
-    // Performance metrics
-    QAtomicInt m_logCount;
-    QElapsedTimer m_uptimeTimer;
+    static bool s_enabled;              ///< Whether logging is enabled
+    static LogLevel s_minimumLevel;     ///< Minimum log level to display
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(GalleryLogger::OutputTargets)
+} // namespace gallery
 
-// Enhanced convenience macros for logging
-#define GALLERY_LOG_TRACE(category, message) GalleryLogger::instance()->trace(category(), message)
-
-#define GALLERY_LOG_DEBUG(category, message) GalleryLogger::instance()->debug(category(), message)
-
-#define GALLERY_LOG_INFO(category, message) GalleryLogger::instance()->info(category(), message)
-
-#define GALLERY_LOG_WARNING(category, message)                                                     \
-    GalleryLogger::instance()->warning(category(), message)
-
-#define GALLERY_LOG_ERROR(category, message) GalleryLogger::instance()->error(category(), message)
-
-#define GALLERY_LOG_CRITICAL(category, message)                                                    \
-    GalleryLogger::instance()->critical(category(), message)
-
-#define GALLERY_START_TIMER(name) GalleryLogger::instance()->startTimer(name)
-
-#define GALLERY_START_TIMER_CTX(name, context) GalleryLogger::instance()->startTimer(name, context)
-
-#define GALLERY_END_TIMER(name) GalleryLogger::instance()->endTimer(name)
-
-#define GALLERY_LOG_MEMORY(context) GalleryLogger::instance()->logMemoryUsage(context)
-
-#define GALLERY_LOG_PERF() GalleryLogger::instance()->logPerformanceMetrics()
-
-#endif // GALLERYLOGGER_H
+#endif // GALLERY_LOGGER_H

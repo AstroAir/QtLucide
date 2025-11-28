@@ -9,28 +9,28 @@ namespace lucide {
     class QtLucideIconPainter
     {
     public:
-        QtLucideIconPainter();
+        QtLucideIconPainter() = default;
         virtual ~QtLucideIconPainter();
 
         // Pure virtual interface
+        [[nodiscard]] virtual QtLucideIconPainter* clone() const = 0;
+        [[nodiscard]] virtual QString iconText() const = 0;
         virtual void paint(QtLucide* lucide, QPainter* painter, const QRect& rect,
                           QIcon::Mode mode, QIcon::State state,
                           const QVariantMap& options) = 0;
-        virtual QString iconText() const = 0;
-        virtual QtLucideIconPainter* clone() const = 0;
     };
 
     class QtLucideSvgIconPainter : public QtLucideIconPainter
     {
     public:
-        explicit QtLucideSvgIconPainter(const QString& iconName);
-        explicit QtLucideSvgIconPainter(Icons iconId);
+        QtLucideSvgIconPainter();
+        ~QtLucideSvgIconPainter() override;
         
+        [[nodiscard]] QtLucideIconPainter* clone() const override;
+        [[nodiscard]] QString iconText() const override;
         void paint(QtLucide* lucide, QPainter* painter, const QRect& rect,
                   QIcon::Mode mode, QIcon::State state,
                   const QVariantMap& options) override;
-        QString iconText() const override;
-        QtLucideIconPainter* clone() const override;
     };
 }
 ```
@@ -77,24 +77,32 @@ Creates a copy of this painter.
 
 ### QtLucideSvgIconPainter
 
-The default implementation that renders Lucide SVG icons.
+The default implementation that renders Lucide SVG icons. This painter is used internally by `QtLucide` and receives the icon ID through the options map.
 
-#### Constructors
+#### Constructor
 
 ```cpp
-// Create by icon name
-QtLucideSvgIconPainter painter("heart");
-
-// Create by enum
-QtLucideSvgIconPainter painter(Icons::heart);
+// Default constructor - icon ID is passed via options["iconId"]
+QtLucideSvgIconPainter painter;
 ```
 
 #### Features
 
-- **SVG Rendering**: High-quality vector rendering
-- **Color Customization**: Runtime color changes
-- **State Handling**: Different appearances for different modes
-- **Scaling**: Perfect quality at any size
+- **SVG Rendering**: High-quality vector rendering via `QSvgRenderer`
+- **Color Customization**: Runtime color replacement in SVG data
+- **State Handling**: Automatic color adjustment for disabled mode (lighter + alpha)
+- **Stroke Width**: Configurable stroke width (0.5-4.0, default 2.0)
+- **Scaling**: Perfect quality at any size with configurable scale factor
+- **Opacity**: Configurable opacity support
+
+#### How It Works
+
+The painter receives the icon ID through `options["iconId"]` and:
+
+1. Retrieves SVG data from `QtLucide::svgData()`
+2. Processes color replacement (`currentColor` → specified color)
+3. Applies stroke width modifications if different from default
+4. Renders via `QSvgRenderer` with proper scaling
 
 ## Creating Custom Painters
 
@@ -230,12 +238,16 @@ Custom painters receive all rendering options:
 
 ### Common Options
 
-- `color` - Primary icon color
-- `color-disabled` - Color for disabled state
-- `color-active` - Color for active state
-- `color-selected` - Color for selected state
-- `scale-factor` - Size multiplier
-- `opacity` - Icon opacity
+| Option | Type | Description | Default |
+|--------|------|-------------|--------|
+| `color` | `QColor` | Primary icon color | `Qt::black` (fallback) |
+| `color-disabled` | `QColor` | Color for disabled state | Auto-lightened primary |
+| `color-active` | `QColor` | Color for active state | Primary color |
+| `color-selected` | `QColor` | Color for selected state | Primary color |
+| `scale-factor` | `double` | Size multiplier (0.1-10.0) | `0.9` |
+| `opacity` | `double` | Icon opacity (0.0-1.0) | `1.0` |
+| `stroke-width` | `double` | SVG stroke width (0.5-4.0) | `2.0` |
+| `iconId` | `int` | Internal icon enum value | Required for SVG painter |
 
 ### Custom Options
 
@@ -291,14 +303,15 @@ void paint(...) override
 // QtLucide takes ownership when using give()
 lucide.give("custom", new MyPainter());  // QtLucide owns painter
 
-// QtLucideIconEngine takes ownership when creating icons
-QIcon icon = lucide.icon(new MyPainter());  // Engine owns painter
+// QtLucide takes ownership when creating icons with custom painter
+QIcon icon = lucide.icon(new MyPainter());  // QtLucide/Engine shares painter
 
-// Manual cleanup only if not passed to QtLucide
-MyPainter* painter = new MyPainter();
-// ... use painter
-delete painter;  // Manual cleanup required
+// Note: Painters are shared, not owned by individual engines
+// The painter lifetime is managed by QtLucide::m_svgIconPainter or m_customPainters
 ```
+
+!!! warning "Ownership Semantics"
+    When you pass a painter to `give()` or `icon()`, QtLucide takes ownership. Do not delete the painter manually or use it elsewhere after passing it.
 
 ## See Also
 

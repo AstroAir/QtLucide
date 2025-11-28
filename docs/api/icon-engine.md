@@ -9,18 +9,24 @@ namespace lucide {
     class QtLucideIconEngine : public QIconEngine
     {
     public:
-        explicit QtLucideIconEngine(QtLucide* lucide, 
-                                   QtLucideIconPainter* painter,
-                                   const QVariantMap& options = {});
-        ~QtLucideIconEngine();
+        QtLucideIconEngine(QtLucide* lucide, 
+                          QtLucideIconPainter* painter,
+                          const QVariantMap& options);
+        ~QtLucideIconEngine() override;
 
         // QIconEngine interface
         void paint(QPainter* painter, const QRect& rect, 
                   QIcon::Mode mode, QIcon::State state) override;
-        QPixmap pixmap(const QSize& size, QIcon::Mode mode, 
-                      QIcon::State state) override;
-        QIconEngine* clone() const override;
-        QString key() const override;
+        [[nodiscard]] QPixmap pixmap(const QSize& size, QIcon::Mode mode, 
+                                     QIcon::State state) override;
+        [[nodiscard]] QIconEngine* clone() const override;
+        [[nodiscard]] QString key() const override;
+        [[nodiscard]] QSize actualSize(const QSize& size, QIcon::Mode mode,
+                                       QIcon::State state) override;
+        [[nodiscard]] QList<QSize> availableSizes(QIcon::Mode mode,
+                                                   QIcon::State state) override;
+        [[nodiscard]] QString iconName() override;
+        [[nodiscard]] bool isNull() override;
     };
 }
 ```
@@ -43,20 +49,24 @@ Creates a new icon engine instance.
 **Parameters:**
 
 - `lucide` - Pointer to the QtLucide instance (not owned)
-- `painter` - Pointer to the icon painter (takes ownership)
-- `options` - Rendering options map
+- `painter` - Pointer to the icon painter (shared, not owned by engine)
+- `options` - Rendering options map (includes merged default options)
 
 **Example:**
 
 ```cpp
 // Usually created internally by QtLucide::icon()
+// The painter is shared with QtLucide, not owned by the engine
 QtLucideIconEngine* engine = new QtLucideIconEngine(
     lucideInstance, 
-    new QtLucideSvgIconPainter("heart"), 
-    options
+    svgPainter,  // Shared painter from QtLucide
+    mergedOptions
 );
-QIcon icon(engine);  // QIcon takes ownership
+QIcon icon(engine);  // QIcon takes ownership of engine
 ```
+
+!!! note "Ownership Semantics"
+    The engine does not own the painter - it's shared with QtLucide. The painter lifetime is managed by `QtLucide::m_svgIconPainter` or `m_customPainters`.
 
 ## Core Methods
 
@@ -91,9 +101,33 @@ Creates a copy of this icon engine.
 
 ### QString key() const
 
-Returns a unique cache key for this icon configuration.
+Returns a unique identifier for this engine type.
 
-**Returns:** String key based on painter and options
+**Returns:** String `"QtLucideIconEngine"`
+
+### QSize actualSize(const QSize& size, QIcon::Mode mode, QIcon::State state)
+
+Returns the actual size the icon will be rendered at, accounting for scale factor.
+
+**Returns:** Scaled size based on `scale-factor` option (clamped to 0.1-10.0)
+
+### QList\<QSize\> availableSizes(QIcon::Mode mode, QIcon::State state)
+
+Returns available icon sizes.
+
+**Returns:** Empty list (SVG icons are infinitely scalable)
+
+### QString iconName()
+
+Returns the icon name if available.
+
+**Returns:** String in format `"lucide-{iconId}"` or empty string
+
+### bool isNull()
+
+Checks if this icon engine has valid icon data.
+
+**Returns:** `true` if painter or lucide is null, or if iconId is invalid for built-in icons. Custom painters are always valid if the painter exists.
 
 ## Caching Strategy
 
@@ -103,15 +137,26 @@ The icon engine implements intelligent caching:
 
 Cache keys are generated from:
 
-- Icon painter identifier
-- Rendering options (color, scale-factor, etc.)
-- Size and mode/state parameters
+- Icon ID (`iconId` option)
+- Size (width × height)
+- Mode and state (as integers)
+- Color for the specific mode/state
+- Scale factor
+- Opacity
+- Stroke width
+
+**Cache Key Format:**
+
+```text
+{iconId}_{width}x{height}_{mode}_{state}_{color}_{scale}_{opacity}_{strokeWidth}
+```
 
 ### Cache Management
 
 - **Automatic Caching**: Pixmaps are cached on first render
-- **Memory Efficient**: LRU eviction when cache limits are reached
-- **Thread-Safe**: Cache operations are protected by mutexes
+- **Cache Limit**: Maximum 100 entries per engine instance
+- **Per-Engine Cache**: Each engine maintains its own pixmap cache
+- **Clone Behavior**: Cloned engines start with empty caches
 
 ### Cache Performance
 
@@ -210,11 +255,14 @@ QIcon sharedIcon(engine->clone());
 // Engine is owned by QIcon
 QIcon icon(new QtLucideIconEngine(...));  // QIcon takes ownership
 
-// Painter is owned by engine
-QtLucideIconPainter* painter = new MyPainter();
-QtLucideIconEngine* engine = new QtLucideIconEngine(lucide, painter, options);
-// painter will be deleted when engine is destroyed
+// Painter is NOT owned by engine - it's shared with QtLucide
+// The painter lifetime is managed by QtLucide
+QtLucideIconEngine* engine = new QtLucideIconEngine(lucide, sharedPainter, options);
+// sharedPainter will NOT be deleted when engine is destroyed
 ```
+
+!!! warning "Painter Lifetime"
+    The engine maintains a reference to the painter but does not own it. The painter must remain valid for the lifetime of all engines using it. This is automatically handled when using `QtLucide::icon()`.
 
 ## See Also
 

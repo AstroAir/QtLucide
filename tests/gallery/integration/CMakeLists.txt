@@ -7,11 +7,12 @@ set(INTEGRATION_TEST_SOURCES
     test_application_startup.cpp
     test_icon_integration.cpp
     test_image_gallery.cpp
+    test_gallery_icon_loading.cpp
     integration_test_runner.cpp
     # Include concrete implementation sources for gallery classes
     ../../../examples/gallery/src/ui/themes/ThemeManager.cpp
     ../../../examples/gallery/src/core/managers/IconMetadataManager.cpp
-    ../../../examples/gallery/src/core/managers/ImageMetadataManager.cpp
+    ../../../examples/gallery/src/core/managers/ManagerStubs.cpp
     ../../../examples/gallery/src/core/managers/ContentManager.cpp
     ../../../examples/gallery/src/core/managers/FavoritesManager.cpp
     ../../../examples/gallery/src/core/BatchExportManager.cpp
@@ -40,6 +41,7 @@ set(INTEGRATION_TEST_SOURCES
 set(INTEGRATION_TEST_HEADERS
     test_gallery_integration.h
     test_application_startup.h
+    test_gallery_icon_loading.h
     # Include concrete implementation headers for gallery classes
     ../../../examples/gallery/src/ui/themes/ThemeManager.h
     ../../../examples/gallery/src/core/managers/IconMetadataManager.h

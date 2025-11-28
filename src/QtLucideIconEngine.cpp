@@ -131,11 +131,12 @@ QString QtLucideIconEngine::cacheKey(const QSize& size, QIcon::Mode mode,
         colorKey = m_options.value("color", "default").toString();
     }
 
-    // Include scale factor and opacity in cache key
+    // Include scale factor, opacity, and stroke-width in cache key
     const QString scaleKey = m_options.value("scale-factor", "0.9").toString();
     const QString opacityKey = m_options.value("opacity", "1.0").toString();
+    const QString strokeWidthKey = m_options.value("stroke-width", "2.0").toString();
 
-    return QString("%1_%2x%3_%4_%5_%6_%7_%8")
+    return QString("%1_%2x%3_%4_%5_%6_%7_%8_%9")
         .arg(iconKey)
         .arg(size.width())
         .arg(size.height())
@@ -143,7 +144,8 @@ QString QtLucideIconEngine::cacheKey(const QSize& size, QIcon::Mode mode,
         .arg(static_cast<int>(state))
         .arg(colorKey)
         .arg(scaleKey)
-        .arg(opacityKey);
+        .arg(opacityKey)
+        .arg(strokeWidthKey);
 }
 
 QPixmap QtLucideIconEngine::renderPixmap(const QSize& size, QIcon::Mode mode, QIcon::State state) {

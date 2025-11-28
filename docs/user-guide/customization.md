@@ -71,7 +71,7 @@ QIcon checkIcon = lucide.icon("check", successOptions);
 
 ### Scale Factor
 
-Adjust icon size relative to the container:
+Adjust icon size relative to the container (range: 0.1 to 10.0, default: 0.9):
 
 ```cpp
 QVariantMap options;
@@ -322,6 +322,63 @@ QVariantMap getHighContrastOptions() {
     options["scale-factor"] = 1.1;  // Slightly larger for better visibility
     return options;
 }
+```
+
+## Stroke Width Customization
+
+### Adjusting Line Thickness
+
+Control the stroke width of SVG icons (range: 0.5 to 4.0, default: 2.0):
+
+```cpp
+QVariantMap options;
+options["stroke-width"] = 1.5;  // Thinner lines
+QIcon thinIcon = lucide.icon("heart", options);
+
+options["stroke-width"] = 3.0;  // Thicker lines
+QIcon boldIcon = lucide.icon("heart", options);
+```
+
+### Use Cases
+
+```cpp
+// Subtle icons for dense UIs
+QVariantMap subtleOptions;
+subtleOptions["stroke-width"] = 1.5;
+subtleOptions["opacity"] = 0.8;
+
+// Bold icons for emphasis
+QVariantMap boldOptions;
+boldOptions["stroke-width"] = 2.5;
+boldOptions["color"] = QColor(Qt::red);
+
+// Match different design systems
+QVariantMap materialOptions;
+materialOptions["stroke-width"] = 2.0;  // Default, similar to Material Design
+
+QVariantMap fluentOptions;
+fluentOptions["stroke-width"] = 1.5;  // Thinner, similar to Fluent Design
+```
+
+## Palette-Based Theming
+
+QtLucide automatically uses your application's palette for default colors:
+
+```cpp
+// Colors are derived from QPalette at initialization
+// color         -> QPalette::Text (Normal)
+// color-disabled -> QPalette::Text (Disabled)
+// color-active   -> QPalette::Text (Active)
+// color-selected -> QPalette::HighlightedText
+
+// Reset to palette-based defaults
+lucide.resetDefaultOptions();
+
+// Connect to theme changes
+connect(&lucide, &lucide::QtLucide::defaultOptionsReset, this, [this]() {
+    // Refresh icons after theme change
+    refreshAllIcons();
+});
 ```
 
 ## See Also

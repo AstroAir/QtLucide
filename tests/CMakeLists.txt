@@ -139,6 +139,7 @@ target_link_libraries(QtLucideCoreTests
         Qt6::Core
         Qt6::Gui
         Qt6::Widgets
+        Qt6::Svg
         Qt6::Test
 )
 

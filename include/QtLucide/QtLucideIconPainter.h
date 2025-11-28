@@ -261,6 +261,15 @@ private:
      * @return Processed SVG data with color replacements
      */
     [[nodiscard]] QByteArray processColorizedSvg(const QByteArray& svgData, const QColor& color);
+
+    /**
+     * @brief Process SVG data to modify stroke width
+     * @param svgData Original SVG data
+     * @param strokeWidth Target stroke width (default 2.0, range 0.5-4.0)
+     * @return Processed SVG data with stroke width modifications
+     * @since 1.1
+     */
+    [[nodiscard]] QByteArray processStrokeWidth(const QByteArray& svgData, double strokeWidth);
 };
 
 } // namespace lucide

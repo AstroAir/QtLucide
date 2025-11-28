@@ -1,5 +1,33 @@
+/**
+ * @file ManagerStubs.cpp
+ * @brief Implementation of manager stub classes
+ */
+
 #include "ManagerStubs.h"
 
-// Define static constants for SettingsManager
-const QString SettingsManager::EXPORT_VERSION = "1.0";
-const QString SettingsManager::EXPORT_FORMAT_VERSION = "1.0";
+#include <QDebug>
+
+namespace gallery {
+
+ImageMetadataManager::ImageMetadataManager(QObject *parent)
+    : QObject(parent) {
+}
+
+bool ImageMetadataManager::initialize(const QString &path) {
+    // Stub implementation
+    qDebug() << "ImageMetadataManager::initialize() called with path:" << path;
+    return true;
+}
+
+QString ImageMetadataManager::getImageMetadata(const QString &imageName) const {
+    // Stub implementation
+    qDebug() << "ImageMetadataManager::getImageMetadata() called for:" << imageName;
+    return QString();
+}
+
+QStringList ImageMetadataManager::getImages() const {
+    // Stub implementation
+    return m_images;
+}
+
+}  // namespace gallery

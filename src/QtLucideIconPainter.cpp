@@ -72,6 +72,13 @@ void QtLucideSvgIconPainter::paint(QtLucide* lucide, QPainter* painter, const QR
     // Process SVG to apply color
     svgData = processColorizedSvg(svgData, color);
 
+    // Process SVG to apply stroke width
+    double strokeWidth = options.value("stroke-width", 2.0).toDouble();
+    strokeWidth = qBound(0.5, strokeWidth, 4.0);  // Clamp to valid range
+    if (strokeWidth != 2.0) {  // Only process if different from default
+        svgData = processStrokeWidth(svgData, strokeWidth);
+    }
+
     // Create SVG renderer
     QSvgRenderer renderer(svgData);
     if (!renderer.isValid()) {
@@ -176,6 +183,18 @@ QByteArray QtLucideSvgIconPainter::processColorizedSvg(const QByteArray& svgData
 
     QRegularExpression fillRegex(R"(fill\s*=\s*["']currentColor["'])");
     svgString.replace(fillRegex, QString("fill=\"%1\"").arg(colorString));
+
+    return svgString.toUtf8();
+}
+
+QByteArray QtLucideSvgIconPainter::processStrokeWidth(const QByteArray& svgData,
+                                                       double strokeWidth) {
+    QString svgString = QString::fromUtf8(svgData);
+
+    // Replace stroke-width attribute value
+    // Matches patterns like: stroke-width="2" or stroke-width='2' or stroke-width="2.0"
+    QRegularExpression strokeWidthRegex(R"(stroke-width\s*=\s*["'](\d+\.?\d*)["'])");
+    svgString.replace(strokeWidthRegex, QString("stroke-width=\"%1\"").arg(strokeWidth, 0, 'f', 2));
 
     return svgString.toUtf8();
 }

@@ -1,176 +1,181 @@
 /**
- * QtLucide Gallery Application - Unified Content Manager
- *
- * Manages both icons and images in a unified interface, providing
- * a single point of access for all gallery content.
+ * @file ContentManager.h
+ * @brief Central manager for content coordination
+ * @details This file contains the ContentManager class which coordinates icon
+ *          metadata, favorites, and provides filtered icon lists.
+ * @author Max Qian
+ * @date 2025
+ * @version 1.0
+ * @copyright MIT Licensed - Copyright 2025 Max Qian. All Rights Reserved.
  */
 
-#ifndef CONTENTMANAGER_H
-#define CONTENTMANAGER_H
+#ifndef CONTENT_MANAGER_H
+#define CONTENT_MANAGER_H
 
-#include <QHash>
-#include <QIcon>
 #include <QObject>
-#include <QPixmap>
-#include <QSize>
 #include <QString>
 #include <QStringList>
-#include <QVariant>
+#include <memory>
 
 #include "IconMetadataManager.h"
-#include "ImageMetadataManager.h"
-#include <QtLucide/QtLucide.h>
+#include "FavoritesManager.h"
+
+namespace gallery {
 
 /**
- * @brief Content type enumeration
- */
-enum class ContentType { Icon, Image };
-
-/**
- * @brief Unified content item structure
- */
-struct ContentItem {
-    QString identifier; // Icon name or image file path
-    ContentType type;
-    QString displayName;
-    QSize dimensions;
-    QString format;
-    qint64 fileSize;
-    QDateTime dateModified;
-    QHash<QString, QVariant> metadata;
-
-    bool isValid() const { return !identifier.isEmpty(); }
-    QString getDisplayName() const { return displayName.isEmpty() ? identifier : displayName; }
-};
-
-/**
- * @brief Unified content manager for icons and images
+ * @class ContentManager
+ * @brief Central coordinator for icon metadata and favorites management
+ * @details This class serves as a central hub that owns and coordinates
+ *          IconMetadataManager and FavoritesManager, providing high-level
+ *          filtering and search capabilities.
  */
 class ContentManager : public QObject {
     Q_OBJECT
 
 public:
-    explicit ContentManager(QObject* parent = nullptr);
-    ~ContentManager();
+    /**
+     * @brief Construct ContentManager
+     * @param parent The parent QObject
+     */
+    explicit ContentManager(QObject *parent = nullptr);
 
-    // Initialization
-    void setLucide(lucide::QtLucide* lucide);
-    void setIconMetadataManager(IconMetadataManager* iconManager);
-    void setImageMetadataManager(ImageMetadataManager* imageManager);
+    /**
+     * @brief Destructor
+     */
+    ~ContentManager() override;
 
-    // Content access
-    QStringList getAllContent() const;
-    QStringList getIcons() const;
-    QStringList getImages() const;
-    ContentItem getContentItem(const QString& identifier) const;
-    ContentType getContentType(const QString& identifier) const;
+    /**
+     * @brief Initialize the content manager with metadata files
+     * @param categoriesPath Path to categories.json file
+     * @param iconsPath Path to icons.json file
+     * @return true if initialization was successful, false otherwise
+     */
+    bool initialize(const QString &categoriesPath, const QString &iconsPath);
 
-    // Visual representation
-    QPixmap getPixmap(const QString& identifier, const QSize& size = QSize(48, 48)) const;
-    QIcon getIcon(const QString& identifier) const;
-    QPixmap getThumbnail(const QString& identifier, const QSize& size = QSize(128, 128)) const;
+    /**
+     * @brief Get the icon metadata manager
+     * @return Pointer to IconMetadataManager instance
+     */
+    IconMetadataManager *iconMetadata() const;
 
-    // Search and filtering
-    QStringList searchContent(const QString& searchTerm) const;
-    QStringList filterByType(ContentType type) const;
-    QStringList filterByFormat(const QString& format) const;
-    QStringList filterBySize(const QSize& minSize, const QSize& maxSize) const;
+    /**
+     * @brief Get the favorites manager
+     * @return Pointer to FavoritesManager instance
+     */
+    FavoritesManager *favorites() const;
 
-    // Content operations
-    bool isContentAvailable(const QString& identifier) const;
-    QString getContentPath(const QString& identifier) const;
-    QHash<QString, QVariant> getContentMetadata(const QString& identifier) const;
+    /**
+     * @brief Get filtered icons based on current search and category
+     * @return List of filtered icon names
+     */
+    QStringList getFilteredIcons() const;
 
-    // Directory operations
-    void loadImageDirectory(const QString& directoryPath);
-    void refreshContent();
+    /**
+     * @brief Set the current search text for filtering
+     * @param searchText The search text to filter by
+     */
+    void setSearchText(const QString &searchText);
 
-    // Statistics
-    int getTotalContentCount() const;
-    int getIconCount() const;
-    int getImageCount() const;
-    QHash<QString, int> getFormatStatistics() const;
+    /**
+     * @brief Get the current search text
+     * @return The current search text
+     */
+    QString getSearchText() const;
 
-public slots:
-    void onImageDirectoryLoaded(const QString& directoryPath, int imageCount);
-    void onImageMetadataLoaded(const QString& filePath);
-    void onImageThumbnailReady(const QString& filePath, const QPixmap& thumbnail);
+    /**
+     * @brief Set the current category filter
+     * @param category The category to filter by, empty string for all categories
+     */
+    void setCategory(const QString &category);
+
+    /**
+     * @brief Get the current category filter
+     * @return The current category filter, or empty string if showing all
+     */
+    QString getCategory() const;
+
+    /**
+     * @brief Set whether to show only favorite icons
+     * @param showFavoritesOnly true to show only favorites, false to show all
+     */
+    void setShowFavoritesOnly(bool showFavoritesOnly);
+
+    /**
+     * @brief Get whether only favorites are being shown
+     * @return true if showing only favorites, false otherwise
+     */
+    bool getShowFavoritesOnly() const;
+
+    /**
+     * @brief Set the selected icon
+     * @param iconName The name of the selected icon
+     */
+    void selectIcon(const QString &iconName);
+
+    /**
+     * @brief Get the currently selected icon
+     * @return The name of the selected icon, or empty string if none
+     */
+    QString getSelectedIcon() const;
+
+    /**
+     * @brief Apply all current filters and return filtered icons
+     * @return List of icons matching current filters
+     */
+    QStringList applyFilters() const;
+
+    /**
+     * @brief Reset all filters to default state
+     */
+    void resetFilters();
 
 signals:
-    void contentLoaded(const QString& identifier, ContentType type);
-    void contentUpdated(const QString& identifier);
-    void thumbnailReady(const QString& identifier, const QPixmap& thumbnail);
-    void loadingProgress(int current, int total);
-    void loadingFinished();
-    void contentCountChanged(int totalCount, int iconCount, int imageCount);
+    /**
+     * @brief Signal emitted when icon filtering changes
+     * @param icons The new list of filtered icons
+     */
+    void iconFilterChanged(const QStringList &icons);
+
+    /**
+     * @brief Signal emitted when an icon is selected
+     * @param iconName The name of the selected icon
+     */
+    void iconSelected(const QString &iconName);
+
+    /**
+     * @brief Signal emitted when search text changes
+     * @param searchText The new search text
+     */
+    void searchTextChanged(const QString &searchText);
+
+    /**
+     * @brief Signal emitted when category filter changes
+     * @param category The new category filter
+     */
+    void categoryChanged(const QString &category);
+
+    /**
+     * @brief Signal emitted when favorites-only filter changes
+     * @param showFavoritesOnly The new state
+     */
+    void favoritesOnlyChanged(bool showFavoritesOnly);
 
 private:
-    // Helper methods
-    bool isIconIdentifier(const QString& identifier) const;
-    bool isImageIdentifier(const QString& identifier) const;
-    ContentItem createIconContentItem(const QString& iconName) const;
-    ContentItem createImageContentItem(const QString& filePath) const;
+    /**
+     * @brief Update filters and emit iconFilterChanged signal
+     */
+    void updateFilters();
 
-    // Core components
-    lucide::QtLucide* m_lucide;
-    IconMetadataManager* m_iconManager;
-    ImageMetadataManager* m_imageManager;
+    // Member variables
+    std::unique_ptr<IconMetadataManager> m_iconMetadata;
+    std::unique_ptr<FavoritesManager> m_favorites;
 
-    // Content tracking
-    QStringList m_allContent;
-    QHash<QString, ContentType> m_contentTypes;
-
-    // Caching
-    mutable QHash<QString, ContentItem> m_contentCache;
-    mutable QHash<QString, QPixmap> m_thumbnailCache;
-
-    // Configuration
-    bool m_autoRefresh;
-    int m_maxCacheSize;
+    QString m_searchText;
+    QString m_currentCategory;
+    bool m_showFavoritesOnly;
+    QString m_selectedIcon;
 };
 
-/**
- * @brief Content transformation utilities
- */
-class ContentTransform {
-public:
-    // Image transformations
-    static QPixmap rotateImage(const QPixmap& pixmap, int degrees);
-    static QPixmap flipImage(const QPixmap& pixmap, bool horizontal, bool vertical);
-    static QPixmap scaleImage(const QPixmap& pixmap, const QSize& size,
-                              Qt::AspectRatioMode mode = Qt::KeepAspectRatio);
-    static QPixmap cropImage(const QPixmap& pixmap, const QRect& cropRect);
+}  // namespace gallery
 
-    // Color adjustments
-    static QPixmap adjustBrightness(const QPixmap& pixmap, int brightness);
-    static QPixmap adjustContrast(const QPixmap& pixmap, double contrast);
-    static QPixmap adjustSaturation(const QPixmap& pixmap, double saturation);
-
-    // Effects
-    static QPixmap applyGrayscale(const QPixmap& pixmap);
-    static QPixmap applySepia(const QPixmap& pixmap);
-    static QPixmap applyBlur(const QPixmap& pixmap, int radius);
-};
-
-/**
- * @brief Content export utilities
- */
-class ContentExporter {
-public:
-    enum ExportFormat { PNG, JPEG, BMP, SVG, ICO, WEBP };
-
-    struct ExportOptions {
-        ExportFormat format = PNG;
-        QSize size = QSize(256, 256);
-        int quality = 90;
-        bool maintainAspectRatio = true;
-        QColor backgroundColor = Qt::transparent;
-    };
-
-    static bool exportContent(const QString& identifier, const QString& outputPath,
-                              const ExportOptions& options, ContentManager* manager);
-    static QStringList getSupportedExportFormats();
-    static QString getFormatExtension(ExportFormat format);
-};
-
-#endif // CONTENTMANAGER_H
+#endif  // CONTENT_MANAGER_H

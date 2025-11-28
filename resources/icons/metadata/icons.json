@@ -4,10 +4,10 @@
       "name": "a-arrow-down",
       "svg_file": "svg/a-arrow-down.svg",
       "tags": [
-        "navigation",
-        "a",
+        "arrow",
         "down",
-        "arrow"
+        "navigation",
+        "a"
       ],
       "categories": [
         "navigation"
@@ -18,10 +18,10 @@
       "name": "a-arrow-up",
       "svg_file": "svg/a-arrow-up.svg",
       "tags": [
-        "navigation",
-        "a",
+        "arrow",
         "up",
-        "arrow"
+        "a",
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -32,9 +32,9 @@
       "name": "a-large-small",
       "svg_file": "svg/a-large-small.svg",
       "tags": [
-        "a",
+        "large",
         "small",
-        "large"
+        "a"
       ],
       "categories": [
         "general"
@@ -67,8 +67,8 @@
       "name": "air-vent",
       "svg_file": "svg/air-vent.svg",
       "tags": [
-        "vent",
-        "air"
+        "air",
+        "vent"
       ],
       "categories": [
         "general"
@@ -154,8 +154,8 @@
       "name": "alarm-smoke",
       "svg_file": "svg/alarm-smoke.svg",
       "tags": [
-        "alarm",
-        "smoke"
+        "smoke",
+        "alarm"
       ],
       "categories": [
         "general"
@@ -178,8 +178,8 @@
       "svg_file": "svg/align-center-horizontal.svg",
       "tags": [
         "center",
-        "align",
-        "horizontal"
+        "horizontal",
+        "align"
       ],
       "categories": [
         "general"
@@ -190,8 +190,8 @@
       "name": "align-center-vertical",
       "svg_file": "svg/align-center-vertical.svg",
       "tags": [
-        "vertical",
         "center",
+        "vertical",
         "align"
       ],
       "categories": [
@@ -203,9 +203,9 @@
       "name": "align-end-horizontal",
       "svg_file": "svg/align-end-horizontal.svg",
       "tags": [
-        "end",
+        "horizontal",
         "align",
-        "horizontal"
+        "end"
       ],
       "categories": [
         "general"
@@ -216,9 +216,9 @@
       "name": "align-end-vertical",
       "svg_file": "svg/align-end-vertical.svg",
       "tags": [
-        "end",
         "vertical",
-        "align"
+        "align",
+        "end"
       ],
       "categories": [
         "general"
@@ -229,10 +229,10 @@
       "name": "align-horizontal-distribute-center",
       "svg_file": "svg/align-horizontal-distribute-center.svg",
       "tags": [
+        "horizontal",
         "center",
-        "distribute",
         "align",
-        "horizontal"
+        "distribute"
       ],
       "categories": [
         "general"
@@ -243,10 +243,10 @@
       "name": "align-horizontal-distribute-end",
       "svg_file": "svg/align-horizontal-distribute-end.svg",
       "tags": [
-        "end",
-        "distribute",
+        "horizontal",
         "align",
-        "horizontal"
+        "end",
+        "distribute"
       ],
       "categories": [
         "general"
@@ -258,10 +258,10 @@
       "svg_file": "svg/align-horizontal-distribute-start.svg",
       "tags": [
         "align",
-        "social",
         "start",
+        "horizontal",
         "distribute",
-        "horizontal"
+        "social"
       ],
       "categories": [
         "social"
@@ -272,10 +272,10 @@
       "name": "align-horizontal-justify-center",
       "svg_file": "svg/align-horizontal-justify-center.svg",
       "tags": [
+        "horizontal",
         "justify",
-        "center",
         "align",
-        "horizontal"
+        "center"
       ],
       "categories": [
         "general"
@@ -286,10 +286,10 @@
       "name": "align-horizontal-justify-end",
       "svg_file": "svg/align-horizontal-justify-end.svg",
       "tags": [
+        "horizontal",
         "justify",
-        "end",
         "align",
-        "horizontal"
+        "end"
       ],
       "categories": [
         "general"
@@ -301,10 +301,10 @@
       "svg_file": "svg/align-horizontal-justify-start.svg",
       "tags": [
         "align",
-        "social",
-        "start",
         "justify",
-        "horizontal"
+        "start",
+        "horizontal",
+        "social"
       ],
       "categories": [
         "social"
@@ -315,10 +315,10 @@
       "name": "align-horizontal-space-around",
       "svg_file": "svg/align-horizontal-space-around.svg",
       "tags": [
+        "horizontal",
         "around",
-        "space",
         "align",
-        "horizontal"
+        "space"
       ],
       "categories": [
         "general"
@@ -329,10 +329,10 @@
       "name": "align-horizontal-space-between",
       "svg_file": "svg/align-horizontal-space-between.svg",
       "tags": [
+        "horizontal",
         "between",
-        "space",
         "align",
-        "horizontal"
+        "space"
       ],
       "categories": [
         "general"
@@ -343,10 +343,10 @@
       "name": "align-start-horizontal",
       "svg_file": "svg/align-start-horizontal.svg",
       "tags": [
+        "horizontal",
         "social",
-        "start",
         "align",
-        "horizontal"
+        "start"
       ],
       "categories": [
         "social"
@@ -359,8 +359,8 @@
       "tags": [
         "social",
         "vertical",
-        "start",
-        "align"
+        "align",
+        "start"
       ],
       "categories": [
         "social"
@@ -371,10 +371,10 @@
       "name": "align-vertical-distribute-center",
       "svg_file": "svg/align-vertical-distribute-center.svg",
       "tags": [
-        "vertical",
         "center",
-        "distribute",
-        "align"
+        "vertical",
+        "align",
+        "distribute"
       ],
       "categories": [
         "general"
@@ -385,10 +385,10 @@
       "name": "align-vertical-distribute-end",
       "svg_file": "svg/align-vertical-distribute-end.svg",
       "tags": [
-        "end",
         "vertical",
-        "distribute",
-        "align"
+        "align",
+        "end",
+        "distribute"
       ],
       "categories": [
         "general"
@@ -400,10 +400,10 @@
       "svg_file": "svg/align-vertical-distribute-start.svg",
       "tags": [
         "align",
-        "social",
         "start",
         "vertical",
-        "distribute"
+        "distribute",
+        "social"
       ],
       "categories": [
         "social"
@@ -414,9 +414,9 @@
       "name": "align-vertical-justify-center",
       "svg_file": "svg/align-vertical-justify-center.svg",
       "tags": [
+        "center",
         "justify",
         "vertical",
-        "center",
         "align"
       ],
       "categories": [
@@ -430,8 +430,8 @@
       "tags": [
         "justify",
         "vertical",
-        "end",
-        "align"
+        "align",
+        "end"
       ],
       "categories": [
         "general"
@@ -443,10 +443,10 @@
       "svg_file": "svg/align-vertical-justify-start.svg",
       "tags": [
         "align",
-        "social",
+        "justify",
         "start",
         "vertical",
-        "justify"
+        "social"
       ],
       "categories": [
         "social"
@@ -471,8 +471,8 @@
       "name": "align-vertical-space-between",
       "svg_file": "svg/align-vertical-space-between.svg",
       "tags": [
-        "vertical",
         "between",
+        "vertical",
         "align",
         "space"
       ],
@@ -595,8 +595,8 @@
       "name": "app-window-mac",
       "svg_file": "svg/app-window-mac.svg",
       "tags": [
-        "mac",
         "window",
+        "mac",
         "app"
       ],
       "categories": [
@@ -631,8 +631,8 @@
       "name": "archive-restore",
       "svg_file": "svg/archive-restore.svg",
       "tags": [
-        "restore",
-        "archive"
+        "archive",
+        "restore"
       ],
       "categories": [
         "general"
@@ -677,11 +677,11 @@
       "name": "arrow-big-down-dash",
       "svg_file": "svg/arrow-big-down-dash.svg",
       "tags": [
-        "navigation",
-        "down",
         "big",
         "dash",
-        "arrow"
+        "navigation",
+        "arrow",
+        "down"
       ],
       "categories": [
         "navigation"
@@ -692,10 +692,10 @@
       "name": "arrow-big-down",
       "svg_file": "svg/arrow-big-down.svg",
       "tags": [
-        "navigation",
         "arrow",
-        "big",
-        "down"
+        "navigation",
+        "down",
+        "big"
       ],
       "categories": [
         "navigation"
@@ -706,11 +706,11 @@
       "name": "arrow-big-left-dash",
       "svg_file": "svg/arrow-big-left-dash.svg",
       "tags": [
-        "navigation",
-        "left",
         "big",
         "dash",
-        "arrow"
+        "navigation",
+        "arrow",
+        "left"
       ],
       "categories": [
         "navigation"
@@ -721,10 +721,10 @@
       "name": "arrow-big-left",
       "svg_file": "svg/arrow-big-left.svg",
       "tags": [
-        "navigation",
         "arrow",
+        "left",
         "big",
-        "left"
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -735,10 +735,10 @@
       "name": "arrow-big-right-dash",
       "svg_file": "svg/arrow-big-right-dash.svg",
       "tags": [
-        "navigation",
         "big",
-        "right",
         "dash",
+        "navigation",
+        "right",
         "arrow"
       ],
       "categories": [
@@ -750,8 +750,8 @@
       "name": "arrow-big-right",
       "svg_file": "svg/arrow-big-right.svg",
       "tags": [
-        "navigation",
         "arrow",
+        "navigation",
         "big",
         "right"
       ],
@@ -764,10 +764,10 @@
       "name": "arrow-big-up-dash",
       "svg_file": "svg/arrow-big-up-dash.svg",
       "tags": [
-        "navigation",
-        "up",
         "big",
         "dash",
+        "up",
+        "navigation",
         "arrow"
       ],
       "categories": [
@@ -779,8 +779,8 @@
       "name": "arrow-big-up",
       "svg_file": "svg/arrow-big-up.svg",
       "tags": [
-        "up",
         "arrow",
+        "up",
         "big",
         "navigation"
       ],
@@ -793,11 +793,11 @@
       "name": "arrow-down-0-1",
       "svg_file": "svg/arrow-down-0-1.svg",
       "tags": [
-        "navigation",
+        "1",
         "0",
-        "down",
+        "navigation",
         "arrow",
-        "1"
+        "down"
       ],
       "categories": [
         "navigation"
@@ -808,11 +808,11 @@
       "name": "arrow-down-1-0",
       "svg_file": "svg/arrow-down-1-0.svg",
       "tags": [
-        "navigation",
+        "1",
         "0",
-        "down",
+        "navigation",
         "arrow",
-        "1"
+        "down"
       ],
       "categories": [
         "navigation"
@@ -823,11 +823,11 @@
       "name": "arrow-down-a-z",
       "svg_file": "svg/arrow-down-a-z.svg",
       "tags": [
-        "navigation",
+        "z",
         "a",
-        "down",
+        "navigation",
         "arrow",
-        "z"
+        "down"
       ],
       "categories": [
         "navigation"
@@ -838,11 +838,11 @@
       "name": "arrow-down-from-line",
       "svg_file": "svg/arrow-down-from-line.svg",
       "tags": [
-        "navigation",
-        "from",
-        "down",
         "line",
-        "arrow"
+        "navigation",
+        "arrow",
+        "from",
+        "down"
       ],
       "categories": [
         "navigation"
@@ -853,10 +853,10 @@
       "name": "arrow-down-left",
       "svg_file": "svg/arrow-down-left.svg",
       "tags": [
-        "navigation",
         "arrow",
+        "left",
         "down",
-        "left"
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -867,11 +867,11 @@
       "name": "arrow-down-narrow-wide",
       "svg_file": "svg/arrow-down-narrow-wide.svg",
       "tags": [
+        "narrow",
         "navigation",
-        "down",
-        "wide",
         "arrow",
-        "narrow"
+        "wide",
+        "down"
       ],
       "categories": [
         "navigation"
@@ -882,8 +882,8 @@
       "name": "arrow-down-right",
       "svg_file": "svg/arrow-down-right.svg",
       "tags": [
-        "navigation",
         "arrow",
+        "navigation",
         "down",
         "right"
       ],
@@ -896,11 +896,11 @@
       "name": "arrow-down-to-dot",
       "svg_file": "svg/arrow-down-to-dot.svg",
       "tags": [
-        "navigation",
-        "to",
-        "down",
         "dot",
-        "arrow"
+        "to",
+        "navigation",
+        "arrow",
+        "down"
       ],
       "categories": [
         "navigation"
@@ -911,11 +911,11 @@
       "name": "arrow-down-to-line",
       "svg_file": "svg/arrow-down-to-line.svg",
       "tags": [
-        "navigation",
-        "to",
-        "down",
         "line",
-        "arrow"
+        "to",
+        "navigation",
+        "arrow",
+        "down"
       ],
       "categories": [
         "navigation"
@@ -926,8 +926,8 @@
       "name": "arrow-down-up",
       "svg_file": "svg/arrow-down-up.svg",
       "tags": [
-        "up",
         "arrow",
+        "up",
         "down",
         "navigation"
       ],
@@ -940,11 +940,11 @@
       "name": "arrow-down-wide-narrow",
       "svg_file": "svg/arrow-down-wide-narrow.svg",
       "tags": [
+        "narrow",
         "navigation",
-        "down",
-        "wide",
         "arrow",
-        "narrow"
+        "wide",
+        "down"
       ],
       "categories": [
         "navigation"
@@ -955,11 +955,11 @@
       "name": "arrow-down-z-a",
       "svg_file": "svg/arrow-down-z-a.svg",
       "tags": [
-        "navigation",
+        "z",
         "a",
-        "down",
+        "navigation",
         "arrow",
-        "z"
+        "down"
       ],
       "categories": [
         "navigation"
@@ -970,8 +970,8 @@
       "name": "arrow-down",
       "svg_file": "svg/arrow-down.svg",
       "tags": [
-        "navigation",
         "arrow",
+        "navigation",
         "down"
       ],
       "categories": [
@@ -983,11 +983,11 @@
       "name": "arrow-left-from-line",
       "svg_file": "svg/arrow-left-from-line.svg",
       "tags": [
-        "navigation",
-        "left",
-        "from",
         "line",
-        "arrow"
+        "navigation",
+        "arrow",
+        "from",
+        "left"
       ],
       "categories": [
         "navigation"
@@ -998,10 +998,10 @@
       "name": "arrow-left-right",
       "svg_file": "svg/arrow-left-right.svg",
       "tags": [
-        "navigation",
         "arrow",
-        "right",
-        "left"
+        "left",
+        "navigation",
+        "right"
       ],
       "categories": [
         "navigation"
@@ -1012,11 +1012,11 @@
       "name": "arrow-left-to-line",
       "svg_file": "svg/arrow-left-to-line.svg",
       "tags": [
-        "to",
-        "left",
-        "navigation",
         "line",
-        "arrow"
+        "to",
+        "navigation",
+        "arrow",
+        "left"
       ],
       "categories": [
         "navigation"
@@ -1028,8 +1028,8 @@
       "svg_file": "svg/arrow-left.svg",
       "tags": [
         "arrow",
-        "navigation",
-        "left"
+        "left",
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -1040,11 +1040,11 @@
       "name": "arrow-right-from-line",
       "svg_file": "svg/arrow-right-from-line.svg",
       "tags": [
-        "navigation",
-        "from",
         "line",
+        "navigation",
         "right",
-        "arrow"
+        "arrow",
+        "from"
       ],
       "categories": [
         "navigation"
@@ -1055,10 +1055,10 @@
       "name": "arrow-right-left",
       "svg_file": "svg/arrow-right-left.svg",
       "tags": [
-        "navigation",
         "arrow",
-        "right",
-        "left"
+        "left",
+        "navigation",
+        "right"
       ],
       "categories": [
         "navigation"
@@ -1069,9 +1069,9 @@
       "name": "arrow-right-to-line",
       "svg_file": "svg/arrow-right-to-line.svg",
       "tags": [
-        "navigation",
-        "to",
         "line",
+        "to",
+        "navigation",
         "right",
         "arrow"
       ],
@@ -1084,8 +1084,8 @@
       "name": "arrow-right",
       "svg_file": "svg/arrow-right.svg",
       "tags": [
-        "navigation",
         "arrow",
+        "navigation",
         "right"
       ],
       "categories": [
@@ -1097,11 +1097,11 @@
       "name": "arrow-up-0-1",
       "svg_file": "svg/arrow-up-0-1.svg",
       "tags": [
-        "navigation",
-        "0",
         "up",
-        "arrow",
-        "1"
+        "1",
+        "0",
+        "navigation",
+        "arrow"
       ],
       "categories": [
         "navigation"
@@ -1112,11 +1112,11 @@
       "name": "arrow-up-1-0",
       "svg_file": "svg/arrow-up-1-0.svg",
       "tags": [
-        "navigation",
-        "0",
         "up",
-        "arrow",
-        "1"
+        "1",
+        "0",
+        "navigation",
+        "arrow"
       ],
       "categories": [
         "navigation"
@@ -1127,11 +1127,11 @@
       "name": "arrow-up-a-z",
       "svg_file": "svg/arrow-up-a-z.svg",
       "tags": [
-        "navigation",
-        "a",
+        "z",
         "up",
+        "navigation",
         "arrow",
-        "z"
+        "a"
       ],
       "categories": [
         "navigation"
@@ -1142,10 +1142,10 @@
       "name": "arrow-up-down",
       "svg_file": "svg/arrow-up-down.svg",
       "tags": [
-        "navigation",
         "arrow",
         "up",
-        "down"
+        "down",
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -1156,11 +1156,11 @@
       "name": "arrow-up-from-dot",
       "svg_file": "svg/arrow-up-from-dot.svg",
       "tags": [
-        "navigation",
-        "from",
         "up",
         "dot",
-        "arrow"
+        "navigation",
+        "arrow",
+        "from"
       ],
       "categories": [
         "navigation"
@@ -1171,11 +1171,11 @@
       "name": "arrow-up-from-line",
       "svg_file": "svg/arrow-up-from-line.svg",
       "tags": [
-        "navigation",
-        "from",
         "up",
         "line",
-        "arrow"
+        "navigation",
+        "arrow",
+        "from"
       ],
       "categories": [
         "navigation"
@@ -1186,10 +1186,10 @@
       "name": "arrow-up-left",
       "svg_file": "svg/arrow-up-left.svg",
       "tags": [
-        "navigation",
         "arrow",
         "up",
-        "left"
+        "left",
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -1200,11 +1200,11 @@
       "name": "arrow-up-narrow-wide",
       "svg_file": "svg/arrow-up-narrow-wide.svg",
       "tags": [
-        "navigation",
         "up",
-        "wide",
+        "narrow",
+        "navigation",
         "arrow",
-        "narrow"
+        "wide"
       ],
       "categories": [
         "navigation"
@@ -1215,9 +1215,9 @@
       "name": "arrow-up-right",
       "svg_file": "svg/arrow-up-right.svg",
       "tags": [
-        "navigation",
         "arrow",
         "up",
+        "navigation",
         "right"
       ],
       "categories": [
@@ -1229,10 +1229,10 @@
       "name": "arrow-up-to-line",
       "svg_file": "svg/arrow-up-to-line.svg",
       "tags": [
-        "navigation",
-        "to",
         "up",
         "line",
+        "to",
+        "navigation",
         "arrow"
       ],
       "categories": [
@@ -1244,11 +1244,11 @@
       "name": "arrow-up-wide-narrow",
       "svg_file": "svg/arrow-up-wide-narrow.svg",
       "tags": [
-        "navigation",
         "up",
-        "wide",
+        "narrow",
+        "navigation",
         "arrow",
-        "narrow"
+        "wide"
       ],
       "categories": [
         "navigation"
@@ -1259,11 +1259,11 @@
       "name": "arrow-up-z-a",
       "svg_file": "svg/arrow-up-z-a.svg",
       "tags": [
-        "navigation",
-        "a",
+        "z",
         "up",
+        "navigation",
         "arrow",
-        "z"
+        "a"
       ],
       "categories": [
         "navigation"
@@ -1274,9 +1274,9 @@
       "name": "arrow-up",
       "svg_file": "svg/arrow-up.svg",
       "tags": [
-        "navigation",
         "arrow",
-        "up"
+        "up",
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -1287,11 +1287,11 @@
       "name": "arrows-up-from-line",
       "svg_file": "svg/arrows-up-from-line.svg",
       "tags": [
-        "navigation",
-        "from",
-        "up",
         "arrows",
-        "line"
+        "up",
+        "line",
+        "navigation",
+        "from"
       ],
       "categories": [
         "navigation"
@@ -1313,8 +1313,8 @@
       "name": "at-sign",
       "svg_file": "svg/at-sign.svg",
       "tags": [
-        "sign",
-        "at"
+        "at",
+        "sign"
       ],
       "categories": [
         "general"
@@ -1336,8 +1336,8 @@
       "name": "audio-lines",
       "svg_file": "svg/audio-lines.svg",
       "tags": [
-        "audio",
-        "lines"
+        "lines",
+        "audio"
       ],
       "categories": [
         "general"
@@ -1416,8 +1416,8 @@
       "name": "badge-alert",
       "svg_file": "svg/badge-alert.svg",
       "tags": [
-        "alert",
-        "badge"
+        "badge",
+        "alert"
       ],
       "categories": [
         "general"
@@ -1428,8 +1428,8 @@
       "name": "badge-cent",
       "svg_file": "svg/badge-cent.svg",
       "tags": [
-        "cent",
-        "badge"
+        "badge",
+        "cent"
       ],
       "categories": [
         "general"
@@ -1452,8 +1452,8 @@
       "name": "badge-dollar-sign",
       "svg_file": "svg/badge-dollar-sign.svg",
       "tags": [
-        "dollar",
         "badge",
+        "dollar",
         "sign"
       ],
       "categories": [
@@ -1478,8 +1478,8 @@
       "svg_file": "svg/badge-indian-rupee.svg",
       "tags": [
         "badge",
-        "indian",
-        "rupee"
+        "rupee",
+        "indian"
       ],
       "categories": [
         "general"
@@ -1515,8 +1515,8 @@
       "name": "badge-minus",
       "svg_file": "svg/badge-minus.svg",
       "tags": [
-        "minus",
-        "badge"
+        "badge",
+        "minus"
       ],
       "categories": [
         "general"
@@ -1539,8 +1539,8 @@
       "name": "badge-plus",
       "svg_file": "svg/badge-plus.svg",
       "tags": [
-        "plus",
-        "badge"
+        "badge",
+        "plus"
       ],
       "categories": [
         "general"
@@ -1552,8 +1552,8 @@
       "svg_file": "svg/badge-pound-sterling.svg",
       "tags": [
         "badge",
-        "sterling",
-        "pound"
+        "pound",
+        "sterling"
       ],
       "categories": [
         "general"
@@ -1564,9 +1564,9 @@
       "name": "badge-question-mark",
       "svg_file": "svg/badge-question-mark.svg",
       "tags": [
-        "question",
         "badge",
-        "mark"
+        "mark",
+        "question"
       ],
       "categories": [
         "general"
@@ -1577,8 +1577,8 @@
       "name": "badge-russian-ruble",
       "svg_file": "svg/badge-russian-ruble.svg",
       "tags": [
-        "russian",
         "badge",
+        "russian",
         "ruble"
       ],
       "categories": [
@@ -1590,9 +1590,9 @@
       "name": "badge-swiss-franc",
       "svg_file": "svg/badge-swiss-franc.svg",
       "tags": [
-        "franc",
         "badge",
-        "swiss"
+        "swiss",
+        "franc"
       ],
       "categories": [
         "general"
@@ -1604,8 +1604,8 @@
       "svg_file": "svg/badge-turkish-lira.svg",
       "tags": [
         "badge",
-        "turkish",
-        "lira"
+        "lira",
+        "turkish"
       ],
       "categories": [
         "general"
@@ -1684,10 +1684,10 @@
       "name": "banknote-arrow-down",
       "svg_file": "svg/banknote-arrow-down.svg",
       "tags": [
-        "navigation",
-        "arrow",
+        "banknote",
         "down",
-        "banknote"
+        "navigation",
+        "arrow"
       ],
       "categories": [
         "navigation",
@@ -1699,10 +1699,10 @@
       "name": "banknote-arrow-up",
       "svg_file": "svg/banknote-arrow-up.svg",
       "tags": [
-        "navigation",
-        "arrow",
+        "banknote",
         "up",
-        "banknote"
+        "arrow",
+        "navigation"
       ],
       "categories": [
         "navigation",
@@ -1714,8 +1714,8 @@
       "name": "banknote-x",
       "svg_file": "svg/banknote-x.svg",
       "tags": [
-        "x",
-        "banknote"
+        "banknote",
+        "x"
       ],
       "categories": [
         "business"
@@ -1793,8 +1793,8 @@
       "name": "battery-full",
       "svg_file": "svg/battery-full.svg",
       "tags": [
-        "battery",
-        "full"
+        "full",
+        "battery"
       ],
       "categories": [
         "system"
@@ -1829,8 +1829,8 @@
       "name": "battery-plus",
       "svg_file": "svg/battery-plus.svg",
       "tags": [
-        "battery",
-        "plus"
+        "plus",
+        "battery"
       ],
       "categories": [
         "system"
@@ -1875,8 +1875,8 @@
       "name": "bean-off",
       "svg_file": "svg/bean-off.svg",
       "tags": [
-        "bean",
-        "off"
+        "off",
+        "bean"
       ],
       "categories": [
         "general"
@@ -1944,8 +1944,8 @@
       "name": "beer-off",
       "svg_file": "svg/beer-off.svg",
       "tags": [
-        "off",
-        "beer"
+        "beer",
+        "off"
       ],
       "categories": [
         "general"
@@ -1991,8 +1991,8 @@
       "name": "bell-minus",
       "svg_file": "svg/bell-minus.svg",
       "tags": [
-        "minus",
-        "bell"
+        "bell",
+        "minus"
       ],
       "categories": [
         "general"
@@ -2027,8 +2027,8 @@
       "name": "bell-ring",
       "svg_file": "svg/bell-ring.svg",
       "tags": [
-        "bell",
-        "ring"
+        "ring",
+        "bell"
       ],
       "categories": [
         "general"
@@ -2050,9 +2050,9 @@
       "name": "between-horizontal-end",
       "svg_file": "svg/between-horizontal-end.svg",
       "tags": [
-        "end",
+        "horizontal",
         "between",
-        "horizontal"
+        "end"
       ],
       "categories": [
         "general"
@@ -2063,10 +2063,10 @@
       "name": "between-horizontal-start",
       "svg_file": "svg/between-horizontal-start.svg",
       "tags": [
-        "social",
+        "horizontal",
         "between",
-        "start",
-        "horizontal"
+        "social",
+        "start"
       ],
       "categories": [
         "social"
@@ -2077,9 +2077,9 @@
       "name": "between-vertical-end",
       "svg_file": "svg/between-vertical-end.svg",
       "tags": [
-        "end",
         "between",
-        "vertical"
+        "vertical",
+        "end"
       ],
       "categories": [
         "general"
@@ -2090,10 +2090,10 @@
       "name": "between-vertical-start",
       "svg_file": "svg/between-vertical-start.svg",
       "tags": [
-        "social",
         "between",
-        "start",
-        "vertical"
+        "vertical",
+        "social",
+        "start"
       ],
       "categories": [
         "social"
@@ -2104,8 +2104,8 @@
       "name": "biceps-flexed",
       "svg_file": "svg/biceps-flexed.svg",
       "tags": [
-        "flexed",
-        "biceps"
+        "biceps",
+        "flexed"
       ],
       "categories": [
         "general"
@@ -2239,8 +2239,8 @@
       "name": "bluetooth-searching",
       "svg_file": "svg/bluetooth-searching.svg",
       "tags": [
-        "searching",
-        "bluetooth"
+        "bluetooth",
+        "searching"
       ],
       "categories": [
         "general"
@@ -2330,8 +2330,8 @@
       "name": "book-audio",
       "svg_file": "svg/book-audio.svg",
       "tags": [
-        "book",
-        "audio"
+        "audio",
+        "book"
       ],
       "categories": [
         "general"
@@ -2342,8 +2342,8 @@
       "name": "book-check",
       "svg_file": "svg/book-check.svg",
       "tags": [
-        "book",
-        "check"
+        "check",
+        "book"
       ],
       "categories": [
         "general"
@@ -2354,8 +2354,8 @@
       "name": "book-copy",
       "svg_file": "svg/book-copy.svg",
       "tags": [
-        "book",
-        "copy"
+        "copy",
+        "book"
       ],
       "categories": [
         "editing"
@@ -2366,8 +2366,8 @@
       "name": "book-dashed",
       "svg_file": "svg/book-dashed.svg",
       "tags": [
-        "book",
-        "dashed"
+        "dashed",
+        "book"
       ],
       "categories": [
         "general"
@@ -2378,8 +2378,8 @@
       "name": "book-down",
       "svg_file": "svg/book-down.svg",
       "tags": [
-        "book",
-        "down"
+        "down",
+        "book"
       ],
       "categories": [
         "general"
@@ -2390,8 +2390,8 @@
       "name": "book-headphones",
       "svg_file": "svg/book-headphones.svg",
       "tags": [
-        "book",
-        "headphones"
+        "headphones",
+        "book"
       ],
       "categories": [
         "communication"
@@ -2402,9 +2402,9 @@
       "name": "book-heart",
       "svg_file": "svg/book-heart.svg",
       "tags": [
+        "heart",
         "book",
-        "social",
-        "heart"
+        "social"
       ],
       "categories": [
         "social"
@@ -2427,8 +2427,8 @@
       "name": "book-key",
       "svg_file": "svg/book-key.svg",
       "tags": [
-        "book",
-        "key"
+        "key",
+        "book"
       ],
       "categories": [
         "general"
@@ -2439,8 +2439,8 @@
       "name": "book-lock",
       "svg_file": "svg/book-lock.svg",
       "tags": [
-        "book",
-        "lock"
+        "lock",
+        "book"
       ],
       "categories": [
         "general"
@@ -2451,8 +2451,8 @@
       "name": "book-marked",
       "svg_file": "svg/book-marked.svg",
       "tags": [
-        "book",
-        "marked"
+        "marked",
+        "book"
       ],
       "categories": [
         "general"
@@ -2463,8 +2463,8 @@
       "name": "book-minus",
       "svg_file": "svg/book-minus.svg",
       "tags": [
-        "book",
-        "minus"
+        "minus",
+        "book"
       ],
       "categories": [
         "general"
@@ -2475,9 +2475,9 @@
       "name": "book-open-check",
       "svg_file": "svg/book-open-check.svg",
       "tags": [
-        "book",
+        "check",
         "open",
-        "check"
+        "book"
       ],
       "categories": [
         "editing"
@@ -2488,9 +2488,9 @@
       "name": "book-open-text",
       "svg_file": "svg/book-open-text.svg",
       "tags": [
-        "book",
         "text",
-        "open"
+        "open",
+        "book"
       ],
       "categories": [
         "editing"
@@ -2501,8 +2501,8 @@
       "name": "book-open",
       "svg_file": "svg/book-open.svg",
       "tags": [
-        "book",
-        "open"
+        "open",
+        "book"
       ],
       "categories": [
         "editing"
@@ -2513,8 +2513,8 @@
       "name": "book-plus",
       "svg_file": "svg/book-plus.svg",
       "tags": [
-        "book",
-        "plus"
+        "plus",
+        "book"
       ],
       "categories": [
         "general"
@@ -2525,8 +2525,8 @@
       "name": "book-text",
       "svg_file": "svg/book-text.svg",
       "tags": [
-        "book",
-        "text"
+        "text",
+        "book"
       ],
       "categories": [
         "general"
@@ -2537,8 +2537,8 @@
       "name": "book-type",
       "svg_file": "svg/book-type.svg",
       "tags": [
-        "book",
-        "type"
+        "type",
+        "book"
       ],
       "categories": [
         "general"
@@ -2549,8 +2549,8 @@
       "name": "book-up-2",
       "svg_file": "svg/book-up-2.svg",
       "tags": [
-        "book",
         "up",
+        "book",
         "2"
       ],
       "categories": [
@@ -2562,8 +2562,8 @@
       "name": "book-up",
       "svg_file": "svg/book-up.svg",
       "tags": [
-        "book",
-        "up"
+        "up",
+        "book"
       ],
       "categories": [
         "general"
@@ -2574,8 +2574,8 @@
       "name": "book-user",
       "svg_file": "svg/book-user.svg",
       "tags": [
-        "book",
         "user",
+        "book",
         "users"
       ],
       "categories": [
@@ -2587,8 +2587,8 @@
       "name": "book-x",
       "svg_file": "svg/book-x.svg",
       "tags": [
-        "book",
-        "x"
+        "x",
+        "book"
       ],
       "categories": [
         "general"
@@ -2610,8 +2610,8 @@
       "name": "bookmark-check",
       "svg_file": "svg/bookmark-check.svg",
       "tags": [
-        "bookmark",
-        "check"
+        "check",
+        "bookmark"
       ],
       "categories": [
         "general"
@@ -2622,8 +2622,8 @@
       "name": "bookmark-minus",
       "svg_file": "svg/bookmark-minus.svg",
       "tags": [
-        "minus",
-        "bookmark"
+        "bookmark",
+        "minus"
       ],
       "categories": [
         "general"
@@ -2634,8 +2634,8 @@
       "name": "bookmark-plus",
       "svg_file": "svg/bookmark-plus.svg",
       "tags": [
-        "plus",
-        "bookmark"
+        "bookmark",
+        "plus"
       ],
       "categories": [
         "general"
@@ -2669,8 +2669,8 @@
       "name": "boom-box",
       "svg_file": "svg/boom-box.svg",
       "tags": [
-        "boom",
-        "box"
+        "box",
+        "boom"
       ],
       "categories": [
         "general"
@@ -2682,8 +2682,8 @@
       "svg_file": "svg/bot-message-square.svg",
       "tags": [
         "bot",
-        "message",
-        "square"
+        "square",
+        "message"
       ],
       "categories": [
         "communication"
@@ -2694,8 +2694,8 @@
       "name": "bot-off",
       "svg_file": "svg/bot-off.svg",
       "tags": [
-        "bot",
-        "off"
+        "off",
+        "bot"
       ],
       "categories": [
         "general"
@@ -2729,8 +2729,8 @@
       "name": "bow-arrow",
       "svg_file": "svg/bow-arrow.svg",
       "tags": [
-        "navigation",
         "arrow",
+        "navigation",
         "bow"
       ],
       "categories": [
@@ -2786,8 +2786,8 @@
       "name": "brain-circuit",
       "svg_file": "svg/brain-circuit.svg",
       "tags": [
-        "circuit",
-        "brain"
+        "brain",
+        "circuit"
       ],
       "categories": [
         "general"
@@ -2822,8 +2822,8 @@
       "svg_file": "svg/brick-wall-fire.svg",
       "tags": [
         "brick",
-        "fire",
-        "wall"
+        "wall",
+        "fire"
       ],
       "categories": [
         "general"
@@ -2859,8 +2859,8 @@
       "name": "briefcase-business",
       "svg_file": "svg/briefcase-business.svg",
       "tags": [
-        "briefcase",
-        "business"
+        "business",
+        "briefcase"
       ],
       "categories": [
         "business"
@@ -2871,9 +2871,9 @@
       "name": "briefcase-conveyor-belt",
       "svg_file": "svg/briefcase-conveyor-belt.svg",
       "tags": [
-        "briefcase",
         "conveyor",
-        "belt"
+        "belt",
+        "briefcase"
       ],
       "categories": [
         "business"
@@ -2884,8 +2884,8 @@
       "name": "briefcase-medical",
       "svg_file": "svg/briefcase-medical.svg",
       "tags": [
-        "briefcase",
-        "medical"
+        "medical",
+        "briefcase"
       ],
       "categories": [
         "business"
@@ -2907,9 +2907,9 @@
       "name": "bring-to-front",
       "svg_file": "svg/bring-to-front.svg",
       "tags": [
+        "bring",
         "to",
-        "front",
-        "bring"
+        "front"
       ],
       "categories": [
         "general"
@@ -2920,8 +2920,8 @@
       "name": "brush-cleaning",
       "svg_file": "svg/brush-cleaning.svg",
       "tags": [
-        "brush",
-        "cleaning"
+        "cleaning",
+        "brush"
       ],
       "categories": [
         "editing"
@@ -2954,8 +2954,8 @@
       "name": "bug-off",
       "svg_file": "svg/bug-off.svg",
       "tags": [
-        "bug",
-        "off"
+        "off",
+        "bug"
       ],
       "categories": [
         "general"
@@ -2966,8 +2966,8 @@
       "name": "bug-play",
       "svg_file": "svg/bug-play.svg",
       "tags": [
-        "bug",
-        "play"
+        "play",
+        "bug"
       ],
       "categories": [
         "media"
@@ -3012,8 +3012,8 @@
       "name": "bus-front",
       "svg_file": "svg/bus-front.svg",
       "tags": [
-        "front",
-        "bus"
+        "bus",
+        "front"
       ],
       "categories": [
         "general"
@@ -3092,8 +3092,8 @@
       "name": "calendar-1",
       "svg_file": "svg/calendar-1.svg",
       "tags": [
-        "1",
-        "calendar"
+        "calendar",
+        "1"
       ],
       "categories": [
         "general"
@@ -3104,10 +3104,10 @@
       "name": "calendar-arrow-down",
       "svg_file": "svg/calendar-arrow-down.svg",
       "tags": [
-        "navigation",
         "arrow",
+        "calendar",
         "down",
-        "calendar"
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -3118,10 +3118,10 @@
       "name": "calendar-arrow-up",
       "svg_file": "svg/calendar-arrow-up.svg",
       "tags": [
-        "navigation",
         "arrow",
+        "calendar",
         "up",
-        "calendar"
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -3132,9 +3132,9 @@
       "name": "calendar-check-2",
       "svg_file": "svg/calendar-check-2.svg",
       "tags": [
-        "2",
+        "check",
         "calendar",
-        "check"
+        "2"
       ],
       "categories": [
         "general"
@@ -3145,8 +3145,8 @@
       "name": "calendar-check",
       "svg_file": "svg/calendar-check.svg",
       "tags": [
-        "calendar",
-        "check"
+        "check",
+        "calendar"
       ],
       "categories": [
         "general"
@@ -3157,8 +3157,8 @@
       "name": "calendar-clock",
       "svg_file": "svg/calendar-clock.svg",
       "tags": [
-        "clock",
-        "calendar"
+        "calendar",
+        "clock"
       ],
       "categories": [
         "general"
@@ -3205,9 +3205,9 @@
       "name": "calendar-heart",
       "svg_file": "svg/calendar-heart.svg",
       "tags": [
-        "social",
         "calendar",
-        "heart"
+        "heart",
+        "social"
       ],
       "categories": [
         "social"
@@ -3218,8 +3218,8 @@
       "name": "calendar-minus-2",
       "svg_file": "svg/calendar-minus-2.svg",
       "tags": [
-        "minus",
         "calendar",
+        "minus",
         "2"
       ],
       "categories": [
@@ -3231,8 +3231,8 @@
       "name": "calendar-minus",
       "svg_file": "svg/calendar-minus.svg",
       "tags": [
-        "minus",
-        "calendar"
+        "calendar",
+        "minus"
       ],
       "categories": [
         "general"
@@ -3280,8 +3280,8 @@
       "name": "calendar-range",
       "svg_file": "svg/calendar-range.svg",
       "tags": [
-        "range",
-        "calendar"
+        "calendar",
+        "range"
       ],
       "categories": [
         "general"
@@ -3292,8 +3292,8 @@
       "name": "calendar-search",
       "svg_file": "svg/calendar-search.svg",
       "tags": [
-        "search",
-        "calendar"
+        "calendar",
+        "search"
       ],
       "categories": [
         "general"
@@ -3304,8 +3304,8 @@
       "name": "calendar-sync",
       "svg_file": "svg/calendar-sync.svg",
       "tags": [
-        "calendar",
-        "sync"
+        "sync",
+        "calendar"
       ],
       "categories": [
         "general"
@@ -3456,9 +3456,9 @@
       "name": "car-taxi-front",
       "svg_file": "svg/car-taxi-front.svg",
       "tags": [
-        "taxi",
         "front",
-        "car"
+        "car",
+        "taxi"
       ],
       "categories": [
         "general"
@@ -3550,8 +3550,8 @@
       "name": "cassette-tape",
       "svg_file": "svg/cassette-tape.svg",
       "tags": [
-        "cassette",
-        "tape"
+        "tape",
+        "cassette"
       ],
       "categories": [
         "general"
@@ -3606,8 +3606,8 @@
       "name": "chart-area",
       "svg_file": "svg/chart-area.svg",
       "tags": [
-        "chart",
-        "area"
+        "area",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3618,9 +3618,9 @@
       "name": "chart-bar-big",
       "svg_file": "svg/chart-bar-big.svg",
       "tags": [
-        "chart",
         "bar",
-        "big"
+        "big",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3631,9 +3631,9 @@
       "name": "chart-bar-decreasing",
       "svg_file": "svg/chart-bar-decreasing.svg",
       "tags": [
-        "chart",
         "bar",
-        "decreasing"
+        "decreasing",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3644,9 +3644,9 @@
       "name": "chart-bar-increasing",
       "svg_file": "svg/chart-bar-increasing.svg",
       "tags": [
-        "chart",
         "bar",
-        "increasing"
+        "increasing",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3657,9 +3657,9 @@
       "name": "chart-bar-stacked",
       "svg_file": "svg/chart-bar-stacked.svg",
       "tags": [
-        "chart",
+        "bar",
         "stacked",
-        "bar"
+        "chart"
       ],
       "categories": [
         "business"
@@ -3670,8 +3670,8 @@
       "name": "chart-bar",
       "svg_file": "svg/chart-bar.svg",
       "tags": [
-        "chart",
-        "bar"
+        "bar",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3682,8 +3682,8 @@
       "name": "chart-candlestick",
       "svg_file": "svg/chart-candlestick.svg",
       "tags": [
-        "chart",
-        "candlestick"
+        "candlestick",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3694,9 +3694,9 @@
       "name": "chart-column-big",
       "svg_file": "svg/chart-column-big.svg",
       "tags": [
-        "chart",
         "big",
-        "column"
+        "column",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3707,9 +3707,9 @@
       "name": "chart-column-decreasing",
       "svg_file": "svg/chart-column-decreasing.svg",
       "tags": [
-        "chart",
+        "decreasing",
         "column",
-        "decreasing"
+        "chart"
       ],
       "categories": [
         "business"
@@ -3720,9 +3720,9 @@
       "name": "chart-column-increasing",
       "svg_file": "svg/chart-column-increasing.svg",
       "tags": [
-        "chart",
+        "increasing",
         "column",
-        "increasing"
+        "chart"
       ],
       "categories": [
         "business"
@@ -3733,9 +3733,9 @@
       "name": "chart-column-stacked",
       "svg_file": "svg/chart-column-stacked.svg",
       "tags": [
-        "chart",
         "stacked",
-        "column"
+        "column",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3746,8 +3746,8 @@
       "name": "chart-column",
       "svg_file": "svg/chart-column.svg",
       "tags": [
-        "chart",
-        "column"
+        "column",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3758,8 +3758,8 @@
       "name": "chart-gantt",
       "svg_file": "svg/chart-gantt.svg",
       "tags": [
-        "chart",
-        "gantt"
+        "gantt",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3770,8 +3770,8 @@
       "name": "chart-line",
       "svg_file": "svg/chart-line.svg",
       "tags": [
-        "chart",
-        "line"
+        "line",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3782,8 +3782,8 @@
       "name": "chart-network",
       "svg_file": "svg/chart-network.svg",
       "tags": [
-        "chart",
-        "network"
+        "network",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3794,11 +3794,11 @@
       "name": "chart-no-axes-column-decreasing",
       "svg_file": "svg/chart-no-axes-column-decreasing.svg",
       "tags": [
-        "axes",
-        "chart",
+        "column",
         "no",
         "decreasing",
-        "column"
+        "axes",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3809,11 +3809,11 @@
       "name": "chart-no-axes-column-increasing",
       "svg_file": "svg/chart-no-axes-column-increasing.svg",
       "tags": [
-        "axes",
-        "chart",
         "increasing",
+        "column",
         "no",
-        "column"
+        "axes",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3824,10 +3824,10 @@
       "name": "chart-no-axes-column",
       "svg_file": "svg/chart-no-axes-column.svg",
       "tags": [
-        "chart",
         "no",
         "axes",
-        "column"
+        "column",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3838,10 +3838,10 @@
       "name": "chart-no-axes-combined",
       "svg_file": "svg/chart-no-axes-combined.svg",
       "tags": [
-        "chart",
-        "combined",
         "no",
-        "axes"
+        "axes",
+        "combined",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3852,10 +3852,10 @@
       "name": "chart-no-axes-gantt",
       "svg_file": "svg/chart-no-axes-gantt.svg",
       "tags": [
-        "chart",
         "gantt",
         "no",
-        "axes"
+        "axes",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3866,8 +3866,8 @@
       "name": "chart-pie",
       "svg_file": "svg/chart-pie.svg",
       "tags": [
-        "chart",
-        "pie"
+        "pie",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3878,8 +3878,8 @@
       "name": "chart-scatter",
       "svg_file": "svg/chart-scatter.svg",
       "tags": [
-        "chart",
-        "scatter"
+        "scatter",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3890,8 +3890,8 @@
       "name": "chart-spline",
       "svg_file": "svg/chart-spline.svg",
       "tags": [
-        "chart",
-        "spline"
+        "spline",
+        "chart"
       ],
       "categories": [
         "business"
@@ -3913,8 +3913,8 @@
       "name": "check-line",
       "svg_file": "svg/check-line.svg",
       "tags": [
-        "line",
-        "check"
+        "check",
+        "line"
       ],
       "categories": [
         "general"
@@ -3959,8 +3959,8 @@
       "name": "chevron-down",
       "svg_file": "svg/chevron-down.svg",
       "tags": [
-        "navigation",
         "down",
+        "navigation",
         "chevron"
       ],
       "categories": [
@@ -3972,8 +3972,8 @@
       "name": "chevron-first",
       "svg_file": "svg/chevron-first.svg",
       "tags": [
-        "navigation",
         "first",
+        "navigation",
         "chevron"
       ],
       "categories": [
@@ -3985,9 +3985,9 @@
       "name": "chevron-last",
       "svg_file": "svg/chevron-last.svg",
       "tags": [
-        "last",
         "navigation",
-        "chevron"
+        "chevron",
+        "last"
       ],
       "categories": [
         "navigation"
@@ -3998,9 +3998,9 @@
       "name": "chevron-left",
       "svg_file": "svg/chevron-left.svg",
       "tags": [
-        "navigation",
         "left",
-        "chevron"
+        "chevron",
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -4012,8 +4012,8 @@
       "svg_file": "svg/chevron-right.svg",
       "tags": [
         "navigation",
-        "right",
-        "chevron"
+        "chevron",
+        "right"
       ],
       "categories": [
         "navigation"
@@ -4024,9 +4024,9 @@
       "name": "chevron-up",
       "svg_file": "svg/chevron-up.svg",
       "tags": [
-        "navigation",
         "up",
-        "chevron"
+        "chevron",
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -4065,9 +4065,9 @@
       "svg_file": "svg/chevrons-left-right-ellipsis.svg",
       "tags": [
         "navigation",
-        "left",
-        "ellipsis",
         "right",
+        "ellipsis",
+        "left",
         "chevrons"
       ],
       "categories": [
@@ -4079,10 +4079,10 @@
       "name": "chevrons-left-right",
       "svg_file": "svg/chevrons-left-right.svg",
       "tags": [
-        "navigation",
-        "right",
         "left",
-        "chevrons"
+        "navigation",
+        "chevrons",
+        "right"
       ],
       "categories": [
         "navigation"
@@ -4093,8 +4093,8 @@
       "name": "chevrons-left",
       "svg_file": "svg/chevrons-left.svg",
       "tags": [
-        "navigation",
         "left",
+        "navigation",
         "chevrons"
       ],
       "categories": [
@@ -4106,10 +4106,10 @@
       "name": "chevrons-right-left",
       "svg_file": "svg/chevrons-right-left.svg",
       "tags": [
-        "navigation",
-        "right",
         "left",
-        "chevrons"
+        "navigation",
+        "chevrons",
+        "right"
       ],
       "categories": [
         "navigation"
@@ -4121,8 +4121,8 @@
       "svg_file": "svg/chevrons-right.svg",
       "tags": [
         "navigation",
-        "right",
-        "chevrons"
+        "chevrons",
+        "right"
       ],
       "categories": [
         "navigation"
@@ -4133,9 +4133,9 @@
       "name": "chevrons-up-down",
       "svg_file": "svg/chevrons-up-down.svg",
       "tags": [
-        "navigation",
         "up",
         "down",
+        "navigation",
         "chevrons"
       ],
       "categories": [
@@ -4147,8 +4147,8 @@
       "name": "chevrons-up",
       "svg_file": "svg/chevrons-up.svg",
       "tags": [
-        "navigation",
         "up",
+        "navigation",
         "chevrons"
       ],
       "categories": [
@@ -4205,8 +4205,8 @@
       "name": "circle-alert",
       "svg_file": "svg/circle-alert.svg",
       "tags": [
-        "alert",
-        "circle"
+        "circle",
+        "alert"
       ],
       "categories": [
         "general"
@@ -4217,10 +4217,10 @@
       "name": "circle-arrow-down",
       "svg_file": "svg/circle-arrow-down.svg",
       "tags": [
-        "navigation",
         "arrow",
+        "circle",
         "down",
-        "circle"
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -4232,9 +4232,9 @@
       "svg_file": "svg/circle-arrow-left.svg",
       "tags": [
         "arrow",
-        "navigation",
         "circle",
-        "left"
+        "left",
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -4245,12 +4245,12 @@
       "name": "circle-arrow-out-down-left",
       "svg_file": "svg/circle-arrow-out-down-left.svg",
       "tags": [
-        "navigation",
-        "left",
         "out",
-        "down",
         "circle",
-        "arrow"
+        "navigation",
+        "arrow",
+        "left",
+        "down"
       ],
       "categories": [
         "navigation"
@@ -4261,12 +4261,12 @@
       "name": "circle-arrow-out-down-right",
       "svg_file": "svg/circle-arrow-out-down-right.svg",
       "tags": [
-        "navigation",
         "out",
-        "down",
         "circle",
+        "navigation",
         "right",
-        "arrow"
+        "arrow",
+        "down"
       ],
       "categories": [
         "navigation"
@@ -4277,12 +4277,12 @@
       "name": "circle-arrow-out-up-left",
       "svg_file": "svg/circle-arrow-out-up-left.svg",
       "tags": [
-        "navigation",
-        "left",
         "out",
-        "up",
         "circle",
-        "arrow"
+        "up",
+        "navigation",
+        "arrow",
+        "left"
       ],
       "categories": [
         "navigation"
@@ -4293,10 +4293,10 @@
       "name": "circle-arrow-out-up-right",
       "svg_file": "svg/circle-arrow-out-up-right.svg",
       "tags": [
-        "navigation",
         "out",
-        "up",
         "circle",
+        "up",
+        "navigation",
         "right",
         "arrow"
       ],
@@ -4309,10 +4309,10 @@
       "name": "circle-arrow-right",
       "svg_file": "svg/circle-arrow-right.svg",
       "tags": [
-        "navigation",
         "arrow",
-        "right",
-        "circle"
+        "circle",
+        "navigation",
+        "right"
       ],
       "categories": [
         "navigation"
@@ -4323,10 +4323,10 @@
       "name": "circle-arrow-up",
       "svg_file": "svg/circle-arrow-up.svg",
       "tags": [
-        "navigation",
         "arrow",
+        "circle",
         "up",
-        "circle"
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -4337,9 +4337,9 @@
       "name": "circle-check-big",
       "svg_file": "svg/circle-check-big.svg",
       "tags": [
-        "big",
+        "check",
         "circle",
-        "check"
+        "big"
       ],
       "categories": [
         "general"
@@ -4350,8 +4350,8 @@
       "name": "circle-check",
       "svg_file": "svg/circle-check.svg",
       "tags": [
-        "circle",
-        "check"
+        "check",
+        "circle"
       ],
       "categories": [
         "general"
@@ -4362,10 +4362,10 @@
       "name": "circle-chevron-down",
       "svg_file": "svg/circle-chevron-down.svg",
       "tags": [
-        "navigation",
         "down",
         "circle",
-        "chevron"
+        "chevron",
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -4376,10 +4376,10 @@
       "name": "circle-chevron-left",
       "svg_file": "svg/circle-chevron-left.svg",
       "tags": [
-        "navigation",
         "circle",
+        "chevron",
         "left",
-        "chevron"
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -4390,10 +4390,10 @@
       "name": "circle-chevron-right",
       "svg_file": "svg/circle-chevron-right.svg",
       "tags": [
-        "navigation",
-        "right",
         "circle",
-        "chevron"
+        "chevron",
+        "navigation",
+        "right"
       ],
       "categories": [
         "navigation"
@@ -4404,10 +4404,10 @@
       "name": "circle-chevron-up",
       "svg_file": "svg/circle-chevron-up.svg",
       "tags": [
-        "navigation",
         "up",
         "circle",
-        "chevron"
+        "chevron",
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -4430,8 +4430,8 @@
       "name": "circle-divide",
       "svg_file": "svg/circle-divide.svg",
       "tags": [
-        "divide",
-        "circle"
+        "circle",
+        "divide"
       ],
       "categories": [
         "general"
@@ -4442,9 +4442,9 @@
       "name": "circle-dollar-sign",
       "svg_file": "svg/circle-dollar-sign.svg",
       "tags": [
-        "dollar",
         "circle",
-        "sign"
+        "sign",
+        "dollar"
       ],
       "categories": [
         "general"
@@ -4456,8 +4456,8 @@
       "svg_file": "svg/circle-dot-dashed.svg",
       "tags": [
         "dashed",
-        "dot",
-        "circle"
+        "circle",
+        "dot"
       ],
       "categories": [
         "general"
@@ -4468,8 +4468,8 @@
       "name": "circle-dot",
       "svg_file": "svg/circle-dot.svg",
       "tags": [
-        "dot",
-        "circle"
+        "circle",
+        "dot"
       ],
       "categories": [
         "general"
@@ -4480,8 +4480,8 @@
       "name": "circle-ellipsis",
       "svg_file": "svg/circle-ellipsis.svg",
       "tags": [
-        "ellipsis",
-        "circle"
+        "circle",
+        "ellipsis"
       ],
       "categories": [
         "general"
@@ -4504,10 +4504,10 @@
       "name": "circle-fading-arrow-up",
       "svg_file": "svg/circle-fading-arrow-up.svg",
       "tags": [
-        "navigation",
+        "fading",
         "up",
         "circle",
-        "fading",
+        "navigation",
         "arrow"
       ],
       "categories": [
@@ -4532,8 +4532,8 @@
       "name": "circle-gauge",
       "svg_file": "svg/circle-gauge.svg",
       "tags": [
-        "circle",
-        "gauge"
+        "gauge",
+        "circle"
       ],
       "categories": [
         "general"
@@ -4544,8 +4544,8 @@
       "name": "circle-minus",
       "svg_file": "svg/circle-minus.svg",
       "tags": [
-        "minus",
-        "circle"
+        "circle",
+        "minus"
       ],
       "categories": [
         "general"
@@ -4568,9 +4568,9 @@
       "name": "circle-parking-off",
       "svg_file": "svg/circle-parking-off.svg",
       "tags": [
-        "off",
         "parking",
-        "circle"
+        "circle",
+        "off"
       ],
       "categories": [
         "general"
@@ -4605,8 +4605,8 @@
       "name": "circle-percent",
       "svg_file": "svg/circle-percent.svg",
       "tags": [
-        "circle",
-        "percent"
+        "percent",
+        "circle"
       ],
       "categories": [
         "general"
@@ -4641,9 +4641,9 @@
       "name": "circle-pound-sterling",
       "svg_file": "svg/circle-pound-sterling.svg",
       "tags": [
+        "pound",
         "circle",
-        "sterling",
-        "pound"
+        "sterling"
       ],
       "categories": [
         "general"
@@ -4654,8 +4654,8 @@
       "name": "circle-power",
       "svg_file": "svg/circle-power.svg",
       "tags": [
-        "power",
-        "circle"
+        "circle",
+        "power"
       ],
       "categories": [
         "system"
@@ -4666,9 +4666,9 @@
       "name": "circle-question-mark",
       "svg_file": "svg/circle-question-mark.svg",
       "tags": [
+        "mark",
         "question",
-        "circle",
-        "mark"
+        "circle"
       ],
       "categories": [
         "general"
@@ -4704,8 +4704,8 @@
       "name": "circle-small",
       "svg_file": "svg/circle-small.svg",
       "tags": [
-        "circle",
-        "small"
+        "small",
+        "circle"
       ],
       "categories": [
         "general"
@@ -4716,9 +4716,9 @@
       "name": "circle-star",
       "svg_file": "svg/circle-star.svg",
       "tags": [
-        "social",
         "circle",
-        "star"
+        "star",
+        "social"
       ],
       "categories": [
         "social"
@@ -4768,8 +4768,8 @@
       "name": "circle-x",
       "svg_file": "svg/circle-x.svg",
       "tags": [
-        "circle",
-        "x"
+        "x",
+        "circle"
       ],
       "categories": [
         "general"
@@ -4837,8 +4837,8 @@
       "name": "clipboard-clock",
       "svg_file": "svg/clipboard-clock.svg",
       "tags": [
-        "clock",
-        "clipboard"
+        "clipboard",
+        "clock"
       ],
       "categories": [
         "general"
@@ -4861,8 +4861,8 @@
       "name": "clipboard-list",
       "svg_file": "svg/clipboard-list.svg",
       "tags": [
-        "list",
-        "clipboard"
+        "clipboard",
+        "list"
       ],
       "categories": [
         "general"
@@ -4897,9 +4897,9 @@
       "name": "clipboard-pen-line",
       "svg_file": "svg/clipboard-pen-line.svg",
       "tags": [
-        "line",
         "pen",
-        "clipboard"
+        "clipboard",
+        "line"
       ],
       "categories": [
         "editing"
@@ -4969,8 +4969,8 @@
       "name": "clock-1",
       "svg_file": "svg/clock-1.svg",
       "tags": [
-        "1",
-        "clock"
+        "clock",
+        "1"
       ],
       "categories": [
         "general"
@@ -4981,8 +4981,8 @@
       "name": "clock-10",
       "svg_file": "svg/clock-10.svg",
       "tags": [
-        "clock",
-        "10"
+        "10",
+        "clock"
       ],
       "categories": [
         "general"
@@ -5005,8 +5005,8 @@
       "name": "clock-12",
       "svg_file": "svg/clock-12.svg",
       "tags": [
-        "12",
-        "clock"
+        "clock",
+        "12"
       ],
       "categories": [
         "general"
@@ -5029,8 +5029,8 @@
       "name": "clock-3",
       "svg_file": "svg/clock-3.svg",
       "tags": [
-        "3",
-        "clock"
+        "clock",
+        "3"
       ],
       "categories": [
         "general"
@@ -5041,8 +5041,8 @@
       "name": "clock-4",
       "svg_file": "svg/clock-4.svg",
       "tags": [
-        "clock",
-        "4"
+        "4",
+        "clock"
       ],
       "categories": [
         "general"
@@ -5101,8 +5101,8 @@
       "name": "clock-9",
       "svg_file": "svg/clock-9.svg",
       "tags": [
-        "9",
-        "clock"
+        "clock",
+        "9"
       ],
       "categories": [
         "general"
@@ -5125,8 +5125,8 @@
       "name": "clock-arrow-down",
       "svg_file": "svg/clock-arrow-down.svg",
       "tags": [
-        "navigation",
         "arrow",
+        "navigation",
         "down",
         "clock"
       ],
@@ -5139,10 +5139,10 @@
       "name": "clock-arrow-up",
       "svg_file": "svg/clock-arrow-up.svg",
       "tags": [
-        "navigation",
         "arrow",
         "up",
-        "clock"
+        "clock",
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -5200,8 +5200,8 @@
       "name": "cloud-alert",
       "svg_file": "svg/cloud-alert.svg",
       "tags": [
-        "cloud",
-        "alert"
+        "alert",
+        "cloud"
       ],
       "categories": [
         "general"
@@ -5212,8 +5212,8 @@
       "name": "cloud-check",
       "svg_file": "svg/cloud-check.svg",
       "tags": [
-        "cloud",
-        "check"
+        "check",
+        "cloud"
       ],
       "categories": [
         "general"
@@ -5224,8 +5224,8 @@
       "name": "cloud-cog",
       "svg_file": "svg/cloud-cog.svg",
       "tags": [
-        "cloud",
-        "cog"
+        "cog",
+        "cloud"
       ],
       "categories": [
         "system"
@@ -5236,8 +5236,8 @@
       "name": "cloud-download",
       "svg_file": "svg/cloud-download.svg",
       "tags": [
-        "cloud",
-        "download"
+        "download",
+        "cloud"
       ],
       "categories": [
         "files"
@@ -5260,8 +5260,8 @@
       "name": "cloud-fog",
       "svg_file": "svg/cloud-fog.svg",
       "tags": [
-        "cloud",
-        "fog"
+        "fog",
+        "cloud"
       ],
       "categories": [
         "general"
@@ -5272,8 +5272,8 @@
       "name": "cloud-hail",
       "svg_file": "svg/cloud-hail.svg",
       "tags": [
-        "cloud",
-        "hail"
+        "hail",
+        "cloud"
       ],
       "categories": [
         "general"
@@ -5284,8 +5284,8 @@
       "name": "cloud-lightning",
       "svg_file": "svg/cloud-lightning.svg",
       "tags": [
-        "cloud",
-        "lightning"
+        "lightning",
+        "cloud"
       ],
       "categories": [
         "general"
@@ -5296,8 +5296,8 @@
       "name": "cloud-moon-rain",
       "svg_file": "svg/cloud-moon-rain.svg",
       "tags": [
-        "cloud",
         "rain",
+        "cloud",
         "moon"
       ],
       "categories": [
@@ -5321,8 +5321,8 @@
       "name": "cloud-off",
       "svg_file": "svg/cloud-off.svg",
       "tags": [
-        "cloud",
-        "off"
+        "off",
+        "cloud"
       ],
       "categories": [
         "general"
@@ -5333,9 +5333,9 @@
       "name": "cloud-rain-wind",
       "svg_file": "svg/cloud-rain-wind.svg",
       "tags": [
-        "cloud",
+        "wind",
         "rain",
-        "wind"
+        "cloud"
       ],
       "categories": [
         "general"
@@ -5346,8 +5346,8 @@
       "name": "cloud-rain",
       "svg_file": "svg/cloud-rain.svg",
       "tags": [
-        "cloud",
-        "rain"
+        "rain",
+        "cloud"
       ],
       "categories": [
         "general"
@@ -5358,8 +5358,8 @@
       "name": "cloud-snow",
       "svg_file": "svg/cloud-snow.svg",
       "tags": [
-        "cloud",
-        "snow"
+        "snow",
+        "cloud"
       ],
       "categories": [
         "general"
@@ -5370,8 +5370,8 @@
       "name": "cloud-sun-rain",
       "svg_file": "svg/cloud-sun-rain.svg",
       "tags": [
-        "cloud",
         "rain",
+        "cloud",
         "sun"
       ],
       "categories": [
@@ -5529,8 +5529,8 @@
       "name": "columns-2",
       "svg_file": "svg/columns-2.svg",
       "tags": [
-        "2",
-        "columns"
+        "columns",
+        "2"
       ],
       "categories": [
         "general"
@@ -5541,9 +5541,9 @@
       "name": "columns-3-cog",
       "svg_file": "svg/columns-3-cog.svg",
       "tags": [
-        "3",
+        "columns",
         "cog",
-        "columns"
+        "3"
       ],
       "categories": [
         "system"
@@ -5554,8 +5554,8 @@
       "name": "columns-3",
       "svg_file": "svg/columns-3.svg",
       "tags": [
-        "3",
-        "columns"
+        "columns",
+        "3"
       ],
       "categories": [
         "general"
@@ -5566,8 +5566,8 @@
       "name": "columns-4",
       "svg_file": "svg/columns-4.svg",
       "tags": [
-        "4",
-        "columns"
+        "columns",
+        "4"
       ],
       "categories": [
         "general"
@@ -5633,8 +5633,8 @@
       "name": "concierge-bell",
       "svg_file": "svg/concierge-bell.svg",
       "tags": [
-        "concierge",
-        "bell"
+        "bell",
+        "concierge"
       ],
       "categories": [
         "general"
@@ -5829,8 +5829,8 @@
       "svg_file": "svg/corner-down-left.svg",
       "tags": [
         "corner",
-        "down",
-        "left"
+        "left",
+        "down"
       ],
       "categories": [
         "general"
@@ -5855,8 +5855,8 @@
       "svg_file": "svg/corner-left-down.svg",
       "tags": [
         "corner",
-        "down",
-        "left"
+        "left",
+        "down"
       ],
       "categories": [
         "general"
@@ -5868,8 +5868,8 @@
       "svg_file": "svg/corner-left-up.svg",
       "tags": [
         "corner",
-        "up",
-        "left"
+        "left",
+        "up"
       ],
       "categories": [
         "general"
@@ -5881,8 +5881,8 @@
       "svg_file": "svg/corner-right-down.svg",
       "tags": [
         "corner",
-        "right",
-        "down"
+        "down",
+        "right"
       ],
       "categories": [
         "general"
@@ -5893,8 +5893,8 @@
       "name": "corner-right-up",
       "svg_file": "svg/corner-right-up.svg",
       "tags": [
-        "up",
         "corner",
+        "up",
         "right"
       ],
       "categories": [
@@ -5943,8 +5943,8 @@
       "name": "creative-commons",
       "svg_file": "svg/creative-commons.svg",
       "tags": [
-        "creative",
-        "commons"
+        "commons",
+        "creative"
       ],
       "categories": [
         "general"
@@ -6034,8 +6034,8 @@
       "name": "cup-soda",
       "svg_file": "svg/cup-soda.svg",
       "tags": [
-        "cup",
-        "soda"
+        "soda",
+        "cup"
       ],
       "categories": [
         "general"
@@ -6079,8 +6079,8 @@
       "name": "database-backup",
       "svg_file": "svg/database-backup.svg",
       "tags": [
-        "database",
-        "backup"
+        "backup",
+        "database"
       ],
       "categories": [
         "navigation"
@@ -6091,8 +6091,8 @@
       "name": "database-zap",
       "svg_file": "svg/database-zap.svg",
       "tags": [
-        "zap",
-        "database"
+        "database",
+        "zap"
       ],
       "categories": [
         "general"
@@ -6114,10 +6114,10 @@
       "name": "decimals-arrow-left",
       "svg_file": "svg/decimals-arrow-left.svg",
       "tags": [
-        "decimals",
         "arrow",
-        "navigation",
-        "left"
+        "decimals",
+        "left",
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -6128,10 +6128,10 @@
       "name": "decimals-arrow-right",
       "svg_file": "svg/decimals-arrow-right.svg",
       "tags": [
-        "decimals",
         "arrow",
-        "right",
-        "navigation"
+        "decimals",
+        "navigation",
+        "right"
       ],
       "categories": [
         "navigation"
@@ -6282,8 +6282,8 @@
       "name": "dice-6",
       "svg_file": "svg/dice-6.svg",
       "tags": [
-        "6",
-        "dice"
+        "dice",
+        "6"
       ],
       "categories": [
         "general"
@@ -6316,8 +6316,8 @@
       "name": "disc-2",
       "svg_file": "svg/disc-2.svg",
       "tags": [
-        "disc",
-        "2"
+        "2",
+        "disc"
       ],
       "categories": [
         "general"
@@ -6340,8 +6340,8 @@
       "name": "disc-album",
       "svg_file": "svg/disc-album.svg",
       "tags": [
-        "disc",
-        "album"
+        "album",
+        "disc"
       ],
       "categories": [
         "general"
@@ -6442,9 +6442,9 @@
       "name": "door-closed-locked",
       "svg_file": "svg/door-closed-locked.svg",
       "tags": [
-        "locked",
+        "door",
         "closed",
-        "door"
+        "locked"
       ],
       "categories": [
         "general"
@@ -6455,8 +6455,8 @@
       "name": "door-closed",
       "svg_file": "svg/door-closed.svg",
       "tags": [
-        "closed",
-        "door"
+        "door",
+        "closed"
       ],
       "categories": [
         "general"
@@ -6501,8 +6501,8 @@
       "name": "drafting-compass",
       "svg_file": "svg/drafting-compass.svg",
       "tags": [
-        "drafting",
-        "compass"
+        "compass",
+        "drafting"
       ],
       "categories": [
         "general"
@@ -6624,8 +6624,8 @@
       "name": "ear-off",
       "svg_file": "svg/ear-off.svg",
       "tags": [
-        "ear",
-        "off"
+        "off",
+        "ear"
       ],
       "categories": [
         "general"
@@ -6647,8 +6647,8 @@
       "name": "earth-lock",
       "svg_file": "svg/earth-lock.svg",
       "tags": [
-        "lock",
-        "earth"
+        "earth",
+        "lock"
       ],
       "categories": [
         "general"
@@ -6681,8 +6681,8 @@
       "name": "egg-fried",
       "svg_file": "svg/egg-fried.svg",
       "tags": [
-        "fried",
-        "egg"
+        "egg",
+        "fried"
       ],
       "categories": [
         "general"
@@ -6716,8 +6716,8 @@
       "name": "ellipsis-vertical",
       "svg_file": "svg/ellipsis-vertical.svg",
       "tags": [
-        "ellipsis",
-        "vertical"
+        "vertical",
+        "ellipsis"
       ],
       "categories": [
         "general"
@@ -6785,8 +6785,8 @@
       "name": "ethernet-port",
       "svg_file": "svg/ethernet-port.svg",
       "tags": [
-        "port",
-        "ethernet"
+        "ethernet",
+        "port"
       ],
       "categories": [
         "general"
@@ -6933,8 +6933,8 @@
       "name": "ferris-wheel",
       "svg_file": "svg/ferris-wheel.svg",
       "tags": [
-        "ferris",
-        "wheel"
+        "wheel",
+        "ferris"
       ],
       "categories": [
         "general"
@@ -6956,9 +6956,9 @@
       "name": "file-archive",
       "svg_file": "svg/file-archive.svg",
       "tags": [
-        "files",
+        "archive",
         "file",
-        "archive"
+        "files"
       ],
       "categories": [
         "files"
@@ -6969,10 +6969,10 @@
       "name": "file-audio-2",
       "svg_file": "svg/file-audio-2.svg",
       "tags": [
-        "files",
+        "audio",
         "file",
-        "2",
-        "audio"
+        "files",
+        "2"
       ],
       "categories": [
         "files"
@@ -6983,9 +6983,9 @@
       "name": "file-audio",
       "svg_file": "svg/file-audio.svg",
       "tags": [
-        "files",
+        "audio",
         "file",
-        "audio"
+        "files"
       ],
       "categories": [
         "files"
@@ -6996,9 +6996,9 @@
       "name": "file-axis-3d",
       "svg_file": "svg/file-axis-3d.svg",
       "tags": [
-        "files",
-        "file",
         "3d",
+        "file",
+        "files",
         "axis"
       ],
       "categories": [
@@ -7010,9 +7010,9 @@
       "name": "file-badge-2",
       "svg_file": "svg/file-badge-2.svg",
       "tags": [
-        "files",
-        "file",
         "badge",
+        "file",
+        "files",
         "2"
       ],
       "categories": [
@@ -7024,9 +7024,9 @@
       "name": "file-badge",
       "svg_file": "svg/file-badge.svg",
       "tags": [
-        "files",
+        "badge",
         "file",
-        "badge"
+        "files"
       ],
       "categories": [
         "files"
@@ -7037,9 +7037,9 @@
       "name": "file-box",
       "svg_file": "svg/file-box.svg",
       "tags": [
-        "files",
+        "box",
         "file",
-        "box"
+        "files"
       ],
       "categories": [
         "files"
@@ -7050,11 +7050,11 @@
       "name": "file-chart-column-increasing",
       "svg_file": "svg/file-chart-column-increasing.svg",
       "tags": [
-        "file",
-        "chart",
         "increasing",
         "column",
-        "files"
+        "file",
+        "files",
+        "chart"
       ],
       "categories": [
         "files",
@@ -7066,10 +7066,10 @@
       "name": "file-chart-column",
       "svg_file": "svg/file-chart-column.svg",
       "tags": [
-        "chart",
         "file",
+        "column",
         "files",
-        "column"
+        "chart"
       ],
       "categories": [
         "files",
@@ -7081,10 +7081,10 @@
       "name": "file-chart-line",
       "svg_file": "svg/file-chart-line.svg",
       "tags": [
-        "chart",
         "file",
         "files",
-        "line"
+        "line",
+        "chart"
       ],
       "categories": [
         "files",
@@ -7096,10 +7096,10 @@
       "name": "file-chart-pie",
       "svg_file": "svg/file-chart-pie.svg",
       "tags": [
-        "chart",
+        "pie",
         "file",
         "files",
-        "pie"
+        "chart"
       ],
       "categories": [
         "files",
@@ -7111,10 +7111,10 @@
       "name": "file-check-2",
       "svg_file": "svg/file-check-2.svg",
       "tags": [
-        "files",
+        "check",
         "file",
-        "2",
-        "check"
+        "files",
+        "2"
       ],
       "categories": [
         "files"
@@ -7125,9 +7125,9 @@
       "name": "file-check",
       "svg_file": "svg/file-check.svg",
       "tags": [
-        "files",
+        "check",
         "file",
-        "check"
+        "files"
       ],
       "categories": [
         "files"
@@ -7138,9 +7138,9 @@
       "name": "file-clock",
       "svg_file": "svg/file-clock.svg",
       "tags": [
-        "files",
         "file",
-        "clock"
+        "clock",
+        "files"
       ],
       "categories": [
         "files"
@@ -7153,8 +7153,8 @@
       "tags": [
         "files",
         "file",
-        "2",
-        "code"
+        "code",
+        "2"
       ],
       "categories": [
         "files"
@@ -7165,9 +7165,9 @@
       "name": "file-code",
       "svg_file": "svg/file-code.svg",
       "tags": [
-        "files",
         "file",
-        "code"
+        "code",
+        "files"
       ],
       "categories": [
         "files"
@@ -7178,9 +7178,9 @@
       "name": "file-cog",
       "svg_file": "svg/file-cog.svg",
       "tags": [
-        "files",
+        "cog",
         "file",
-        "cog"
+        "files"
       ],
       "categories": [
         "files",
@@ -7192,9 +7192,9 @@
       "name": "file-diff",
       "svg_file": "svg/file-diff.svg",
       "tags": [
-        "files",
+        "diff",
         "file",
-        "diff"
+        "files"
       ],
       "categories": [
         "files"
@@ -7205,9 +7205,9 @@
       "name": "file-digit",
       "svg_file": "svg/file-digit.svg",
       "tags": [
-        "files",
+        "digit",
         "file",
-        "digit"
+        "files"
       ],
       "categories": [
         "files"
@@ -7218,9 +7218,9 @@
       "name": "file-down",
       "svg_file": "svg/file-down.svg",
       "tags": [
-        "files",
+        "down",
         "file",
-        "down"
+        "files"
       ],
       "categories": [
         "files"
@@ -7231,10 +7231,10 @@
       "name": "file-heart",
       "svg_file": "svg/file-heart.svg",
       "tags": [
-        "files",
+        "heart",
         "file",
-        "social",
-        "heart"
+        "files",
+        "social"
       ],
       "categories": [
         "files",
@@ -7246,8 +7246,8 @@
       "name": "file-image",
       "svg_file": "svg/file-image.svg",
       "tags": [
-        "files",
         "file",
+        "files",
         "image"
       ],
       "categories": [
@@ -7259,9 +7259,9 @@
       "name": "file-input",
       "svg_file": "svg/file-input.svg",
       "tags": [
-        "files",
+        "input",
         "file",
-        "input"
+        "files"
       ],
       "categories": [
         "files"
@@ -7272,10 +7272,10 @@
       "name": "file-json-2",
       "svg_file": "svg/file-json-2.svg",
       "tags": [
-        "files",
+        "json",
         "file",
-        "2",
-        "json"
+        "files",
+        "2"
       ],
       "categories": [
         "files"
@@ -7286,9 +7286,9 @@
       "name": "file-json",
       "svg_file": "svg/file-json.svg",
       "tags": [
-        "files",
+        "json",
         "file",
-        "json"
+        "files"
       ],
       "categories": [
         "files"
@@ -7299,9 +7299,9 @@
       "name": "file-key-2",
       "svg_file": "svg/file-key-2.svg",
       "tags": [
-        "files",
-        "file",
         "key",
+        "file",
+        "files",
         "2"
       ],
       "categories": [
@@ -7313,9 +7313,9 @@
       "name": "file-key",
       "svg_file": "svg/file-key.svg",
       "tags": [
-        "files",
+        "key",
         "file",
-        "key"
+        "files"
       ],
       "categories": [
         "files"
@@ -7353,9 +7353,9 @@
       "name": "file-minus-2",
       "svg_file": "svg/file-minus-2.svg",
       "tags": [
-        "files",
-        "file",
         "minus",
+        "file",
+        "files",
         "2"
       ],
       "categories": [
@@ -7367,9 +7367,9 @@
       "name": "file-minus",
       "svg_file": "svg/file-minus.svg",
       "tags": [
-        "files",
+        "minus",
         "file",
-        "minus"
+        "files"
       ],
       "categories": [
         "files"
@@ -7380,9 +7380,9 @@
       "name": "file-music",
       "svg_file": "svg/file-music.svg",
       "tags": [
-        "files",
+        "music",
         "file",
-        "music"
+        "files"
       ],
       "categories": [
         "files",
@@ -7394,9 +7394,9 @@
       "name": "file-output",
       "svg_file": "svg/file-output.svg",
       "tags": [
-        "files",
+        "output",
         "file",
-        "output"
+        "files"
       ],
       "categories": [
         "files"
@@ -7407,10 +7407,10 @@
       "name": "file-pen-line",
       "svg_file": "svg/file-pen-line.svg",
       "tags": [
-        "line",
-        "file",
         "pen",
-        "files"
+        "file",
+        "files",
+        "line"
       ],
       "categories": [
         "files",
@@ -7422,9 +7422,9 @@
       "name": "file-pen",
       "svg_file": "svg/file-pen.svg",
       "tags": [
-        "files",
+        "pen",
         "file",
-        "pen"
+        "files"
       ],
       "categories": [
         "files",
@@ -7436,9 +7436,9 @@
       "name": "file-play",
       "svg_file": "svg/file-play.svg",
       "tags": [
-        "files",
+        "play",
         "file",
-        "play"
+        "files"
       ],
       "categories": [
         "files",
@@ -7450,10 +7450,10 @@
       "name": "file-plus-2",
       "svg_file": "svg/file-plus-2.svg",
       "tags": [
-        "files",
+        "plus",
         "file",
-        "2",
-        "plus"
+        "files",
+        "2"
       ],
       "categories": [
         "files"
@@ -7464,9 +7464,9 @@
       "name": "file-plus",
       "svg_file": "svg/file-plus.svg",
       "tags": [
-        "files",
+        "plus",
         "file",
-        "plus"
+        "files"
       ],
       "categories": [
         "files"
@@ -7477,10 +7477,10 @@
       "name": "file-question-mark",
       "svg_file": "svg/file-question-mark.svg",
       "tags": [
-        "files",
-        "file",
+        "mark",
         "question",
-        "mark"
+        "file",
+        "files"
       ],
       "categories": [
         "files"
@@ -7491,8 +7491,8 @@
       "name": "file-scan",
       "svg_file": "svg/file-scan.svg",
       "tags": [
-        "files",
         "file",
+        "files",
         "scan"
       ],
       "categories": [
@@ -7504,9 +7504,9 @@
       "name": "file-search-2",
       "svg_file": "svg/file-search-2.svg",
       "tags": [
-        "search",
-        "file",
         "files",
+        "file",
+        "search",
         "2"
       ],
       "categories": [
@@ -7518,8 +7518,8 @@
       "name": "file-search",
       "svg_file": "svg/file-search.svg",
       "tags": [
-        "search",
         "file",
+        "search",
         "files"
       ],
       "categories": [
@@ -7531,9 +7531,9 @@
       "name": "file-sliders",
       "svg_file": "svg/file-sliders.svg",
       "tags": [
-        "files",
+        "sliders",
         "file",
-        "sliders"
+        "files"
       ],
       "categories": [
         "files"
@@ -7544,9 +7544,9 @@
       "name": "file-spreadsheet",
       "svg_file": "svg/file-spreadsheet.svg",
       "tags": [
-        "files",
         "file",
-        "spreadsheet"
+        "spreadsheet",
+        "files"
       ],
       "categories": [
         "files"
@@ -7557,9 +7557,9 @@
       "name": "file-stack",
       "svg_file": "svg/file-stack.svg",
       "tags": [
-        "files",
+        "stack",
         "file",
-        "stack"
+        "files"
       ],
       "categories": [
         "files"
@@ -7570,9 +7570,9 @@
       "name": "file-symlink",
       "svg_file": "svg/file-symlink.svg",
       "tags": [
-        "files",
+        "symlink",
         "file",
-        "symlink"
+        "files"
       ],
       "categories": [
         "files"
@@ -7583,9 +7583,9 @@
       "name": "file-terminal",
       "svg_file": "svg/file-terminal.svg",
       "tags": [
-        "files",
+        "terminal",
         "file",
-        "terminal"
+        "files"
       ],
       "categories": [
         "files"
@@ -7596,9 +7596,9 @@
       "name": "file-text",
       "svg_file": "svg/file-text.svg",
       "tags": [
-        "files",
+        "text",
         "file",
-        "text"
+        "files"
       ],
       "categories": [
         "files"
@@ -7609,10 +7609,10 @@
       "name": "file-type-2",
       "svg_file": "svg/file-type-2.svg",
       "tags": [
-        "files",
+        "type",
         "file",
-        "2",
-        "type"
+        "files",
+        "2"
       ],
       "categories": [
         "files"
@@ -7623,9 +7623,9 @@
       "name": "file-type",
       "svg_file": "svg/file-type.svg",
       "tags": [
-        "files",
+        "type",
         "file",
-        "type"
+        "files"
       ],
       "categories": [
         "files"
@@ -7636,9 +7636,9 @@
       "name": "file-up",
       "svg_file": "svg/file-up.svg",
       "tags": [
-        "files",
+        "up",
         "file",
-        "up"
+        "files"
       ],
       "categories": [
         "files"
@@ -7649,10 +7649,10 @@
       "name": "file-user",
       "svg_file": "svg/file-user.svg",
       "tags": [
-        "files",
-        "file",
         "user",
-        "users"
+        "file",
+        "users",
+        "files"
       ],
       "categories": [
         "files",
@@ -7664,10 +7664,10 @@
       "name": "file-video-camera",
       "svg_file": "svg/file-video-camera.svg",
       "tags": [
-        "files",
-        "file",
         "camera",
-        "video"
+        "video",
+        "file",
+        "files"
       ],
       "categories": [
         "files",
@@ -7679,9 +7679,9 @@
       "name": "file-volume-2",
       "svg_file": "svg/file-volume-2.svg",
       "tags": [
-        "files",
-        "file",
         "volume",
+        "file",
+        "files",
         "2"
       ],
       "categories": [
@@ -7693,9 +7693,9 @@
       "name": "file-volume",
       "svg_file": "svg/file-volume.svg",
       "tags": [
-        "files",
+        "volume",
         "file",
-        "volume"
+        "files"
       ],
       "categories": [
         "files"
@@ -7706,9 +7706,9 @@
       "name": "file-warning",
       "svg_file": "svg/file-warning.svg",
       "tags": [
-        "warning",
         "file",
-        "files"
+        "files",
+        "warning"
       ],
       "categories": [
         "files"
@@ -7719,9 +7719,9 @@
       "name": "file-x-2",
       "svg_file": "svg/file-x-2.svg",
       "tags": [
-        "files",
-        "file",
         "x",
+        "file",
+        "files",
         "2"
       ],
       "categories": [
@@ -7733,9 +7733,9 @@
       "name": "file-x",
       "svg_file": "svg/file-x.svg",
       "tags": [
-        "files",
+        "x",
         "file",
-        "x"
+        "files"
       ],
       "categories": [
         "files"
@@ -7746,8 +7746,8 @@
       "name": "file",
       "svg_file": "svg/file.svg",
       "tags": [
-        "files",
-        "file"
+        "file",
+        "files"
       ],
       "categories": [
         "files"
@@ -7850,9 +7850,9 @@
       "name": "flag-triangle-left",
       "svg_file": "svg/flag-triangle-left.svg",
       "tags": [
-        "triangle",
         "left",
-        "flag"
+        "flag",
+        "triangle"
       ],
       "categories": [
         "general"
@@ -7863,9 +7863,9 @@
       "name": "flag-triangle-right",
       "svg_file": "svg/flag-triangle-right.svg",
       "tags": [
-        "triangle",
         "right",
-        "flag"
+        "flag",
+        "triangle"
       ],
       "categories": [
         "general"
@@ -7971,8 +7971,8 @@
       "svg_file": "svg/flip-horizontal-2.svg",
       "tags": [
         "flip",
-        "2",
-        "horizontal"
+        "horizontal",
+        "2"
       ],
       "categories": [
         "general"
@@ -8054,8 +8054,8 @@
       "name": "fold-horizontal",
       "svg_file": "svg/fold-horizontal.svg",
       "tags": [
-        "fold",
-        "horizontal"
+        "horizontal",
+        "fold"
       ],
       "categories": [
         "general"
@@ -8078,9 +8078,9 @@
       "name": "folder-archive",
       "svg_file": "svg/folder-archive.svg",
       "tags": [
-        "files",
         "archive",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files"
@@ -8092,8 +8092,8 @@
       "svg_file": "svg/folder-check.svg",
       "tags": [
         "check",
-        "files",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files"
@@ -8104,9 +8104,9 @@
       "name": "folder-clock",
       "svg_file": "svg/folder-clock.svg",
       "tags": [
-        "files",
         "clock",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files"
@@ -8117,9 +8117,9 @@
       "name": "folder-closed",
       "svg_file": "svg/folder-closed.svg",
       "tags": [
-        "files",
         "closed",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files"
@@ -8130,9 +8130,9 @@
       "name": "folder-code",
       "svg_file": "svg/folder-code.svg",
       "tags": [
-        "files",
+        "code",
         "folder",
-        "code"
+        "files"
       ],
       "categories": [
         "files"
@@ -8143,9 +8143,9 @@
       "name": "folder-cog",
       "svg_file": "svg/folder-cog.svg",
       "tags": [
-        "files",
         "cog",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files",
@@ -8158,8 +8158,8 @@
       "svg_file": "svg/folder-dot.svg",
       "tags": [
         "files",
-        "dot",
-        "folder"
+        "folder",
+        "dot"
       ],
       "categories": [
         "files"
@@ -8170,9 +8170,9 @@
       "name": "folder-down",
       "svg_file": "svg/folder-down.svg",
       "tags": [
-        "files",
         "down",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files"
@@ -8185,8 +8185,8 @@
       "tags": [
         "files",
         "git",
-        "2",
-        "folder"
+        "folder",
+        "2"
       ],
       "categories": [
         "files"
@@ -8197,9 +8197,9 @@
       "name": "folder-git",
       "svg_file": "svg/folder-git.svg",
       "tags": [
-        "files",
         "git",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files"
@@ -8210,10 +8210,10 @@
       "name": "folder-heart",
       "svg_file": "svg/folder-heart.svg",
       "tags": [
-        "files",
-        "social",
+        "heart",
         "folder",
-        "heart"
+        "files",
+        "social"
       ],
       "categories": [
         "files",
@@ -8225,9 +8225,9 @@
       "name": "folder-input",
       "svg_file": "svg/folder-input.svg",
       "tags": [
-        "files",
         "input",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files"
@@ -8238,9 +8238,9 @@
       "name": "folder-kanban",
       "svg_file": "svg/folder-kanban.svg",
       "tags": [
+        "folder",
         "files",
-        "kanban",
-        "folder"
+        "kanban"
       ],
       "categories": [
         "files"
@@ -8251,9 +8251,9 @@
       "name": "folder-key",
       "svg_file": "svg/folder-key.svg",
       "tags": [
-        "files",
         "key",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files"
@@ -8265,8 +8265,8 @@
       "svg_file": "svg/folder-lock.svg",
       "tags": [
         "lock",
-        "files",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files"
@@ -8277,9 +8277,9 @@
       "name": "folder-minus",
       "svg_file": "svg/folder-minus.svg",
       "tags": [
-        "files",
         "minus",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files"
@@ -8291,9 +8291,9 @@
       "svg_file": "svg/folder-open-dot.svg",
       "tags": [
         "files",
-        "dot",
         "open",
-        "folder"
+        "folder",
+        "dot"
       ],
       "categories": [
         "files",
@@ -8305,9 +8305,9 @@
       "name": "folder-open",
       "svg_file": "svg/folder-open.svg",
       "tags": [
-        "files",
         "open",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files",
@@ -8319,9 +8319,9 @@
       "name": "folder-output",
       "svg_file": "svg/folder-output.svg",
       "tags": [
-        "files",
         "output",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files"
@@ -8332,9 +8332,9 @@
       "name": "folder-pen",
       "svg_file": "svg/folder-pen.svg",
       "tags": [
-        "files",
         "pen",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files",
@@ -8346,9 +8346,9 @@
       "name": "folder-plus",
       "svg_file": "svg/folder-plus.svg",
       "tags": [
-        "files",
         "plus",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files"
@@ -8359,9 +8359,9 @@
       "name": "folder-root",
       "svg_file": "svg/folder-root.svg",
       "tags": [
-        "files",
         "root",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files"
@@ -8372,10 +8372,10 @@
       "name": "folder-search-2",
       "svg_file": "svg/folder-search-2.svg",
       "tags": [
-        "search",
         "files",
-        "2",
-        "folder"
+        "search",
+        "folder",
+        "2"
       ],
       "categories": [
         "files"
@@ -8387,8 +8387,8 @@
       "svg_file": "svg/folder-search.svg",
       "tags": [
         "search",
-        "files",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files"
@@ -8399,9 +8399,9 @@
       "name": "folder-symlink",
       "svg_file": "svg/folder-symlink.svg",
       "tags": [
-        "files",
         "symlink",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files"
@@ -8412,9 +8412,9 @@
       "name": "folder-sync",
       "svg_file": "svg/folder-sync.svg",
       "tags": [
-        "files",
         "sync",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files"
@@ -8425,9 +8425,9 @@
       "name": "folder-tree",
       "svg_file": "svg/folder-tree.svg",
       "tags": [
+        "folder",
         "files",
-        "tree",
-        "folder"
+        "tree"
       ],
       "categories": [
         "files"
@@ -8438,9 +8438,9 @@
       "name": "folder-up",
       "svg_file": "svg/folder-up.svg",
       "tags": [
-        "files",
         "up",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files"
@@ -8451,9 +8451,9 @@
       "name": "folder-x",
       "svg_file": "svg/folder-x.svg",
       "tags": [
-        "files",
         "x",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files"
@@ -8464,8 +8464,8 @@
       "name": "folder",
       "svg_file": "svg/folder.svg",
       "tags": [
-        "files",
-        "folder"
+        "folder",
+        "files"
       ],
       "categories": [
         "files"
@@ -8476,8 +8476,8 @@
       "name": "folders",
       "svg_file": "svg/folders.svg",
       "tags": [
-        "files",
-        "folders"
+        "folders",
+        "files"
       ],
       "categories": [
         "files"
@@ -8576,8 +8576,8 @@
       "name": "funnel-plus",
       "svg_file": "svg/funnel-plus.svg",
       "tags": [
-        "plus",
-        "funnel"
+        "funnel",
+        "plus"
       ],
       "categories": [
         "general"
@@ -8588,8 +8588,8 @@
       "name": "funnel-x",
       "svg_file": "svg/funnel-x.svg",
       "tags": [
-        "x",
-        "funnel"
+        "funnel",
+        "x"
       ],
       "categories": [
         "general"
@@ -8611,9 +8611,9 @@
       "name": "gallery-horizontal-end",
       "svg_file": "svg/gallery-horizontal-end.svg",
       "tags": [
-        "end",
+        "horizontal",
         "gallery",
-        "horizontal"
+        "end"
       ],
       "categories": [
         "general"
@@ -8624,8 +8624,8 @@
       "name": "gallery-horizontal",
       "svg_file": "svg/gallery-horizontal.svg",
       "tags": [
-        "gallery",
-        "horizontal"
+        "horizontal",
+        "gallery"
       ],
       "categories": [
         "general"
@@ -8636,8 +8636,8 @@
       "name": "gallery-thumbnails",
       "svg_file": "svg/gallery-thumbnails.svg",
       "tags": [
-        "gallery",
-        "thumbnails"
+        "thumbnails",
+        "gallery"
       ],
       "categories": [
         "general"
@@ -8648,9 +8648,9 @@
       "name": "gallery-vertical-end",
       "svg_file": "svg/gallery-vertical-end.svg",
       "tags": [
-        "end",
+        "vertical",
         "gallery",
-        "vertical"
+        "end"
       ],
       "categories": [
         "general"
@@ -8661,8 +8661,8 @@
       "name": "gallery-vertical",
       "svg_file": "svg/gallery-vertical.svg",
       "tags": [
-        "gallery",
-        "vertical"
+        "vertical",
+        "gallery"
       ],
       "categories": [
         "general"
@@ -8788,9 +8788,9 @@
       "name": "git-commit-horizontal",
       "svg_file": "svg/git-commit-horizontal.svg",
       "tags": [
+        "horizontal",
         "git",
-        "commit",
-        "horizontal"
+        "commit"
       ],
       "categories": [
         "general"
@@ -8802,8 +8802,8 @@
       "svg_file": "svg/git-commit-vertical.svg",
       "tags": [
         "git",
-        "vertical",
-        "commit"
+        "commit",
+        "vertical"
       ],
       "categories": [
         "general"
@@ -8815,9 +8815,9 @@
       "svg_file": "svg/git-compare-arrows.svg",
       "tags": [
         "git",
-        "navigation",
+        "compare",
         "arrows",
-        "compare"
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -8840,8 +8840,8 @@
       "name": "git-fork",
       "svg_file": "svg/git-fork.svg",
       "tags": [
-        "fork",
-        "git"
+        "git",
+        "fork"
       ],
       "categories": [
         "general"
@@ -8864,8 +8864,8 @@
       "name": "git-merge",
       "svg_file": "svg/git-merge.svg",
       "tags": [
-        "git",
-        "merge"
+        "merge",
+        "git"
       ],
       "categories": [
         "general"
@@ -8876,10 +8876,10 @@
       "name": "git-pull-request-arrow",
       "svg_file": "svg/git-pull-request-arrow.svg",
       "tags": [
-        "navigation",
-        "pull",
         "git",
+        "pull",
         "request",
+        "navigation",
         "arrow"
       ],
       "categories": [
@@ -8892,9 +8892,9 @@
       "svg_file": "svg/git-pull-request-closed.svg",
       "tags": [
         "git",
+        "request",
         "pull",
-        "closed",
-        "request"
+        "closed"
       ],
       "categories": [
         "general"
@@ -8905,12 +8905,12 @@
       "name": "git-pull-request-create-arrow",
       "svg_file": "svg/git-pull-request-create-arrow.svg",
       "tags": [
-        "navigation",
-        "create",
-        "pull",
         "git",
+        "pull",
         "request",
-        "arrow"
+        "navigation",
+        "arrow",
+        "create"
       ],
       "categories": [
         "navigation"
@@ -8922,8 +8922,8 @@
       "svg_file": "svg/git-pull-request-create.svg",
       "tags": [
         "git",
-        "pull",
         "request",
+        "pull",
         "create"
       ],
       "categories": [
@@ -8935,10 +8935,10 @@
       "name": "git-pull-request-draft",
       "svg_file": "svg/git-pull-request-draft.svg",
       "tags": [
-        "draft",
         "git",
+        "request",
         "pull",
-        "request"
+        "draft"
       ],
       "categories": [
         "general"
@@ -8950,8 +8950,8 @@
       "svg_file": "svg/git-pull-request.svg",
       "tags": [
         "git",
-        "pull",
-        "request"
+        "request",
+        "pull"
       ],
       "categories": [
         "general"
@@ -8984,8 +8984,8 @@
       "name": "glass-water",
       "svg_file": "svg/glass-water.svg",
       "tags": [
-        "glass",
-        "water"
+        "water",
+        "glass"
       ],
       "categories": [
         "general"
@@ -9007,8 +9007,8 @@
       "name": "globe-lock",
       "svg_file": "svg/globe-lock.svg",
       "tags": [
-        "lock",
-        "globe"
+        "globe",
+        "lock"
       ],
       "categories": [
         "general"
@@ -9052,8 +9052,8 @@
       "name": "graduation-cap",
       "svg_file": "svg/graduation-cap.svg",
       "tags": [
-        "cap",
-        "graduation"
+        "graduation",
+        "cap"
       ],
       "categories": [
         "general"
@@ -9075,9 +9075,9 @@
       "name": "grid-2x2-check",
       "svg_file": "svg/grid-2x2-check.svg",
       "tags": [
-        "grid",
         "2x2",
-        "check"
+        "check",
+        "grid"
       ],
       "categories": [
         "general"
@@ -9088,9 +9088,9 @@
       "name": "grid-2x2-plus",
       "svg_file": "svg/grid-2x2-plus.svg",
       "tags": [
+        "2x2",
         "plus",
-        "grid",
-        "2x2"
+        "grid"
       ],
       "categories": [
         "general"
@@ -9101,9 +9101,9 @@
       "name": "grid-2x2-x",
       "svg_file": "svg/grid-2x2-x.svg",
       "tags": [
+        "2x2",
         "x",
-        "grid",
-        "2x2"
+        "grid"
       ],
       "categories": [
         "general"
@@ -9114,8 +9114,8 @@
       "name": "grid-2x2",
       "svg_file": "svg/grid-2x2.svg",
       "tags": [
-        "grid",
-        "2x2"
+        "2x2",
+        "grid"
       ],
       "categories": [
         "general"
@@ -9150,8 +9150,8 @@
       "name": "grip-horizontal",
       "svg_file": "svg/grip-horizontal.svg",
       "tags": [
-        "grip",
-        "horizontal"
+        "horizontal",
+        "grip"
       ],
       "categories": [
         "general"
@@ -9252,8 +9252,8 @@
       "name": "hand-fist",
       "svg_file": "svg/hand-fist.svg",
       "tags": [
-        "hand",
-        "fist"
+        "fist",
+        "hand"
       ],
       "categories": [
         "general"
@@ -9264,8 +9264,8 @@
       "name": "hand-grab",
       "svg_file": "svg/hand-grab.svg",
       "tags": [
-        "hand",
-        "grab"
+        "grab",
+        "hand"
       ],
       "categories": [
         "general"
@@ -9276,9 +9276,9 @@
       "name": "hand-heart",
       "svg_file": "svg/hand-heart.svg",
       "tags": [
+        "heart",
         "social",
-        "hand",
-        "heart"
+        "hand"
       ],
       "categories": [
         "social"
@@ -9289,8 +9289,8 @@
       "name": "hand-helping",
       "svg_file": "svg/hand-helping.svg",
       "tags": [
-        "hand",
-        "helping"
+        "helping",
+        "hand"
       ],
       "categories": [
         "general"
@@ -9313,8 +9313,8 @@
       "name": "hand-platter",
       "svg_file": "svg/hand-platter.svg",
       "tags": [
-        "hand",
-        "platter"
+        "platter",
+        "hand"
       ],
       "categories": [
         "general"
@@ -9358,9 +9358,9 @@
       "name": "hard-drive-download",
       "svg_file": "svg/hard-drive-download.svg",
       "tags": [
+        "download",
         "hard",
-        "drive",
-        "download"
+        "drive"
       ],
       "categories": [
         "files"
@@ -9396,8 +9396,8 @@
       "name": "hard-hat",
       "svg_file": "svg/hard-hat.svg",
       "tags": [
-        "hard",
-        "hat"
+        "hat",
+        "hard"
       ],
       "categories": [
         "general"
@@ -9419,8 +9419,8 @@
       "name": "hat-glasses",
       "svg_file": "svg/hat-glasses.svg",
       "tags": [
-        "glasses",
-        "hat"
+        "hat",
+        "glasses"
       ],
       "categories": [
         "general"
@@ -9571,9 +9571,9 @@
       "name": "heart-crack",
       "svg_file": "svg/heart-crack.svg",
       "tags": [
-        "social",
         "crack",
-        "heart"
+        "heart",
+        "social"
       ],
       "categories": [
         "social"
@@ -9584,9 +9584,9 @@
       "name": "heart-handshake",
       "svg_file": "svg/heart-handshake.svg",
       "tags": [
-        "social",
+        "heart",
         "handshake",
-        "heart"
+        "social"
       ],
       "categories": [
         "social"
@@ -9597,9 +9597,9 @@
       "name": "heart-minus",
       "svg_file": "svg/heart-minus.svg",
       "tags": [
-        "social",
+        "heart",
         "minus",
-        "heart"
+        "social"
       ],
       "categories": [
         "social"
@@ -9610,9 +9610,9 @@
       "name": "heart-off",
       "svg_file": "svg/heart-off.svg",
       "tags": [
-        "social",
         "off",
-        "heart"
+        "heart",
+        "social"
       ],
       "categories": [
         "social"
@@ -9623,9 +9623,9 @@
       "name": "heart-plus",
       "svg_file": "svg/heart-plus.svg",
       "tags": [
-        "social",
         "plus",
-        "heart"
+        "heart",
+        "social"
       ],
       "categories": [
         "social"
@@ -9636,9 +9636,9 @@
       "name": "heart-pulse",
       "svg_file": "svg/heart-pulse.svg",
       "tags": [
+        "heart",
         "pulse",
-        "social",
-        "heart"
+        "social"
       ],
       "categories": [
         "social"
@@ -9649,8 +9649,8 @@
       "name": "heart",
       "svg_file": "svg/heart.svg",
       "tags": [
-        "social",
-        "heart"
+        "heart",
+        "social"
       ],
       "categories": [
         "social"
@@ -9761,8 +9761,8 @@
       "name": "house-plug",
       "svg_file": "svg/house-plug.svg",
       "tags": [
-        "house",
-        "plug"
+        "plug",
+        "house"
       ],
       "categories": [
         "general"
@@ -9808,8 +9808,8 @@
       "name": "ice-cream-bowl",
       "svg_file": "svg/ice-cream-bowl.svg",
       "tags": [
-        "cream",
         "bowl",
+        "cream",
         "ice"
       ],
       "categories": [
@@ -9821,8 +9821,8 @@
       "name": "ice-cream-cone",
       "svg_file": "svg/ice-cream-cone.svg",
       "tags": [
-        "cream",
         "cone",
+        "cream",
         "ice"
       ],
       "categories": [
@@ -9987,8 +9987,8 @@
       "name": "indian-rupee",
       "svg_file": "svg/indian-rupee.svg",
       "tags": [
-        "indian",
-        "rupee"
+        "rupee",
+        "indian"
       ],
       "categories": [
         "general"
@@ -10021,8 +10021,8 @@
       "name": "inspection-panel",
       "svg_file": "svg/inspection-panel.svg",
       "tags": [
-        "inspection",
-        "panel"
+        "panel",
+        "inspection"
       ],
       "categories": [
         "general"
@@ -10055,8 +10055,8 @@
       "name": "iteration-ccw",
       "svg_file": "svg/iteration-ccw.svg",
       "tags": [
-        "iteration",
-        "ccw"
+        "ccw",
+        "iteration"
       ],
       "categories": [
         "general"
@@ -10067,8 +10067,8 @@
       "name": "iteration-cw",
       "svg_file": "svg/iteration-cw.svg",
       "tags": [
-        "iteration",
-        "cw"
+        "cw",
+        "iteration"
       ],
       "categories": [
         "general"
@@ -10079,8 +10079,8 @@
       "name": "japanese-yen",
       "svg_file": "svg/japanese-yen.svg",
       "tags": [
-        "yen",
-        "japanese"
+        "japanese",
+        "yen"
       ],
       "categories": [
         "general"
@@ -10136,8 +10136,8 @@
       "name": "key-square",
       "svg_file": "svg/key-square.svg",
       "tags": [
-        "square",
-        "key"
+        "key",
+        "square"
       ],
       "categories": [
         "general"
@@ -10159,8 +10159,8 @@
       "name": "keyboard-music",
       "svg_file": "svg/keyboard-music.svg",
       "tags": [
-        "music",
-        "keyboard"
+        "keyboard",
+        "music"
       ],
       "categories": [
         "media"
@@ -10171,8 +10171,8 @@
       "name": "keyboard-off",
       "svg_file": "svg/keyboard-off.svg",
       "tags": [
-        "off",
-        "keyboard"
+        "keyboard",
+        "off"
       ],
       "categories": [
         "general"
@@ -10206,8 +10206,8 @@
       "name": "lamp-desk",
       "svg_file": "svg/lamp-desk.svg",
       "tags": [
-        "lamp",
-        "desk"
+        "desk",
+        "lamp"
       ],
       "categories": [
         "general"
@@ -10218,8 +10218,8 @@
       "name": "lamp-floor",
       "svg_file": "svg/lamp-floor.svg",
       "tags": [
-        "lamp",
-        "floor"
+        "floor",
+        "lamp"
       ],
       "categories": [
         "general"
@@ -10231,8 +10231,8 @@
       "svg_file": "svg/lamp-wall-down.svg",
       "tags": [
         "lamp",
-        "down",
-        "wall"
+        "wall",
+        "down"
       ],
       "categories": [
         "general"
@@ -10244,8 +10244,8 @@
       "svg_file": "svg/lamp-wall-up.svg",
       "tags": [
         "lamp",
-        "up",
-        "wall"
+        "wall",
+        "up"
       ],
       "categories": [
         "general"
@@ -10267,8 +10267,8 @@
       "name": "land-plot",
       "svg_file": "svg/land-plot.svg",
       "tags": [
-        "plot",
-        "land"
+        "land",
+        "plot"
       ],
       "categories": [
         "general"
@@ -10301,9 +10301,9 @@
       "name": "laptop-minimal-check",
       "svg_file": "svg/laptop-minimal-check.svg",
       "tags": [
+        "check",
         "laptop",
-        "minimal",
-        "check"
+        "minimal"
       ],
       "categories": [
         "general"
@@ -10394,8 +10394,8 @@
       "name": "layout-dashboard",
       "svg_file": "svg/layout-dashboard.svg",
       "tags": [
-        "layout",
-        "dashboard"
+        "dashboard",
+        "layout"
       ],
       "categories": [
         "general"
@@ -10430,9 +10430,9 @@
       "name": "layout-panel-left",
       "svg_file": "svg/layout-panel-left.svg",
       "tags": [
-        "layout",
+        "panel",
         "left",
-        "panel"
+        "layout"
       ],
       "categories": [
         "general"
@@ -10443,9 +10443,9 @@
       "name": "layout-panel-top",
       "svg_file": "svg/layout-panel-top.svg",
       "tags": [
-        "layout",
+        "panel",
         "top",
-        "panel"
+        "layout"
       ],
       "categories": [
         "general"
@@ -10456,8 +10456,8 @@
       "name": "layout-template",
       "svg_file": "svg/layout-template.svg",
       "tags": [
-        "layout",
-        "template"
+        "template",
+        "layout"
       ],
       "categories": [
         "general"
@@ -10630,8 +10630,8 @@
       "name": "list-check",
       "svg_file": "svg/list-check.svg",
       "tags": [
-        "list",
-        "check"
+        "check",
+        "list"
       ],
       "categories": [
         "general"
@@ -10642,8 +10642,8 @@
       "name": "list-checks",
       "svg_file": "svg/list-checks.svg",
       "tags": [
-        "list",
-        "checks"
+        "checks",
+        "list"
       ],
       "categories": [
         "general"
@@ -10654,11 +10654,11 @@
       "name": "list-chevrons-down-up",
       "svg_file": "svg/list-chevrons-down-up.svg",
       "tags": [
-        "navigation",
         "up",
+        "navigation",
         "down",
-        "list",
-        "chevrons"
+        "chevrons",
+        "list"
       ],
       "categories": [
         "navigation"
@@ -10669,11 +10669,11 @@
       "name": "list-chevrons-up-down",
       "svg_file": "svg/list-chevrons-up-down.svg",
       "tags": [
-        "navigation",
         "up",
+        "navigation",
         "down",
-        "list",
-        "chevrons"
+        "chevrons",
+        "list"
       ],
       "categories": [
         "navigation"
@@ -10684,8 +10684,8 @@
       "name": "list-collapse",
       "svg_file": "svg/list-collapse.svg",
       "tags": [
-        "list",
-        "collapse"
+        "collapse",
+        "list"
       ],
       "categories": [
         "general"
@@ -10708,9 +10708,9 @@
       "name": "list-filter-plus",
       "svg_file": "svg/list-filter-plus.svg",
       "tags": [
+        "filter",
         "plus",
-        "list",
-        "filter"
+        "list"
       ],
       "categories": [
         "general"
@@ -10721,8 +10721,8 @@
       "name": "list-filter",
       "svg_file": "svg/list-filter.svg",
       "tags": [
-        "list",
-        "filter"
+        "filter",
+        "list"
       ],
       "categories": [
         "general"
@@ -10771,8 +10771,8 @@
       "name": "list-music",
       "svg_file": "svg/list-music.svg",
       "tags": [
-        "list",
-        "music"
+        "music",
+        "list"
       ],
       "categories": [
         "media"
@@ -10820,8 +10820,8 @@
       "name": "list-start",
       "svg_file": "svg/list-start.svg",
       "tags": [
-        "social",
         "start",
+        "social",
         "list"
       ],
       "categories": [
@@ -10857,8 +10857,8 @@
       "name": "list-video",
       "svg_file": "svg/list-video.svg",
       "tags": [
-        "list",
-        "video"
+        "video",
+        "list"
       ],
       "categories": [
         "media"
@@ -10869,8 +10869,8 @@
       "name": "list-x",
       "svg_file": "svg/list-x.svg",
       "tags": [
-        "list",
-        "x"
+        "x",
+        "list"
       ],
       "categories": [
         "general"
@@ -10892,8 +10892,8 @@
       "name": "loader-circle",
       "svg_file": "svg/loader-circle.svg",
       "tags": [
-        "circle",
-        "loader"
+        "loader",
+        "circle"
       ],
       "categories": [
         "general"
@@ -10904,8 +10904,8 @@
       "name": "loader-pinwheel",
       "svg_file": "svg/loader-pinwheel.svg",
       "tags": [
-        "pinwheel",
-        "loader"
+        "loader",
+        "pinwheel"
       ],
       "categories": [
         "general"
@@ -10927,8 +10927,8 @@
       "name": "locate-fixed",
       "svg_file": "svg/locate-fixed.svg",
       "tags": [
-        "fixed",
-        "locate"
+        "locate",
+        "fixed"
       ],
       "categories": [
         "general"
@@ -10962,8 +10962,8 @@
       "name": "lock-keyhole-open",
       "svg_file": "svg/lock-keyhole-open.svg",
       "tags": [
-        "lock",
         "open",
+        "lock",
         "keyhole"
       ],
       "categories": [
@@ -10987,8 +10987,8 @@
       "name": "lock-open",
       "svg_file": "svg/lock-open.svg",
       "tags": [
-        "lock",
-        "open"
+        "open",
+        "lock"
       ],
       "categories": [
         "editing"
@@ -11022,8 +11022,8 @@
       "name": "log-out",
       "svg_file": "svg/log-out.svg",
       "tags": [
-        "log",
-        "out"
+        "out",
+        "log"
       ],
       "categories": [
         "general"
@@ -11078,8 +11078,8 @@
       "name": "mail-check",
       "svg_file": "svg/mail-check.svg",
       "tags": [
-        "mail",
-        "check"
+        "check",
+        "mail"
       ],
       "categories": [
         "communication"
@@ -11127,9 +11127,9 @@
       "name": "mail-question-mark",
       "svg_file": "svg/mail-question-mark.svg",
       "tags": [
+        "mark",
         "question",
-        "mail",
-        "mark"
+        "mail"
       ],
       "categories": [
         "communication"
@@ -11152,8 +11152,8 @@
       "name": "mail-warning",
       "svg_file": "svg/mail-warning.svg",
       "tags": [
-        "warning",
-        "mail"
+        "mail",
+        "warning"
       ],
       "categories": [
         "communication"
@@ -11222,8 +11222,8 @@
       "svg_file": "svg/map-pin-check-inside.svg",
       "tags": [
         "check",
-        "pin",
         "inside",
+        "pin",
         "map"
       ],
       "categories": [
@@ -11248,8 +11248,8 @@
       "name": "map-pin-house",
       "svg_file": "svg/map-pin-house.svg",
       "tags": [
-        "pin",
         "house",
+        "pin",
         "map"
       ],
       "categories": [
@@ -11262,8 +11262,8 @@
       "svg_file": "svg/map-pin-minus-inside.svg",
       "tags": [
         "inside",
-        "pin",
         "minus",
+        "pin",
         "map"
       ],
       "categories": [
@@ -11275,8 +11275,8 @@
       "name": "map-pin-minus",
       "svg_file": "svg/map-pin-minus.svg",
       "tags": [
-        "pin",
         "minus",
+        "pin",
         "map"
       ],
       "categories": [
@@ -11288,8 +11288,8 @@
       "name": "map-pin-off",
       "svg_file": "svg/map-pin-off.svg",
       "tags": [
-        "pin",
         "off",
+        "pin",
         "map"
       ],
       "categories": [
@@ -11301,8 +11301,8 @@
       "name": "map-pin-pen",
       "svg_file": "svg/map-pin-pen.svg",
       "tags": [
-        "pin",
         "pen",
+        "pin",
         "map"
       ],
       "categories": [
@@ -11314,10 +11314,10 @@
       "name": "map-pin-plus-inside",
       "svg_file": "svg/map-pin-plus-inside.svg",
       "tags": [
+        "plus",
         "inside",
         "pin",
-        "map",
-        "plus"
+        "map"
       ],
       "categories": [
         "general"
@@ -11328,9 +11328,9 @@
       "name": "map-pin-plus",
       "svg_file": "svg/map-pin-plus.svg",
       "tags": [
+        "plus",
         "pin",
-        "map",
-        "plus"
+        "map"
       ],
       "categories": [
         "general"
@@ -11341,9 +11341,9 @@
       "name": "map-pin-x-inside",
       "svg_file": "svg/map-pin-x-inside.svg",
       "tags": [
+        "x",
         "inside",
         "pin",
-        "x",
         "map"
       ],
       "categories": [
@@ -11355,8 +11355,8 @@
       "name": "map-pin-x",
       "svg_file": "svg/map-pin-x.svg",
       "tags": [
-        "pin",
         "x",
+        "pin",
         "map"
       ],
       "categories": [
@@ -11483,8 +11483,8 @@
       "name": "megaphone-off",
       "svg_file": "svg/megaphone-off.svg",
       "tags": [
-        "megaphone",
-        "off"
+        "off",
+        "megaphone"
       ],
       "categories": [
         "communication"
@@ -11551,9 +11551,9 @@
       "name": "message-circle-code",
       "svg_file": "svg/message-circle-code.svg",
       "tags": [
-        "message",
         "circle",
-        "code"
+        "code",
+        "message"
       ],
       "categories": [
         "communication"
@@ -11564,9 +11564,9 @@
       "name": "message-circle-dashed",
       "svg_file": "svg/message-circle-dashed.svg",
       "tags": [
-        "message",
         "dashed",
-        "circle"
+        "circle",
+        "message"
       ],
       "categories": [
         "communication"
@@ -11577,10 +11577,10 @@
       "name": "message-circle-heart",
       "svg_file": "svg/message-circle-heart.svg",
       "tags": [
-        "message",
-        "social",
         "circle",
-        "heart"
+        "heart",
+        "message",
+        "social"
       ],
       "categories": [
         "communication",
@@ -11592,9 +11592,9 @@
       "name": "message-circle-more",
       "svg_file": "svg/message-circle-more.svg",
       "tags": [
-        "message",
         "circle",
-        "more"
+        "more",
+        "message"
       ],
       "categories": [
         "communication"
@@ -11605,9 +11605,9 @@
       "name": "message-circle-off",
       "svg_file": "svg/message-circle-off.svg",
       "tags": [
-        "message",
         "off",
-        "circle"
+        "circle",
+        "message"
       ],
       "categories": [
         "communication"
@@ -11618,9 +11618,9 @@
       "name": "message-circle-plus",
       "svg_file": "svg/message-circle-plus.svg",
       "tags": [
-        "message",
         "plus",
-        "circle"
+        "circle",
+        "message"
       ],
       "categories": [
         "communication"
@@ -11631,10 +11631,10 @@
       "name": "message-circle-question-mark",
       "svg_file": "svg/message-circle-question-mark.svg",
       "tags": [
-        "message",
+        "mark",
         "question",
         "circle",
-        "mark"
+        "message"
       ],
       "categories": [
         "communication"
@@ -11645,9 +11645,9 @@
       "name": "message-circle-reply",
       "svg_file": "svg/message-circle-reply.svg",
       "tags": [
-        "message",
+        "reply",
         "circle",
-        "reply"
+        "message"
       ],
       "categories": [
         "communication"
@@ -11658,9 +11658,9 @@
       "name": "message-circle-warning",
       "svg_file": "svg/message-circle-warning.svg",
       "tags": [
+        "circle",
         "message",
-        "warning",
-        "circle"
+        "warning"
       ],
       "categories": [
         "communication"
@@ -11671,9 +11671,9 @@
       "name": "message-circle-x",
       "svg_file": "svg/message-circle-x.svg",
       "tags": [
-        "message",
+        "x",
         "circle",
-        "x"
+        "message"
       ],
       "categories": [
         "communication"
@@ -11684,8 +11684,8 @@
       "name": "message-circle",
       "svg_file": "svg/message-circle.svg",
       "tags": [
-        "message",
-        "circle"
+        "circle",
+        "message"
       ],
       "categories": [
         "communication"
@@ -11696,9 +11696,9 @@
       "name": "message-square-code",
       "svg_file": "svg/message-square-code.svg",
       "tags": [
-        "message",
         "code",
-        "square"
+        "square",
+        "message"
       ],
       "categories": [
         "communication"
@@ -11709,9 +11709,9 @@
       "name": "message-square-dashed",
       "svg_file": "svg/message-square-dashed.svg",
       "tags": [
-        "message",
         "dashed",
-        "square"
+        "square",
+        "message"
       ],
       "categories": [
         "communication"
@@ -11722,9 +11722,9 @@
       "name": "message-square-diff",
       "svg_file": "svg/message-square-diff.svg",
       "tags": [
-        "message",
         "diff",
-        "square"
+        "square",
+        "message"
       ],
       "categories": [
         "communication"
@@ -11735,9 +11735,9 @@
       "name": "message-square-dot",
       "svg_file": "svg/message-square-dot.svg",
       "tags": [
-        "message",
         "dot",
-        "square"
+        "square",
+        "message"
       ],
       "categories": [
         "communication"
@@ -11748,10 +11748,10 @@
       "name": "message-square-heart",
       "svg_file": "svg/message-square-heart.svg",
       "tags": [
-        "message",
-        "social",
         "heart",
-        "square"
+        "square",
+        "message",
+        "social"
       ],
       "categories": [
         "communication",
@@ -11763,9 +11763,9 @@
       "name": "message-square-lock",
       "svg_file": "svg/message-square-lock.svg",
       "tags": [
-        "message",
         "lock",
-        "square"
+        "square",
+        "message"
       ],
       "categories": [
         "communication"
@@ -11776,9 +11776,9 @@
       "name": "message-square-more",
       "svg_file": "svg/message-square-more.svg",
       "tags": [
-        "message",
         "more",
-        "square"
+        "square",
+        "message"
       ],
       "categories": [
         "communication"
@@ -11789,9 +11789,9 @@
       "name": "message-square-off",
       "svg_file": "svg/message-square-off.svg",
       "tags": [
-        "message",
         "off",
-        "square"
+        "square",
+        "message"
       ],
       "categories": [
         "communication"
@@ -11802,9 +11802,9 @@
       "name": "message-square-plus",
       "svg_file": "svg/message-square-plus.svg",
       "tags": [
-        "message",
         "plus",
-        "square"
+        "square",
+        "message"
       ],
       "categories": [
         "communication"
@@ -11815,9 +11815,9 @@
       "name": "message-square-quote",
       "svg_file": "svg/message-square-quote.svg",
       "tags": [
-        "message",
         "quote",
-        "square"
+        "square",
+        "message"
       ],
       "categories": [
         "communication"
@@ -11828,9 +11828,9 @@
       "name": "message-square-reply",
       "svg_file": "svg/message-square-reply.svg",
       "tags": [
-        "message",
         "reply",
-        "square"
+        "square",
+        "message"
       ],
       "categories": [
         "communication"
@@ -11841,9 +11841,9 @@
       "name": "message-square-share",
       "svg_file": "svg/message-square-share.svg",
       "tags": [
-        "message",
         "share",
-        "square"
+        "square",
+        "message"
       ],
       "categories": [
         "communication",
@@ -11855,9 +11855,9 @@
       "name": "message-square-text",
       "svg_file": "svg/message-square-text.svg",
       "tags": [
-        "message",
         "text",
-        "square"
+        "square",
+        "message"
       ],
       "categories": [
         "communication"
@@ -11868,9 +11868,9 @@
       "name": "message-square-warning",
       "svg_file": "svg/message-square-warning.svg",
       "tags": [
+        "square",
         "message",
-        "warning",
-        "square"
+        "warning"
       ],
       "categories": [
         "communication"
@@ -11881,9 +11881,9 @@
       "name": "message-square-x",
       "svg_file": "svg/message-square-x.svg",
       "tags": [
-        "message",
         "x",
-        "square"
+        "square",
+        "message"
       ],
       "categories": [
         "communication"
@@ -11894,8 +11894,8 @@
       "name": "message-square",
       "svg_file": "svg/message-square.svg",
       "tags": [
-        "message",
-        "square"
+        "square",
+        "message"
       ],
       "categories": [
         "communication"
@@ -11906,8 +11906,8 @@
       "name": "messages-square",
       "svg_file": "svg/messages-square.svg",
       "tags": [
-        "square",
-        "messages"
+        "messages",
+        "square"
       ],
       "categories": [
         "communication"
@@ -11918,8 +11918,8 @@
       "name": "mic-off",
       "svg_file": "svg/mic-off.svg",
       "tags": [
-        "mic",
-        "off"
+        "off",
+        "mic"
       ],
       "categories": [
         "general"
@@ -11930,8 +11930,8 @@
       "name": "mic-vocal",
       "svg_file": "svg/mic-vocal.svg",
       "tags": [
-        "mic",
-        "vocal"
+        "vocal",
+        "mic"
       ],
       "categories": [
         "general"
@@ -12020,8 +12020,8 @@
       "name": "minimize-2",
       "svg_file": "svg/minimize-2.svg",
       "tags": [
-        "2",
-        "minimize"
+        "minimize",
+        "2"
       ],
       "categories": [
         "general"
@@ -12054,8 +12054,8 @@
       "name": "monitor-check",
       "svg_file": "svg/monitor-check.svg",
       "tags": [
-        "monitor",
-        "check"
+        "check",
+        "monitor"
       ],
       "categories": [
         "general"
@@ -12066,8 +12066,8 @@
       "name": "monitor-cog",
       "svg_file": "svg/monitor-cog.svg",
       "tags": [
-        "monitor",
-        "cog"
+        "cog",
+        "monitor"
       ],
       "categories": [
         "system"
@@ -12114,8 +12114,8 @@
       "name": "monitor-pause",
       "svg_file": "svg/monitor-pause.svg",
       "tags": [
-        "monitor",
-        "pause"
+        "pause",
+        "monitor"
       ],
       "categories": [
         "media"
@@ -12186,8 +12186,8 @@
       "name": "monitor-x",
       "svg_file": "svg/monitor-x.svg",
       "tags": [
-        "monitor",
-        "x"
+        "x",
+        "monitor"
       ],
       "categories": [
         "general"
@@ -12209,9 +12209,9 @@
       "name": "moon-star",
       "svg_file": "svg/moon-star.svg",
       "tags": [
-        "social",
         "moon",
-        "star"
+        "star",
+        "social"
       ],
       "categories": [
         "social"
@@ -12256,8 +12256,8 @@
       "name": "mouse-off",
       "svg_file": "svg/mouse-off.svg",
       "tags": [
-        "mouse",
-        "off"
+        "off",
+        "mouse"
       ],
       "categories": [
         "general"
@@ -12268,8 +12268,8 @@
       "name": "mouse-pointer-2",
       "svg_file": "svg/mouse-pointer-2.svg",
       "tags": [
-        "mouse",
         "pointer",
+        "mouse",
         "2"
       ],
       "categories": [
@@ -12281,8 +12281,8 @@
       "name": "mouse-pointer-ban",
       "svg_file": "svg/mouse-pointer-ban.svg",
       "tags": [
-        "mouse",
         "pointer",
+        "mouse",
         "ban"
       ],
       "categories": [
@@ -12294,8 +12294,8 @@
       "name": "mouse-pointer-click",
       "svg_file": "svg/mouse-pointer-click.svg",
       "tags": [
-        "mouse",
         "pointer",
+        "mouse",
         "click"
       ],
       "categories": [
@@ -12307,8 +12307,8 @@
       "name": "mouse-pointer",
       "svg_file": "svg/mouse-pointer.svg",
       "tags": [
-        "mouse",
-        "pointer"
+        "pointer",
+        "mouse"
       ],
       "categories": [
         "general"
@@ -12342,9 +12342,9 @@
       "name": "move-diagonal-2",
       "svg_file": "svg/move-diagonal-2.svg",
       "tags": [
+        "2",
         "move",
-        "diagonal",
-        "2"
+        "diagonal"
       ],
       "categories": [
         "general"
@@ -12368,8 +12368,8 @@
       "svg_file": "svg/move-down-left.svg",
       "tags": [
         "move",
-        "down",
-        "left"
+        "left",
+        "down"
       ],
       "categories": [
         "general"
@@ -12405,8 +12405,8 @@
       "name": "move-horizontal",
       "svg_file": "svg/move-horizontal.svg",
       "tags": [
-        "move",
-        "horizontal"
+        "horizontal",
+        "move"
       ],
       "categories": [
         "general"
@@ -12502,8 +12502,8 @@
       "name": "music-2",
       "svg_file": "svg/music-2.svg",
       "tags": [
-        "2",
-        "music"
+        "music",
+        "2"
       ],
       "categories": [
         "media"
@@ -12514,8 +12514,8 @@
       "name": "music-3",
       "svg_file": "svg/music-3.svg",
       "tags": [
-        "3",
-        "music"
+        "music",
+        "3"
       ],
       "categories": [
         "media"
@@ -12526,8 +12526,8 @@
       "name": "music-4",
       "svg_file": "svg/music-4.svg",
       "tags": [
-        "music",
-        "4"
+        "4",
+        "music"
       ],
       "categories": [
         "media"
@@ -12630,8 +12630,8 @@
       "name": "non-binary",
       "svg_file": "svg/non-binary.svg",
       "tags": [
-        "binary",
-        "non"
+        "non",
+        "binary"
       ],
       "categories": [
         "general"
@@ -12689,9 +12689,9 @@
       "name": "notepad-text-dashed",
       "svg_file": "svg/notepad-text-dashed.svg",
       "tags": [
+        "notepad",
         "dashed",
-        "text",
-        "notepad"
+        "text"
       ],
       "categories": [
         "general"
@@ -12702,8 +12702,8 @@
       "name": "notepad-text",
       "svg_file": "svg/notepad-text.svg",
       "tags": [
-        "text",
-        "notepad"
+        "notepad",
+        "text"
       ],
       "categories": [
         "general"
@@ -12761,8 +12761,8 @@
       "name": "octagon-pause",
       "svg_file": "svg/octagon-pause.svg",
       "tags": [
-        "octagon",
-        "pause"
+        "pause",
+        "octagon"
       ],
       "categories": [
         "media"
@@ -12773,8 +12773,8 @@
       "name": "octagon-x",
       "svg_file": "svg/octagon-x.svg",
       "tags": [
-        "octagon",
-        "x"
+        "x",
+        "octagon"
       ],
       "categories": [
         "general"
@@ -12852,8 +12852,8 @@
       "name": "package-check",
       "svg_file": "svg/package-check.svg",
       "tags": [
-        "package",
-        "check"
+        "check",
+        "package"
       ],
       "categories": [
         "general"
@@ -12876,8 +12876,8 @@
       "name": "package-open",
       "svg_file": "svg/package-open.svg",
       "tags": [
-        "package",
-        "open"
+        "open",
+        "package"
       ],
       "categories": [
         "editing"
@@ -12888,8 +12888,8 @@
       "name": "package-plus",
       "svg_file": "svg/package-plus.svg",
       "tags": [
-        "package",
-        "plus"
+        "plus",
+        "package"
       ],
       "categories": [
         "general"
@@ -12900,8 +12900,8 @@
       "name": "package-search",
       "svg_file": "svg/package-search.svg",
       "tags": [
-        "search",
-        "package"
+        "package",
+        "search"
       ],
       "categories": [
         "general"
@@ -12912,8 +12912,8 @@
       "name": "package-x",
       "svg_file": "svg/package-x.svg",
       "tags": [
-        "package",
-        "x"
+        "x",
+        "package"
       ],
       "categories": [
         "general"
@@ -12935,8 +12935,8 @@
       "name": "paint-bucket",
       "svg_file": "svg/paint-bucket.svg",
       "tags": [
-        "bucket",
-        "paint"
+        "paint",
+        "bucket"
       ],
       "categories": [
         "general"
@@ -12947,8 +12947,8 @@
       "name": "paint-roller",
       "svg_file": "svg/paint-roller.svg",
       "tags": [
-        "roller",
-        "paint"
+        "paint",
+        "roller"
       ],
       "categories": [
         "general"
@@ -12959,8 +12959,8 @@
       "name": "paintbrush-vertical",
       "svg_file": "svg/paintbrush-vertical.svg",
       "tags": [
-        "paintbrush",
-        "vertical"
+        "vertical",
+        "paintbrush"
       ],
       "categories": [
         "editing"
@@ -13055,8 +13055,8 @@
       "name": "panel-left-close",
       "svg_file": "svg/panel-left-close.svg",
       "tags": [
-        "left",
         "panel",
+        "left",
         "close"
       ],
       "categories": [
@@ -13069,8 +13069,8 @@
       "svg_file": "svg/panel-left-dashed.svg",
       "tags": [
         "dashed",
-        "left",
-        "panel"
+        "panel",
+        "left"
       ],
       "categories": [
         "general"
@@ -13081,9 +13081,9 @@
       "name": "panel-left-open",
       "svg_file": "svg/panel-left-open.svg",
       "tags": [
-        "left",
         "open",
-        "panel"
+        "panel",
+        "left"
       ],
       "categories": [
         "editing"
@@ -13095,9 +13095,9 @@
       "svg_file": "svg/panel-left-right-dashed.svg",
       "tags": [
         "dashed",
-        "right",
+        "panel",
         "left",
-        "panel"
+        "right"
       ],
       "categories": [
         "general"
@@ -13108,8 +13108,8 @@
       "name": "panel-left",
       "svg_file": "svg/panel-left.svg",
       "tags": [
-        "left",
-        "panel"
+        "panel",
+        "left"
       ],
       "categories": [
         "general"
@@ -13120,9 +13120,9 @@
       "name": "panel-right-close",
       "svg_file": "svg/panel-right-close.svg",
       "tags": [
-        "right",
         "panel",
-        "close"
+        "close",
+        "right"
       ],
       "categories": [
         "general"
@@ -13134,8 +13134,8 @@
       "svg_file": "svg/panel-right-dashed.svg",
       "tags": [
         "dashed",
-        "right",
-        "panel"
+        "panel",
+        "right"
       ],
       "categories": [
         "general"
@@ -13146,9 +13146,9 @@
       "name": "panel-right-open",
       "svg_file": "svg/panel-right-open.svg",
       "tags": [
-        "right",
         "open",
-        "panel"
+        "panel",
+        "right"
       ],
       "categories": [
         "editing"
@@ -13159,8 +13159,8 @@
       "name": "panel-right",
       "svg_file": "svg/panel-right.svg",
       "tags": [
-        "right",
-        "panel"
+        "panel",
+        "right"
       ],
       "categories": [
         "general"
@@ -13171,10 +13171,10 @@
       "name": "panel-top-bottom-dashed",
       "svg_file": "svg/panel-top-bottom-dashed.svg",
       "tags": [
-        "top",
         "dashed",
         "panel",
-        "bottom"
+        "bottom",
+        "top"
       ],
       "categories": [
         "general"
@@ -13185,9 +13185,9 @@
       "name": "panel-top-close",
       "svg_file": "svg/panel-top-close.svg",
       "tags": [
-        "top",
         "panel",
-        "close"
+        "close",
+        "top"
       ],
       "categories": [
         "general"
@@ -13198,9 +13198,9 @@
       "name": "panel-top-dashed",
       "svg_file": "svg/panel-top-dashed.svg",
       "tags": [
-        "top",
         "dashed",
-        "panel"
+        "panel",
+        "top"
       ],
       "categories": [
         "general"
@@ -13211,9 +13211,9 @@
       "name": "panel-top-open",
       "svg_file": "svg/panel-top-open.svg",
       "tags": [
-        "top",
         "open",
-        "panel"
+        "panel",
+        "top"
       ],
       "categories": [
         "editing"
@@ -13224,8 +13224,8 @@
       "name": "panel-top",
       "svg_file": "svg/panel-top.svg",
       "tags": [
-        "top",
-        "panel"
+        "panel",
+        "top"
       ],
       "categories": [
         "general"
@@ -13236,9 +13236,9 @@
       "name": "panels-left-bottom",
       "svg_file": "svg/panels-left-bottom.svg",
       "tags": [
+        "bottom",
         "left",
-        "panels",
-        "bottom"
+        "panels"
       ],
       "categories": [
         "general"
@@ -13249,9 +13249,9 @@
       "name": "panels-right-bottom",
       "svg_file": "svg/panels-right-bottom.svg",
       "tags": [
-        "right",
+        "bottom",
         "panels",
-        "bottom"
+        "right"
       ],
       "categories": [
         "general"
@@ -13262,8 +13262,8 @@
       "name": "panels-top-left",
       "svg_file": "svg/panels-top-left.svg",
       "tags": [
-        "top",
         "left",
+        "top",
         "panels"
       ],
       "categories": [
@@ -13297,8 +13297,8 @@
       "name": "parking-meter",
       "svg_file": "svg/parking-meter.svg",
       "tags": [
-        "meter",
-        "parking"
+        "parking",
+        "meter"
       ],
       "categories": [
         "general"
@@ -13332,8 +13332,8 @@
       "name": "paw-print",
       "svg_file": "svg/paw-print.svg",
       "tags": [
-        "paw",
-        "print"
+        "print",
+        "paw"
       ],
       "categories": [
         "general"
@@ -13356,8 +13356,8 @@
       "name": "pen-line",
       "svg_file": "svg/pen-line.svg",
       "tags": [
-        "line",
-        "pen"
+        "pen",
+        "line"
       ],
       "categories": [
         "editing"
@@ -13368,8 +13368,8 @@
       "name": "pen-off",
       "svg_file": "svg/pen-off.svg",
       "tags": [
-        "off",
-        "pen"
+        "pen",
+        "off"
       ],
       "categories": [
         "editing"
@@ -13380,8 +13380,8 @@
       "name": "pen-tool",
       "svg_file": "svg/pen-tool.svg",
       "tags": [
-        "tool",
-        "pen"
+        "pen",
+        "tool"
       ],
       "categories": [
         "editing"
@@ -13403,8 +13403,8 @@
       "name": "pencil-line",
       "svg_file": "svg/pencil-line.svg",
       "tags": [
-        "line",
-        "pencil"
+        "pencil",
+        "line"
       ],
       "categories": [
         "editing"
@@ -13415,8 +13415,8 @@
       "name": "pencil-off",
       "svg_file": "svg/pencil-off.svg",
       "tags": [
-        "off",
-        "pencil"
+        "pencil",
+        "off"
       ],
       "categories": [
         "editing"
@@ -13427,8 +13427,8 @@
       "name": "pencil-ruler",
       "svg_file": "svg/pencil-ruler.svg",
       "tags": [
-        "ruler",
-        "pencil"
+        "pencil",
+        "ruler"
       ],
       "categories": [
         "editing"
@@ -13614,9 +13614,9 @@
       "name": "picture-in-picture-2",
       "svg_file": "svg/picture-in-picture-2.svg",
       "tags": [
-        "in",
         "picture",
-        "2"
+        "2",
+        "in"
       ],
       "categories": [
         "general"
@@ -13627,8 +13627,8 @@
       "name": "picture-in-picture",
       "svg_file": "svg/picture-in-picture.svg",
       "tags": [
-        "in",
-        "picture"
+        "picture",
+        "in"
       ],
       "categories": [
         "general"
@@ -13639,8 +13639,8 @@
       "name": "piggy-bank",
       "svg_file": "svg/piggy-bank.svg",
       "tags": [
-        "bank",
-        "piggy"
+        "piggy",
+        "bank"
       ],
       "categories": [
         "business"
@@ -13663,8 +13663,8 @@
       "name": "pilcrow-right",
       "svg_file": "svg/pilcrow-right.svg",
       "tags": [
-        "right",
-        "pilcrow"
+        "pilcrow",
+        "right"
       ],
       "categories": [
         "general"
@@ -13686,8 +13686,8 @@
       "name": "pill-bottle",
       "svg_file": "svg/pill-bottle.svg",
       "tags": [
-        "bottle",
-        "pill"
+        "pill",
+        "bottle"
       ],
       "categories": [
         "general"
@@ -13709,8 +13709,8 @@
       "name": "pin-off",
       "svg_file": "svg/pin-off.svg",
       "tags": [
-        "pin",
-        "off"
+        "off",
+        "pin"
       ],
       "categories": [
         "general"
@@ -13766,8 +13766,8 @@
       "name": "plane-takeoff",
       "svg_file": "svg/plane-takeoff.svg",
       "tags": [
-        "takeoff",
-        "plane"
+        "plane",
+        "takeoff"
       ],
       "categories": [
         "general"
@@ -13846,8 +13846,8 @@
       "name": "pocket-knife",
       "svg_file": "svg/pocket-knife.svg",
       "tags": [
-        "knife",
-        "pocket"
+        "pocket",
+        "knife"
       ],
       "categories": [
         "general"
@@ -13925,8 +13925,8 @@
       "name": "pound-sterling",
       "svg_file": "svg/pound-sterling.svg",
       "tags": [
-        "sterling",
-        "pound"
+        "pound",
+        "sterling"
       ],
       "categories": [
         "general"
@@ -13937,8 +13937,8 @@
       "name": "power-off",
       "svg_file": "svg/power-off.svg",
       "tags": [
-        "power",
-        "off"
+        "off",
+        "power"
       ],
       "categories": [
         "system"
@@ -14196,8 +14196,8 @@
       "name": "receipt-cent",
       "svg_file": "svg/receipt-cent.svg",
       "tags": [
-        "cent",
-        "receipt"
+        "receipt",
+        "cent"
       ],
       "categories": [
         "general"
@@ -14220,9 +14220,9 @@
       "name": "receipt-indian-rupee",
       "svg_file": "svg/receipt-indian-rupee.svg",
       "tags": [
+        "receipt",
         "rupee",
-        "indian",
-        "receipt"
+        "indian"
       ],
       "categories": [
         "general"
@@ -14233,9 +14233,9 @@
       "name": "receipt-japanese-yen",
       "svg_file": "svg/receipt-japanese-yen.svg",
       "tags": [
-        "yen",
+        "receipt",
         "japanese",
-        "receipt"
+        "yen"
       ],
       "categories": [
         "general"
@@ -14246,9 +14246,9 @@
       "name": "receipt-pound-sterling",
       "svg_file": "svg/receipt-pound-sterling.svg",
       "tags": [
-        "sterling",
         "receipt",
-        "pound"
+        "pound",
+        "sterling"
       ],
       "categories": [
         "general"
@@ -14259,9 +14259,9 @@
       "name": "receipt-russian-ruble",
       "svg_file": "svg/receipt-russian-ruble.svg",
       "tags": [
+        "receipt",
         "russian",
-        "ruble",
-        "receipt"
+        "ruble"
       ],
       "categories": [
         "general"
@@ -14272,9 +14272,9 @@
       "name": "receipt-swiss-franc",
       "svg_file": "svg/receipt-swiss-franc.svg",
       "tags": [
-        "swiss",
         "franc",
-        "receipt"
+        "receipt",
+        "swiss"
       ],
       "categories": [
         "general"
@@ -14297,9 +14297,9 @@
       "name": "receipt-turkish-lira",
       "svg_file": "svg/receipt-turkish-lira.svg",
       "tags": [
-        "turkish",
+        "lira",
         "receipt",
-        "lira"
+        "turkish"
       ],
       "categories": [
         "general"
@@ -14321,8 +14321,8 @@
       "name": "rectangle-circle",
       "svg_file": "svg/rectangle-circle.svg",
       "tags": [
-        "circle",
-        "rectangle"
+        "rectangle",
+        "circle"
       ],
       "categories": [
         "general"
@@ -14333,8 +14333,8 @@
       "name": "rectangle-ellipsis",
       "svg_file": "svg/rectangle-ellipsis.svg",
       "tags": [
-        "ellipsis",
-        "rectangle"
+        "rectangle",
+        "ellipsis"
       ],
       "categories": [
         "general"
@@ -14345,8 +14345,8 @@
       "name": "rectangle-goggles",
       "svg_file": "svg/rectangle-goggles.svg",
       "tags": [
-        "goggles",
-        "rectangle"
+        "rectangle",
+        "goggles"
       ],
       "categories": [
         "general"
@@ -14357,8 +14357,8 @@
       "name": "rectangle-horizontal",
       "svg_file": "svg/rectangle-horizontal.svg",
       "tags": [
-        "horizontal",
-        "rectangle"
+        "rectangle",
+        "horizontal"
       ],
       "categories": [
         "general"
@@ -14369,8 +14369,8 @@
       "name": "rectangle-vertical",
       "svg_file": "svg/rectangle-vertical.svg",
       "tags": [
-        "vertical",
-        "rectangle"
+        "rectangle",
+        "vertical"
       ],
       "categories": [
         "general"
@@ -14427,8 +14427,8 @@
       "name": "refresh-ccw-dot",
       "svg_file": "svg/refresh-ccw-dot.svg",
       "tags": [
-        "dot",
         "ccw",
+        "dot",
         "refresh"
       ],
       "categories": [
@@ -14546,8 +14546,8 @@
       "name": "replace-all",
       "svg_file": "svg/replace-all.svg",
       "tags": [
-        "replace",
-        "all"
+        "all",
+        "replace"
       ],
       "categories": [
         "general"
@@ -14625,8 +14625,8 @@
       "name": "rocking-chair",
       "svg_file": "svg/rocking-chair.svg",
       "tags": [
-        "chair",
-        "rocking"
+        "rocking",
+        "chair"
       ],
       "categories": [
         "general"
@@ -14660,8 +14660,8 @@
       "name": "rotate-3d",
       "svg_file": "svg/rotate-3d.svg",
       "tags": [
-        "3d",
-        "rotate"
+        "rotate",
+        "3d"
       ],
       "categories": [
         "general"
@@ -14672,9 +14672,9 @@
       "name": "rotate-ccw-key",
       "svg_file": "svg/rotate-ccw-key.svg",
       "tags": [
-        "key",
+        "ccw",
         "rotate",
-        "ccw"
+        "key"
       ],
       "categories": [
         "general"
@@ -14685,9 +14685,9 @@
       "name": "rotate-ccw-square",
       "svg_file": "svg/rotate-ccw-square.svg",
       "tags": [
-        "square",
+        "ccw",
         "rotate",
-        "ccw"
+        "square"
       ],
       "categories": [
         "general"
@@ -14698,8 +14698,8 @@
       "name": "rotate-ccw",
       "svg_file": "svg/rotate-ccw.svg",
       "tags": [
-        "rotate",
-        "ccw"
+        "ccw",
+        "rotate"
       ],
       "categories": [
         "general"
@@ -14710,9 +14710,9 @@
       "name": "rotate-cw-square",
       "svg_file": "svg/rotate-cw-square.svg",
       "tags": [
-        "square",
         "rotate",
-        "cw"
+        "cw",
+        "square"
       ],
       "categories": [
         "general"
@@ -14769,8 +14769,8 @@
       "name": "rows-2",
       "svg_file": "svg/rows-2.svg",
       "tags": [
-        "rows",
-        "2"
+        "2",
+        "rows"
       ],
       "categories": [
         "general"
@@ -14781,8 +14781,8 @@
       "name": "rows-3",
       "svg_file": "svg/rows-3.svg",
       "tags": [
-        "rows",
-        "3"
+        "3",
+        "rows"
       ],
       "categories": [
         "general"
@@ -14793,8 +14793,8 @@
       "name": "rows-4",
       "svg_file": "svg/rows-4.svg",
       "tags": [
-        "rows",
-        "4"
+        "4",
+        "rows"
       ],
       "categories": [
         "general"
@@ -14817,8 +14817,8 @@
       "svg_file": "svg/ruler-dimension-line.svg",
       "tags": [
         "dimension",
-        "line",
-        "ruler"
+        "ruler",
+        "line"
       ],
       "categories": [
         "general"
@@ -14885,8 +14885,8 @@
       "name": "satellite-dish",
       "svg_file": "svg/satellite-dish.svg",
       "tags": [
-        "dish",
-        "satellite"
+        "satellite",
+        "dish"
       ],
       "categories": [
         "general"
@@ -14908,8 +14908,8 @@
       "name": "saudi-riyal",
       "svg_file": "svg/saudi-riyal.svg",
       "tags": [
-        "saudi",
-        "riyal"
+        "riyal",
+        "saudi"
       ],
       "categories": [
         "general"
@@ -14920,8 +14920,8 @@
       "name": "save-all",
       "svg_file": "svg/save-all.svg",
       "tags": [
-        "save",
-        "all"
+        "all",
+        "save"
       ],
       "categories": [
         "files"
@@ -14955,8 +14955,8 @@
       "name": "scale-3d",
       "svg_file": "svg/scale-3d.svg",
       "tags": [
-        "scale",
-        "3d"
+        "3d",
+        "scale"
       ],
       "categories": [
         "general"
@@ -15025,8 +15025,8 @@
       "name": "scan-heart",
       "svg_file": "svg/scan-heart.svg",
       "tags": [
-        "social",
         "heart",
+        "social",
         "scan"
       ],
       "categories": [
@@ -15109,9 +15109,9 @@
       "name": "scissors-line-dashed",
       "svg_file": "svg/scissors-line-dashed.svg",
       "tags": [
-        "line",
         "dashed",
-        "scissors"
+        "scissors",
+        "line"
       ],
       "categories": [
         "general"
@@ -15133,8 +15133,8 @@
       "name": "screen-share-off",
       "svg_file": "svg/screen-share-off.svg",
       "tags": [
-        "share",
         "off",
+        "share",
         "screen"
       ],
       "categories": [
@@ -15181,8 +15181,8 @@
       "name": "search-check",
       "svg_file": "svg/search-check.svg",
       "tags": [
-        "search",
-        "check"
+        "check",
+        "search"
       ],
       "categories": [
         "general"
@@ -15205,8 +15205,8 @@
       "name": "search-slash",
       "svg_file": "svg/search-slash.svg",
       "tags": [
-        "search",
-        "slash"
+        "slash",
+        "search"
       ],
       "categories": [
         "general"
@@ -15217,8 +15217,8 @@
       "name": "search-x",
       "svg_file": "svg/search-x.svg",
       "tags": [
-        "search",
-        "x"
+        "x",
+        "search"
       ],
       "categories": [
         "general"
@@ -15251,8 +15251,8 @@
       "name": "send-horizontal",
       "svg_file": "svg/send-horizontal.svg",
       "tags": [
-        "send",
-        "horizontal"
+        "horizontal",
+        "send"
       ],
       "categories": [
         "communication"
@@ -15263,8 +15263,8 @@
       "name": "send-to-back",
       "svg_file": "svg/send-to-back.svg",
       "tags": [
-        "back",
         "to",
+        "back",
         "send"
       ],
       "categories": [
@@ -15288,8 +15288,8 @@
       "name": "separator-horizontal",
       "svg_file": "svg/separator-horizontal.svg",
       "tags": [
-        "separator",
-        "horizontal"
+        "horizontal",
+        "separator"
       ],
       "categories": [
         "general"
@@ -15300,8 +15300,8 @@
       "name": "separator-vertical",
       "svg_file": "svg/separator-vertical.svg",
       "tags": [
-        "vertical",
-        "separator"
+        "separator",
+        "vertical"
       ],
       "categories": [
         "general"
@@ -15535,8 +15535,8 @@
       "svg_file": "svg/shield-question-mark.svg",
       "tags": [
         "shield",
-        "question",
-        "mark"
+        "mark",
+        "question"
       ],
       "categories": [
         "general"
@@ -15583,8 +15583,8 @@
       "name": "ship-wheel",
       "svg_file": "svg/ship-wheel.svg",
       "tags": [
-        "ship",
-        "wheel"
+        "wheel",
+        "ship"
       ],
       "categories": [
         "general"
@@ -15664,8 +15664,8 @@
       "name": "shower-head",
       "svg_file": "svg/shower-head.svg",
       "tags": [
-        "head",
-        "shower"
+        "shower",
+        "head"
       ],
       "categories": [
         "general"
@@ -15754,8 +15754,8 @@
       "name": "signal-low",
       "svg_file": "svg/signal-low.svg",
       "tags": [
-        "low",
-        "signal"
+        "signal",
+        "low"
       ],
       "categories": [
         "general"
@@ -15766,8 +15766,8 @@
       "name": "signal-medium",
       "svg_file": "svg/signal-medium.svg",
       "tags": [
-        "medium",
-        "signal"
+        "signal",
+        "medium"
       ],
       "categories": [
         "general"
@@ -15812,8 +15812,8 @@
       "name": "signpost-big",
       "svg_file": "svg/signpost-big.svg",
       "tags": [
-        "signpost",
-        "big"
+        "big",
+        "signpost"
       ],
       "categories": [
         "general"
@@ -15846,8 +15846,8 @@
       "name": "skip-back",
       "svg_file": "svg/skip-back.svg",
       "tags": [
-        "back",
-        "skip"
+        "skip",
+        "back"
       ],
       "categories": [
         "navigation"
@@ -15914,8 +15914,8 @@
       "name": "sliders-horizontal",
       "svg_file": "svg/sliders-horizontal.svg",
       "tags": [
-        "sliders",
-        "horizontal"
+        "horizontal",
+        "sliders"
       ],
       "categories": [
         "general"
@@ -15938,8 +15938,8 @@
       "name": "smartphone-charging",
       "svg_file": "svg/smartphone-charging.svg",
       "tags": [
-        "smartphone",
-        "charging"
+        "charging",
+        "smartphone"
       ],
       "categories": [
         "communication"
@@ -15973,8 +15973,8 @@
       "name": "smile-plus",
       "svg_file": "svg/smile-plus.svg",
       "tags": [
-        "smile",
-        "plus"
+        "plus",
+        "smile"
       ],
       "categories": [
         "general"
@@ -16018,9 +16018,9 @@
       "name": "soap-dispenser-droplet",
       "svg_file": "svg/soap-dispenser-droplet.svg",
       "tags": [
+        "dispenser",
         "droplet",
-        "soap",
-        "dispenser"
+        "soap"
       ],
       "categories": [
         "editing"
@@ -16119,9 +16119,9 @@
       "name": "spell-check-2",
       "svg_file": "svg/spell-check-2.svg",
       "tags": [
-        "spell",
+        "check",
         "2",
-        "check"
+        "spell"
       ],
       "categories": [
         "general"
@@ -16132,8 +16132,8 @@
       "name": "spell-check",
       "svg_file": "svg/spell-check.svg",
       "tags": [
-        "spell",
-        "check"
+        "check",
+        "spell"
       ],
       "categories": [
         "general"
@@ -16144,8 +16144,8 @@
       "name": "spline-pointer",
       "svg_file": "svg/spline-pointer.svg",
       "tags": [
-        "spline",
-        "pointer"
+        "pointer",
+        "spline"
       ],
       "categories": [
         "general"
@@ -16223,8 +16223,8 @@
       "name": "square-activity",
       "svg_file": "svg/square-activity.svg",
       "tags": [
-        "square",
-        "activity"
+        "activity",
+        "square"
       ],
       "categories": [
         "general"
@@ -16236,10 +16236,10 @@
       "svg_file": "svg/square-arrow-down-left.svg",
       "tags": [
         "navigation",
+        "arrow",
         "left",
         "down",
-        "square",
-        "arrow"
+        "square"
       ],
       "categories": [
         "navigation"
@@ -16251,10 +16251,10 @@
       "svg_file": "svg/square-arrow-down-right.svg",
       "tags": [
         "navigation",
-        "down",
-        "square",
         "right",
-        "arrow"
+        "arrow",
+        "down",
+        "square"
       ],
       "categories": [
         "navigation"
@@ -16265,10 +16265,10 @@
       "name": "square-arrow-down",
       "svg_file": "svg/square-arrow-down.svg",
       "tags": [
-        "square",
         "arrow",
+        "navigation",
         "down",
-        "navigation"
+        "square"
       ],
       "categories": [
         "navigation"
@@ -16279,10 +16279,10 @@
       "name": "square-arrow-left",
       "svg_file": "svg/square-arrow-left.svg",
       "tags": [
-        "square",
         "arrow",
-        "navigation",
-        "left"
+        "left",
+        "square",
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -16293,12 +16293,12 @@
       "name": "square-arrow-out-down-left",
       "svg_file": "svg/square-arrow-out-down-left.svg",
       "tags": [
-        "navigation",
-        "left",
         "out",
+        "navigation",
+        "arrow",
+        "left",
         "down",
-        "square",
-        "arrow"
+        "square"
       ],
       "categories": [
         "navigation"
@@ -16309,12 +16309,12 @@
       "name": "square-arrow-out-down-right",
       "svg_file": "svg/square-arrow-out-down-right.svg",
       "tags": [
-        "navigation",
         "out",
-        "down",
-        "square",
+        "navigation",
         "right",
-        "arrow"
+        "arrow",
+        "down",
+        "square"
       ],
       "categories": [
         "navigation"
@@ -16325,12 +16325,12 @@
       "name": "square-arrow-out-up-left",
       "svg_file": "svg/square-arrow-out-up-left.svg",
       "tags": [
-        "navigation",
-        "left",
         "out",
         "up",
-        "square",
-        "arrow"
+        "navigation",
+        "arrow",
+        "left",
+        "square"
       ],
       "categories": [
         "navigation"
@@ -16341,12 +16341,12 @@
       "name": "square-arrow-out-up-right",
       "svg_file": "svg/square-arrow-out-up-right.svg",
       "tags": [
-        "navigation",
         "out",
         "up",
-        "square",
+        "navigation",
         "right",
-        "arrow"
+        "arrow",
+        "square"
       ],
       "categories": [
         "navigation"
@@ -16357,10 +16357,10 @@
       "name": "square-arrow-right",
       "svg_file": "svg/square-arrow-right.svg",
       "tags": [
-        "square",
         "arrow",
-        "right",
-        "navigation"
+        "navigation",
+        "square",
+        "right"
       ],
       "categories": [
         "navigation"
@@ -16371,11 +16371,11 @@
       "name": "square-arrow-up-left",
       "svg_file": "svg/square-arrow-up-left.svg",
       "tags": [
-        "navigation",
-        "left",
         "up",
-        "square",
-        "arrow"
+        "navigation",
+        "arrow",
+        "left",
+        "square"
       ],
       "categories": [
         "navigation"
@@ -16386,11 +16386,11 @@
       "name": "square-arrow-up-right",
       "svg_file": "svg/square-arrow-up-right.svg",
       "tags": [
-        "navigation",
         "up",
-        "square",
+        "navigation",
         "right",
-        "arrow"
+        "arrow",
+        "square"
       ],
       "categories": [
         "navigation"
@@ -16401,9 +16401,9 @@
       "name": "square-arrow-up",
       "svg_file": "svg/square-arrow-up.svg",
       "tags": [
-        "square",
         "arrow",
         "up",
+        "square",
         "navigation"
       ],
       "categories": [
@@ -16427,10 +16427,10 @@
       "name": "square-bottom-dashed-scissors",
       "svg_file": "svg/square-bottom-dashed-scissors.svg",
       "tags": [
-        "square",
         "dashed",
+        "bottom",
         "scissors",
-        "bottom"
+        "square"
       ],
       "categories": [
         "general"
@@ -16441,8 +16441,8 @@
       "name": "square-chart-gantt",
       "svg_file": "svg/square-chart-gantt.svg",
       "tags": [
-        "square",
         "gantt",
+        "square",
         "chart"
       ],
       "categories": [
@@ -16454,9 +16454,9 @@
       "name": "square-check-big",
       "svg_file": "svg/square-check-big.svg",
       "tags": [
-        "square",
+        "check",
         "big",
-        "check"
+        "square"
       ],
       "categories": [
         "general"
@@ -16467,8 +16467,8 @@
       "name": "square-check",
       "svg_file": "svg/square-check.svg",
       "tags": [
-        "square",
-        "check"
+        "check",
+        "square"
       ],
       "categories": [
         "general"
@@ -16479,10 +16479,10 @@
       "name": "square-chevron-down",
       "svg_file": "svg/square-chevron-down.svg",
       "tags": [
-        "square",
         "down",
         "navigation",
-        "chevron"
+        "chevron",
+        "square"
       ],
       "categories": [
         "navigation"
@@ -16493,10 +16493,10 @@
       "name": "square-chevron-left",
       "svg_file": "svg/square-chevron-left.svg",
       "tags": [
-        "square",
-        "navigation",
         "left",
-        "chevron"
+        "chevron",
+        "square",
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -16507,10 +16507,10 @@
       "name": "square-chevron-right",
       "svg_file": "svg/square-chevron-right.svg",
       "tags": [
-        "square",
-        "right",
         "navigation",
-        "chevron"
+        "chevron",
+        "square",
+        "right"
       ],
       "categories": [
         "navigation"
@@ -16521,10 +16521,10 @@
       "name": "square-chevron-up",
       "svg_file": "svg/square-chevron-up.svg",
       "tags": [
-        "square",
         "up",
-        "navigation",
-        "chevron"
+        "chevron",
+        "square",
+        "navigation"
       ],
       "categories": [
         "navigation"
@@ -16535,8 +16535,8 @@
       "name": "square-code",
       "svg_file": "svg/square-code.svg",
       "tags": [
-        "square",
-        "code"
+        "code",
+        "square"
       ],
       "categories": [
         "general"
@@ -16547,10 +16547,10 @@
       "name": "square-dashed-bottom-code",
       "svg_file": "svg/square-dashed-bottom-code.svg",
       "tags": [
-        "square",
         "dashed",
+        "code",
         "bottom",
-        "code"
+        "square"
       ],
       "categories": [
         "general"
@@ -16561,9 +16561,9 @@
       "name": "square-dashed-bottom",
       "svg_file": "svg/square-dashed-bottom.svg",
       "tags": [
-        "square",
         "dashed",
-        "bottom"
+        "bottom",
+        "square"
       ],
       "categories": [
         "general"
@@ -16574,8 +16574,8 @@
       "name": "square-dashed-kanban",
       "svg_file": "svg/square-dashed-kanban.svg",
       "tags": [
-        "square",
         "dashed",
+        "square",
         "kanban"
       ],
       "categories": [
@@ -16587,10 +16587,10 @@
       "name": "square-dashed-mouse-pointer",
       "svg_file": "svg/square-dashed-mouse-pointer.svg",
       "tags": [
-        "square",
         "dashed",
         "pointer",
-        "mouse"
+        "mouse",
+        "square"
       ],
       "categories": [
         "general"
@@ -16601,10 +16601,10 @@
       "name": "square-dashed-top-solid",
       "svg_file": "svg/square-dashed-top-solid.svg",
       "tags": [
-        "square",
+        "top",
         "dashed",
         "solid",
-        "top"
+        "square"
       ],
       "categories": [
         "general"
@@ -16615,8 +16615,8 @@
       "name": "square-dashed",
       "svg_file": "svg/square-dashed.svg",
       "tags": [
-        "square",
-        "dashed"
+        "dashed",
+        "square"
       ],
       "categories": [
         "general"
@@ -16627,8 +16627,8 @@
       "name": "square-divide",
       "svg_file": "svg/square-divide.svg",
       "tags": [
-        "square",
-        "divide"
+        "divide",
+        "square"
       ],
       "categories": [
         "general"
@@ -16663,8 +16663,8 @@
       "name": "square-function",
       "svg_file": "svg/square-function.svg",
       "tags": [
-        "square",
-        "function"
+        "function",
+        "square"
       ],
       "categories": [
         "general"
@@ -16687,8 +16687,8 @@
       "name": "square-library",
       "svg_file": "svg/square-library.svg",
       "tags": [
-        "square",
-        "library"
+        "library",
+        "square"
       ],
       "categories": [
         "general"
@@ -16699,8 +16699,8 @@
       "name": "square-m",
       "svg_file": "svg/square-m.svg",
       "tags": [
-        "square",
-        "m"
+        "m",
+        "square"
       ],
       "categories": [
         "general"
@@ -16711,8 +16711,8 @@
       "name": "square-menu",
       "svg_file": "svg/square-menu.svg",
       "tags": [
-        "square",
-        "menu"
+        "menu",
+        "square"
       ],
       "categories": [
         "navigation"
@@ -16723,8 +16723,8 @@
       "name": "square-minus",
       "svg_file": "svg/square-minus.svg",
       "tags": [
-        "square",
-        "minus"
+        "minus",
+        "square"
       ],
       "categories": [
         "general"
@@ -16735,9 +16735,9 @@
       "name": "square-mouse-pointer",
       "svg_file": "svg/square-mouse-pointer.svg",
       "tags": [
-        "square",
         "pointer",
-        "mouse"
+        "mouse",
+        "square"
       ],
       "categories": [
         "general"
@@ -16748,9 +16748,9 @@
       "name": "square-parking-off",
       "svg_file": "svg/square-parking-off.svg",
       "tags": [
+        "parking",
         "square",
-        "off",
-        "parking"
+        "off"
       ],
       "categories": [
         "general"
@@ -16761,8 +16761,8 @@
       "name": "square-parking",
       "svg_file": "svg/square-parking.svg",
       "tags": [
-        "square",
-        "parking"
+        "parking",
+        "square"
       ],
       "categories": [
         "general"
@@ -16773,8 +16773,8 @@
       "name": "square-pause",
       "svg_file": "svg/square-pause.svg",
       "tags": [
-        "square",
-        "pause"
+        "pause",
+        "square"
       ],
       "categories": [
         "media"
@@ -16785,8 +16785,8 @@
       "name": "square-pen",
       "svg_file": "svg/square-pen.svg",
       "tags": [
-        "square",
-        "pen"
+        "pen",
+        "square"
       ],
       "categories": [
         "editing"
@@ -16797,8 +16797,8 @@
       "name": "square-percent",
       "svg_file": "svg/square-percent.svg",
       "tags": [
-        "square",
-        "percent"
+        "percent",
+        "square"
       ],
       "categories": [
         "general"
@@ -16809,8 +16809,8 @@
       "name": "square-pi",
       "svg_file": "svg/square-pi.svg",
       "tags": [
-        "square",
-        "pi"
+        "pi",
+        "square"
       ],
       "categories": [
         "general"
@@ -16833,8 +16833,8 @@
       "name": "square-play",
       "svg_file": "svg/square-play.svg",
       "tags": [
-        "square",
-        "play"
+        "play",
+        "square"
       ],
       "categories": [
         "media"
@@ -16845,8 +16845,8 @@
       "name": "square-plus",
       "svg_file": "svg/square-plus.svg",
       "tags": [
-        "square",
-        "plus"
+        "plus",
+        "square"
       ],
       "categories": [
         "general"
@@ -16857,8 +16857,8 @@
       "name": "square-power",
       "svg_file": "svg/square-power.svg",
       "tags": [
-        "square",
-        "power"
+        "power",
+        "square"
       ],
       "categories": [
         "system"
@@ -16869,8 +16869,8 @@
       "name": "square-radical",
       "svg_file": "svg/square-radical.svg",
       "tags": [
-        "square",
-        "radical"
+        "radical",
+        "square"
       ],
       "categories": [
         "general"
@@ -16881,9 +16881,9 @@
       "name": "square-round-corner",
       "svg_file": "svg/square-round-corner.svg",
       "tags": [
-        "square",
         "corner",
-        "round"
+        "round",
+        "square"
       ],
       "categories": [
         "general"
@@ -16894,8 +16894,8 @@
       "name": "square-scissors",
       "svg_file": "svg/square-scissors.svg",
       "tags": [
-        "square",
-        "scissors"
+        "scissors",
+        "square"
       ],
       "categories": [
         "general"
@@ -16906,8 +16906,8 @@
       "name": "square-sigma",
       "svg_file": "svg/square-sigma.svg",
       "tags": [
-        "square",
-        "sigma"
+        "sigma",
+        "square"
       ],
       "categories": [
         "general"
@@ -16918,8 +16918,8 @@
       "name": "square-slash",
       "svg_file": "svg/square-slash.svg",
       "tags": [
-        "square",
-        "slash"
+        "slash",
+        "square"
       ],
       "categories": [
         "general"
@@ -16930,9 +16930,9 @@
       "name": "square-split-horizontal",
       "svg_file": "svg/square-split-horizontal.svg",
       "tags": [
-        "square",
+        "horizontal",
         "split",
-        "horizontal"
+        "square"
       ],
       "categories": [
         "general"
@@ -16943,9 +16943,9 @@
       "name": "square-split-vertical",
       "svg_file": "svg/square-split-vertical.svg",
       "tags": [
-        "square",
+        "split",
         "vertical",
-        "split"
+        "square"
       ],
       "categories": [
         "general"
@@ -16967,8 +16967,8 @@
       "name": "square-stack",
       "svg_file": "svg/square-stack.svg",
       "tags": [
-        "square",
-        "stack"
+        "stack",
+        "square"
       ],
       "categories": [
         "general"
@@ -16980,8 +16980,8 @@
       "svg_file": "svg/square-star.svg",
       "tags": [
         "square",
-        "social",
-        "star"
+        "star",
+        "social"
       ],
       "categories": [
         "social"
@@ -16992,8 +16992,8 @@
       "name": "square-stop",
       "svg_file": "svg/square-stop.svg",
       "tags": [
-        "square",
-        "stop"
+        "stop",
+        "square"
       ],
       "categories": [
         "media"
@@ -17004,8 +17004,8 @@
       "name": "square-terminal",
       "svg_file": "svg/square-terminal.svg",
       "tags": [
-        "square",
-        "terminal"
+        "terminal",
+        "square"
       ],
       "categories": [
         "general"
@@ -17016,9 +17016,9 @@
       "name": "square-user-round",
       "svg_file": "svg/square-user-round.svg",
       "tags": [
-        "square",
         "user",
         "round",
+        "square",
         "users"
       ],
       "categories": [
@@ -17030,8 +17030,8 @@
       "name": "square-user",
       "svg_file": "svg/square-user.svg",
       "tags": [
-        "square",
         "user",
+        "square",
         "users"
       ],
       "categories": [
@@ -17043,8 +17043,8 @@
       "name": "square-x",
       "svg_file": "svg/square-x.svg",
       "tags": [
-        "square",
-        "x"
+        "x",
+        "square"
       ],
       "categories": [
         "general"
@@ -17066,8 +17066,8 @@
       "name": "squares-exclude",
       "svg_file": "svg/squares-exclude.svg",
       "tags": [
-        "squares",
-        "exclude"
+        "exclude",
+        "squares"
       ],
       "categories": [
         "general"
@@ -17078,8 +17078,8 @@
       "name": "squares-intersect",
       "svg_file": "svg/squares-intersect.svg",
       "tags": [
-        "squares",
-        "intersect"
+        "intersect",
+        "squares"
       ],
       "categories": [
         "general"
@@ -17090,8 +17090,8 @@
       "name": "squares-subtract",
       "svg_file": "svg/squares-subtract.svg",
       "tags": [
-        "squares",
-        "subtract"
+        "subtract",
+        "squares"
       ],
       "categories": [
         "general"
@@ -17102,8 +17102,8 @@
       "name": "squares-unite",
       "svg_file": "svg/squares-unite.svg",
       "tags": [
-        "squares",
-        "unite"
+        "unite",
+        "squares"
       ],
       "categories": [
         "general"
@@ -17114,8 +17114,8 @@
       "name": "squircle-dashed",
       "svg_file": "svg/squircle-dashed.svg",
       "tags": [
-        "squircle",
-        "dashed"
+        "dashed",
+        "squircle"
       ],
       "categories": [
         "general"
@@ -17159,9 +17159,9 @@
       "name": "star-half",
       "svg_file": "svg/star-half.svg",
       "tags": [
-        "social",
         "half",
-        "star"
+        "star",
+        "social"
       ],
       "categories": [
         "social"
@@ -17172,9 +17172,9 @@
       "name": "star-off",
       "svg_file": "svg/star-off.svg",
       "tags": [
-        "social",
         "off",
-        "star"
+        "star",
+        "social"
       ],
       "categories": [
         "social"
@@ -17185,8 +17185,8 @@
       "name": "star",
       "svg_file": "svg/star.svg",
       "tags": [
-        "social",
-        "star"
+        "star",
+        "social"
       ],
       "categories": [
         "social"
@@ -17266,8 +17266,8 @@
       "name": "stretch-horizontal",
       "svg_file": "svg/stretch-horizontal.svg",
       "tags": [
-        "stretch",
-        "horizontal"
+        "horizontal",
+        "stretch"
       ],
       "categories": [
         "general"
@@ -17278,8 +17278,8 @@
       "name": "stretch-vertical",
       "svg_file": "svg/stretch-vertical.svg",
       "tags": [
-        "vertical",
-        "stretch"
+        "stretch",
+        "vertical"
       ],
       "categories": [
         "general"
@@ -17336,8 +17336,8 @@
       "name": "sun-moon",
       "svg_file": "svg/sun-moon.svg",
       "tags": [
-        "sun",
-        "moon"
+        "moon",
+        "sun"
       ],
       "categories": [
         "general"
@@ -17404,8 +17404,8 @@
       "name": "swatch-book",
       "svg_file": "svg/swatch-book.svg",
       "tags": [
-        "book",
-        "swatch"
+        "swatch",
+        "book"
       ],
       "categories": [
         "general"
@@ -17428,8 +17428,8 @@
       "name": "switch-camera",
       "svg_file": "svg/switch-camera.svg",
       "tags": [
-        "camera",
-        "switch"
+        "switch",
+        "camera"
       ],
       "categories": [
         "media"
@@ -17473,8 +17473,8 @@
       "name": "table-2",
       "svg_file": "svg/table-2.svg",
       "tags": [
-        "table",
-        "2"
+        "2",
+        "table"
       ],
       "categories": [
         "general"
@@ -17485,9 +17485,9 @@
       "name": "table-cells-merge",
       "svg_file": "svg/table-cells-merge.svg",
       "tags": [
+        "merge",
         "cells",
-        "table",
-        "merge"
+        "table"
       ],
       "categories": [
         "general"
@@ -17498,9 +17498,9 @@
       "name": "table-cells-split",
       "svg_file": "svg/table-cells-split.svg",
       "tags": [
+        "split",
         "cells",
-        "table",
-        "split"
+        "table"
       ],
       "categories": [
         "general"
@@ -17511,9 +17511,9 @@
       "name": "table-columns-split",
       "svg_file": "svg/table-columns-split.svg",
       "tags": [
-        "table",
+        "columns",
         "split",
-        "columns"
+        "table"
       ],
       "categories": [
         "general"
@@ -17524,9 +17524,9 @@
       "name": "table-of-contents",
       "svg_file": "svg/table-of-contents.svg",
       "tags": [
+        "of",
         "contents",
-        "table",
-        "of"
+        "table"
       ],
       "categories": [
         "general"
@@ -17537,8 +17537,8 @@
       "name": "table-properties",
       "svg_file": "svg/table-properties.svg",
       "tags": [
-        "table",
-        "properties"
+        "properties",
+        "table"
       ],
       "categories": [
         "general"
@@ -17549,9 +17549,9 @@
       "name": "table-rows-split",
       "svg_file": "svg/table-rows-split.svg",
       "tags": [
-        "table",
+        "split",
         "rows",
-        "split"
+        "table"
       ],
       "categories": [
         "general"
@@ -17573,8 +17573,8 @@
       "name": "tablet-smartphone",
       "svg_file": "svg/tablet-smartphone.svg",
       "tags": [
-        "smartphone",
-        "tablet"
+        "tablet",
+        "smartphone"
       ],
       "categories": [
         "communication"
@@ -17629,8 +17629,8 @@
       "name": "tally-1",
       "svg_file": "svg/tally-1.svg",
       "tags": [
-        "1",
-        "tally"
+        "tally",
+        "1"
       ],
       "categories": [
         "general"
@@ -17665,8 +17665,8 @@
       "name": "tally-4",
       "svg_file": "svg/tally-4.svg",
       "tags": [
-        "tally",
-        "4"
+        "4",
+        "tally"
       ],
       "categories": [
         "general"
@@ -17722,8 +17722,8 @@
       "name": "tent-tree",
       "svg_file": "svg/tent-tree.svg",
       "tags": [
-        "tree",
-        "tent"
+        "tent",
+        "tree"
       ],
       "categories": [
         "general"
@@ -17756,8 +17756,8 @@
       "name": "test-tube-diagonal",
       "svg_file": "svg/test-tube-diagonal.svg",
       "tags": [
-        "tube",
         "diagonal",
+        "tube",
         "test"
       ],
       "categories": [
@@ -17793,8 +17793,8 @@
       "name": "text-align-center",
       "svg_file": "svg/text-align-center.svg",
       "tags": [
-        "center",
         "text",
+        "center",
         "align"
       ],
       "categories": [
@@ -17806,9 +17806,9 @@
       "name": "text-align-end",
       "svg_file": "svg/text-align-end.svg",
       "tags": [
-        "end",
         "text",
-        "align"
+        "align",
+        "end"
       ],
       "categories": [
         "general"
@@ -17819,8 +17819,8 @@
       "name": "text-align-justify",
       "svg_file": "svg/text-align-justify.svg",
       "tags": [
-        "justify",
         "text",
+        "justify",
         "align"
       ],
       "categories": [
@@ -17832,10 +17832,10 @@
       "name": "text-align-start",
       "svg_file": "svg/text-align-start.svg",
       "tags": [
-        "social",
-        "start",
         "text",
-        "align"
+        "social",
+        "align",
+        "start"
       ],
       "categories": [
         "social"
@@ -17871,8 +17871,8 @@
       "name": "text-initial",
       "svg_file": "svg/text-initial.svg",
       "tags": [
-        "initial",
-        "text"
+        "text",
+        "initial"
       ],
       "categories": [
         "general"
@@ -17895,8 +17895,8 @@
       "name": "text-search",
       "svg_file": "svg/text-search.svg",
       "tags": [
-        "search",
-        "text"
+        "text",
+        "search"
       ],
       "categories": [
         "general"
@@ -17907,8 +17907,8 @@
       "name": "text-select",
       "svg_file": "svg/text-select.svg",
       "tags": [
-        "select",
-        "text"
+        "text",
+        "select"
       ],
       "categories": [
         "general"
@@ -17919,8 +17919,8 @@
       "name": "text-wrap",
       "svg_file": "svg/text-wrap.svg",
       "tags": [
-        "wrap",
-        "text"
+        "text",
+        "wrap"
       ],
       "categories": [
         "general"
@@ -18001,8 +18001,8 @@
       "name": "ticket-check",
       "svg_file": "svg/ticket-check.svg",
       "tags": [
-        "ticket",
-        "check"
+        "check",
+        "ticket"
       ],
       "categories": [
         "general"
@@ -18013,8 +18013,8 @@
       "name": "ticket-minus",
       "svg_file": "svg/ticket-minus.svg",
       "tags": [
-        "minus",
-        "ticket"
+        "ticket",
+        "minus"
       ],
       "categories": [
         "general"
@@ -18037,8 +18037,8 @@
       "name": "ticket-plus",
       "svg_file": "svg/ticket-plus.svg",
       "tags": [
-        "plus",
-        "ticket"
+        "ticket",
+        "plus"
       ],
       "categories": [
         "general"
@@ -18061,8 +18061,8 @@
       "name": "ticket-x",
       "svg_file": "svg/ticket-x.svg",
       "tags": [
-        "ticket",
-        "x"
+        "x",
+        "ticket"
       ],
       "categories": [
         "general"
@@ -18084,8 +18084,8 @@
       "name": "tickets-plane",
       "svg_file": "svg/tickets-plane.svg",
       "tags": [
-        "plane",
-        "tickets"
+        "tickets",
+        "plane"
       ],
       "categories": [
         "general"
@@ -18234,8 +18234,8 @@
       "name": "tower-control",
       "svg_file": "svg/tower-control.svg",
       "tags": [
-        "tower",
-        "control"
+        "control",
+        "tower"
       ],
       "categories": [
         "general"
@@ -18269,8 +18269,8 @@
       "name": "traffic-cone",
       "svg_file": "svg/traffic-cone.svg",
       "tags": [
-        "cone",
-        "traffic"
+        "traffic",
+        "cone"
       ],
       "categories": [
         "general"
@@ -18281,8 +18281,8 @@
       "name": "train-front-tunnel",
       "svg_file": "svg/train-front-tunnel.svg",
       "tags": [
-        "front",
         "train",
+        "front",
         "tunnel"
       ],
       "categories": [
@@ -18294,8 +18294,8 @@
       "name": "train-front",
       "svg_file": "svg/train-front.svg",
       "tags": [
-        "front",
-        "train"
+        "train",
+        "front"
       ],
       "categories": [
         "general"
@@ -18318,8 +18318,8 @@
       "name": "tram-front",
       "svg_file": "svg/tram-front.svg",
       "tags": [
-        "front",
-        "tram"
+        "tram",
+        "front"
       ],
       "categories": [
         "general"
@@ -18341,8 +18341,8 @@
       "name": "trash-2",
       "svg_file": "svg/trash-2.svg",
       "tags": [
-        "trash",
-        "2"
+        "2",
+        "trash"
       ],
       "categories": [
         "general"
@@ -18364,8 +18364,8 @@
       "name": "tree-deciduous",
       "svg_file": "svg/tree-deciduous.svg",
       "tags": [
-        "tree",
-        "deciduous"
+        "deciduous",
+        "tree"
       ],
       "categories": [
         "general"
@@ -18376,8 +18376,8 @@
       "name": "tree-palm",
       "svg_file": "svg/tree-palm.svg",
       "tags": [
-        "tree",
-        "palm"
+        "palm",
+        "tree"
       ],
       "categories": [
         "general"
@@ -18422,8 +18422,8 @@
       "name": "trending-down",
       "svg_file": "svg/trending-down.svg",
       "tags": [
-        "trending",
-        "down"
+        "down",
+        "trending"
       ],
       "categories": [
         "general"
@@ -18434,9 +18434,9 @@
       "name": "trending-up-down",
       "svg_file": "svg/trending-up-down.svg",
       "tags": [
-        "trending",
         "up",
-        "down"
+        "down",
+        "trending"
       ],
       "categories": [
         "general"
@@ -18447,8 +18447,8 @@
       "name": "trending-up",
       "svg_file": "svg/trending-up.svg",
       "tags": [
-        "trending",
-        "up"
+        "up",
+        "trending"
       ],
       "categories": [
         "general"
@@ -18483,8 +18483,8 @@
       "name": "triangle-right",
       "svg_file": "svg/triangle-right.svg",
       "tags": [
-        "right",
-        "triangle"
+        "triangle",
+        "right"
       ],
       "categories": [
         "general"
@@ -18517,8 +18517,8 @@
       "name": "truck-electric",
       "svg_file": "svg/truck-electric.svg",
       "tags": [
-        "electric",
-        "truck"
+        "truck",
+        "electric"
       ],
       "categories": [
         "general"
@@ -18540,8 +18540,8 @@
       "name": "turkish-lira",
       "svg_file": "svg/turkish-lira.svg",
       "tags": [
-        "turkish",
-        "lira"
+        "lira",
+        "turkish"
       ],
       "categories": [
         "general"
@@ -18632,8 +18632,8 @@
       "name": "type-outline",
       "svg_file": "svg/type-outline.svg",
       "tags": [
-        "outline",
-        "type"
+        "type",
+        "outline"
       ],
       "categories": [
         "general"
@@ -18724,8 +18724,8 @@
       "name": "unfold-horizontal",
       "svg_file": "svg/unfold-horizontal.svg",
       "tags": [
-        "unfold",
-        "horizontal"
+        "horizontal",
+        "unfold"
       ],
       "categories": [
         "general"
@@ -18770,8 +18770,8 @@
       "name": "unlink-2",
       "svg_file": "svg/unlink-2.svg",
       "tags": [
-        "2",
-        "unlink"
+        "unlink",
+        "2"
       ],
       "categories": [
         "general"
@@ -18826,9 +18826,9 @@
       "name": "user-check",
       "svg_file": "svg/user-check.svg",
       "tags": [
+        "check",
         "user",
-        "users",
-        "check"
+        "users"
       ],
       "categories": [
         "social"
@@ -18853,8 +18853,8 @@
       "name": "user-lock",
       "svg_file": "svg/user-lock.svg",
       "tags": [
-        "lock",
         "user",
+        "lock",
         "users"
       ],
       "categories": [
@@ -18879,8 +18879,8 @@
       "name": "user-pen",
       "svg_file": "svg/user-pen.svg",
       "tags": [
-        "user",
         "pen",
+        "user",
         "users"
       ],
       "categories": [
@@ -18893,9 +18893,9 @@
       "name": "user-plus",
       "svg_file": "svg/user-plus.svg",
       "tags": [
+        "plus",
         "user",
-        "users",
-        "plus"
+        "users"
       ],
       "categories": [
         "social"
@@ -18906,10 +18906,10 @@
       "name": "user-round-check",
       "svg_file": "svg/user-round-check.svg",
       "tags": [
+        "check",
         "user",
         "round",
-        "users",
-        "check"
+        "users"
       ],
       "categories": [
         "social"
@@ -18921,8 +18921,8 @@
       "svg_file": "svg/user-round-cog.svg",
       "tags": [
         "user",
-        "users",
         "round",
+        "users",
         "cog"
       ],
       "categories": [
@@ -18936,8 +18936,8 @@
       "svg_file": "svg/user-round-minus.svg",
       "tags": [
         "user",
-        "minus",
         "round",
+        "minus",
         "users"
       ],
       "categories": [
@@ -18949,8 +18949,8 @@
       "name": "user-round-pen",
       "svg_file": "svg/user-round-pen.svg",
       "tags": [
-        "user",
         "pen",
+        "user",
         "round",
         "users"
       ],
@@ -18964,10 +18964,10 @@
       "name": "user-round-plus",
       "svg_file": "svg/user-round-plus.svg",
       "tags": [
+        "plus",
         "user",
         "round",
-        "users",
-        "plus"
+        "users"
       ],
       "categories": [
         "social"
@@ -18978,9 +18978,9 @@
       "name": "user-round-search",
       "svg_file": "svg/user-round-search.svg",
       "tags": [
-        "search",
         "user",
         "round",
+        "search",
         "users"
       ],
       "categories": [
@@ -19019,8 +19019,8 @@
       "name": "user-search",
       "svg_file": "svg/user-search.svg",
       "tags": [
-        "search",
         "user",
+        "search",
         "users"
       ],
       "categories": [
@@ -19032,10 +19032,10 @@
       "name": "user-star",
       "svg_file": "svg/user-star.svg",
       "tags": [
-        "social",
         "user",
+        "users",
         "star",
-        "users"
+        "social"
       ],
       "categories": [
         "social"
@@ -19046,8 +19046,8 @@
       "name": "user-x",
       "svg_file": "svg/user-x.svg",
       "tags": [
-        "user",
         "x",
+        "user",
         "users"
       ],
       "categories": [
@@ -19094,8 +19094,8 @@
       "name": "utensils-crossed",
       "svg_file": "svg/utensils-crossed.svg",
       "tags": [
-        "crossed",
-        "utensils"
+        "utensils",
+        "crossed"
       ],
       "categories": [
         "general"
@@ -19117,8 +19117,8 @@
       "name": "utility-pole",
       "svg_file": "svg/utility-pole.svg",
       "tags": [
-        "pole",
-        "utility"
+        "utility",
+        "pole"
       ],
       "categories": [
         "general"
@@ -19151,8 +19151,8 @@
       "name": "vector-square",
       "svg_file": "svg/vector-square.svg",
       "tags": [
-        "square",
-        "vector"
+        "vector",
+        "square"
       ],
       "categories": [
         "general"
@@ -19174,8 +19174,8 @@
       "name": "venetian-mask",
       "svg_file": "svg/venetian-mask.svg",
       "tags": [
-        "venetian",
-        "mask"
+        "mask",
+        "venetian"
       ],
       "categories": [
         "general"
@@ -19187,8 +19187,8 @@
       "svg_file": "svg/venus-and-mars.svg",
       "tags": [
         "and",
-        "venus",
-        "mars"
+        "mars",
+        "venus"
       ],
       "categories": [
         "general"
@@ -19210,8 +19210,8 @@
       "name": "vibrate-off",
       "svg_file": "svg/vibrate-off.svg",
       "tags": [
-        "off",
-        "vibrate"
+        "vibrate",
+        "off"
       ],
       "categories": [
         "general"
@@ -19324,8 +19324,8 @@
       "name": "volume-off",
       "svg_file": "svg/volume-off.svg",
       "tags": [
-        "off",
-        "volume"
+        "volume",
+        "off"
       ],
       "categories": [
         "general"
@@ -19370,8 +19370,8 @@
       "name": "wallet-cards",
       "svg_file": "svg/wallet-cards.svg",
       "tags": [
-        "cards",
-        "wallet"
+        "wallet",
+        "cards"
       ],
       "categories": [
         "general"
@@ -19382,8 +19382,8 @@
       "name": "wallet-minimal",
       "svg_file": "svg/wallet-minimal.svg",
       "tags": [
-        "minimal",
-        "wallet"
+        "wallet",
+        "minimal"
       ],
       "categories": [
         "general"
@@ -19416,8 +19416,8 @@
       "name": "wand-sparkles",
       "svg_file": "svg/wand-sparkles.svg",
       "tags": [
-        "wand",
-        "sparkles"
+        "sparkles",
+        "wand"
       ],
       "categories": [
         "general"
@@ -19473,8 +19473,8 @@
       "name": "waves-ladder",
       "svg_file": "svg/waves-ladder.svg",
       "tags": [
-        "waves",
-        "ladder"
+        "ladder",
+        "waves"
       ],
       "categories": [
         "general"
@@ -19552,8 +19552,8 @@
       "name": "wheat-off",
       "svg_file": "svg/wheat-off.svg",
       "tags": [
-        "wheat",
-        "off"
+        "off",
+        "wheat"
       ],
       "categories": [
         "general"
@@ -19575,8 +19575,8 @@
       "name": "whole-word",
       "svg_file": "svg/whole-word.svg",
       "tags": [
-        "whole",
-        "word"
+        "word",
+        "whole"
       ],
       "categories": [
         "general"
@@ -19623,8 +19623,8 @@
       "name": "wifi-off",
       "svg_file": "svg/wifi-off.svg",
       "tags": [
-        "wifi",
-        "off"
+        "off",
+        "wifi"
       ],
       "categories": [
         "system"
@@ -19635,8 +19635,8 @@
       "name": "wifi-pen",
       "svg_file": "svg/wifi-pen.svg",
       "tags": [
-        "wifi",
-        "pen"
+        "pen",
+        "wifi"
       ],
       "categories": [
         "system",
@@ -19648,8 +19648,8 @@
       "name": "wifi-sync",
       "svg_file": "svg/wifi-sync.svg",
       "tags": [
-        "wifi",
-        "sync"
+        "sync",
+        "wifi"
       ],
       "categories": [
         "system"
@@ -19683,10 +19683,10 @@
       "name": "wind-arrow-down",
       "svg_file": "svg/wind-arrow-down.svg",
       "tags": [
-        "navigation",
         "arrow",
-        "down",
-        "wind"
+        "wind",
+        "navigation",
+        "down"
       ],
       "categories": [
         "navigation"
@@ -19708,8 +19708,8 @@
       "name": "wine-off",
       "svg_file": "svg/wine-off.svg",
       "tags": [
-        "wine",
-        "off"
+        "off",
+        "wine"
       ],
       "categories": [
         "general"
@@ -19821,8 +19821,8 @@
       "name": "zoom-out",
       "svg_file": "svg/zoom-out.svg",
       "tags": [
-        "zoom",
-        "out"
+        "out",
+        "zoom"
       ],
       "categories": [
         "general"

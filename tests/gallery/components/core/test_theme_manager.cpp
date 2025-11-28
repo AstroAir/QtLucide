@@ -13,8 +13,8 @@
 #include <QWidget>
 #include <QtTest/QtTest>
 
-// Include concrete ThemeManager implementation
-#include "../../../../examples/gallery/src/ui/themes/ThemeManager.h"
+// ThemeManager is included via test_theme_manager.h
+using namespace gallery;
 
 void TestThemeManager::initTestCase() {
     // Initialize test environment

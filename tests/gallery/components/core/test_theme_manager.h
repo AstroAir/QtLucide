@@ -15,8 +15,12 @@
 #include <QTemporaryDir>
 #include <QtTest/QtTest>
 
-// Forward declarations
+// Include ThemeManager for full type definition
+#include "ui/themes/ThemeManager.h"
+
+namespace gallery {
 class ThemeManager;
+}
 
 /**
  * @brief Test class for ThemeManager component
@@ -182,7 +186,7 @@ private slots:
     void testCorruptedThemeFileHandling();
 
 private:
-    ThemeManager* m_themeManager; ///< ThemeManager instance for testing
+    gallery::ThemeManager* m_themeManager; ///< ThemeManager instance for testing
     QTemporaryDir* m_tempDir;     ///< Temporary directory for test files
     QString m_testThemeDir;       ///< Test theme directory path
 
@@ -191,7 +195,7 @@ private:
      * @brief Create test theme manager instance
      * @return Initialized ThemeManager instance
      */
-    ThemeManager* createTestThemeManager();
+    gallery::ThemeManager* createTestThemeManager();
 
     /**
      * @brief Create test custom theme file
@@ -206,7 +210,7 @@ private:
      * @param themeManager ThemeManager instance to test
      * @return true if all theme colors are valid
      */
-    bool verifyThemeColorsValid(ThemeManager* themeManager);
+    bool verifyThemeColorsValid(gallery::ThemeManager* themeManager);
 
     /**
      * @brief Wait for theme change signal

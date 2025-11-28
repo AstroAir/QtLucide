@@ -1,287 +1,321 @@
 /**
- * QtLucide Gallery Application - Performance Monitor Implementation
+ * @file PerformanceMonitor.cpp
+ * @brief Implementation of PerformanceMonitor
+ * @details Performance measurement and tracking implementation.
+ * @author Max Qian
+ * @date 2025
+ * @version 1.0
+ * @copyright MIT Licensed - Copyright 2025 Max Qian. All Rights Reserved.
  */
 
 #include "PerformanceMonitor.h"
-#include <QApplication>
-#include <QDebug>
+#include <QCoreApplication>
+#include <QProcess>
+#include <algorithm>
+#include <numeric>
+#include <cmath>
 
-#ifdef Q_OS_WIN
+#ifdef _WIN32
+    #ifndef NOMINMAX
+        #define NOMINMAX
+    #endif
     #include <windows.h>
     #include <psapi.h>
-#elif defined(Q_OS_LINUX)
-    #include <fstream>
+#elif defined(__unix__) || defined(__APPLE__)
     #include <unistd.h>
-#elif defined(Q_OS_MAC)
-    #include <mach/mach.h>
+    #include <fstream>
+    #include <sstream>
 #endif
 
-PerformanceMonitor::PerformanceMonitor(QObject* parent)
-    : QObject(parent), m_isMonitoring(false), m_updateTimer(new QTimer(this)),
-      m_monitoringInterval(DEFAULT_MONITORING_INTERVAL), m_currentFPS(0), m_currentMemoryUsage(0),
-      m_currentCPUUsage(0.0), m_currentPerformanceLevel(HighPerformance), m_frameCount(0),
-      m_lastFPSUpdate(0), m_peakMemoryUsage(0), m_averageMemoryUsage(0), m_lastCPUTime(0),
-      m_lastSystemTime(0), m_fpsWarningThreshold(DEFAULT_FPS_THRESHOLD),
-      m_memoryWarningThreshold(DEFAULT_MEMORY_THRESHOLD),
-      m_cpuWarningThreshold(DEFAULT_CPU_THRESHOLD), m_hardwareAccelerationEnabled(true),
-      m_adaptiveQualityEnabled(false) {
-    // Connect timer to update slot
-    connect(m_updateTimer, &QTimer::timeout, this, &PerformanceMonitor::updateMetrics);
+namespace gallery {
 
-    // Start FPS timer
-    m_fpsTimer.start();
+PerformanceMonitor::PerformanceMonitor(QObject *parent)
+    : QObject(parent)
+    , m_maxSamples(100)
+    , m_targetFPS(60)
+    , m_lastFPS(60.0)
+    , m_wasPerformanceGood(true)
+    , m_memoryTrackingEnabled(false)
+    , m_peakMemoryMB(0.0)
+{
 }
 
-PerformanceMonitor::~PerformanceMonitor() {
-    stopMonitoring();
-}
+PerformanceMonitor::~PerformanceMonitor() = default;
 
-// Monitoring control
+void PerformanceMonitor::setMaxSamples(int maxSamples)
+{
+    m_maxSamples = std::max(1, maxSamples);
 
-void PerformanceMonitor::startMonitoring() {
-    if (m_isMonitoring) {
-        return;
-    }
-
-    m_isMonitoring = true;
-    m_updateTimer->start(m_monitoringInterval);
-    m_fpsTimer.restart();
-    m_frameCount = 0;
-    m_lastFPSUpdate = 0;
-
-    qDebug() << "Performance monitoring started";
-}
-
-void PerformanceMonitor::stopMonitoring() {
-    if (!m_isMonitoring) {
-        return;
-    }
-
-    m_isMonitoring = false;
-    m_updateTimer->stop();
-
-    qDebug() << "Performance monitoring stopped";
-}
-
-bool PerformanceMonitor::isMonitoring() const {
-    return m_isMonitoring;
-}
-
-void PerformanceMonitor::setMonitoringInterval(int milliseconds) {
-    m_monitoringInterval = milliseconds;
-    if (m_isMonitoring) {
-        m_updateTimer->setInterval(milliseconds);
+    // Trim existing samples if necessary
+    while (m_samples.size() > m_maxSamples) {
+        m_samples.pop_front();
     }
 }
 
-// Metrics access
-
-QVariantMap PerformanceMonitor::getCurrentMetrics() const {
-    QVariantMap metrics;
-    metrics["fps"] = m_currentFPS;
-    metrics["memoryUsage"] = static_cast<qulonglong>(m_currentMemoryUsage);
-    metrics["memoryUsageMB"] = m_currentMemoryUsage / (1024.0 * 1024.0);
-    metrics["peakMemoryUsage"] = static_cast<qulonglong>(m_peakMemoryUsage);
-    metrics["peakMemoryUsageMB"] = m_peakMemoryUsage / (1024.0 * 1024.0);
-    metrics["cpuUsage"] = m_currentCPUUsage;
-    metrics["performanceLevel"] = static_cast<int>(m_currentPerformanceLevel);
-    metrics["hardwareAcceleration"] = m_hardwareAccelerationEnabled;
-    metrics["adaptiveQuality"] = m_adaptiveQualityEnabled;
-    return metrics;
+void PerformanceMonitor::setTargetFPS(int fps)
+{
+    m_targetFPS = std::max(1, fps);
 }
 
-int PerformanceMonitor::getCurrentFPS() const {
-    return m_currentFPS;
+void PerformanceMonitor::startMeasurement(const QString &label)
+{
+    m_currentLabel = label.isEmpty() ? QStringLiteral("default") : label;
+    m_currentTimer.start();
 }
 
-qint64 PerformanceMonitor::getCurrentMemoryUsage() const {
-    return m_currentMemoryUsage;
-}
-
-double PerformanceMonitor::getCurrentCPUUsage() const {
-    return m_currentCPUUsage;
-}
-
-PerformanceMonitor::PerformanceLevel PerformanceMonitor::getCurrentPerformanceLevel() const {
-    return m_currentPerformanceLevel;
-}
-
-// Thresholds
-
-void PerformanceMonitor::setFPSWarningThreshold(int fps) {
-    m_fpsWarningThreshold = fps;
-}
-
-void PerformanceMonitor::setMemoryWarningThreshold(qint64 bytes) {
-    m_memoryWarningThreshold = bytes;
-}
-
-void PerformanceMonitor::setCPUWarningThreshold(double percentage) {
-    m_cpuWarningThreshold = percentage;
-}
-
-// Optimization
-
-void PerformanceMonitor::enableHardwareAcceleration(bool enabled) {
-    m_hardwareAccelerationEnabled = enabled;
-    qDebug() << "Hardware acceleration" << (enabled ? "enabled" : "disabled");
-}
-
-void PerformanceMonitor::setAdaptiveQuality(bool enabled) {
-    m_adaptiveQualityEnabled = enabled;
-    qDebug() << "Adaptive quality" << (enabled ? "enabled" : "disabled");
-}
-
-void PerformanceMonitor::cleanupUnusedResources() {
-    // Trigger garbage collection if available
-    // This is a placeholder - actual implementation would depend on resource types
-    qDebug() << "Cleaning up unused resources";
-}
-
-// Profiling
-
-void PerformanceMonitor::startProfiling(const QString& operation) {
-    if (!m_profilingTimers.contains(operation)) {
-        m_profilingTimers[operation] = QElapsedTimer();
-    }
-    m_profilingTimers[operation].start();
-}
-
-void PerformanceMonitor::endProfiling(const QString& operation) {
-    if (m_profilingTimers.contains(operation)) {
-        qint64 elapsed = m_profilingTimers[operation].elapsed();
-        m_profilingResults[operation] = elapsed;
-        qDebug() << "Profiling:" << operation << "took" << elapsed << "ms";
-    }
-}
-
-qint64 PerformanceMonitor::getProfilingTime(const QString& operation) const {
-    return m_profilingResults.value(operation, -1);
-}
-
-// Private slots
-
-void PerformanceMonitor::updateMetrics() {
-    calculateFPS();
-    calculateMemoryUsage();
-    calculateCPUUsage();
-    updatePerformanceLevel();
-    checkThresholds();
-
-    emit metricsUpdated(getCurrentMetrics());
-}
-
-void PerformanceMonitor::checkThresholds() {
-    emitWarningsIfNeeded();
-}
-
-// Private implementation
-
-void PerformanceMonitor::calculateFPS() {
-    m_frameCount++;
-
-    qint64 elapsed = m_fpsTimer.elapsed();
-    if (elapsed - m_lastFPSUpdate >= 1000) { // Update every second
-        m_currentFPS = static_cast<int>((m_frameCount * 1000.0) / (elapsed - m_lastFPSUpdate));
-        m_frameCount = 0;
-        m_lastFPSUpdate = elapsed;
-    }
-}
-
-void PerformanceMonitor::calculateMemoryUsage() {
-    m_currentMemoryUsage = getProcessMemoryUsage();
-
-    // Update peak
-    if (m_currentMemoryUsage > m_peakMemoryUsage) {
-        m_peakMemoryUsage = m_currentMemoryUsage;
+double PerformanceMonitor::endMeasurement(const QString &label)
+{
+    if (!m_currentTimer.isValid()) {
+        return 0.0;
     }
 
-    // Update average (simple moving average)
-    static int sampleCount = 0;
-    static qint64 totalMemory = 0;
-    totalMemory += m_currentMemoryUsage;
-    sampleCount++;
-    m_averageMemoryUsage = totalMemory / sampleCount;
-}
+    double elapsed = m_currentTimer.elapsed();
+    QString measurementLabel = label.isEmpty() ? m_currentLabel : label;
 
-void PerformanceMonitor::calculateCPUUsage() {
-    m_currentCPUUsage = getProcessCPUUsage();
-}
+    // Record sample
+    MeasurementSample sample;
+    sample.label = measurementLabel;
+    sample.timeMs = elapsed;
+    sample.timestamp = m_currentTimer.elapsed();
 
-void PerformanceMonitor::updatePerformanceLevel() {
-    PerformanceLevel oldLevel = m_currentPerformanceLevel;
+    m_samples.append(sample);
 
-    // Determine performance level based on metrics
-    if (m_currentFPS >= 60 && m_currentMemoryUsage < m_memoryWarningThreshold / 2) {
-        m_currentPerformanceLevel = HighPerformance;
-    } else if (m_currentFPS >= 30 && m_currentMemoryUsage < m_memoryWarningThreshold) {
-        m_currentPerformanceLevel = MediumPerformance;
-    } else if (m_currentFPS >= 15) {
-        m_currentPerformanceLevel = LowPerformance;
-    } else {
-        m_currentPerformanceLevel = CriticalPerformance;
+    // Trim old samples if exceeding max
+    while (m_samples.size() > m_maxSamples) {
+        m_samples.pop_front();
     }
 
-    // Emit signal if level changed
-    if (m_currentPerformanceLevel != oldLevel) {
-        emit performanceLevelChanged(m_currentPerformanceLevel);
+    emit measurementCompleted(measurementLabel, elapsed);
 
-        // Apply adaptive quality if enabled
-        if (m_adaptiveQualityEnabled) {
-            QString message = QString("Performance level changed to %1")
-                                  .arg(static_cast<int>(m_currentPerformanceLevel));
-            qDebug() << message;
+    // Check performance
+    checkPerformanceStatus();
+
+    return elapsed;
+}
+
+double PerformanceMonitor::getAverageRenderTime(const QString &label) const
+{
+    QString targetLabel = label.isEmpty() ? QStringLiteral("default") : label;
+
+    QVector<double> relevantSamples;
+    for (const auto &sample : m_samples) {
+        if (sample.label == targetLabel) {
+            relevantSamples.append(sample.timeMs);
+        }
+    }
+
+    if (relevantSamples.isEmpty()) {
+        return 0.0;
+    }
+
+    double sum = std::accumulate(relevantSamples.begin(), relevantSamples.end(), 0.0);
+    return sum / relevantSamples.size();
+}
+
+double PerformanceMonitor::getMinimumRenderTime(const QString &label) const
+{
+    QString targetLabel = label.isEmpty() ? QStringLiteral("default") : label;
+
+    double minTime = std::numeric_limits<double>::max();
+    bool found = false;
+
+    for (const auto &sample : m_samples) {
+        if (sample.label == targetLabel) {
+            minTime = std::min(minTime, sample.timeMs);
+            found = true;
+        }
+    }
+
+    return found ? minTime : 0.0;
+}
+
+double PerformanceMonitor::getMaximumRenderTime(const QString &label) const
+{
+    QString targetLabel = label.isEmpty() ? QStringLiteral("default") : label;
+
+    double maxTime = 0.0;
+    for (const auto &sample : m_samples) {
+        if (sample.label == targetLabel) {
+            maxTime = std::max(maxTime, sample.timeMs);
+        }
+    }
+
+    return maxTime;
+}
+
+double PerformanceMonitor::getLastRenderTime(const QString &label) const
+{
+    QString targetLabel = label.isEmpty() ? QStringLiteral("default") : label;
+
+    for (auto it = m_samples.rbegin(); it != m_samples.rend(); ++it) {
+        if (it->label == targetLabel) {
+            return it->timeMs;
+        }
+    }
+
+    return 0.0;
+}
+
+double PerformanceMonitor::getFrameRate() const
+{
+    if (m_samples.isEmpty()) {
+        return 0.0;
+    }
+
+    // Calculate average frame time and convert to FPS
+    double avgTime = 0.0;
+    int count = 0;
+
+    for (const auto &sample : m_samples) {
+        avgTime += sample.timeMs;
+        count++;
+    }
+
+    if (count == 0 || avgTime == 0.0) {
+        return 0.0;
+    }
+
+    avgTime /= count;
+    return 1000.0 / avgTime;  // Convert ms to FPS
+}
+
+int PerformanceMonitor::getMeasurementCount() const
+{
+    return m_samples.size();
+}
+
+int PerformanceMonitor::getSampleCount(const QString &label) const
+{
+    QString targetLabel = label.isEmpty() ? QStringLiteral("default") : label;
+
+    int count = 0;
+    for (const auto &sample : m_samples) {
+        if (sample.label == targetLabel) {
+            count++;
+        }
+    }
+
+    return count;
+}
+
+bool PerformanceMonitor::isPerformanceGood() const
+{
+    double fps = getFrameRate();
+    double threshold = m_targetFPS * PERFORMANCE_WARNING_THRESHOLD;
+    return fps >= threshold;
+}
+
+int PerformanceMonitor::getPerformancePercentage() const
+{
+    double fps = getFrameRate();
+    if (m_targetFPS <= 0) {
+        return 100;
+    }
+
+    return static_cast<int>((fps / m_targetFPS) * 100.0);
+}
+
+double PerformanceMonitor::getMemoryUsageMB() const
+{
+    uint64_t bytes = getCurrentMemoryBytes();
+    return bytes / (1024.0 * 1024.0);
+}
+
+double PerformanceMonitor::getProcessMemoryMB() const
+{
+    return getMemoryUsageMB();
+}
+
+void PerformanceMonitor::reset()
+{
+    m_samples.clear();
+    m_lastFPS = 60.0;
+    m_wasPerformanceGood = true;
+}
+
+void PerformanceMonitor::resetLabel(const QString &label)
+{
+    QString targetLabel = label.isEmpty() ? QStringLiteral("default") : label;
+
+    auto it = m_samples.begin();
+    while (it != m_samples.end()) {
+        if (it->label == targetLabel) {
+            it = m_samples.erase(it);
+        } else {
+            ++it;
         }
     }
 }
 
-qint64 PerformanceMonitor::getProcessMemoryUsage() const {
-#ifdef Q_OS_WIN
+void PerformanceMonitor::setMemoryTrackingEnabled(bool enabled)
+{
+    m_memoryTrackingEnabled = enabled;
+}
+
+QString PerformanceMonitor::getPerformanceReport() const
+{
+    QString report;
+    report += QStringLiteral("=== Performance Report ===\n");
+    report += QStringLiteral("Frame Rate: %1 FPS (Target: %2)\n").arg(getFrameRate(), 0, 'f', 2).arg(m_targetFPS);
+    report += QStringLiteral("Performance: %1%\n").arg(getPerformancePercentage());
+    report += QStringLiteral("Measurements: %1\n").arg(getMeasurementCount());
+    report += QStringLiteral("Avg Frame Time: %1 ms\n").arg(getAverageRenderTime(), 0, 'f', 2);
+    report += QStringLiteral("Min/Max Frame Time: %1 / %2 ms\n")
+              .arg(getMinimumRenderTime(), 0, 'f', 2)
+              .arg(getMaximumRenderTime(), 0, 'f', 2);
+
+    if (m_memoryTrackingEnabled) {
+        report += QStringLiteral("Memory Usage: %1 MB\n").arg(getMemoryUsageMB(), 0, 'f', 2);
+    }
+
+    return report;
+}
+
+void PerformanceMonitor::checkPerformanceStatus()
+{
+    double currentFPS = getFrameRate();
+    m_lastFPS = currentFPS;
+
+    bool isGood = isPerformanceGood();
+
+    if (!isGood && m_wasPerformanceGood) {
+        // Performance dropped
+        emit performanceWarning(currentFPS, m_targetFPS);
+        m_wasPerformanceGood = false;
+    } else if (isGood && !m_wasPerformanceGood) {
+        // Performance improved
+        emit performanceImproved(currentFPS);
+        m_wasPerformanceGood = true;
+    }
+}
+
+uint64_t PerformanceMonitor::getCurrentMemoryBytes() const
+{
+#ifdef _WIN32
+    HANDLE process = GetCurrentProcess();
     PROCESS_MEMORY_COUNTERS pmc;
-    if (K32GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
-        return static_cast<qint64>(pmc.WorkingSetSize);
+
+    if (GetProcessMemoryInfo(process, &pmc, sizeof(pmc))) {
+        return pmc.WorkingSetSize;
     }
-#elif defined(Q_OS_LINUX)
-    std::ifstream statm("/proc/self/statm");
-    long pages = 0;
-    if (statm >> pages) {
-        long pageSize = sysconf(_SC_PAGESIZE);
-        return static_cast<qint64>(pages * pageSize);
-    }
-#elif defined(Q_OS_MAC)
-    struct task_basic_info info;
-    mach_msg_type_number_t size = sizeof(info);
-    if (task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)&info, &size) == KERN_SUCCESS) {
-        return static_cast<qint64>(info.resident_size);
+#elif defined(__unix__) || defined(__APPLE__)
+    // Read from /proc/self/status on Linux
+    std::ifstream stat("/proc/self/status");
+    if (stat.is_open()) {
+        std::string line;
+        while (std::getline(stat, line)) {
+            if (line.find("VmRSS:") != std::string::npos) {
+                std::istringstream iss(line);
+                std::string key;
+                uint64_t value;
+                iss >> key >> value;
+                return value * 1024;  // VmRSS is in KB
+            }
+        }
     }
 #endif
-    return 0;
+
+    return 0;  // Not supported on this platform
 }
 
-double PerformanceMonitor::getProcessCPUUsage() const {
-    // Simplified CPU usage calculation
-    // A full implementation would track CPU time deltas
-    return 0.0; // Placeholder
-}
-
-void PerformanceMonitor::emitWarningsIfNeeded() {
-    // Check FPS threshold
-    if (m_currentFPS < m_fpsWarningThreshold && m_currentFPS > 0) {
-        emit fpsWarning(m_currentFPS, m_fpsWarningThreshold);
-    }
-
-    // Check memory threshold
-    if (m_currentMemoryUsage > m_memoryWarningThreshold) {
-        emit memoryWarning(m_currentMemoryUsage, m_memoryWarningThreshold);
-    }
-
-    // Check CPU threshold
-    if (m_currentCPUUsage > m_cpuWarningThreshold) {
-        emit cpuWarning(m_currentCPUUsage, m_cpuWarningThreshold);
-    }
-
-    // Emit general warning for critical performance
-    if (m_currentPerformanceLevel == CriticalPerformance) {
-        emit performanceWarning("Critical performance level detected");
-    }
-}
+}  // namespace gallery

@@ -6,7 +6,7 @@ set(UNIT_COMMON_SOURCES
     ../../../examples/gallery/src/ui/windows/GalleryMainWindow.cpp
     ../../../examples/gallery/src/ui/themes/ThemeManager.cpp
     ../../../examples/gallery/src/core/managers/IconMetadataManager.cpp
-    ../../../examples/gallery/src/core/managers/ImageMetadataManager.cpp
+    ../../../examples/gallery/src/core/managers/ManagerStubs.cpp
     ../../../examples/gallery/src/core/managers/ContentManager.cpp
     ../../../examples/gallery/src/core/managers/FavoritesManager.cpp
     ../../../examples/gallery/src/core/utils/GalleryLogger.cpp
@@ -25,6 +25,8 @@ set(UNIT_COMMON_SOURCES
 # Create separate test executable for each test file (each has its own QTEST_MAIN)
 set(UNIT_TEST_FILES
     test_gallery_components
+    test_content_manager
+    test_icon_metadata_manager
     test_image_browsing
     test_search
     test_sidebar
@@ -46,6 +48,6 @@ foreach(TEST_FILE ${UNIT_TEST_FILES})
 endforeach()
 
 message(STATUS "Gallery Unit Tests configured:")
-message(STATUS "  - Test executables: 6 separate test executables")
+message(STATUS "  - Test executables: 8 separate test executables")
 message(STATUS "  - Run with: ctest -L gallery")
 
