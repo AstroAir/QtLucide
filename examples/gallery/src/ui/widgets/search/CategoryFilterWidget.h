@@ -1,395 +1,252 @@
 /**
- * QtLucide Gallery Application - Enhanced Category Filter Widget
- *
- * A comprehensive, high-performance category and tag filtering system with:
- * - Hierarchical category tree with smart grouping
- * - Advanced multi-selection with visual feedback
- * - Real-time search and filtering within categories
- * - Tag cloud visualization with frequency-based sizing
- * - Drag and drop support for custom organization
- * - Export/import of filter configurations
- * - Performance-optimized for large category sets
- * - Accessibility support with keyboard navigation
- * - Customizable appearance and layout options
+ * @file CategoryFilterWidget.h
+ * @brief Category filter widget with favorites toggle
+ * @details Provides filtering controls for category selection and
+ *          favorites-only mode, independent of search functionality.
+ * @author Max Qian
+ * @date 2025
+ * @version 1.0
+ * @copyright MIT Licensed - Copyright 2025 Max Qian. All Rights Reserved.
  */
 
-#ifndef CATEGORYFILTERWIDGET_H
-#define CATEGORYFILTERWIDGET_H
+#ifndef CATEGORY_FILTER_WIDGET_H
+#define CATEGORY_FILTER_WIDGET_H
 
-#include <QAction>
-#include <QButtonGroup>
-#include <QCheckBox>
-#include <QComboBox>
-#include <QContextMenuEvent>
-#include <QDrag>
-#include <QElapsedTimer>
-#include <QFrame>
-#include <QGraphicsOpacityEffect>
-#include <QGridLayout>
-#include <QGroupBox>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QListWidget>
-#include <QListWidgetItem>
-#include <QMenu>
-#include <QMimeData>
-#include <QProgressBar>
-#include <QPropertyAnimation>
-#include <QPushButton>
-#include <QRadioButton>
-#include <QScrollArea>
-#include <QSettings>
-#include <QSlider>
-#include <QSplitter>
-#include <QStackedWidget>
-#include <QTabWidget>
-#include <QTimer>
-#include <QToolButton>
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
-#include <QVBoxLayout>
 #include <QWidget>
+#include <QString>
+#include <QStringList>
 
-#include "IconMetadataManager.h"
+class QComboBox;
+class QCheckBox;
+class QListWidget;
+class QListWidgetItem;
+class QVBoxLayout;
+class QHBoxLayout;
 
-// Forward declarations
-class TagCloudWidget;
-class CategoryStatisticsWidget;
+namespace gallery {
 
 /**
- * @brief Enhanced tree widget item for category display with advanced features
+ * @enum FilterMode
+ * @brief Enumeration of available filter modes
  */
-class CategoryTreeItem : public QTreeWidgetItem {
-public:
-    enum ItemType {
-        CategoryItem = QTreeWidgetItem::UserType + 1,
-        TagItem = QTreeWidgetItem::UserType + 2,
-        ContributorItem = QTreeWidgetItem::UserType + 3,
-        IconCountItem = QTreeWidgetItem::UserType + 4,
-        StatisticsItem = QTreeWidgetItem::UserType + 5
-    };
-
-    CategoryTreeItem(QTreeWidget* parent, const QString& category, int iconCount,
-                     ItemType type = CategoryItem);
-    CategoryTreeItem(CategoryTreeItem* parent, const QString& name, int iconCount,
-                     ItemType type = TagItem);
-
-    // Enhanced functionality
-    QString getName() const { return m_name; }
-    int getIconCount() const { return m_iconCount; }
-    ItemType getItemType() const { return m_itemType; }
-    double getFrequency() const { return m_frequency; }
-    bool isFiltered() const { return m_isFiltered; }
-
-    void setIconCount(int count);
-    void setFrequency(double frequency);
-    void setFiltered(bool filtered);
-    void updateDisplay();
-
-    // Visual enhancements
-    void setHighlighted(bool highlighted);
-    void setCustomIcon(const QIcon& icon);
-    void setToolTipInfo(const QString& info);
-
-private:
-    void updateText();
-    void updateIcon();
-    void updateColors();
-
-    QString m_name;
-    int m_iconCount;
-    ItemType m_itemType;
-    double m_frequency;
-    bool m_isFiltered;
-    bool m_isHighlighted;
-    QIcon m_customIcon;
+enum class FilterMode {
+    Dropdown,   ///< Use a dropdown/combo box for category selection
+    List        ///< Use a list widget for category selection
 };
 
 /**
- * @brief Tree widget for displaying categories and tags hierarchically
+ * @struct CategoryFilterSettings
+ * @brief Current category filter settings
  */
-class CategoryTreeWidget : public QTreeWidget {
-    Q_OBJECT
+struct CategoryFilterSettings {
+    /**
+     * @brief Selected category name
+     * @default Empty string (all categories)
+     */
+    QString selectedCategory;
 
-public:
-    explicit CategoryTreeWidget(QWidget* parent = nullptr);
+    /**
+     * @brief Whether to show only favorites
+     * @default false
+     */
+    bool favoritesOnly{false};
 
-    void setMetadataManager(IconMetadataManager* manager);
-    void updateCategories();
-    void updateIconCounts();
+    /**
+     * @brief Equality comparison operator
+     * @param other The other settings to compare with
+     * @return true if settings are equal
+     */
+    bool operator==(const CategoryFilterSettings& other) const noexcept {
+        return selectedCategory == other.selectedCategory &&
+               favoritesOnly == other.favoritesOnly;
+    }
 
-    QStringList selectedCategories() const;
-    QStringList selectedTags() const;
-    void setSelectedCategories(const QStringList& categories);
-    void setSelectedTags(const QStringList& tags);
-    void clearSelection();
-
-signals:
-    void categorySelectionChanged(const QStringList& categories);
-    void tagSelectionChanged(const QStringList& tags);
-    void selectionChanged();
-
-protected:
-    void contextMenuEvent(QContextMenuEvent* event) override;
-
-private slots:
-    void onItemChanged(QTreeWidgetItem* item, int column);
-    void onItemClicked(QTreeWidgetItem* item, int column);
-    void onExpandAll();
-    void onCollapseAll();
-    void onSelectAll();
-    void onDeselectAll();
-
-private:
-    void setupContextMenu();
-    void populateTree();
-    void addCategoryItem(const QString& category, int iconCount);
-    void addTagItems(CategoryTreeItem* categoryItem, const QString& category);
-    void updateItemCheckState(QTreeWidgetItem* item);
-    void emitSelectionChanged();
-
-    IconMetadataManager* m_metadataManager;
-    QMenu* m_contextMenu;
-    QAction* m_expandAllAction;
-    QAction* m_collapseAllAction;
-    QAction* m_selectAllAction;
-    QAction* m_deselectAllAction;
-
-    bool m_updatingSelection;
+    /**
+     * @brief Inequality comparison operator
+     * @param other The other settings to compare with
+     * @return true if settings differ
+     */
+    bool operator!=(const CategoryFilterSettings& other) const noexcept {
+        return !(*this == other);
+    }
 };
 
 /**
- * @brief Compact list widget for quick category selection
- */
-class CategoryListWidget : public QListWidget {
-    Q_OBJECT
-
-public:
-    explicit CategoryListWidget(QWidget* parent = nullptr);
-
-    void setMetadataManager(IconMetadataManager* manager);
-    void updateCategories();
-
-    QStringList selectedCategories() const;
-    void setSelectedCategories(const QStringList& categories);
-
-signals:
-    void categorySelectionChanged(const QStringList& categories);
-
-private slots:
-    void onItemChanged(QListWidgetItem* item);
-
-private:
-    void populateList();
-    void emitSelectionChanged();
-
-    IconMetadataManager* m_metadataManager;
-    bool m_updatingSelection;
-};
-
-/**
- * @brief Enhanced main category filter widget with comprehensive filtering capabilities
+ * @class CategoryFilterWidget
+ * @brief Widget for filtering icons by category and favorites
+ * @details Provides independent filtering controls with two layout modes:
+ *          - Dropdown mode: Compact dropdown for category selection
+ *          - List mode: Expanded list of categories for selection
+ *          Both modes include a favorites-only checkbox.
+ *
+ * @par Usage:
+ * @code
+ * CategoryFilterWidget filter;
+ * filter.setCategories({"All", "Accessibility", "Animals"});
+ * filter.setMode(FilterMode::Dropdown);
+ * connect(&filter, &CategoryFilterWidget::categoryFilterChanged,
+ *         this, &MyWidget::onFilterChanged);
+ * @endcode
+ *
+ * @see IconSearchWidget
  */
 class CategoryFilterWidget : public QWidget {
     Q_OBJECT
 
 public:
-    enum ViewMode {
-        TreeView = 0,      // Hierarchical tree with categories and tags
-        ListView = 1,      // Simple list of categories
-        CompactView = 2,   // Horizontal button bar
-        TagCloudView = 3,  // Tag cloud visualization
-        StatisticsView = 4 // Statistics and analytics view
-    };
-    Q_ENUM(ViewMode)
+    /**
+     * @brief Construct a CategoryFilterWidget
+     * @param mode The filter mode (Dropdown or List)
+     * @param parent The parent widget
+     */
+    explicit CategoryFilterWidget(FilterMode mode = FilterMode::Dropdown, QWidget* parent = nullptr);
 
-    enum FilterMode {
-        InclusiveFilter = 0, // Show icons that match ANY selected category/tag
-        ExclusiveFilter = 1, // Show icons that match ALL selected categories/tags
-        ExcludeFilter = 2    // Hide icons that match selected categories/tags
-    };
-    Q_ENUM(FilterMode)
+    /**
+     * @brief Destructor
+     */
+    ~CategoryFilterWidget() override;
 
-    explicit CategoryFilterWidget(IconMetadataManager* metadataManager, QWidget* parent = nullptr);
-    ~CategoryFilterWidget();
+    /**
+     * @brief Set the filter mode
+     * @param mode The mode to use
+     * @details Switches between dropdown and list views
+     */
+    void setMode(FilterMode mode);
 
-    // Enhanced selection management
-    QStringList selectedCategories() const;
-    QStringList selectedTags() const;
-    QStringList selectedContributors() const;
-    void setSelectedCategories(const QStringList& categories);
-    void setSelectedTags(const QStringList& tags);
-    void setSelectedContributors(const QStringList& contributors);
-    void clearSelection();
-    void clearCategorySelection();
-    void clearTagSelection();
-    void clearContributorSelection();
+    /**
+     * @brief Get the current filter mode
+     * @return The current FilterMode
+     */
+    [[nodiscard]] FilterMode mode() const;
 
-    // View and filter modes
-    ViewMode viewMode() const { return m_viewMode; }
-    void setViewMode(ViewMode mode);
-    FilterMode filterMode() const { return m_filterMode; }
-    void setFilterMode(FilterMode mode);
+    /**
+     * @brief Set available categories
+     * @param categories List of category names
+     */
+    void setCategories(const QStringList& categories);
 
-    // Enhanced filter state
-    bool hasActiveFilters() const;
-    int selectedCategoryCount() const;
-    int selectedTagCount() const;
-    int selectedContributorCount() const;
-    int totalFilterCount() const;
+    /**
+     * @brief Get available categories
+     * @return List of all categories
+     */
+    [[nodiscard]] QStringList categories() const;
 
-    // Search and filtering
-    void setSearchFilter(const QString& filter);
-    void clearSearchFilter();
-    void setMinimumIconCount(int count);
-    void setShowEmptyCategories(bool show);
+    /**
+     * @brief Set the selected category
+     * @param category The category to select (empty for all)
+     */
+    void setSelectedCategory(const QString& category);
 
-    // Display options
-    void setShowIconCounts(bool show);
-    void setShowStatistics(bool show);
-    void setAnimationsEnabled(bool enabled);
-    void setCompactMode(bool compact);
+    /**
+     * @brief Get the selected category
+     * @return The selected category name
+     */
+    [[nodiscard]] QString selectedCategory() const;
 
-    // Import/Export
-    bool exportFilterConfig(const QString& filePath) const;
-    bool importFilterConfig(const QString& filePath);
+    /**
+     * @brief Set the favorites-only filter state
+     * @param favoritesOnly true to show only favorites
+     */
+    void setFavoritesOnly(bool favoritesOnly);
 
-    // Statistics
-    QVariantMap getFilterStatistics() const;
+    /**
+     * @brief Get the favorites-only filter state
+     * @return true if showing only favorites
+     */
+    [[nodiscard]] bool isFavoritesOnly() const;
 
-public slots:
-    void refreshCategories();
-    void refreshTags();
-    void refreshContributors();
-    void refreshAll();
-    void expandAll();
-    void collapseAll();
-    void selectAll();
-    void deselectAll();
-    void toggleViewMode();
-    void resetFilters();
-    void saveFilterPreset(const QString& name);
-    void loadFilterPreset(const QString& name);
+    /**
+     * @brief Get current filter settings
+     * @return The current CategoryFilterSettings
+     */
+    [[nodiscard]] CategoryFilterSettings filterSettings() const;
 
-signals:
-    void categorySelectionChanged(const QStringList& categories);
-    void tagSelectionChanged(const QStringList& tags);
-    void contributorSelectionChanged(const QStringList& contributors);
-    void selectionChanged();
-    void filtersCleared();
-    void filterModeChanged(FilterMode mode);
-    void viewModeChanged(ViewMode mode);
-    void filterStatisticsUpdated(const QVariantMap& stats);
+    /**
+     * @brief Set filter settings
+     * @param settings The settings to apply
+     */
+    void setFilterSettings(const CategoryFilterSettings& settings);
+
+    /**
+     * @brief Clear all filters
+     */
+    void clear();
+
+Q_SIGNALS:
+    /**
+     * @brief Emitted when category filter changes
+     * @param category The selected category name
+     */
+    void categoryFilterChanged(const QString& category);
+
+    /**
+     * @brief Emitted when favorites-only filter changes
+     * @param favoritesOnly true if showing only favorites
+     */
+    void favoritesOnlyChanged(bool favoritesOnly);
+
+    /**
+     * @brief Emitted when any filter setting changes
+     * @param settings The new CategoryFilterSettings
+     */
+    void filterChanged(const CategoryFilterSettings& settings);
 
 private slots:
-    void onCategorySelectionChanged(const QStringList& categories);
-    void onTagSelectionChanged(const QStringList& tags);
-    void onContributorSelectionChanged(const QStringList& contributors);
-    void onClearFilters();
-    void onViewModeChanged();
-    void onFilterModeChanged();
-    void onSearchFilterChanged();
-    void onUpdateStatistics();
+    /**
+     * @brief Called when category dropdown selection changes
+     * @param index The new index
+     */
+    void onCategoryChanged(int index);
+
+    /**
+     * @brief Called when category list item is selected
+     * @param item The selected list item
+     */
+    void onCategoryListItemSelected(QListWidgetItem* item);
+
+    /**
+     * @brief Called when favorites checkbox is toggled
+     * @param checked The new state
+     */
+    void onFavoritesToggled(bool checked);
 
 private:
-    // Enhanced UI setup methods
+    /**
+     * @brief Initialize the UI with the current mode
+     */
     void setupUI();
-    void setupTreeView();
-    void setupListView();
-    void setupCompactView();
-    void setupTagCloudView();
-    void setupStatisticsView();
-    void setupToolbar();
-    void setupAnimations();
-    void setupConnections();
 
-    // View management
-    void updateViewMode();
-    void updateFilterIndicator();
-    void updateStatistics();
-    void createCompactButtons();
-    void createTagCloudButtons();
-    void switchToView(ViewMode mode);
+    /**
+     * @brief Create the dropdown-based layout
+     * @return The layout widget
+     */
+    QWidget* createDropdownLayout();
 
-    // Filter management
-    void applyFilters();
-    void validateFilters();
-    void saveFilterState();
-    void loadFilterState();
+    /**
+     * @brief Create the list-based layout
+     * @return The layout widget
+     */
+    QWidget* createListLayout();
 
-    // Performance optimization
-    void optimizeView();
-    void preloadData();
+    // State
+    FilterMode m_mode;                           ///< Current filter mode
+    QStringList m_categories;                    ///< Available categories
+    QString m_selectedCategory;                  ///< Currently selected category
+    bool m_favoritesOnly;                        ///< Favorites-only flag
 
-    IconMetadataManager* m_metadataManager;
+    // UI Components - Shared
+    QCheckBox* m_favoritesCheckBox;              ///< Favorites-only checkbox
 
-    // Enhanced UI components
-    QVBoxLayout* m_mainLayout;
-    QHBoxLayout* m_toolbarLayout;
-    QStackedWidget* m_stackedWidget;
-    QWidget* m_toolbar;
-    QFrame* m_separator;
+    // UI Components - Dropdown mode
+    QComboBox* m_categoryComboBox;               ///< Category selection dropdown
 
-    // Enhanced view widgets
-    CategoryTreeWidget* m_treeWidget;
-    CategoryListWidget* m_listWidget;
-    QWidget* m_compactWidget;
-    TagCloudWidget* m_tagCloudWidget;
-    CategoryStatisticsWidget* m_statisticsWidget;
-    QHBoxLayout* m_compactLayout;
+    // UI Components - List mode
+    QListWidget* m_categoryListWidget;           ///< Category selection list
 
-    // Enhanced toolbar controls
-    QLabel* m_titleLabel;
-    QComboBox* m_viewModeCombo;
-    QComboBox* m_filterModeCombo;
-    QToolButton* m_expandButton;
-    QToolButton* m_collapseButton;
-    QToolButton* m_selectAllButton;
-    QToolButton* m_clearButton;
-    QToolButton* m_settingsButton;
-    QLabel* m_filterIndicator;
-    QLabel* m_statisticsLabel;
-    QLineEdit* m_searchEdit;
-
-    // Compact view buttons
-    QButtonGroup* m_compactButtonGroup;
-    QList<QToolButton*> m_categoryButtons;
-    QList<QToolButton*> m_tagButtons;
-
-    // Enhanced state management
-    ViewMode m_viewMode;
-    FilterMode m_filterMode;
-    QStringList m_selectedCategories;
-    QStringList m_selectedTags;
-    QStringList m_selectedContributors;
-    QString m_searchFilter;
-    int m_minimumIconCount;
-    bool m_showEmptyCategories;
-    bool m_showIconCounts;
-    bool m_showStatistics;
-    bool m_animationsEnabled;
-    bool m_compactMode;
-
-    // Animation system
-    QPropertyAnimation* m_switchAnimation;
-    QPropertyAnimation* m_fadeAnimation;
-    QGraphicsOpacityEffect* m_opacityEffect;
-
-    // Performance and statistics
-    QTimer* m_statisticsTimer;
-    QElapsedTimer m_performanceTimer;
-    QVariantMap m_filterStatistics;
-
-    // Settings
-    QSettings* m_settings;
-    QHash<QString, QVariant> m_filterPresets;
-
-    // Constants
-    static constexpr int ANIMATION_DURATION = 250;
-    static constexpr int STATISTICS_UPDATE_INTERVAL = 2000; // 2 seconds
-    static constexpr int DEFAULT_MIN_ICON_COUNT = 1;
-    static constexpr const char* SETTINGS_GROUP = "CategoryFilterWidget";
+    // Main container
+    QVBoxLayout* m_mainLayout;                   ///< Main vertical layout
 };
 
-#endif // CATEGORYFILTERWIDGET_H
+} // namespace gallery
+
+#endif // CATEGORY_FILTER_WIDGET_H

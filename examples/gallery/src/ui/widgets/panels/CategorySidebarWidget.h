@@ -1,206 +1,229 @@
 /**
- * QtLucide Gallery Application - Category Sidebar Widget
- *
- * Sidebar widget for category-based filtering with:
- * - 9 icon categories (business, communication, editing, files, general, media, navigation, social,
- * system)
- * - Icon count per category
- * - Keyboard shortcuts (Ctrl+1-9)
- * - Favorites category
- * - Recently viewed category
- * - Search history
+ * @file CategorySidebarWidget.h
+ * @brief Left sidebar customizer panel for the gallery application
+ * @details Provides customization options for icon rendering including color,
+ *          stroke width, and size. Also displays available icon categories with
+ *          selection capability, mimicking the Lucide website design.
+ * @author Max Qian
+ * @date 2025
+ * @version 1.0
+ * @copyright MIT Licensed - Copyright 2025 Max Qian. All Rights Reserved.
  */
 
-#ifndef CATEGORYSIDEBARWIDGET_H
-#define CATEGORYSIDEBARWIDGET_H
+#ifndef CATEGORY_SIDEBAR_WIDGET_H
+#define CATEGORY_SIDEBAR_WIDGET_H
 
-#include <QFrame>
-#include <QGraphicsOpacityEffect>
-#include <QGroupBox>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QListWidget>
-#include <QListWidgetItem>
-#include <QMenu>
-#include <QPropertyAnimation>
-#include <QPushButton>
-#include <QScrollArea>
-#include <QTimer>
-#include <QToolButton>
-#include <QVBoxLayout>
 #include <QWidget>
+#include <QString>
+#include <QColor>
+#include <memory>
 
-#include "../../config/LayoutConfig.h"
-#include <QAction>
-#include <QShortcut>
+#include "../../core/GalleryTypes.h"
 
-// Forward declarations
-class IconMetadataManager;
-class FavoritesManager;
+class QLabel;
+class QPushButton;
+class QSlider;
+class QListWidget;
+class QListWidgetItem;
+class QVBoxLayout;
+class QHBoxLayout;
+class QFrame;
 
-/**
- * @brief Individual category item widget
- */
-class CategoryItem : public QWidget {
-    Q_OBJECT
-
-public:
-    explicit CategoryItem(const QString& categoryName, const QString& displayName,
-                          int iconCount = 0, QWidget* parent = nullptr);
-
-    void setCategoryName(const QString& name) { m_categoryName = name; }
-    QString categoryName() const { return m_categoryName; }
-
-    void setDisplayName(const QString& name);
-    QString displayName() const { return m_displayName; }
-
-    void setIconCount(int count);
-    int iconCount() const { return m_iconCount; }
-
-    void setSelected(bool selected);
-    bool isSelected() const { return m_selected; }
-
-    void setShortcutKey(const QString& key);
-    QString shortcutKey() const { return m_shortcutKey; }
-
-signals:
-    void clicked(const QString& categoryName);
-    void contextMenuRequested(const QString& categoryName, const QPoint& globalPos);
-
-protected:
-    void paintEvent(QPaintEvent* event) override;
-    void mousePressEvent(QMouseEvent* event) override;
-    void contextMenuEvent(QContextMenuEvent* event) override;
-    void enterEvent(QEnterEvent* event) override;
-    void leaveEvent(QEvent* event) override;
-
-private:
-    void updateAppearance();
-
-    QString m_categoryName;
-    QString m_displayName;
-    int m_iconCount;
-    bool m_selected;
-    bool m_hovered;
-    QString m_shortcutKey;
-
-    QLabel* m_nameLabel;
-    QLabel* m_countLabel;
-    QLabel* m_shortcutLabel;
-
-    static const int ITEM_HEIGHT = 40;
-    static const int ICON_SIZE = 16;
-};
+namespace gallery {
 
 /**
- * @brief Category sidebar widget with filtering capabilities
+ * @class CategorySidebarWidget
+ * @brief Left sidebar widget for customization and category selection
+ * @details Provides a professional sidebar interface with:
+ *          - "Customizer" header with reset button
+ *          - Color picker section
+ *          - Stroke width slider (0.5-4.0px)
+ *          - Icon size slider (16-256px)
+ *          - Category list with item counts
+ *          - "All" option for viewing all icons
+ *
+ * @par Usage:
+ * @code
+ * CategorySidebarWidget sidebar;
+ * connect(&sidebar, &CategorySidebarWidget::optionsChanged,
+ *         this, &MyWidget::onOptionsChanged);
+ * connect(&sidebar, &CategorySidebarWidget::categorySelected,
+ *         this, &MyWidget::onCategorySelected);
+ * @endcode
+ *
+ * @see IconOptions
  */
 class CategorySidebarWidget : public QWidget {
     Q_OBJECT
 
 public:
+    /**
+     * @brief Construct a CategorySidebarWidget
+     * @param parent The parent widget
+     */
     explicit CategorySidebarWidget(QWidget* parent = nullptr);
-    ~CategorySidebarWidget();
 
-    // Manager setup
-    void setIconMetadataManager(IconMetadataManager* manager);
-    void setFavoritesManager(FavoritesManager* manager);
+    /**
+     * @brief Destructor
+     */
+    ~CategorySidebarWidget() override;
 
-    // Category management
-    void refreshCategories();
-    void setCurrentCategory(const QString& category);
-    QString currentCategory() const { return m_currentCategory; }
+    /**
+     * @brief Set the available categories with their icon counts
+     * @param categories A list of category names
+     * @param iconCounts A map of category name to icon count
+     * @details Updates the category list widget with the provided categories
+     */
+    void setCategories(const QStringList& categories, const QMap<QString, int>& iconCounts);
 
-    // Special categories
-    void updateFavoritesCount(int count);
-    void updateRecentCount(int count);
-    void addToRecentCategories(const QString& category);
+    /**
+     * @brief Set the current icon options
+     * @param options The IconOptions to display
+     * @details Updates all UI elements to reflect the provided options
+     */
+    void setIconOptions(const IconOptions& options);
 
-    // Appearance
-    void setCompactMode(bool compact);
-    bool isCompactMode() const { return m_compactMode; }
+    /**
+     * @brief Get the current icon options from the sidebar
+     * @return The current IconOptions
+     */
+    [[nodiscard]] IconOptions getIconOptions() const;
 
-    // Keyboard shortcuts
-    void setupCategoryShortcuts(QWidget* parent);
+    /**
+     * @brief Set the current theme color
+     * @param isDark True if dark theme is active
+     * @details Adjusts the default color based on theme
+     */
+    void setTheme(bool isDark);
 
-signals:
+Q_SIGNALS:
+    /**
+     * @brief Emitted when icon customization options change
+     * @param options The new IconOptions
+     * @details Emitted whenever color, stroke width, or size changes
+     */
+    void optionsChanged(const IconOptions& options);
+
+    /**
+     * @brief Emitted when a category is selected
+     * @param category The selected category name (empty string for "All")
+     * @details Emitted when a category list item is clicked
+     */
     void categorySelected(const QString& category);
-    void showAllRequested();
-    void showFavoritesRequested();
-    void showRecentRequested();
-    void clearCategoryRequested(const QString& category);
 
-protected:
-    void keyPressEvent(QKeyEvent* event) override;
+    /**
+     * @brief Emitted when "Show All" is clicked
+     * @details Convenience signal for clearing category filter
+     */
+    void showAllClicked();
 
 private slots:
-    void onCategoryClicked(const QString& category);
-    void onCategoryContextMenu(const QString& category, const QPoint& globalPos);
-    void onShowAll();
-    void onShowFavorites();
-    void onShowRecent();
-    void onClearCategory();
-    void onRefreshCategories();
-    void onCategoryShortcut(int index);
+    /**
+     * @brief Called when color preview button is clicked
+     */
+    void onColorButtonClicked();
+
+    /**
+     * @brief Called when stroke width slider value changes
+     * @param value The new slider value (5-40, mapped to 0.5-4.0)
+     */
+    void onStrokeWidthChanged(int value);
+
+    /**
+     * @brief Called when size slider value changes
+     * @param value The new slider value (16-256)
+     */
+    void onSizeChanged(int value);
+
+    /**
+     * @brief Called when a category list item is clicked
+     * @param item The clicked list widget item
+     */
+    void onCategoryClicked(QListWidgetItem* item);
+
+    /**
+     * @brief Called when reset button is clicked
+     */
+    void onResetClicked();
 
 private:
+    /**
+     * @brief Initialize the UI layout
+     */
     void setupUI();
-    void setupSpecialCategories();
-    void setupMainCategories();
-    void setupRecentCategories();
-    void createCategoryItem(const QString& categoryName, const QString& displayName, int iconCount,
-                            const QString& shortcut = QString());
-    void updateCategoryCounts();
-    void selectCategory(const QString& category);
 
-    // UI Components
-    QVBoxLayout* m_mainLayout;
-    QScrollArea* m_scrollArea;
-    QWidget* m_scrollContent;
-    QVBoxLayout* m_contentLayout;
+    /**
+     * @brief Create the header section with title and reset button
+     * @return The header widget
+     */
+    QWidget* createHeaderSection();
 
-    // Category sections
-    QGroupBox* m_specialGroup;
-    QGroupBox* m_mainGroup;
-    QGroupBox* m_recentGroup;
+    /**
+     * @brief Create the color customization section
+     * @return The color widget
+     */
+    QWidget* createColorSection();
 
-    // Special category items
-    CategoryItem* m_allCategoriesItem;
-    CategoryItem* m_favoritesItem;
-    CategoryItem* m_recentItem;
+    /**
+     * @brief Create the stroke width customization section
+     * @return The stroke width widget
+     */
+    QWidget* createStrokeWidthSection();
 
-    // Main category items (9 categories)
-    QList<CategoryItem*> m_categoryItems;
-    QHash<QString, CategoryItem*> m_categoryMap;
+    /**
+     * @brief Create the size customization section
+     * @return The size widget
+     */
+    QWidget* createSizeSection();
 
-    // Recent categories
-    QList<CategoryItem*> m_recentCategoryItems;
-    QStringList m_recentCategories;
+    /**
+     * @brief Create the category selection section
+     * @return The category widget
+     */
+    QWidget* createCategorySection();
 
-    // Managers
-    IconMetadataManager* m_iconMetadataManager;
-    FavoritesManager* m_favoritesManager;
+    /**
+     * @brief Update the color preview button appearance
+     */
+    void updateColorButtonAppearance();
 
-    // State
-    QString m_currentCategory;
-    bool m_compactMode;
+    /**
+     * @brief Update the stroke width value display
+     */
+    void updateStrokeWidthDisplay();
 
-    // Shortcuts
-    QList<QShortcut*> m_categoryShortcuts;
+    /**
+     * @brief Update the size value display
+     */
+    void updateSizeDisplay();
 
-    // Category information
-    struct CategoryInfo {
-        QString name;
-        QString displayName;
-        QString description;
-        QString shortcut;
-        int iconCount;
-    };
+    // UI Components - Header
+    QPushButton* m_resetButton;                  ///< Reset all options to default
 
-    QList<CategoryInfo> m_categoryInfos;
+    // UI Components - Color section
+    QLabel* m_colorLabel;                        ///< "Color" label
+    QPushButton* m_colorButton;                  ///< Color preview button
 
-    // Constants
-    static const int MAX_RECENT_CATEGORIES = 5;
+    // UI Components - Stroke width section
+    QLabel* m_strokeWidthLabel;                  ///< "Stroke width" label
+    QLabel* m_strokeWidthValueLabel;             ///< Stroke width value display (e.g., "2px")
+    QSlider* m_strokeWidthSlider;                ///< Stroke width slider (0.5-4.0)
+
+    // UI Components - Size section
+    QLabel* m_sizeLabel;                         ///< "Size" label
+    QLabel* m_sizeValueLabel;                    ///< Size value display (e.g., "24px")
+    QSlider* m_sizeSlider;                       ///< Size slider (16-256)
+
+    // UI Components - Category section
+    QListWidget* m_categoryListWidget;           ///< Category list with counts
+    QMap<QString, int> m_categoryIconCounts;     ///< Cache of category icon counts
+
+    // Current state
+    IconOptions m_currentOptions;                ///< Current customization options
+    bool m_isDarkTheme;                          ///< Whether dark theme is active
+    QColor m_defaultColor;                       ///< Default color based on theme
 };
 
-#endif // CATEGORYSIDEBARWIDGET_H
+} // namespace gallery
+
+#endif // CATEGORY_SIDEBAR_WIDGET_H
