@@ -9,17 +9,15 @@
 
 #include "ImportDialog.h"
 
+#include <QHBoxLayout>
+#include <QIcon>
 #include <QLabel>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QIcon>
 
 namespace gallery {
 
-ImportDialog::ImportDialog(QWidget* parent)
-    : QDialog(parent)
-{
+ImportDialog::ImportDialog(QWidget* parent) : QDialog(parent) {
     setWindowTitle("Import Custom Icons");
     setMinimumWidth(400);
     setMinimumHeight(250);
@@ -28,24 +26,21 @@ ImportDialog::ImportDialog(QWidget* parent)
 
 ImportDialog::~ImportDialog() = default;
 
-void ImportDialog::setupUI()
-{
+void ImportDialog::setupUI() {
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
     // Main message
     m_messageLabel = new QLabel(this);
-    m_messageLabel->setText(
-        "<h2>Import Custom Icon Sets</h2>"
-        "<p>This feature is coming soon!</p>"
-        "<p>In future versions, you will be able to:</p>"
-        "<ul>"
-        "<li>Import custom SVG icon sets</li>"
-        "<li>Load icon packs from directories</li>"
-        "<li>Merge with existing icons</li>"
-        "<li>Manage multiple icon libraries</li>"
-        "</ul>"
-        "<p>Please check back later for updates.</p>"
-    );
+    m_messageLabel->setText("<h2>Import Custom Icon Sets</h2>"
+                            "<p>This feature is coming soon!</p>"
+                            "<p>In future versions, you will be able to:</p>"
+                            "<ul>"
+                            "<li>Import custom SVG icon sets</li>"
+                            "<li>Load icon packs from directories</li>"
+                            "<li>Merge with existing icons</li>"
+                            "<li>Manage multiple icon libraries</li>"
+                            "</ul>"
+                            "<p>Please check back later for updates.</p>");
     m_messageLabel->setAlignment(Qt::AlignCenter);
     m_messageLabel->setWordWrap(true);
     mainLayout->addWidget(m_messageLabel);
@@ -56,8 +51,7 @@ void ImportDialog::setupUI()
 
     m_closeButton = new QPushButton("Close", this);
     m_closeButton->setMinimumWidth(100);
-    connect(m_closeButton, &QPushButton::clicked,
-            this, &QDialog::accept);
+    connect(m_closeButton, &QPushButton::clicked, this, &QDialog::accept);
     buttonLayout->addWidget(m_closeButton);
 
     mainLayout->addLayout(buttonLayout);

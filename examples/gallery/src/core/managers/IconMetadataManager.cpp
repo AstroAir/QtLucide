@@ -5,20 +5,18 @@
 
 #include "IconMetadataManager.h"
 
+#include <QDebug>
 #include <QFile>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QJsonArray>
-#include <QDebug>
 #include <algorithm>
 
 namespace gallery {
 
-IconMetadataManager::IconMetadataManager(QObject *parent)
-    : QObject(parent) {
-}
+IconMetadataManager::IconMetadataManager(QObject* parent) : QObject(parent) {}
 
-bool IconMetadataManager::loadMetadata(const QString &categoriesPath, const QString &iconsPath) {
+bool IconMetadataManager::loadMetadata(const QString& categoriesPath, const QString& iconsPath) {
     // Load categories
     QJsonDocument categoriesDoc = loadJsonFile(categoriesPath);
     if (categoriesDoc.isEmpty()) {
@@ -43,11 +41,12 @@ bool IconMetadataManager::loadMetadata(const QString &categoriesPath, const QStr
         return false;
     }
 
-    qInfo() << "Successfully loaded" << m_icons.size() << "icons from" << m_categories.size() << "categories";
+    qInfo() << "Successfully loaded" << m_icons.size() << "icons from" << m_categories.size()
+            << "categories";
     return true;
 }
 
-QJsonDocument IconMetadataManager::loadJsonFile(const QString &path) const {
+QJsonDocument IconMetadataManager::loadJsonFile(const QString& path) const {
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly)) {
         qWarning() << "Cannot open file:" << path;
@@ -68,7 +67,7 @@ QJsonDocument IconMetadataManager::loadJsonFile(const QString &path) const {
     return doc;
 }
 
-bool IconMetadataManager::parseCategories(const QJsonDocument &doc) {
+bool IconMetadataManager::parseCategories(const QJsonDocument& doc) {
     if (!doc.isObject()) {
         qWarning() << "Categories document is not a JSON object";
         return false;
@@ -87,7 +86,7 @@ bool IconMetadataManager::parseCategories(const QJsonDocument &doc) {
 
         QStringList icons;
         QJsonArray iconArray = value.toArray();
-        for (const QJsonValue &iconValue : iconArray) {
+        for (const QJsonValue& iconValue : iconArray) {
             if (iconValue.isString()) {
                 icons.append(iconValue.toString());
             }
@@ -99,7 +98,7 @@ bool IconMetadataManager::parseCategories(const QJsonDocument &doc) {
     return true;
 }
 
-bool IconMetadataManager::parseIcons(const QJsonDocument &doc) {
+bool IconMetadataManager::parseIcons(const QJsonDocument& doc) {
     if (!doc.isObject()) {
         qWarning() << "Icons document is not a JSON object";
         return false;
@@ -140,7 +139,7 @@ bool IconMetadataManager::parseIcons(const QJsonDocument &doc) {
         QJsonValue tagsValue = iconObj.value("tags");
         if (tagsValue.isArray()) {
             QJsonArray tagsArray = tagsValue.toArray();
-            for (const QJsonValue &tagValue : tagsArray) {
+            for (const QJsonValue& tagValue : tagsArray) {
                 if (tagValue.isString()) {
                     metadata.tags.append(tagValue.toString());
                 }
@@ -151,7 +150,7 @@ bool IconMetadataManager::parseIcons(const QJsonDocument &doc) {
         QJsonValue categoriesValue = iconObj.value("categories");
         if (categoriesValue.isArray()) {
             QJsonArray categoriesArray = categoriesValue.toArray();
-            for (const QJsonValue &catValue : categoriesArray) {
+            for (const QJsonValue& catValue : categoriesArray) {
                 if (catValue.isString()) {
                     metadata.categories.append(catValue.toString());
                 }
@@ -162,7 +161,7 @@ bool IconMetadataManager::parseIcons(const QJsonDocument &doc) {
         QJsonValue contributorsValue = iconObj.value("contributors");
         if (contributorsValue.isArray()) {
             QJsonArray contributorsArray = contributorsValue.toArray();
-            for (const QJsonValue &contribValue : contributorsArray) {
+            for (const QJsonValue& contribValue : contributorsArray) {
                 if (contribValue.isString()) {
                     metadata.contributors.append(contribValue.toString());
                 }
@@ -179,7 +178,7 @@ QStringList IconMetadataManager::getCategories() const {
     return m_categories.keys();
 }
 
-QStringList IconMetadataManager::getIconsByCategory(const QString &category) const {
+QStringList IconMetadataManager::getIconsByCategory(const QString& category) const {
     auto it = m_categories.find(category);
     if (it != m_categories.end()) {
         return it.value();
@@ -187,7 +186,7 @@ QStringList IconMetadataManager::getIconsByCategory(const QString &category) con
     return QStringList();
 }
 
-QStringList IconMetadataManager::getIconTags(const QString &iconName) const {
+QStringList IconMetadataManager::getIconTags(const QString& iconName) const {
     auto it = m_icons.find(iconName);
     if (it != m_icons.end()) {
         return it.value().tags;
@@ -195,15 +194,15 @@ QStringList IconMetadataManager::getIconTags(const QString &iconName) const {
     return QStringList();
 }
 
-int IconMetadataManager::getCategoryIconCount(const QString &category) const {
+int IconMetadataManager::getCategoryIconCount(const QString& category) const {
     auto it = m_categories.find(category);
     if (it != m_categories.end()) {
-        return it.value().size();
+        return static_cast<int>(it.value().size());
     }
     return 0;
 }
 
-IconMetadata IconMetadataManager::getIconMetadata(const QString &iconName) const {
+IconMetadata IconMetadataManager::getIconMetadata(const QString& iconName) const {
     auto it = m_icons.find(iconName);
     if (it != m_icons.end()) {
         return it.value();
@@ -211,15 +210,15 @@ IconMetadata IconMetadataManager::getIconMetadata(const QString &iconName) const
     return IconMetadata();
 }
 
-bool IconMetadataManager::iconExists(const QString &iconName) const {
+bool IconMetadataManager::iconExists(const QString& iconName) const {
     return m_icons.contains(iconName);
 }
 
 int IconMetadataManager::getTotalIconCount() const {
-    return m_icons.size();
+    return static_cast<int>(m_icons.size());
 }
 
-QStringList IconMetadataManager::searchIcons(const QString &searchText) const {
+QStringList IconMetadataManager::searchIcons(const QString& searchText) const {
     QStringList results;
 
     if (searchText.isEmpty()) {
@@ -229,7 +228,7 @@ QStringList IconMetadataManager::searchIcons(const QString &searchText) const {
     QString lowerSearchText = searchText.toLower();
 
     for (auto it = m_icons.begin(); it != m_icons.end(); ++it) {
-        const IconMetadata &metadata = it.value();
+        const IconMetadata& metadata = it.value();
 
         // Check if search text matches icon name
         if (metadata.name.contains(lowerSearchText, Qt::CaseInsensitive)) {
@@ -239,7 +238,7 @@ QStringList IconMetadataManager::searchIcons(const QString &searchText) const {
 
         // Check if search text matches any tag
         bool foundInTags = false;
-        for (const QString &tag : metadata.tags) {
+        for (const QString& tag : metadata.tags) {
             if (tag.contains(lowerSearchText, Qt::CaseInsensitive)) {
                 foundInTags = true;
                 break;
@@ -254,4 +253,4 @@ QStringList IconMetadataManager::searchIcons(const QString &searchText) const {
     return results;
 }
 
-}  // namespace gallery
+} // namespace gallery

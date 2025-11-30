@@ -12,10 +12,10 @@
 #ifndef PERFORMANCE_MONITOR_H
 #define PERFORMANCE_MONITOR_H
 
-#include <QObject>
-#include <QString>
 #include <QElapsedTimer>
 #include <QList>
+#include <QObject>
+#include <QString>
 #include <cstdint>
 
 namespace gallery {
@@ -61,7 +61,7 @@ public:
      * @brief Construct PerformanceMonitor
      * @param parent The parent QObject
      */
-    explicit PerformanceMonitor(QObject *parent = nullptr);
+    explicit PerformanceMonitor(QObject* parent = nullptr);
 
     /**
      * @brief Destructor
@@ -86,7 +86,7 @@ public:
      *
      * This method starts timing a measurement. Call endMeasurement() to complete it.
      */
-    void startMeasurement(const QString &label = QString());
+    void startMeasurement(const QString& label = QString());
 
     /**
      * @brief End the current measurement
@@ -95,35 +95,35 @@ public:
      *
      * This method ends timing and records the measurement.
      */
-    double endMeasurement(const QString &label = QString());
+    double endMeasurement(const QString& label = QString());
 
     /**
      * @brief Get the average render time for a given label
      * @param label The measurement label
      * @return Average time in milliseconds
      */
-    [[nodiscard]] double getAverageRenderTime(const QString &label = QString()) const;
+    [[nodiscard]] double getAverageRenderTime(const QString& label = QString()) const;
 
     /**
      * @brief Get the minimum render time recorded
      * @param label The measurement label
      * @return Minimum time in milliseconds
      */
-    [[nodiscard]] double getMinimumRenderTime(const QString &label = QString()) const;
+    [[nodiscard]] double getMinimumRenderTime(const QString& label = QString()) const;
 
     /**
      * @brief Get the maximum render time recorded
      * @param label The measurement label
      * @return Maximum time in milliseconds
      */
-    [[nodiscard]] double getMaximumRenderTime(const QString &label = QString()) const;
+    [[nodiscard]] double getMaximumRenderTime(const QString& label = QString()) const;
 
     /**
      * @brief Get the last recorded render time
      * @param label The measurement label
      * @return Last time in milliseconds
      */
-    [[nodiscard]] double getLastRenderTime(const QString &label = QString()) const;
+    [[nodiscard]] double getLastRenderTime(const QString& label = QString()) const;
 
     /**
      * @brief Calculate the current frame rate
@@ -142,7 +142,7 @@ public:
      * @param label The measurement label
      * @return Number of samples for this label
      */
-    [[nodiscard]] int getSampleCount(const QString &label = QString()) const;
+    [[nodiscard]] int getSampleCount(const QString& label = QString()) const;
 
     /**
      * @brief Check if performance is meeting target FPS
@@ -177,7 +177,7 @@ public:
      * @brief Reset measurements for a specific label
      * @param label The measurement label
      */
-    void resetLabel(const QString &label);
+    void resetLabel(const QString& label);
 
     /**
      * @brief Enable or disable memory tracking
@@ -204,7 +204,7 @@ signals:
      * @param label The measurement label
      * @param timeMs Time taken in milliseconds
      */
-    void measurementCompleted(const QString &label, double timeMs);
+    void measurementCompleted(const QString& label, double timeMs);
 
     /**
      * @brief Emitted when performance improves
@@ -231,24 +231,24 @@ private:
     };
 
     // Performance tracking
-    QElapsedTimer m_currentTimer;                           ///< Current measurement timer
-    QList<MeasurementSample> m_samples;                     ///< Sample history buffer
-    int m_maxSamples = 100;                                 ///< Maximum samples to keep
-    int m_targetFPS = 60;                                   ///< Target FPS for baseline
+    QElapsedTimer m_currentTimer;       ///< Current measurement timer
+    QList<MeasurementSample> m_samples; ///< Sample history buffer
+    int m_maxSamples = 100;             ///< Maximum samples to keep
+    int m_targetFPS = 60;               ///< Target FPS for baseline
 
     // Statistics
-    QString m_currentLabel;                                 ///< Current measurement label
-    double m_lastFPS = 60.0;                                ///< Last calculated FPS
-    bool m_wasPerformanceGood = true;                       ///< Track performance state
+    QString m_currentLabel;           ///< Current measurement label
+    double m_lastFPS = 60.0;          ///< Last calculated FPS
+    bool m_wasPerformanceGood = true; ///< Track performance state
 
     // Memory tracking
-    bool m_memoryTrackingEnabled = false;                   ///< Whether to track memory
-    double m_peakMemoryMB = 0.0;                            ///< Peak memory recorded
+    bool m_memoryTrackingEnabled = false; ///< Whether to track memory
+    double m_peakMemoryMB = 0.0;          ///< Peak memory recorded
 
     // Performance thresholds
-    static constexpr double PERFORMANCE_WARNING_THRESHOLD = 0.85;  ///< 85% of target FPS
+    static constexpr double PERFORMANCE_WARNING_THRESHOLD = 0.85; ///< 85% of target FPS
 };
 
-}  // namespace gallery
+} // namespace gallery
 
-#endif  // PERFORMANCE_MONITOR_H
+#endif // PERFORMANCE_MONITOR_H

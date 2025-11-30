@@ -448,9 +448,7 @@ void TestThreadSafety::testCustomPainterRaceCondition() {
             return new RacePainter();
         }
 
-        [[nodiscard]] QString iconText() const override {
-            return QStringLiteral("race-painter");
-        }
+        [[nodiscard]] QString iconText() const override { return QStringLiteral("race-painter"); }
 
         void paint(lucide::QtLucide* lucide, QPainter* painter, const QRect& rect, QIcon::Mode mode,
                    QIcon::State state, const QVariantMap& options) override {

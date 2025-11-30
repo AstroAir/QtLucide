@@ -25,7 +25,7 @@ namespace lucide {
     public:
         QtLucideSvgIconPainter();
         ~QtLucideSvgIconPainter() override;
-        
+
         [[nodiscard]] QtLucideIconPainter* clone() const override;
         [[nodiscard]] QString iconText() const override;
         void paint(QtLucide* lucide, QPainter* painter, const QRect& rect,
@@ -120,14 +120,14 @@ public:
     {
         // Get color from options
         QColor color = options.value("color", Qt::black).value<QColor>();
-        
+
         // Adjust color based on mode
         if (mode == QIcon::Disabled) {
             color = color.lighter(150);
         } else if (mode == QIcon::Active) {
             color = color.darker(110);
         }
-        
+
         // Draw custom content
         painter->setPen(color);
         painter->setFont(QFont("Arial", rect.height() * 0.6));
@@ -155,8 +155,8 @@ private:
 class GradientIconPainter : public QtLucideIconPainter
 {
 public:
-    GradientIconPainter(const QString& iconName, 
-                       const QColor& startColor, 
+    GradientIconPainter(const QString& iconName,
+                       const QColor& startColor,
                        const QColor& endColor)
         : m_iconName(iconName), m_startColor(startColor), m_endColor(endColor) {}
 
@@ -168,13 +168,13 @@ public:
         QLinearGradient gradient(rect.topLeft(), rect.bottomRight());
         gradient.setColorAt(0, m_startColor);
         gradient.setColorAt(1, m_endColor);
-        
+
         // Adjust for mode
         if (mode == QIcon::Disabled) {
             gradient.setColorAt(0, m_startColor.lighter(150));
             gradient.setColorAt(1, m_endColor.lighter(150));
         }
-        
+
         // Get SVG data and render with gradient
         QByteArray svgData = lucide->svgData(m_iconName);
         if (!svgData.isEmpty()) {
@@ -200,9 +200,9 @@ private:
     QString m_iconName;
     QColor m_startColor;
     QColor m_endColor;
-    
+
     void renderSvgWithGradient(QPainter* painter, const QRect& rect,
-                              const QByteArray& svgData, 
+                              const QByteArray& svgData,
                               const QLinearGradient& gradient);
 };
 ```
@@ -278,12 +278,12 @@ void paint(...) override
     // Cache expensive computations
     static QHash<QString, QPixmap> cache;
     QString key = QString("%1-%2x%3").arg(iconText()).arg(rect.width()).arg(rect.height());
-    
+
     if (cache.contains(key)) {
         painter->drawPixmap(rect, cache[key]);
         return;
     }
-    
+
     // Expensive rendering...
     QPixmap pixmap = renderExpensiveIcon(rect.size());
     cache[key] = pixmap;

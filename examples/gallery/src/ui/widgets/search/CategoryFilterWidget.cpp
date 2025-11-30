@@ -8,24 +8,19 @@
 
 #include "CategoryFilterWidget.h"
 
-#include <QComboBox>
 #include <QCheckBox>
+#include <QComboBox>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QLabel>
 
 namespace gallery {
 
 CategoryFilterWidget::CategoryFilterWidget(FilterMode mode, QWidget* parent)
-    : QWidget(parent),
-      m_mode(mode),
-      m_selectedCategory(""),
-      m_favoritesOnly(false),
-      m_favoritesCheckBox(nullptr),
-      m_categoryComboBox(nullptr),
-      m_categoryListWidget(nullptr),
+    : QWidget(parent), m_mode(mode), m_selectedCategory(""), m_favoritesOnly(false),
+      m_favoritesCheckBox(nullptr), m_categoryComboBox(nullptr), m_categoryListWidget(nullptr),
       m_mainLayout(nullptr) {
     setupUI();
 }
@@ -63,29 +58,27 @@ QWidget* CategoryFilterWidget::createDropdownLayout() {
 
     m_categoryComboBox = new QComboBox(this);
     m_categoryComboBox->setMinimumWidth(120);
-    m_categoryComboBox->setStyleSheet(
-        "QComboBox {"
-        "  border: 1px solid #555;"
-        "  border-radius: 4px;"
-        "  padding: 4px 8px;"
-        "  background-color: #2a2a2a;"
-        "  color: white;"
-        "  font-size: 10pt;"
-        "}"
-        "QComboBox:hover {"
-        "  border: 1px solid #666;"
-        "}"
-        "QComboBox::drop-down {"
-        "  border: none;"
-        "}"
-        "QComboBox QAbstractItemView {"
-        "  background-color: #2a2a2a;"
-        "  color: white;"
-        "  selection-background-color: #0066CC;"
-        "}"
-    );
-    connect(m_categoryComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &CategoryFilterWidget::onCategoryChanged);
+    m_categoryComboBox->setStyleSheet("QComboBox {"
+                                      "  border: 1px solid #555;"
+                                      "  border-radius: 4px;"
+                                      "  padding: 4px 8px;"
+                                      "  background-color: #2a2a2a;"
+                                      "  color: white;"
+                                      "  font-size: 10pt;"
+                                      "}"
+                                      "QComboBox:hover {"
+                                      "  border: 1px solid #666;"
+                                      "}"
+                                      "QComboBox::drop-down {"
+                                      "  border: none;"
+                                      "}"
+                                      "QComboBox QAbstractItemView {"
+                                      "  background-color: #2a2a2a;"
+                                      "  color: white;"
+                                      "  selection-background-color: #0066CC;"
+                                      "}");
+    connect(m_categoryComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+            &CategoryFilterWidget::onCategoryChanged);
     categoryLayout->addWidget(m_categoryComboBox);
     categoryLayout->addStretch();
 
@@ -93,25 +86,24 @@ QWidget* CategoryFilterWidget::createDropdownLayout() {
 
     // Favorites checkbox
     m_favoritesCheckBox = new QCheckBox("Show only favorites", this);
-    m_favoritesCheckBox->setStyleSheet(
-        "QCheckBox {"
-        "  color: #aaa;"
-        "}"
-        "QCheckBox::indicator {"
-        "  width: 18px;"
-        "  height: 18px;"
-        "  border-radius: 3px;"
-        "  border: 1px solid #555;"
-        "}"
-        "QCheckBox::indicator:unchecked {"
-        "  background-color: #2a2a2a;"
-        "}"
-        "QCheckBox::indicator:checked {"
-        "  background-color: #0066CC;"
-        "  border: 1px solid #0066CC;"
-        "}"
-    );
-    connect(m_favoritesCheckBox, &QCheckBox::toggled, this, &CategoryFilterWidget::onFavoritesToggled);
+    m_favoritesCheckBox->setStyleSheet("QCheckBox {"
+                                       "  color: #aaa;"
+                                       "}"
+                                       "QCheckBox::indicator {"
+                                       "  width: 18px;"
+                                       "  height: 18px;"
+                                       "  border-radius: 3px;"
+                                       "  border: 1px solid #555;"
+                                       "}"
+                                       "QCheckBox::indicator:unchecked {"
+                                       "  background-color: #2a2a2a;"
+                                       "}"
+                                       "QCheckBox::indicator:checked {"
+                                       "  background-color: #0066CC;"
+                                       "  border: 1px solid #0066CC;"
+                                       "}");
+    connect(m_favoritesCheckBox, &QCheckBox::toggled, this,
+            &CategoryFilterWidget::onFavoritesToggled);
     layout->addWidget(m_favoritesCheckBox);
 
     widget->setLayout(layout);
@@ -132,43 +124,41 @@ QWidget* CategoryFilterWidget::createListLayout() {
     m_categoryListWidget = new QListWidget(this);
     m_categoryListWidget->setMinimumHeight(150);
     m_categoryListWidget->setMaximumHeight(250);
-    m_categoryListWidget->setStyleSheet(
-        "QListWidget::item {"
-        "  padding: 4px;"
-        "  height: 24px;"
-        "}"
-        "QListWidget::item:selected {"
-        "  background-color: #0066CC;"
-        "  color: white;"
-        "}"
-        "QListWidget::item:hover {"
-        "  background-color: #333;"
-        "}"
-    );
-    connect(m_categoryListWidget, &QListWidget::itemClicked, this, &CategoryFilterWidget::onCategoryListItemSelected);
+    m_categoryListWidget->setStyleSheet("QListWidget::item {"
+                                        "  padding: 4px;"
+                                        "  height: 24px;"
+                                        "}"
+                                        "QListWidget::item:selected {"
+                                        "  background-color: #0066CC;"
+                                        "  color: white;"
+                                        "}"
+                                        "QListWidget::item:hover {"
+                                        "  background-color: #333;"
+                                        "}");
+    connect(m_categoryListWidget, &QListWidget::itemClicked, this,
+            &CategoryFilterWidget::onCategoryListItemSelected);
     layout->addWidget(m_categoryListWidget);
 
     // Favorites checkbox
     m_favoritesCheckBox = new QCheckBox("Show only favorites", this);
-    m_favoritesCheckBox->setStyleSheet(
-        "QCheckBox {"
-        "  color: #aaa;"
-        "}"
-        "QCheckBox::indicator {"
-        "  width: 18px;"
-        "  height: 18px;"
-        "  border-radius: 3px;"
-        "  border: 1px solid #555;"
-        "}"
-        "QCheckBox::indicator:unchecked {"
-        "  background-color: #2a2a2a;"
-        "}"
-        "QCheckBox::indicator:checked {"
-        "  background-color: #0066CC;"
-        "  border: 1px solid #0066CC;"
-        "}"
-    );
-    connect(m_favoritesCheckBox, &QCheckBox::toggled, this, &CategoryFilterWidget::onFavoritesToggled);
+    m_favoritesCheckBox->setStyleSheet("QCheckBox {"
+                                       "  color: #aaa;"
+                                       "}"
+                                       "QCheckBox::indicator {"
+                                       "  width: 18px;"
+                                       "  height: 18px;"
+                                       "  border-radius: 3px;"
+                                       "  border: 1px solid #555;"
+                                       "}"
+                                       "QCheckBox::indicator:unchecked {"
+                                       "  background-color: #2a2a2a;"
+                                       "}"
+                                       "QCheckBox::indicator:checked {"
+                                       "  background-color: #0066CC;"
+                                       "  border: 1px solid #0066CC;"
+                                       "}");
+    connect(m_favoritesCheckBox, &QCheckBox::toggled, this,
+            &CategoryFilterWidget::onFavoritesToggled);
     layout->addWidget(m_favoritesCheckBox);
 
     widget->setLayout(layout);
@@ -276,10 +266,7 @@ bool CategoryFilterWidget::isFavoritesOnly() const {
 }
 
 CategoryFilterSettings CategoryFilterWidget::filterSettings() const {
-    return CategoryFilterSettings{
-        m_selectedCategory,
-        m_favoritesOnly
-    };
+    return CategoryFilterSettings{m_selectedCategory, m_favoritesOnly};
 }
 
 void CategoryFilterWidget::setFilterSettings(const CategoryFilterSettings& settings) {

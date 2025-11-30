@@ -129,7 +129,7 @@ All build scripts support similar options:
 ### XMake
 
 - XMake 2.5.0 or later
-- Download from: https://xmake.io
+- Download from: <https://xmake.io>
 
 ## Build Examples
 

@@ -12,9 +12,9 @@
 #ifndef ICON_EXPORT_DIALOG_H
 #define ICON_EXPORT_DIALOG_H
 
+#include <QColor>
 #include <QDialog>
 #include <QString>
-#include <QColor>
 #include <memory>
 
 class QLabel;
@@ -29,6 +29,10 @@ class QHBoxLayout;
 class QGroupBox;
 class QCheckBox;
 
+namespace lucide {
+class QtLucide;
+}
+
 namespace gallery {
 
 enum class ExportFormat;
@@ -39,15 +43,15 @@ struct IconOptions;
  * @brief Settings for exporting a single icon
  */
 struct IconExportSettings {
-    QString iconName;           ///< Name of the icon to export
-    ExportFormat format;        ///< Export format (SVG, PNG, ICO)
-    int size;                   ///< Export size in pixels
-    bool useCustomSize;         ///< Whether to use custom size
-    int customSize;             ///< Custom size value
-    QColor colorOverride;       ///< Color override (if any)
-    bool useColorOverride;      ///< Whether to use color override
-    double strokeWidth;         ///< Stroke width override
-    QString outputPath;         ///< Output file path
+    QString iconName;      ///< Name of the icon to export
+    ExportFormat format;   ///< Export format (SVG, PNG, ICO)
+    int size;              ///< Export size in pixels
+    bool useCustomSize;    ///< Whether to use custom size
+    int customSize;        ///< Custom size value
+    QColor colorOverride;  ///< Color override (if any)
+    bool useColorOverride; ///< Whether to use color override
+    double strokeWidth;    ///< Stroke width override
+    QString outputPath;    ///< Output file path
 };
 
 /**
@@ -93,6 +97,12 @@ public:
      * @param iconName The name of the icon to export
      */
     void setIconName(const QString& iconName);
+
+    /**
+     * @brief Set the QtLucide instance for icon rendering
+     * @param lucide QtLucide instance (must remain valid during dialog lifetime)
+     */
+    void setLucideInstance(lucide::QtLucide* lucide);
 
     /**
      * @brief Get the current export settings
@@ -208,24 +218,25 @@ private:
     [[nodiscard]] bool validateOutputPath() const;
 
     // UI Components
-    QLabel* m_iconPreviewLabel;          ///< Label for icon preview
-    QComboBox* m_formatComboBox;         ///< Format selection (SVG, PNG, ICO)
-    QComboBox* m_sizeComboBox;           ///< Preset size selection
-    QSpinBox* m_customSizeSpinBox;       ///< Custom size input
-    QDoubleSpinBox* m_strokeWidthSpinBox; ///< Stroke width slider/spinbox
-    QPushButton* m_colorButton;          ///< Color override button
-    QLineEdit* m_outputPathEdit;         ///< Output file path
-    QPushButton* m_browseButton;         ///< Browse for output path
-    QPushButton* m_copySvgButton;        ///< Copy SVG code button
-    QPushButton* m_copyPngButton;        ///< Copy PNG button
-    QPushButton* m_exportButton;         ///< Export button
-    QPushButton* m_cancelButton;         ///< Cancel button
+    QLabel* m_iconPreviewLabel;            ///< Label for icon preview
+    QComboBox* m_formatComboBox;           ///< Format selection (SVG, PNG, ICO)
+    QComboBox* m_sizeComboBox;             ///< Preset size selection
+    QSpinBox* m_customSizeSpinBox;         ///< Custom size input
+    QDoubleSpinBox* m_strokeWidthSpinBox;  ///< Stroke width slider/spinbox
+    QPushButton* m_colorButton;            ///< Color override button
+    QLineEdit* m_outputPathEdit;           ///< Output file path
+    QPushButton* m_browseButton;           ///< Browse for output path
+    QPushButton* m_copySvgButton;          ///< Copy SVG code button
+    QPushButton* m_copyPngButton;          ///< Copy PNG button
+    QPushButton* m_exportButton;           ///< Export button
+    QPushButton* m_cancelButton;           ///< Cancel button
     QCheckBox* m_useColorOverrideCheckBox; ///< Enable color override checkbox
 
     // State
     QString m_currentIconName;           ///< Current icon name
     QColor m_selectedColor;              ///< Currently selected color override
     int m_lastPreviewSize;               ///< Last preview size used
+    lucide::QtLucide* m_lucide{nullptr}; ///< QtLucide instance for rendering
 };
 
 } // namespace gallery

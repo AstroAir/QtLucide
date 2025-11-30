@@ -25,7 +25,7 @@ class QtLucide;
 namespace gallery {
 class IconMetadataManager;
 class ContentManager;
-}
+} // namespace gallery
 
 /**
  * @class TestGalleryIconLoading
@@ -243,4 +243,4 @@ private:
     int sampleIconLoading(const QStringList& iconNames, int sampleSize) const;
 };
 
-#endif  // TEST_GALLERY_ICON_LOADING_H
+#endif // TEST_GALLERY_ICON_LOADING_H

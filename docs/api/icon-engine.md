@@ -9,15 +9,15 @@ namespace lucide {
     class QtLucideIconEngine : public QIconEngine
     {
     public:
-        QtLucideIconEngine(QtLucide* lucide, 
+        QtLucideIconEngine(QtLucide* lucide,
                           QtLucideIconPainter* painter,
                           const QVariantMap& options);
         ~QtLucideIconEngine() override;
 
         // QIconEngine interface
-        void paint(QPainter* painter, const QRect& rect, 
+        void paint(QPainter* painter, const QRect& rect,
                   QIcon::Mode mode, QIcon::State state) override;
-        [[nodiscard]] QPixmap pixmap(const QSize& size, QIcon::Mode mode, 
+        [[nodiscard]] QPixmap pixmap(const QSize& size, QIcon::Mode mode,
                                      QIcon::State state) override;
         [[nodiscard]] QIconEngine* clone() const override;
         [[nodiscard]] QString key() const override;
@@ -58,7 +58,7 @@ Creates a new icon engine instance.
 // Usually created internally by QtLucide::icon()
 // The painter is shared with QtLucide, not owned by the engine
 QtLucideIconEngine* engine = new QtLucideIconEngine(
-    lucideInstance, 
+    lucideInstance,
     svgPainter,  // Shared painter from QtLucide
     mergedOptions
 );

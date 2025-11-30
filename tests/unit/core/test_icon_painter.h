@@ -15,7 +15,7 @@ namespace lucide {
 class QtLucide;
 class QtLucideIconPainter;
 class QtLucideSvgIconPainter;
-}  // namespace lucide
+} // namespace lucide
 
 /**
  * @brief Test class for QtLucideIconPainter and QtLucideSvgIconPainter
@@ -104,4 +104,4 @@ private:
     lucide::QtLucideSvgIconPainter* m_svgPainter = nullptr;
 };
 
-#endif  // TEST_ICON_PAINTER_H
+#endif // TEST_ICON_PAINTER_H

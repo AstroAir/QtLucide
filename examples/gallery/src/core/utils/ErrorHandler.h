@@ -12,8 +12,8 @@
 #ifndef GALLERY_ERRORHANDLER_H
 #define GALLERY_ERRORHANDLER_H
 
-#include <QString>
 #include <QObject>
+#include <QString>
 
 namespace gallery {
 
@@ -22,19 +22,19 @@ namespace gallery {
  * @details Defines different categories of errors that can occur in the application
  */
 enum class ErrorType {
-    FileNotFound = 0,           ///< Required file or resource was not found
-    FileReadError = 1,          ///< Error reading from file
-    FileWriteError = 2,         ///< Error writing to file
-    PermissionDenied = 3,       ///< Insufficient permissions for operation
-    InvalidFormat = 4,          ///< Data in invalid format
-    CorruptedData = 5,          ///< Data is corrupted or incomplete
-    OutOfMemory = 6,            ///< Not enough memory for operation
-    OperationFailed = 7,        ///< Generic operation failure
-    InvalidInput = 8,           ///< User provided invalid input
-    NotInitialized = 9,         ///< Required component not initialized
-    AlreadyExists = 10,         ///< Resource already exists
-    Timeout = 11,               ///< Operation timed out
-    Unknown = 12                ///< Unknown error
+    FileNotFound = 0,     ///< Required file or resource was not found
+    FileReadError = 1,    ///< Error reading from file
+    FileWriteError = 2,   ///< Error writing to file
+    PermissionDenied = 3, ///< Insufficient permissions for operation
+    InvalidFormat = 4,    ///< Data in invalid format
+    CorruptedData = 5,    ///< Data is corrupted or incomplete
+    OutOfMemory = 6,      ///< Not enough memory for operation
+    OperationFailed = 7,  ///< Generic operation failure
+    InvalidInput = 8,     ///< User provided invalid input
+    NotInitialized = 9,   ///< Required component not initialized
+    AlreadyExists = 10,   ///< Resource already exists
+    Timeout = 11,         ///< Operation timed out
+    Unknown = 12          ///< Unknown error
 };
 
 /**
@@ -42,10 +42,10 @@ enum class ErrorType {
  * @details Defines the severity level of different errors
  */
 enum class ErrorSeverity {
-    Info = 0,       ///< Informational message (not critical)
-    Warning = 1,    ///< Warning (operation may have issues)
-    Error = 2,      ///< Error (operation failed)
-    Critical = 3    ///< Critical error (application integrity at risk)
+    Info = 0,    ///< Informational message (not critical)
+    Warning = 1, ///< Warning (operation may have issues)
+    Error = 2,   ///< Error (operation failed)
+    Critical = 3 ///< Critical error (application integrity at risk)
 };
 
 /**
@@ -98,12 +98,9 @@ struct ErrorInfo {
      * @return true if all properties are equal, false otherwise
      */
     bool operator==(const ErrorInfo& other) const noexcept {
-        return type == other.type &&
-               severity == other.severity &&
-               userMessage == other.userMessage &&
-               technicalMessage == other.technicalMessage &&
-               suggestedAction == other.suggestedAction &&
-               errorCode == other.errorCode &&
+        return type == other.type && severity == other.severity &&
+               userMessage == other.userMessage && technicalMessage == other.technicalMessage &&
+               suggestedAction == other.suggestedAction && errorCode == other.errorCode &&
                context == other.context;
     }
 
@@ -112,9 +109,7 @@ struct ErrorInfo {
      * @param other The other ErrorInfo to compare with
      * @return true if any property differs, false otherwise
      */
-    bool operator!=(const ErrorInfo& other) const noexcept {
-        return !(*this == other);
-    }
+    bool operator!=(const ErrorInfo& other) const noexcept { return !(*this == other); }
 };
 
 /**
@@ -184,7 +179,7 @@ public:
      * @endcode
      */
     void reportError(ErrorType type, const QString& userMessage,
-                    const QString& technicalMessage = QString());
+                     const QString& technicalMessage = QString());
 
     /**
      * @brief Report a file-related error
@@ -201,7 +196,7 @@ public:
      * @endcode
      */
     void reportFileError(ErrorType type, const QString& filePath,
-                        const QString& details = QString());
+                         const QString& details = QString());
 
     /**
      * @brief Get the last reported error
@@ -310,8 +305,8 @@ private:
      */
     static QString errorTypeToString(ErrorType type);
 
-    ErrorInfo m_lastError;              ///< Information about the last reported error
-    bool m_hasError{false};             ///< Whether an error is currently pending
+    ErrorInfo m_lastError;  ///< Information about the last reported error
+    bool m_hasError{false}; ///< Whether an error is currently pending
 };
 
 } // namespace gallery

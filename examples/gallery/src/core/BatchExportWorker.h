@@ -6,14 +6,14 @@
 #ifndef BATCHEXPORTWORKER_H
 #define BATCHEXPORTWORKER_H
 
+#include <QDir>
+#include <QFile>
+#include <QImage>
 #include <QObject>
+#include <QPainter>
 #include <QString>
 #include <QStringList>
-#include <QDir>
-#include <QPainter>
 #include <QSvgGenerator>
-#include <QImage>
-#include <QFile>
 
 #include "GalleryTypes.h"
 
@@ -34,9 +34,7 @@ public:
         m_outputDir = outputDir;
     }
 
-    void setShouldCancel(bool cancel) {
-        m_shouldCancel = cancel;
-    }
+    void setShouldCancel(bool cancel) { m_shouldCancel = cancel; }
 
 public Q_SLOTS:
     void doExport() {
@@ -46,8 +44,7 @@ public Q_SLOTS:
         // Create output directory if it doesn't exist
         QDir outputDir(m_outputDir);
         if (!outputDir.exists() && !outputDir.mkpath(".")) {
-            emit exportFinished(false, 0, m_iconNames.size(),
-                                "Failed to create output directory");
+            emit exportFinished(false, 0, m_iconNames.size(), "Failed to create output directory");
             return;
         }
 
@@ -120,8 +117,7 @@ private:
         // In a real implementation, this would render the actual icon
         QPainter painter(&image);
         painter.fillRect(0, 0, m_size, m_size, QColor(200, 200, 200));
-        painter.drawText(QRect(0, 0, m_size, m_size), Qt::AlignCenter,
-                         QString("%1").arg(iconName));
+        painter.drawText(QRect(0, 0, m_size, m_size), Qt::AlignCenter, QString("%1").arg(iconName));
         painter.end();
 
         return image.save(filename, "PNG");

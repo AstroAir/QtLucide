@@ -9,25 +9,19 @@
 
 #include <QtLucide/QtLucide.h>
 
+#include <QApplication>
+#include <QDebug>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QScrollBar>
-#include <QMouseEvent>
-#include <QDebug>
-#include <QApplication>
 #include <QToolTip>
 #include <algorithm>
 
 namespace gallery {
 
 IconGridWidget::IconGridWidget(QWidget* parent)
-    : QWidget(parent)
-    , m_lucide(nullptr)
-    , m_selectedIcon()
-    , m_hoveredIcon()
-    , m_iconSize(48)
-    , m_spacing(12)
-    , m_columns(1)
-    , m_rows(0) {
+    : QWidget(parent), m_lucide(nullptr), m_selectedIcon(), m_hoveredIcon(), m_iconSize(48),
+      m_spacing(12), m_columns(1), m_rows(0) {
     setMouseTracking(true);
     setFocusPolicy(Qt::ClickFocus);
     setAttribute(Qt::WA_OpaquePaintEvent, false);
@@ -121,7 +115,7 @@ void IconGridWidget::clearSelection() {
 }
 
 int IconGridWidget::iconCount() const {
-    return m_icons.size();
+    return static_cast<int>(m_icons.size());
 }
 
 void IconGridWidget::setLucideInstance(lucide::QtLucide* lucide) {
@@ -134,6 +128,13 @@ void IconGridWidget::paintEvent(QPaintEvent* event) {
         return;
     }
 
+    int visibleStart = 0;
+    int visibleEnd = -1;
+    if (!getVisibleRange(visibleStart, visibleEnd)) {
+        QWidget::paintEvent(event);
+        return;
+    }
+
     QPainter painter(this);
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -141,12 +142,9 @@ void IconGridWidget::paintEvent(QPaintEvent* event) {
     int cellWidth = m_iconSize + m_spacing;
     int cellHeight = m_iconSize + m_spacing;
 
-    // Get visible range
-    int visibleStart, visibleEnd;
-    getVisibleRange(visibleStart, visibleEnd);
-
     // Draw icons
-    for (int i = visibleStart; i <= visibleEnd && i < m_icons.size(); ++i) {
+    const int totalIcons = static_cast<int>(m_icons.size());
+    for (int i = visibleStart; i <= visibleEnd && i < totalIcons; ++i) {
         int row = i / m_columns;
         int col = i % m_columns;
 
@@ -165,7 +163,7 @@ void IconGridWidget::paintEvent(QPaintEvent* event) {
         // Draw background for selected icon
         if (iconName == m_selectedIcon) {
             painter.fillRect(iconRect.adjusted(-2, -2, 2, 2),
-                           QColor(66, 133, 244, 30)); // Light blue highlight
+                             QColor(66, 133, 244, 30)); // Light blue highlight
             painter.drawRect(iconRect.adjusted(-2, -2, 2, 2));
         }
 
@@ -251,7 +249,13 @@ void IconGridWidget::recalculateLayout() {
 
     int cellWidth = m_iconSize + m_spacing;
     m_columns = std::max(1, (width() + m_spacing) / cellWidth);
-    m_rows = m_icons.isEmpty() ? 0 : (m_icons.size() + m_columns - 1) / m_columns;
+    const qsizetype iconCount = m_icons.size();
+    if (iconCount == 0) {
+        m_rows = 0;
+    } else {
+        const qsizetype columns = static_cast<qsizetype>(m_columns);
+        m_rows = static_cast<int>((iconCount + columns - 1) / columns);
+    }
 
     // Update minimum height
     int totalHeight = m_rows * (m_iconSize + m_spacing) + m_spacing;
@@ -270,7 +274,7 @@ int IconGridWidget::indexAtPosition(const QPoint& pos) const {
     }
 
     int index = row * m_columns + col;
-    if (index >= m_icons.size()) {
+    if (index >= static_cast<int>(m_icons.size())) {
         return -1;
     }
 
@@ -284,7 +288,7 @@ int IconGridWidget::indexAtPosition(const QPoint& pos) const {
 }
 
 QRect IconGridWidget::iconRectAt(int index) const {
-    if (index < 0 || index >= m_icons.size()) {
+    if (index < 0 || index >= static_cast<int>(m_icons.size())) {
         return QRect();
     }
 

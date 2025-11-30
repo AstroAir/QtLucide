@@ -68,7 +68,7 @@ executable('your_app',
 
 ```meson
 # Enable examples and tests even when used as subproject
-qtlucide_proj = subproject('QtLucide', 
+qtlucide_proj = subproject('QtLucide',
   default_options: ['examples=enabled', 'tests=enabled']
 )
 ```
@@ -113,19 +113,19 @@ Here's a simple example of using QtLucide in your application:
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    
+
     QMainWindow window;
     QToolBar *toolbar = window.addToolBar("Main");
-    
+
     // Create actions with Lucide icons
     QAction *openAction = new QAction("Open", &window);
     openAction->setIcon(QtLucide::icon(QtLucide::FolderOpen));
     toolbar->addAction(openAction);
-    
+
     QAction *saveAction = new QAction("Save", &window);
     saveAction->setIcon(QtLucide::icon(QtLucide::Save));
     toolbar->addAction(saveAction);
-    
+
     window.show();
     return app.exec();
 }

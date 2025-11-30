@@ -12,10 +12,10 @@
 #ifndef GALLERY_ICONITEM_H
 #define GALLERY_ICONITEM_H
 
-#include <QString>
-#include <QStringList>
 #include <QDateTime>
 #include <QMetaType>
+#include <QString>
+#include <QStringList>
 
 namespace gallery {
 
@@ -406,16 +406,16 @@ public:
     [[nodiscard]] QString toString() const;
 
 private:
-    QString m_name;                         ///< Icon name
-    QString m_description;                  ///< Icon description
-    QString m_category;                     ///< Primary category
-    QStringList m_categories;               ///< All categories
-    QStringList m_tags;                     ///< Associated tags
-    bool m_isFavorite{false};               ///< Favorite status
-    QDateTime m_createdAt;                  ///< Creation timestamp
-    QDateTime m_modifiedAt;                 ///< Modification timestamp
-    int m_usageCount{0};                    ///< Usage count
-    QHash<QString, QString> m_metadata;     ///< Custom metadata
+    QString m_name;                     ///< Icon name
+    QString m_description;              ///< Icon description
+    QString m_category;                 ///< Primary category
+    QStringList m_categories;           ///< All categories
+    QStringList m_tags;                 ///< Associated tags
+    bool m_isFavorite{false};           ///< Favorite status
+    QDateTime m_createdAt;              ///< Creation timestamp
+    QDateTime m_modifiedAt;             ///< Modification timestamp
+    int m_usageCount{0};                ///< Usage count
+    QHash<QString, QString> m_metadata; ///< Custom metadata
 };
 
 } // namespace gallery

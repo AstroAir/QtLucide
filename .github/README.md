@@ -19,6 +19,7 @@ Our CI/CD pipeline consists of several workflows that ensure code quality, secur
 **Triggers:** Push to main branches, pull requests, manual dispatch
 
 **Features:**
+
 - ✅ **Modern Qt Versions**: Tests with Qt 6.7.3 and 6.8.0
 - ✅ **Multi-Platform**: Ubuntu 22.04, Windows 2022, macOS 13/14
 - ✅ **Security Hardening**: Step Security Harden Runner
@@ -29,6 +30,7 @@ Our CI/CD pipeline consists of several workflows that ensure code quality, secur
 - ✅ **Parallel Builds**: Optimized build performance
 
 **Matrix Strategy:**
+
 ```yaml
 - Ubuntu 22.04 + Qt 6.8.0 + Release + Coverage
 - Ubuntu 22.04 + Qt 6.7.3 + Debug
@@ -41,6 +43,7 @@ Our CI/CD pipeline consists of several workflows that ensure code quality, secur
 **Triggers:** Git tags (`v*`), manual dispatch
 
 **Modern Features:**
+
 - ✅ **Modern Release Action**: Uses `softprops/action-gh-release@v2`
 - ✅ **Automated Changelog**: Extracts from CHANGELOG.md
 - ✅ **Multi-Platform Builds**: Linux, Windows, macOS
@@ -55,6 +58,7 @@ Our CI/CD pipeline consists of several workflows that ensure code quality, secur
 **Triggers:** Push, pull requests, weekly schedule, manual dispatch
 
 **Security Tools:**
+
 - 🔒 **CodeQL Analysis**: GitHub's semantic code analysis
 - 🔒 **Dependency Review**: Automated dependency vulnerability scanning
 - 🔒 **Trivy Scanner**: Comprehensive vulnerability scanning
@@ -69,6 +73,7 @@ Our CI/CD pipeline consists of several workflows that ensure code quality, secur
 **Triggers:** Push to main, pull requests, weekly schedule, manual dispatch
 
 **Performance Features:**
+
 - 📊 **Google Benchmark**: Comprehensive performance benchmarking
 - 📊 **Memory Profiling**: Valgrind massif memory profiling
 - 📊 **Memory Leak Detection**: Valgrind memcheck
@@ -80,6 +85,7 @@ Our CI/CD pipeline consists of several workflows that ensure code quality, secur
 **Triggers:** Push, pull requests, manual dispatch
 
 **XMake Features:**
+
 - 🔨 **Alternative Build System**: Tests XMake alongside CMake
 - 🔨 **Build Comparison**: Compares CMake vs XMake outputs
 - 🔨 **Installation Testing**: Verifies package installation
@@ -88,12 +94,14 @@ Our CI/CD pipeline consists of several workflows that ensure code quality, secur
 ## 🛡️ Security Features
 
 ### Supply Chain Security
+
 - **SBOM Generation**: Software Bill of Materials for all builds
 - **Build Provenance**: Cryptographic attestation of build integrity
 - **Dependency Scanning**: Automated vulnerability detection
 - **Secret Detection**: Prevents credential leaks
 
 ### Runtime Security
+
 - **Harden Runner**: Network egress monitoring and restriction
 - **Minimal Permissions**: Principle of least privilege for all workflows
 - **Security Scanning**: Multiple security tools for comprehensive coverage
@@ -101,12 +109,14 @@ Our CI/CD pipeline consists of several workflows that ensure code quality, secur
 ## 📈 Performance Monitoring
 
 ### Benchmarking
+
 - **Automated Benchmarks**: Performance regression detection
 - **Memory Profiling**: Memory usage analysis
 - **Leak Detection**: Memory leak prevention
 - **Performance Reports**: Visual performance tracking
 
 ### Optimization
+
 - **Parallel Builds**: Optimized build times
 - **Smart Caching**: Reduced CI execution time
 - **Artifact Management**: Efficient artifact handling
@@ -114,6 +124,7 @@ Our CI/CD pipeline consists of several workflows that ensure code quality, secur
 ## 🔄 Dependency Management
 
 ### Dependabot Configuration
+
 - **GitHub Actions**: Weekly updates for workflow dependencies
 - **Python Dependencies**: Weekly updates for build tools
 - **Docker Dependencies**: Weekly updates for container images
@@ -122,12 +133,14 @@ Our CI/CD pipeline consists of several workflows that ensure code quality, secur
 ## 📦 Artifact Management
 
 ### Build Artifacts
+
 - **Multi-Platform Packages**: Linux (tar.gz), Windows (zip), macOS (tar.gz)
 - **Container Images**: Multi-arch Docker images (amd64, arm64)
 - **Debug Information**: Build logs and debug artifacts on failure
 - **Retention Policies**: Optimized storage with appropriate retention
 
 ### Release Assets
+
 - **Checksums**: SHA256 verification for all releases
 - **SBOM**: Software Bill of Materials for transparency
 - **Signatures**: Build provenance attestation
@@ -136,12 +149,14 @@ Our CI/CD pipeline consists of several workflows that ensure code quality, secur
 ## 🚦 Quality Gates
 
 ### Code Quality
+
 - **Formatting**: clang-format enforcement
 - **Static Analysis**: cppcheck and clang-tidy
 - **Security Analysis**: Multiple security scanners
 - **Coverage**: Code coverage reporting and tracking
 
 ### Testing
+
 - **Unit Tests**: Comprehensive test suite
 - **Integration Tests**: Cross-platform compatibility
 - **Performance Tests**: Regression prevention
@@ -150,6 +165,7 @@ Our CI/CD pipeline consists of several workflows that ensure code quality, secur
 ## 🔧 Configuration
 
 ### Environment Variables
+
 ```yaml
 CMAKE_BUILD_PARALLEL_LEVEL: 4    # Parallel build jobs
 CTEST_PARALLEL_LEVEL: 4          # Parallel test execution
@@ -157,6 +173,7 @@ XMAKE_PARALLEL_JOBS: 4           # XMake parallel jobs
 ```
 
 ### Secrets Required
+
 - `GITHUB_TOKEN`: Automatically provided
 - `CODECOV_TOKEN`: For coverage reporting (optional)
 - `WINDOWS_CERTIFICATE`: For Windows code signing (optional)
@@ -165,11 +182,13 @@ XMAKE_PARALLEL_JOBS: 4           # XMake parallel jobs
 ## 📊 Monitoring and Reporting
 
 ### GitHub Pages
+
 - **Performance Reports**: Automated performance tracking
 - **Documentation**: API documentation deployment
 - **Coverage Reports**: Code coverage visualization
 
 ### Notifications
+
 - **PR Comments**: Automated performance and security feedback
 - **Security Alerts**: Vulnerability notifications
 - **Build Status**: Comprehensive build reporting
@@ -188,6 +207,7 @@ XMAKE_PARALLEL_JOBS: 4           # XMake parallel jobs
 ## 🔄 Migration from Legacy CI
 
 ### Key Improvements
+
 - **Updated Qt Versions**: 6.5.0/6.6.0 → 6.7.3/6.8.0
 - **Modern Actions**: Deprecated actions replaced with current versions
 - **Enhanced Security**: Added comprehensive security scanning
@@ -197,6 +217,7 @@ XMAKE_PARALLEL_JOBS: 4           # XMake parallel jobs
 - **Supply Chain Security**: SBOM and attestation support
 
 ### Breaking Changes
+
 - Minimum Qt version now 6.7.3
 - Some older OS versions no longer supported
 - Additional security requirements for releases

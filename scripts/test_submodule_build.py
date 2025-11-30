@@ -4,18 +4,20 @@ Test script to verify QtLucide submodule integration works correctly.
 This script creates a temporary test project and builds it with QtLucide as a submodule.
 """
 
-import os
-import sys
-import tempfile
 import shutil
 import subprocess
+import sys
+import tempfile
 from pathlib import Path
+
 
 def run_command(cmd, cwd=None, check=True):
     """Run a command and return the result."""
     print(f"Running: {' '.join(cmd)}")
     try:
-        result = subprocess.run(cmd, cwd=cwd, check=check, capture_output=True, text=True)
+        result = subprocess.run(
+            cmd, cwd=cwd, check=check, capture_output=True, text=True
+        )
         if result.stdout:
             print(f"STDOUT: {result.stdout}")
         if result.stderr:
@@ -27,11 +29,12 @@ def run_command(cmd, cwd=None, check=True):
         print(f"STDERR: {e.stderr}")
         raise
 
+
 def create_test_cmake_project(test_dir, qtlucide_path):
     """Create a test CMake project that uses QtLucide as submodule."""
 
     # Convert path to use forward slashes for CMake
-    qtlucide_cmake_path = str(qtlucide_path).replace('\\', '/')
+    qtlucide_cmake_path = str(qtlucide_path).replace("\\", "/")
 
     # Create CMakeLists.txt
     cmake_content = f"""cmake_minimum_required(VERSION 3.16)
@@ -109,11 +112,12 @@ int main(int argc, char *argv[])
     with open(test_dir / "main.cpp", "w") as f:
         f.write(main_content)
 
+
 def create_test_meson_project(test_dir, qtlucide_path):
     """Create a test Meson project that uses QtLucide as subproject."""
 
     # Create meson.build
-    meson_content = f"""project('QtLucideSubmoduleTest', 'cpp',
+    meson_content = """project('QtLucideSubmoduleTest', 'cpp',
   version: '1.0.0',
   default_options: ['cpp_std=c++17']
 )
@@ -198,6 +202,7 @@ int main(int argc, char *argv[])
     with open(test_dir / "main.cpp", "w") as f:
         f.write(main_content)
 
+
 def test_cmake_build(qtlucide_path):
     """Test CMake submodule build."""
     print("\n=== Testing CMake Submodule Build ===")
@@ -220,6 +225,7 @@ def test_cmake_build(qtlucide_path):
 
         print("CMake submodule build: SUCCESS")
 
+
 def test_meson_build(qtlucide_path):
     """Test Meson subproject build."""
     print("\n=== Testing Meson Subproject Build ===")
@@ -239,6 +245,7 @@ def test_meson_build(qtlucide_path):
 
         print("Meson subproject build: SUCCESS")
 
+
 def test_xmake_build(qtlucide_path):
     """Test XMake submodule build."""
     print("\n=== Testing XMake Submodule Build ===")
@@ -254,11 +261,12 @@ def test_xmake_build(qtlucide_path):
 
         print("XMake submodule build: SUCCESS")
 
+
 def create_test_xmake_project(test_dir, qtlucide_path):
     """Create a test XMake project that uses QtLucide as submodule."""
 
     # Convert path to use forward slashes for XMake
-    qtlucide_xmake_path = str(qtlucide_path).replace('\\', '/')
+    qtlucide_xmake_path = str(qtlucide_path).replace("\\", "/")
 
     # Create xmake.lua
     xmake_content = f"""-- Test project for QtLucide submodule integration
@@ -338,6 +346,7 @@ int main(int argc, char *argv[])
     with open(test_dir / "main.cpp", "w") as f:
         f.write(main_content)
 
+
 def main():
     """Main test function."""
     print("QtLucide Submodule Integration Test")
@@ -379,6 +388,7 @@ def main():
     except Exception as e:
         print(f"\nTest FAILED: {e}")
         return 1
+
 
 if __name__ == "__main__":
     sys.exit(main())

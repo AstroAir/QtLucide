@@ -57,6 +57,7 @@ ctest --output-on-failure
 ### Branch Naming
 
 Use descriptive branch names:
+
 - `feature/add-new-icon-set`
 - `bugfix/fix-memory-leak`
 - `docs/update-api-documentation`
@@ -65,6 +66,7 @@ Use descriptive branch names:
 ### Commit Messages
 
 Follow conventional commit format:
+
 ```
 type(scope): description
 
@@ -74,6 +76,7 @@ type(scope): description
 ```
 
 Types:
+
 - `feat`: New features
 - `fix`: Bug fixes
 - `docs`: Documentation changes
@@ -83,6 +86,7 @@ Types:
 - `chore`: Build process or auxiliary tool changes
 
 Examples:
+
 ```
 feat(icons): add support for custom icon themes
 fix(rendering): resolve SVG scaling issues on high-DPI displays
@@ -101,6 +105,7 @@ docs(api): update QtLucide class documentation
 ### Code Formatting
 
 Before submitting, ensure your code is properly formatted:
+
 ```bash
 clang-format -i src/*.cpp include/QtLucide/*.h
 ```
@@ -112,13 +117,14 @@ clang-format -i src/*.cpp include/QtLucide/*.h
 - Update README.md if adding new features
 
 Example documentation:
+
 ```cpp
 /**
  * @brief Creates an icon with the specified name and options
  * @param name The icon name (e.g., "heart", "activity")
  * @param options Icon rendering options (color, scale, etc.)
  * @return QIcon instance, or null icon if name not found
- * 
+ *
  * @code
  * QIcon icon = lucide->icon("heart", {{"color", QColor(Qt::red)}});
  * @endcode
@@ -176,6 +182,7 @@ Use the provided PR template and fill in all relevant sections.
 ### Bug Reports
 
 Use the bug report template and include:
+
 - Qt version and platform
 - Steps to reproduce
 - Expected vs actual behavior
@@ -185,6 +192,7 @@ Use the bug report template and include:
 ### Feature Requests
 
 Use the feature request template and include:
+
 - Clear description of the feature
 - Use cases and benefits
 - Proposed API (if applicable)
@@ -224,6 +232,7 @@ For security-related issues, please email the maintainers directly rather than c
 ## Recognition
 
 Contributors will be acknowledged in:
+
 - CHANGELOG.md for significant contributions
 - README.md contributors section
 - Release notes for major features

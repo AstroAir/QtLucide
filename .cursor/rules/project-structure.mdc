@@ -21,4 +21,3 @@ Entry points:
 - Icon resources rooted at [`resources/icons`](mdc:resources/icons) with the compiled resource file [resources/icons/lucide_icons.qrc](mdc:resources/icons/lucide_icons.qrc).
 
 Use this rule to quickly navigate modules and understand where new files should live.
-

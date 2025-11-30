@@ -206,11 +206,11 @@ public:
     QtLucideIconPainter* clone() const override {
         return new MyCustomPainter();
     }
-    
+
     QString iconText() const override {
         return QStringLiteral("my-custom-icon");
     }
-    
+
     void paint(lucide::QtLucide* lucide, QPainter* painter, const QRect& rect,
                QIcon::Mode mode, QIcon::State state, const QVariantMap& options) override {
         // Custom painting logic

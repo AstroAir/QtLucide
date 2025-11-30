@@ -65,7 +65,7 @@ rule_end()
 function configure_qt6(target_obj, modules)
     target_obj:add("rules", "qt.moc")
     target_obj:add("rules", "qt.qrc")
-    
+
     -- Use xmake's built-in Qt detection
     for _, mod in ipairs(modules) do
         target_obj:add("frameworks", "Qt" .. mod)

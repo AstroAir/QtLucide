@@ -57,8 +57,8 @@ private:
     void setupUI();
 
     // UI Components
-    QLabel* m_messageLabel;              ///< Main message label
-    QPushButton* m_closeButton;          ///< Close button
+    QLabel* m_messageLabel;     ///< Main message label
+    QPushButton* m_closeButton; ///< Close button
 };
 
 } // namespace gallery

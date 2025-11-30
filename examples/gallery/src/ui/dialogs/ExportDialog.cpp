@@ -11,47 +11,44 @@
 #include "BatchExportManager.h"
 #include "GalleryTypes.h"
 
-#include <QLabel>
+#include <QCheckBox>
 #include <QComboBox>
-#include <QSpinBox>
-#include <QPushButton>
+#include <QDebug>
+#include <QFileDialog>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QLineEdit>
-#include <QProgressBar>
 #include <QListWidget>
 #include <QListWidgetItem>
-#include <QCheckBox>
-#include <QRadioButton>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGroupBox>
-#include <QFileDialog>
 #include <QMessageBox>
+#include <QProgressBar>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QSpinBox>
 #include <QStandardPaths>
-#include <QDebug>
+#include <QVBoxLayout>
 
 namespace gallery {
 
 ExportDialog::ExportDialog(QWidget* parent)
-    : QDialog(parent)
-    , m_exportManager(std::make_unique<BatchExportManager>())
-    , m_isExporting(false)
-{
+    : QDialog(parent), m_exportManager(std::make_unique<BatchExportManager>()),
+      m_isExporting(false) {
     setWindowTitle("Batch Export Icons");
     setMinimumWidth(700);
     setMinimumHeight(600);
     setupUI();
 
     // Connect export manager signals
-    connect(m_exportManager.get(), &BatchExportManager::progressChanged,
-            this, &ExportDialog::onProgressChanged);
-    connect(m_exportManager.get(), &BatchExportManager::exportFinished,
-            this, &ExportDialog::onExportFinished);
+    connect(m_exportManager.get(), &BatchExportManager::progressChanged, this,
+            &ExportDialog::onProgressChanged);
+    connect(m_exportManager.get(), &BatchExportManager::exportFinished, this,
+            &ExportDialog::onExportFinished);
 }
 
 ExportDialog::~ExportDialog() = default;
 
-void ExportDialog::setAvailableIcons(const QStringList& iconNames)
-{
+void ExportDialog::setAvailableIcons(const QStringList& iconNames) {
     m_availableIcons = iconNames;
     m_iconListWidget->clear();
 
@@ -63,8 +60,12 @@ void ExportDialog::setAvailableIcons(const QStringList& iconNames)
     m_exportAllCheckBox->setChecked(true);
 }
 
-BatchExportSettings ExportDialog::getExportSettings() const
-{
+void ExportDialog::setLucideInstance(lucide::QtLucide* lucide) {
+    m_lucide = lucide;
+    m_exportManager->setLucideInstance(lucide);
+}
+
+BatchExportSettings ExportDialog::getExportSettings() const {
     BatchExportSettings settings;
     settings.format = static_cast<ExportFormat>(m_formatComboBox->currentIndex());
     settings.size = m_sizeComboBox->currentText().toInt();
@@ -88,8 +89,7 @@ BatchExportSettings ExportDialog::getExportSettings() const
     return settings;
 }
 
-void ExportDialog::onExportAllToggled(bool checked)
-{
+void ExportDialog::onExportAllToggled(bool checked) {
     m_iconListWidget->setEnabled(!checked);
 
     if (checked) {
@@ -100,89 +100,78 @@ void ExportDialog::onExportAllToggled(bool checked)
     }
 }
 
-void ExportDialog::onFormatChanged(int index)
-{
+void ExportDialog::onFormatChanged(int index) {
     Q_UNUSED(index);
     // Could adjust available sizes based on format
 }
 
-void ExportDialog::onSizeChanged(int index)
-{
+void ExportDialog::onSizeChanged(int index) {
     Q_UNUSED(index);
 }
 
-void ExportDialog::onBrowseOutputClicked()
-{
+void ExportDialog::onBrowseOutputClicked() {
     QString dir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-    QString selectedDir = QFileDialog::getExistingDirectory(
-        this,
-        "Select Output Directory",
-        dir
-    );
+    QString selectedDir = QFileDialog::getExistingDirectory(this, "Select Output Directory", dir);
 
     if (!selectedDir.isEmpty()) {
         m_outputDirEdit->setText(selectedDir);
     }
 }
 
-void ExportDialog::onGroupByCategoryToggled(bool checked)
-{
+void ExportDialog::onGroupByCategoryToggled(bool checked) {
     Q_UNUSED(checked);
     // Update file pattern example or validation as needed
 }
 
-void ExportDialog::onExportFinished(bool success, int exported, int failed, const QString& errorMessage)
-{
+void ExportDialog::onExportFinished(bool success, int exported, int failed,
+                                    const QString& errorMessage) {
     setExportingState(false);
 
     if (success) {
         m_statusLabel->setText(QString("Export completed: %1 icons exported").arg(exported));
         QMessageBox::information(this, "Export Successful",
-            QString("Successfully exported %1 icons.").arg(exported));
+                                 QString("Successfully exported %1 icons.").arg(exported));
     } else {
         m_statusLabel->setText(QString("Export failed: %1").arg(errorMessage));
-        QMessageBox::warning(this, "Export Failed",
-            QString("Export failed: %1\nExported: %2, Failed: %3").arg(errorMessage, QString::number(exported), QString::number(failed)));
+        QMessageBox::warning(
+            this, "Export Failed",
+            QString("Export failed: %1\nExported: %2, Failed: %3")
+                .arg(errorMessage, QString::number(exported), QString::number(failed)));
     }
 }
 
-void ExportDialog::onProgressChanged(int current, int total)
-{
+void ExportDialog::onProgressChanged(int current, int total) {
     m_progressBar->setMaximum(total);
     m_progressBar->setValue(current);
     m_statusLabel->setText(QString("Exporting: %1 of %2").arg(current).arg(total));
 }
 
-void ExportDialog::onExportClicked()
-{
+void ExportDialog::onExportClicked() {
     if (!validateSettings()) {
         return;
     }
 
     BatchExportSettings settings = getExportSettings();
     if (settings.iconNames.isEmpty()) {
-        QMessageBox::warning(this, "No Icons Selected", "Please select at least one icon to export.");
+        QMessageBox::warning(this, "No Icons Selected",
+                             "Please select at least one icon to export.");
         return;
     }
 
     // Start export
-    bool started = m_exportManager->exportIcons(
-        settings.iconNames,
-        settings.format,
-        settings.size,
-        settings.outputDirectory
-    );
+    bool started = m_exportManager->exportIcons(settings.iconNames, settings.format, settings.size,
+                                                settings.outputDirectory);
 
     if (started) {
         setExportingState(true);
         m_statusLabel->setText("Starting export...");
     } else {
-        QMessageBox::warning(this, "Export Error", "Failed to start export. Another export may be in progress.");
+        QMessageBox::warning(this, "Export Error",
+                             "Failed to start export. Another export may be in progress.");
     }
 }
 
-void ExportDialog::onCancelClicked()
-{
+void ExportDialog::onCancelClicked() {
     if (m_isExporting) {
         m_exportManager->cancel();
         setExportingState(false);
@@ -192,8 +181,7 @@ void ExportDialog::onCancelClicked()
     }
 }
 
-void ExportDialog::setupUI()
-{
+void ExportDialog::setupUI() {
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
     // Icon selection section
@@ -214,15 +202,13 @@ void ExportDialog::setupUI()
     setLayout(mainLayout);
 }
 
-QGroupBox* ExportDialog::createIconSelectionSection()
-{
+QGroupBox* ExportDialog::createIconSelectionSection() {
     QGroupBox* group = new QGroupBox("Icon Selection", this);
     QVBoxLayout* layout = new QVBoxLayout(group);
 
     m_exportAllCheckBox = new QCheckBox("Export All Icons", this);
     m_exportAllCheckBox->setChecked(true);
-    connect(m_exportAllCheckBox, &QCheckBox::toggled,
-            this, &ExportDialog::onExportAllToggled);
+    connect(m_exportAllCheckBox, &QCheckBox::toggled, this, &ExportDialog::onExportAllToggled);
     layout->addWidget(m_exportAllCheckBox);
 
     m_iconListWidget = new QListWidget(this);
@@ -234,8 +220,7 @@ QGroupBox* ExportDialog::createIconSelectionSection()
     return group;
 }
 
-QGroupBox* ExportDialog::createFormatSizeSection()
-{
+QGroupBox* ExportDialog::createFormatSizeSection() {
     QGroupBox* group = new QGroupBox("Format & Size", this);
     QVBoxLayout* layout = new QVBoxLayout(group);
 
@@ -245,8 +230,8 @@ QGroupBox* ExportDialog::createFormatSizeSection()
 
     m_formatComboBox = new QComboBox(this);
     m_formatComboBox->addItems({"SVG", "PNG", "ICO"});
-    connect(m_formatComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &ExportDialog::onFormatChanged);
+    connect(m_formatComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+            &ExportDialog::onFormatChanged);
     formatLayout->addWidget(m_formatComboBox);
 
     formatLayout->addWidget(new QLabel("Size:", this));
@@ -254,8 +239,8 @@ QGroupBox* ExportDialog::createFormatSizeSection()
     m_sizeComboBox = new QComboBox(this);
     m_sizeComboBox->addItems({"16", "24", "32", "48", "64", "128", "256", "512"});
     m_sizeComboBox->setCurrentText("48");
-    connect(m_sizeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &ExportDialog::onSizeChanged);
+    connect(m_sizeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+            &ExportDialog::onSizeChanged);
     formatLayout->addWidget(m_sizeComboBox);
     formatLayout->addStretch();
 
@@ -265,8 +250,7 @@ QGroupBox* ExportDialog::createFormatSizeSection()
     return group;
 }
 
-QGroupBox* ExportDialog::createOutputSection()
-{
+QGroupBox* ExportDialog::createOutputSection() {
     QGroupBox* group = new QGroupBox("Output Settings", this);
     QVBoxLayout* layout = new QVBoxLayout(group);
 
@@ -281,16 +265,15 @@ QGroupBox* ExportDialog::createOutputSection()
 
     m_browseButton = new QPushButton("Browse...", this);
     m_browseButton->setMaximumWidth(100);
-    connect(m_browseButton, &QPushButton::clicked,
-            this, &ExportDialog::onBrowseOutputClicked);
+    connect(m_browseButton, &QPushButton::clicked, this, &ExportDialog::onBrowseOutputClicked);
     dirLayout->addWidget(m_browseButton);
 
     layout->addLayout(dirLayout);
 
     // Grouping option
     m_groupByCategoryCheckBox = new QCheckBox("Group by Category (create subdirectories)", this);
-    connect(m_groupByCategoryCheckBox, &QCheckBox::toggled,
-            this, &ExportDialog::onGroupByCategoryToggled);
+    connect(m_groupByCategoryCheckBox, &QCheckBox::toggled, this,
+            &ExportDialog::onGroupByCategoryToggled);
     layout->addWidget(m_groupByCategoryCheckBox);
 
     // File pattern
@@ -299,7 +282,8 @@ QGroupBox* ExportDialog::createOutputSection()
 
     m_filePatternEdit = new QLineEdit(this);
     m_filePatternEdit->setText("{name}.{ext}");
-    m_filePatternEdit->setToolTip("Use {name} for icon name, {category} for category, {ext} for extension");
+    m_filePatternEdit->setToolTip(
+        "Use {name} for icon name, {category} for category, {ext} for extension");
     patternLayout->addWidget(m_filePatternEdit);
 
     layout->addLayout(patternLayout);
@@ -308,8 +292,7 @@ QGroupBox* ExportDialog::createOutputSection()
     return group;
 }
 
-QGroupBox* ExportDialog::createProgressSection()
-{
+QGroupBox* ExportDialog::createProgressSection() {
     QGroupBox* group = new QGroupBox("Progress", this);
     QVBoxLayout* layout = new QVBoxLayout(group);
 
@@ -327,38 +310,34 @@ QGroupBox* ExportDialog::createProgressSection()
     return group;
 }
 
-QHBoxLayout* ExportDialog::createButtonSection()
-{
+QHBoxLayout* ExportDialog::createButtonSection() {
     QHBoxLayout* layout = new QHBoxLayout();
     layout->addStretch();
 
     m_exportButton = new QPushButton("Export", this);
     m_exportButton->setMinimumWidth(100);
-    connect(m_exportButton, &QPushButton::clicked,
-            this, &ExportDialog::onExportClicked);
+    connect(m_exportButton, &QPushButton::clicked, this, &ExportDialog::onExportClicked);
     layout->addWidget(m_exportButton);
 
     m_cancelButton = new QPushButton("Cancel", this);
     m_cancelButton->setMinimumWidth(100);
-    connect(m_cancelButton, &QPushButton::clicked,
-            this, &ExportDialog::onCancelClicked);
+    connect(m_cancelButton, &QPushButton::clicked, this, &ExportDialog::onCancelClicked);
     layout->addWidget(m_cancelButton);
 
     return layout;
 }
 
-bool ExportDialog::validateSettings() const
-{
+bool ExportDialog::validateSettings() const {
     if (m_outputDirEdit->text().isEmpty()) {
-        QMessageBox::warning(const_cast<ExportDialog*>(this), "Invalid Settings", "Please select an output directory.");
+        QMessageBox::warning(const_cast<ExportDialog*>(this), "Invalid Settings",
+                             "Please select an output directory.");
         return false;
     }
 
     return true;
 }
 
-void ExportDialog::setExportingState(bool exporting)
-{
+void ExportDialog::setExportingState(bool exporting) {
     m_isExporting = exporting;
     m_exportAllCheckBox->setEnabled(!exporting);
     m_iconListWidget->setEnabled(!exporting);

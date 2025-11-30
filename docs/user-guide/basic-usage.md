@@ -306,7 +306,7 @@ void setupIconDefaults()
     // All subsequent icons will use these defaults
     QIcon icon1 = lucide.icon("home");     // Uses gray color and 1.1 scale
     QIcon icon2 = lucide.icon("settings"); // Uses gray color and 1.1 scale
-    
+
     // Reset to palette-based defaults
     lucide.resetDefaultOptions();
 }

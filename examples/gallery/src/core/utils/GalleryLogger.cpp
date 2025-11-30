@@ -10,8 +10,8 @@
 
 #include "GalleryLogger.h"
 
-#include <QDebug>
 #include <QDateTime>
+#include <QDebug>
 #include <QLoggingCategory>
 
 namespace gallery {
@@ -28,34 +28,31 @@ Q_LOGGING_CATEGORY(lcGalleryExport, "gallery.export")
 Q_LOGGING_CATEGORY(lcGalleryTheme, "gallery.theme")
 Q_LOGGING_CATEGORY(lcGalleryManager, "gallery.manager")
 
-/**
- * @brief Get the QLoggingCategory for a category string
- * @param category The category name
- * @return The appropriate QLoggingCategory
- */
-static const QLoggingCategory& getCategoryObject(const QString& category) {
-    static const auto coreCategory = []() { return lcGalleryCore; }();
-    static const auto uiCategory = []() { return lcGalleryUI; }();
-    static const auto searchCategory = []() { return lcGallerySearch; }();
-    static const auto exportCategory = []() { return lcGalleryExport; }();
-    static const auto themeCategory = []() { return lcGalleryTheme; }();
-    static const auto managerCategory = []() { return lcGalleryManager; }();
+namespace {
 
-    if (category == "core") {
-        return lcGalleryCore();
-    } else if (category == "ui") {
+const QLoggingCategory& getCategoryObject(const QString& category) {
+    const QString normalized = category.trimmed().toLower();
+
+    if (normalized == QLatin1String("ui")) {
         return lcGalleryUI();
-    } else if (category == "search") {
+    }
+    if (normalized == QLatin1String("search")) {
         return lcGallerySearch();
-    } else if (category == "export") {
+    }
+    if (normalized == QLatin1String("export")) {
         return lcGalleryExport();
-    } else if (category == "theme") {
+    }
+    if (normalized == QLatin1String("theme")) {
         return lcGalleryTheme();
-    } else if (category == "manager") {
+    }
+    if (normalized == QLatin1String("manager")) {
         return lcGalleryManager();
     }
+
     return lcGalleryCore();
 }
+
+} // namespace
 
 void GalleryLogger::debug(const QString& category, const QString& message) {
     if (!shouldLog(LogLevel::Debug)) {
@@ -130,40 +127,41 @@ void GalleryLogger::logInternal(LogLevel level, const QString& category, const Q
     // Format: [TIMESTAMP] [LEVEL] [CATEGORY] Message
     QString timestamp = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz");
     QString levelStr;
+    const QLoggingCategory& categoryObject = getCategoryObject(category);
 
     switch (level) {
         case LogLevel::Debug:
             levelStr = "DEBUG";
-            qDebug(lcGalleryCore) << QString("[%1] [%2] [%3] %4")
-                                       .arg(timestamp, levelStr, category, message);
+            qDebug(categoryObject)
+                << QString("[%1] [%2] [%3] %4").arg(timestamp, levelStr, category, message);
             break;
 
         case LogLevel::Info:
             levelStr = "INFO";
-            qInfo(lcGalleryCore) << QString("[%1] [%2] [%3] %4")
-                                      .arg(timestamp, levelStr, category, message);
+            qInfo(categoryObject)
+                << QString("[%1] [%2] [%3] %4").arg(timestamp, levelStr, category, message);
             break;
 
         case LogLevel::Warning:
             levelStr = "WARNING";
-            qWarning(lcGalleryCore) << QString("[%1] [%2] [%3] %4")
-                                        .arg(timestamp, levelStr, category, message);
+            qWarning(categoryObject)
+                << QString("[%1] [%2] [%3] %4").arg(timestamp, levelStr, category, message);
             break;
 
         case LogLevel::Error:
             levelStr = "ERROR";
-            qCritical(lcGalleryCore) << QString("[%1] [%2] [%3] %4")
-                                         .arg(timestamp, levelStr, category, message);
+            qCritical(categoryObject)
+                << QString("[%1] [%2] [%3] %4").arg(timestamp, levelStr, category, message);
             break;
 
         case LogLevel::Critical:
             levelStr = "CRITICAL";
-            qCritical(lcGalleryCore) << QString("[%1] [%2] [%3] %4")
-                                         .arg(timestamp, levelStr, category, message);
+            qCritical(categoryObject)
+                << QString("[%1] [%2] [%3] %4").arg(timestamp, levelStr, category, message);
             break;
 
         default:
-            qDebug(lcGalleryCore) << message;
+            qDebug(categoryObject) << message;
             break;
     }
 }

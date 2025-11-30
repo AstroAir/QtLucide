@@ -11,7 +11,9 @@
  */
 
 // TEMPORARILY DISABLE ALL TESTS: GalleryMainWindow initialization causes timeout
-#define SKIP_UI_TESTS QSKIP("UI responsiveness tests temporarily disabled due to GalleryMainWindow initialization timeout")
+#define SKIP_UI_TESTS                                                                              \
+    QSKIP("UI responsiveness tests temporarily disabled due to GalleryMainWindow initialization "  \
+          "timeout")
 
 #include <QApplication>
 #include <QElapsedTimer>

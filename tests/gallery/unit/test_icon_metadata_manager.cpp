@@ -14,16 +14,16 @@
  */
 
 #include <QApplication>
+#include <QElapsedTimer>
 #include <QFile>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QJsonArray>
+#include <QStringList>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
-#include <QStringList>
-#include <QElapsedTimer>
-#include <QtTest/QtTest>
 #include <QtTest/QSignalSpy>
+#include <QtTest/QtTest>
 
 // Include Gallery components
 #include "core/managers/IconMetadataManager.h"
@@ -112,8 +112,8 @@ private:
 
     // Helper methods
     void createTestMetadataFiles();
-    QString getResourcePath(const QString &resourceName) const;
-    bool createJsonFile(const QString &filePath, const QString &content);
+    QString getResourcePath(const QString& resourceName) const;
+    bool createJsonFile(const QString& filePath, const QString& content);
     QString createValidCategoriesJson() const;
     QString createValidIconsJson() const;
     QString createMalformedJson() const;
@@ -179,7 +179,7 @@ void TestIconMetadataManager::createTestMetadataFiles() {
     qDebug() << "  Icons:" << m_testIconsPath;
 }
 
-bool TestIconMetadataManager::createJsonFile(const QString &filePath, const QString &content) {
+bool TestIconMetadataManager::createJsonFile(const QString& filePath, const QString& content) {
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         qWarning() << "Failed to create file:" << filePath;
@@ -543,8 +543,7 @@ void TestIconMetadataManager::testGetIconMetadata_ValidIcon() {
     QCOMPARE(metadata.name, QString("home"));
     QCOMPARE(metadata.svgFile, QString("home.svg"));
 
-    qDebug() << "Icon metadata - Name:" << metadata.name
-             << "SVG:" << metadata.svgFile
+    qDebug() << "Icon metadata - Name:" << metadata.name << "SVG:" << metadata.svgFile
              << "Tags count:" << metadata.tags.size();
 }
 
@@ -688,7 +687,7 @@ void TestIconMetadataManager::testGetTotalIconCount_AfterLoad() {
 
     int count = manager.getTotalIconCount();
     QVERIFY2(count > 0, "Should have loaded some icons");
-    QCOMPARE(count, 7);  // Based on createValidIconsJson()
+    QCOMPARE(count, 7); // Based on createValidIconsJson()
 }
 
 void TestIconMetadataManager::testGetTotalIconCount_Empty() {

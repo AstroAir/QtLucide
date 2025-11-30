@@ -12,38 +12,30 @@
 #include <QCoreApplication>
 #include <QProcess>
 #include <algorithm>
-#include <numeric>
 #include <cmath>
+#include <numeric>
 
 #ifdef _WIN32
     #ifndef NOMINMAX
         #define NOMINMAX
     #endif
-    #include <windows.h>
     #include <psapi.h>
+    #include <windows.h>
 #elif defined(__unix__) || defined(__APPLE__)
-    #include <unistd.h>
     #include <fstream>
     #include <sstream>
+    #include <unistd.h>
 #endif
 
 namespace gallery {
 
-PerformanceMonitor::PerformanceMonitor(QObject *parent)
-    : QObject(parent)
-    , m_maxSamples(100)
-    , m_targetFPS(60)
-    , m_lastFPS(60.0)
-    , m_wasPerformanceGood(true)
-    , m_memoryTrackingEnabled(false)
-    , m_peakMemoryMB(0.0)
-{
-}
+PerformanceMonitor::PerformanceMonitor(QObject* parent)
+    : QObject(parent), m_maxSamples(100), m_targetFPS(60), m_lastFPS(60.0),
+      m_wasPerformanceGood(true), m_memoryTrackingEnabled(false), m_peakMemoryMB(0.0) {}
 
 PerformanceMonitor::~PerformanceMonitor() = default;
 
-void PerformanceMonitor::setMaxSamples(int maxSamples)
-{
+void PerformanceMonitor::setMaxSamples(int maxSamples) {
     m_maxSamples = std::max(1, maxSamples);
 
     // Trim existing samples if necessary
@@ -52,19 +44,16 @@ void PerformanceMonitor::setMaxSamples(int maxSamples)
     }
 }
 
-void PerformanceMonitor::setTargetFPS(int fps)
-{
+void PerformanceMonitor::setTargetFPS(int fps) {
     m_targetFPS = std::max(1, fps);
 }
 
-void PerformanceMonitor::startMeasurement(const QString &label)
-{
+void PerformanceMonitor::startMeasurement(const QString& label) {
     m_currentLabel = label.isEmpty() ? QStringLiteral("default") : label;
     m_currentTimer.start();
 }
 
-double PerformanceMonitor::endMeasurement(const QString &label)
-{
+double PerformanceMonitor::endMeasurement(const QString& label) {
     if (!m_currentTimer.isValid()) {
         return 0.0;
     }
@@ -93,12 +82,11 @@ double PerformanceMonitor::endMeasurement(const QString &label)
     return elapsed;
 }
 
-double PerformanceMonitor::getAverageRenderTime(const QString &label) const
-{
+double PerformanceMonitor::getAverageRenderTime(const QString& label) const {
     QString targetLabel = label.isEmpty() ? QStringLiteral("default") : label;
 
     QVector<double> relevantSamples;
-    for (const auto &sample : m_samples) {
+    for (const auto& sample : m_samples) {
         if (sample.label == targetLabel) {
             relevantSamples.append(sample.timeMs);
         }
@@ -112,14 +100,13 @@ double PerformanceMonitor::getAverageRenderTime(const QString &label) const
     return sum / relevantSamples.size();
 }
 
-double PerformanceMonitor::getMinimumRenderTime(const QString &label) const
-{
+double PerformanceMonitor::getMinimumRenderTime(const QString& label) const {
     QString targetLabel = label.isEmpty() ? QStringLiteral("default") : label;
 
     double minTime = std::numeric_limits<double>::max();
     bool found = false;
 
-    for (const auto &sample : m_samples) {
+    for (const auto& sample : m_samples) {
         if (sample.label == targetLabel) {
             minTime = std::min(minTime, sample.timeMs);
             found = true;
@@ -129,12 +116,11 @@ double PerformanceMonitor::getMinimumRenderTime(const QString &label) const
     return found ? minTime : 0.0;
 }
 
-double PerformanceMonitor::getMaximumRenderTime(const QString &label) const
-{
+double PerformanceMonitor::getMaximumRenderTime(const QString& label) const {
     QString targetLabel = label.isEmpty() ? QStringLiteral("default") : label;
 
     double maxTime = 0.0;
-    for (const auto &sample : m_samples) {
+    for (const auto& sample : m_samples) {
         if (sample.label == targetLabel) {
             maxTime = std::max(maxTime, sample.timeMs);
         }
@@ -143,8 +129,7 @@ double PerformanceMonitor::getMaximumRenderTime(const QString &label) const
     return maxTime;
 }
 
-double PerformanceMonitor::getLastRenderTime(const QString &label) const
-{
+double PerformanceMonitor::getLastRenderTime(const QString& label) const {
     QString targetLabel = label.isEmpty() ? QStringLiteral("default") : label;
 
     for (auto it = m_samples.rbegin(); it != m_samples.rend(); ++it) {
@@ -156,8 +141,7 @@ double PerformanceMonitor::getLastRenderTime(const QString &label) const
     return 0.0;
 }
 
-double PerformanceMonitor::getFrameRate() const
-{
+double PerformanceMonitor::getFrameRate() const {
     if (m_samples.isEmpty()) {
         return 0.0;
     }
@@ -166,7 +150,7 @@ double PerformanceMonitor::getFrameRate() const
     double avgTime = 0.0;
     int count = 0;
 
-    for (const auto &sample : m_samples) {
+    for (const auto& sample : m_samples) {
         avgTime += sample.timeMs;
         count++;
     }
@@ -176,20 +160,18 @@ double PerformanceMonitor::getFrameRate() const
     }
 
     avgTime /= count;
-    return 1000.0 / avgTime;  // Convert ms to FPS
+    return 1000.0 / avgTime; // Convert ms to FPS
 }
 
-int PerformanceMonitor::getMeasurementCount() const
-{
+int PerformanceMonitor::getMeasurementCount() const {
     return m_samples.size();
 }
 
-int PerformanceMonitor::getSampleCount(const QString &label) const
-{
+int PerformanceMonitor::getSampleCount(const QString& label) const {
     QString targetLabel = label.isEmpty() ? QStringLiteral("default") : label;
 
     int count = 0;
-    for (const auto &sample : m_samples) {
+    for (const auto& sample : m_samples) {
         if (sample.label == targetLabel) {
             count++;
         }
@@ -198,15 +180,13 @@ int PerformanceMonitor::getSampleCount(const QString &label) const
     return count;
 }
 
-bool PerformanceMonitor::isPerformanceGood() const
-{
+bool PerformanceMonitor::isPerformanceGood() const {
     double fps = getFrameRate();
     double threshold = m_targetFPS * PERFORMANCE_WARNING_THRESHOLD;
     return fps >= threshold;
 }
 
-int PerformanceMonitor::getPerformancePercentage() const
-{
+int PerformanceMonitor::getPerformancePercentage() const {
     double fps = getFrameRate();
     if (m_targetFPS <= 0) {
         return 100;
@@ -215,26 +195,22 @@ int PerformanceMonitor::getPerformancePercentage() const
     return static_cast<int>((fps / m_targetFPS) * 100.0);
 }
 
-double PerformanceMonitor::getMemoryUsageMB() const
-{
+double PerformanceMonitor::getMemoryUsageMB() const {
     uint64_t bytes = getCurrentMemoryBytes();
     return bytes / (1024.0 * 1024.0);
 }
 
-double PerformanceMonitor::getProcessMemoryMB() const
-{
+double PerformanceMonitor::getProcessMemoryMB() const {
     return getMemoryUsageMB();
 }
 
-void PerformanceMonitor::reset()
-{
+void PerformanceMonitor::reset() {
     m_samples.clear();
     m_lastFPS = 60.0;
     m_wasPerformanceGood = true;
 }
 
-void PerformanceMonitor::resetLabel(const QString &label)
-{
+void PerformanceMonitor::resetLabel(const QString& label) {
     QString targetLabel = label.isEmpty() ? QStringLiteral("default") : label;
 
     auto it = m_samples.begin();
@@ -247,22 +223,22 @@ void PerformanceMonitor::resetLabel(const QString &label)
     }
 }
 
-void PerformanceMonitor::setMemoryTrackingEnabled(bool enabled)
-{
+void PerformanceMonitor::setMemoryTrackingEnabled(bool enabled) {
     m_memoryTrackingEnabled = enabled;
 }
 
-QString PerformanceMonitor::getPerformanceReport() const
-{
+QString PerformanceMonitor::getPerformanceReport() const {
     QString report;
     report += QStringLiteral("=== Performance Report ===\n");
-    report += QStringLiteral("Frame Rate: %1 FPS (Target: %2)\n").arg(getFrameRate(), 0, 'f', 2).arg(m_targetFPS);
+    report += QStringLiteral("Frame Rate: %1 FPS (Target: %2)\n")
+                  .arg(getFrameRate(), 0, 'f', 2)
+                  .arg(m_targetFPS);
     report += QStringLiteral("Performance: %1%\n").arg(getPerformancePercentage());
     report += QStringLiteral("Measurements: %1\n").arg(getMeasurementCount());
     report += QStringLiteral("Avg Frame Time: %1 ms\n").arg(getAverageRenderTime(), 0, 'f', 2);
     report += QStringLiteral("Min/Max Frame Time: %1 / %2 ms\n")
-              .arg(getMinimumRenderTime(), 0, 'f', 2)
-              .arg(getMaximumRenderTime(), 0, 'f', 2);
+                  .arg(getMinimumRenderTime(), 0, 'f', 2)
+                  .arg(getMaximumRenderTime(), 0, 'f', 2);
 
     if (m_memoryTrackingEnabled) {
         report += QStringLiteral("Memory Usage: %1 MB\n").arg(getMemoryUsageMB(), 0, 'f', 2);
@@ -271,8 +247,7 @@ QString PerformanceMonitor::getPerformanceReport() const
     return report;
 }
 
-void PerformanceMonitor::checkPerformanceStatus()
-{
+void PerformanceMonitor::checkPerformanceStatus() {
     double currentFPS = getFrameRate();
     m_lastFPS = currentFPS;
 
@@ -289,8 +264,7 @@ void PerformanceMonitor::checkPerformanceStatus()
     }
 }
 
-uint64_t PerformanceMonitor::getCurrentMemoryBytes() const
-{
+uint64_t PerformanceMonitor::getCurrentMemoryBytes() const {
 #ifdef _WIN32
     HANDLE process = GetCurrentProcess();
     PROCESS_MEMORY_COUNTERS pmc;
@@ -309,13 +283,13 @@ uint64_t PerformanceMonitor::getCurrentMemoryBytes() const
                 std::string key;
                 uint64_t value;
                 iss >> key >> value;
-                return value * 1024;  // VmRSS is in KB
+                return value * 1024; // VmRSS is in KB
             }
         }
     }
 #endif
 
-    return 0;  // Not supported on this platform
+    return 0; // Not supported on this platform
 }
 
-}  // namespace gallery
+} // namespace gallery

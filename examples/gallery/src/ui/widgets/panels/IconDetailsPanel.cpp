@@ -6,16 +6,16 @@
 
 #include "IconDetailsPanel.h"
 
-#include "IconThumbnailGridWidget.h"
 #include "FavoritesManager.h"
+#include "IconThumbnailGridWidget.h"
 
 #include <QtLucide/QtLucide.h>
 
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
 #include <QScrollArea>
 #include <QVBoxLayout>
-#include <QHBoxLayout>
 // QFlowLayout is not standard Qt, using QHBoxLayout instead
 #include <QApplication>
 #include <QClipboard>
@@ -24,11 +24,8 @@
 namespace gallery {
 
 IconDetailsPanel::IconDetailsPanel(QWidget* parent)
-    : QFrame(parent)
-    , m_lucide(nullptr)
-    , m_favManager(nullptr)
-    , m_isCollapsed(false)
-    , m_defaultWidth(320) {
+    : QFrame(parent), m_lucide(nullptr), m_favManager(nullptr), m_isCollapsed(false),
+      m_defaultWidth(320) {
     setFrameShape(QFrame::StyledPanel);
     setFrameShadow(QFrame::Raised);
 
@@ -51,7 +48,7 @@ void IconDetailsPanel::initializeUI() {
     m_headerLayout->setContentsMargins(12, 8, 8, 8);
 
     m_iconNameLabel = new QLabel();
-    m_iconNameLabel->setStyleSheet("font-weight: bold; font-size: 14px;");
+    m_iconNameLabel->setObjectName("title");
     m_headerLayout->addWidget(m_iconNameLabel, 1);
 
     m_favoriteButton = new QPushButton("♡");
@@ -89,7 +86,7 @@ void IconDetailsPanel::initializeUI() {
 
     // Tags section
     m_tagsLabel = new QLabel("Tags");
-    m_tagsLabel->setStyleSheet("font-weight: bold; color: #666;");
+    m_tagsLabel->setObjectName("sectionHeader");
     m_contentLayout->addWidget(m_tagsLabel);
 
     m_tagsContainer = new QWidget();
@@ -100,7 +97,7 @@ void IconDetailsPanel::initializeUI() {
 
     // Categories section
     m_categoriesLabel = new QLabel("Categories");
-    m_categoriesLabel->setStyleSheet("font-weight: bold; color: #666;");
+    m_categoriesLabel->setObjectName("sectionHeader");
     m_contentLayout->addWidget(m_categoriesLabel);
 
     m_categoriesContainer = new QWidget();
@@ -111,7 +108,7 @@ void IconDetailsPanel::initializeUI() {
 
     // Code snippets section
     m_snippetsLabel = new QLabel("Code Snippets");
-    m_snippetsLabel->setStyleSheet("font-weight: bold; color: #666; margin-top: 8px;");
+    m_snippetsLabel->setObjectName("sectionHeader");
     m_contentLayout->addWidget(m_snippetsLabel);
 
     // C++ Enum snippet
@@ -121,13 +118,12 @@ void IconDetailsPanel::initializeUI() {
     m_enumSnippetLayout->setSpacing(4);
 
     m_enumSnippetLabel = new QLabel();
-    m_enumSnippetLabel->setStyleSheet("background-color: #f5f5f5; padding: 6px; border-radius: 3px; "
-                                       "font-family: monospace; font-size: 10px;");
+    m_enumSnippetLabel->setObjectName("codeSnippet");
     m_enumSnippetLabel->setWordWrap(true);
     m_enumSnippetLayout->addWidget(m_enumSnippetLabel, 1);
 
     m_enumCopyButton = new QPushButton("Copy");
-    m_enumCopyButton->setMaximumWidth(50);
+    m_enumCopyButton->setFixedWidth(70);
     m_enumSnippetLayout->addWidget(m_enumCopyButton);
 
     m_contentLayout->addWidget(m_enumSnippetWidget);
@@ -139,13 +135,12 @@ void IconDetailsPanel::initializeUI() {
     m_stringSnippetLayout->setSpacing(4);
 
     m_stringSnippetLabel = new QLabel();
-    m_stringSnippetLabel->setStyleSheet("background-color: #f5f5f5; padding: 6px; border-radius: 3px; "
-                                         "font-family: monospace; font-size: 10px;");
+    m_stringSnippetLabel->setObjectName("codeSnippet");
     m_stringSnippetLabel->setWordWrap(true);
     m_stringSnippetLayout->addWidget(m_stringSnippetLabel, 1);
 
     m_stringCopyButton = new QPushButton("Copy");
-    m_stringCopyButton->setMaximumWidth(50);
+    m_stringCopyButton->setFixedWidth(70);
     m_stringSnippetLayout->addWidget(m_stringCopyButton);
 
     m_contentLayout->addWidget(m_stringSnippetWidget);
@@ -166,12 +161,15 @@ void IconDetailsPanel::initializeUI() {
     m_mainLayout->addWidget(m_scrollArea, 1);
 
     // Connect signals
-    connect(m_favoriteButton, &QPushButton::clicked, this, &IconDetailsPanel::onFavoriteButtonClicked);
+    connect(m_favoriteButton, &QPushButton::clicked, this,
+            &IconDetailsPanel::onFavoriteButtonClicked);
     connect(m_exportButton, &QPushButton::clicked, this, &IconDetailsPanel::onExportButtonClicked);
-    connect(m_collapseButton, &QPushButton::clicked, this, &IconDetailsPanel::onCollapseButtonClicked);
+    connect(m_collapseButton, &QPushButton::clicked, this,
+            &IconDetailsPanel::onCollapseButtonClicked);
     connect(m_copyNameButton, &QPushButton::clicked, this, &IconDetailsPanel::copyIconName);
     connect(m_enumCopyButton, &QPushButton::clicked, this, &IconDetailsPanel::copyCppEnumSnippet);
-    connect(m_stringCopyButton, &QPushButton::clicked, this, &IconDetailsPanel::copyCppStringSnippet);
+    connect(m_stringCopyButton, &QPushButton::clicked, this,
+            &IconDetailsPanel::copyCppStringSnippet);
 }
 
 void IconDetailsPanel::setSelectedIcon(const QString& iconName, const IconMetadata& metadata) {
@@ -193,6 +191,19 @@ void IconDetailsPanel::clearSelection() {
 void IconDetailsPanel::setLucideInstance(lucide::QtLucide* lucide) {
     m_lucide = lucide;
     m_thumbnailGrid->setLucideInstance(lucide);
+
+    // Update button icons now that we have the lucide instance
+    if (m_lucide) {
+        m_favoriteButton->setIcon(m_lucide->icon("heart"));
+        m_favoriteButton->setText("");
+        m_exportButton->setIcon(m_lucide->icon("download"));
+        m_exportButton->setText("");
+        m_collapseButton->setIcon(m_lucide->icon("x"));
+        m_collapseButton->setText("");
+        m_enumCopyButton->setIcon(m_lucide->icon("copy"));
+        m_stringCopyButton->setIcon(m_lucide->icon("copy"));
+        m_copyNameButton->setIcon(m_lucide->icon("clipboard"));
+    }
 }
 
 void IconDetailsPanel::setFavoritesManager(FavoritesManager* favManager) {
@@ -212,12 +223,20 @@ void IconDetailsPanel::setCollapsed(bool collapsed) {
     if (collapsed) {
         setFixedWidth(30);
         m_scrollArea->hide();
-        m_collapseButton->setText("◀");
+        if (m_lucide) {
+            m_collapseButton->setIcon(m_lucide->icon("chevron-left"));
+        } else {
+            m_collapseButton->setText("◀");
+        }
         m_collapseButton->setToolTip("Expand panel");
     } else {
         setFixedWidth(m_defaultWidth);
         m_scrollArea->show();
-        m_collapseButton->setText("✕");
+        if (m_lucide) {
+            m_collapseButton->setIcon(m_lucide->icon("x"));
+        } else {
+            m_collapseButton->setText("✕");
+        }
         m_collapseButton->setToolTip("Collapse panel");
     }
     emit collapsedStateChanged(collapsed);
@@ -308,15 +327,8 @@ void IconDetailsPanel::updateUI() {
     if (!m_currentMetadata.tags.isEmpty()) {
         for (const QString& tag : m_currentMetadata.tags) {
             QPushButton* tagButton = new QPushButton(tag);
+            tagButton->setObjectName("tagButton");
             tagButton->setFlat(true);
-            tagButton->setStyleSheet("QPushButton { "
-                                    "background-color: #e8f4f8; "
-                                    "color: #0277bd; "
-                                    "border-radius: 12px; "
-                                    "padding: 4px 10px; "
-                                    "border: 1px solid #0277bd; "
-                                    "}"
-                                    "QPushButton:hover { background-color: #b3e5fc; }");
             tagButton->setMaximumWidth(120);
             connect(tagButton, &QPushButton::clicked, this, &IconDetailsPanel::onTagClicked);
             m_tagsLayout->addWidget(tagButton);
@@ -331,7 +343,7 @@ void IconDetailsPanel::updateUI() {
     if (!m_currentMetadata.categories.isEmpty()) {
         for (const QString& category : m_currentMetadata.categories) {
             QLabel* categoryLabel = new QLabel(category);
-            categoryLabel->setStyleSheet("color: #666;");
+            categoryLabel->setObjectName("subtitle");
             m_categoriesLayout->addWidget(categoryLabel);
         }
     }
@@ -360,14 +372,30 @@ QString IconDetailsPanel::iconNameToEnumId(const QString& iconName) {
 }
 
 void IconDetailsPanel::updateFavoriteButton() {
-    if (!m_selectedIcon.isEmpty() && m_favManager && m_favManager->isFavorite(m_selectedIcon)) {
-        m_favoriteButton->setText("♥");
-        m_favoriteButton->setStyleSheet("color: red;");
-        m_favoriteButton->setToolTip("Remove from favorites");
-    } else {
-        m_favoriteButton->setText("♡");
+    bool isFavorite =
+        !m_selectedIcon.isEmpty() && m_favManager && m_favManager->isFavorite(m_selectedIcon);
+    if (m_lucide) {
+        // Use Lucide icons - heart-off for not favorite, heart for favorite
+        if (isFavorite) {
+            m_favoriteButton->setIcon(m_lucide->icon("heart", {{"color", QColor(Qt::red)}}));
+            m_favoriteButton->setToolTip("Remove from favorites");
+        } else {
+            m_favoriteButton->setIcon(m_lucide->icon("heart"));
+            m_favoriteButton->setToolTip("Add to favorites");
+        }
+        m_favoriteButton->setText("");
         m_favoriteButton->setStyleSheet("");
-        m_favoriteButton->setToolTip("Add to favorites");
+    } else {
+        // Fallback to text
+        if (isFavorite) {
+            m_favoriteButton->setText("♥");
+            m_favoriteButton->setStyleSheet("color: red;");
+            m_favoriteButton->setToolTip("Remove from favorites");
+        } else {
+            m_favoriteButton->setText("♡");
+            m_favoriteButton->setStyleSheet("");
+            m_favoriteButton->setToolTip("Add to favorites");
+        }
     }
 }
 

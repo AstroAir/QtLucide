@@ -8,18 +8,16 @@
 
 #include "IconSearchWidget.h"
 
-#include <QComboBox>
 #include <QCheckBox>
+#include <QComboBox>
 #include <QHBoxLayout>
 #include <QLabel>
 
 namespace gallery {
 
 IconSearchWidget::IconSearchWidget(QWidget* parent)
-    : QWidget(parent),
-      m_searchWidget(std::make_unique<SearchWidget>(this)),
-      m_categoryComboBox(nullptr),
-      m_favoritesCheckBox(nullptr) {
+    : QWidget(parent), m_searchWidget(std::make_unique<SearchWidget>(this)),
+      m_categoryComboBox(nullptr), m_favoritesCheckBox(nullptr) {
     setupUI();
 }
 
@@ -41,29 +39,27 @@ void IconSearchWidget::setupUI() {
     m_categoryComboBox = new QComboBox(this);
     m_categoryComboBox->setMinimumWidth(120);
     m_categoryComboBox->setMaximumWidth(200);
-    m_categoryComboBox->setStyleSheet(
-        "QComboBox {"
-        "  border: 1px solid #555;"
-        "  border-radius: 4px;"
-        "  padding: 4px 8px;"
-        "  background-color: #2a2a2a;"
-        "  color: white;"
-        "  font-size: 10pt;"
-        "}"
-        "QComboBox:hover {"
-        "  border: 1px solid #666;"
-        "}"
-        "QComboBox::drop-down {"
-        "  border: none;"
-        "}"
-        "QComboBox QAbstractItemView {"
-        "  background-color: #2a2a2a;"
-        "  color: white;"
-        "  selection-background-color: #0066CC;"
-        "}"
-    );
-    connect(m_categoryComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &IconSearchWidget::onCategoryChanged);
+    m_categoryComboBox->setStyleSheet("QComboBox {"
+                                      "  border: 1px solid #555;"
+                                      "  border-radius: 4px;"
+                                      "  padding: 4px 8px;"
+                                      "  background-color: #2a2a2a;"
+                                      "  color: white;"
+                                      "  font-size: 10pt;"
+                                      "}"
+                                      "QComboBox:hover {"
+                                      "  border: 1px solid #666;"
+                                      "}"
+                                      "QComboBox::drop-down {"
+                                      "  border: none;"
+                                      "}"
+                                      "QComboBox QAbstractItemView {"
+                                      "  background-color: #2a2a2a;"
+                                      "  color: white;"
+                                      "  selection-background-color: #0066CC;"
+                                      "}");
+    connect(m_categoryComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+            &IconSearchWidget::onCategoryChanged);
     layout->addWidget(m_categoryComboBox);
 
     // Favorites checkbox
@@ -84,15 +80,16 @@ void IconSearchWidget::setupUI() {
         "QCheckBox::indicator:checked {"
         "  background-color: #0066CC;"
         "  border: 1px solid #0066CC;"
-        "  image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAYAAADEUlfTAAAAMElEQVQIHWP8//8/AwMxwOjIkXGjoaGBkYECYHRkyChQCkwOqsLIyMDAwPj//38GBgYGAO5/CXiktc97AAAAAElFTkSuQmCC);"
-        "}"
-    );
+        "  image: "
+        "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAYAAADEUlfTAAAAMElEQVQIHWP8//8/"
+        "AwMxwOjIkXGjoaGBkYECYHRkyChQCkwOqsLIyMDAwPj//38GBgYGAO5/CXiktc97AAAAAElFTkSuQmCC);"
+        "}");
     connect(m_favoritesCheckBox, &QCheckBox::toggled, this, &IconSearchWidget::onFavoritesToggled);
     layout->addWidget(m_favoritesCheckBox);
 
     // Connect search widget signals
-    connect(m_searchWidget.get(), &SearchWidget::searchTextChanged,
-            this, &IconSearchWidget::onSearchTextChanged);
+    connect(m_searchWidget.get(), &SearchWidget::searchTextChanged, this,
+            &IconSearchWidget::onSearchTextChanged);
 
     setLayout(layout);
     setMaximumHeight(40);

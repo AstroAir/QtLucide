@@ -28,7 +28,7 @@ class QtLucide;
 namespace gallery {
 class ContentManager;
 class IconMetadataManager;
-}
+} // namespace gallery
 
 /**
  * @class TestIconRenderingPerformance
@@ -99,15 +99,15 @@ private:
     std::unique_ptr<gallery::ContentManager> m_contentManager;
 
     // Performance threshold constants
-    static constexpr qint64 QTLUCIDE_INIT_MAX_TIME = 100;      // ms
+    static constexpr qint64 QTLUCIDE_INIT_MAX_TIME = 100;        // ms
     static constexpr qint64 CONTENT_MANAGER_INIT_MAX_TIME = 500; // ms
-    static constexpr qint64 METADATA_LOAD_MAX_TIME = 200;       // ms
-    static constexpr qint64 SINGLE_ICON_CREATE_MAX_TIME = 5;    // ms
-    static constexpr qint64 SINGLE_ICON_RENDER_MAX_TIME = 10;   // ms
-    static constexpr qint64 BATCH_100_MAX_TIME = 500;           // ms
-    static constexpr qint64 BATCH_1000_MAX_TIME = 3000;         // ms
-    static constexpr qint64 BATCH_ALL_MAX_TIME = 5000;          // ms
-    static constexpr double CACHE_IMPROVEMENT_MIN_RATIO = 0.5;  // 50% improvement
+    static constexpr qint64 METADATA_LOAD_MAX_TIME = 200;        // ms
+    static constexpr qint64 SINGLE_ICON_CREATE_MAX_TIME = 5;     // ms
+    static constexpr qint64 SINGLE_ICON_RENDER_MAX_TIME = 10;    // ms
+    static constexpr qint64 BATCH_100_MAX_TIME = 500;            // ms
+    static constexpr qint64 BATCH_1000_MAX_TIME = 3000;          // ms
+    static constexpr qint64 BATCH_ALL_MAX_TIME = 5000;           // ms
+    static constexpr double CACHE_IMPROVEMENT_MIN_RATIO = 0.5;   // 50% improvement
 };
 
 #endif // TEST_ICON_RENDERING_PERFORMANCE_H

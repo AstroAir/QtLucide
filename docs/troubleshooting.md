@@ -45,10 +45,10 @@ CMake Error: Could not find a package configuration file provided by "Qt6"
    ```bash
    # Ubuntu/Debian
    sudo apt install qt6-base-dev qt6-svg-dev
-   
+
    # Fedora
    sudo dnf install qt6-qtbase-devel qt6-qtsvg-devel
-   
+
    # macOS with Homebrew
    brew install qt6
    ```

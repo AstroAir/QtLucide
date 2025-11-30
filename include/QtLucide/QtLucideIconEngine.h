@@ -164,7 +164,8 @@ public:
      *          requested size since SVGs scale perfectly.
      * @since 1.0
      */
-    [[nodiscard]] QSize actualSize(const QSize& size, QIcon::Mode mode, QIcon::State state) override;
+    [[nodiscard]] QSize actualSize(const QSize& size, QIcon::Mode mode,
+                                   QIcon::State state) override;
 
     /**
      * @brief Returns a list of available icon sizes
@@ -173,7 +174,8 @@ public:
      *          this returns an empty list indicating any size is supported.
      * @since 1.0
      */
-    [[nodiscard]] QList<QSize> availableSizes(QIcon::Mode mode = QIcon::Normal, QIcon::State state = QIcon::Off) override;
+    [[nodiscard]] QList<QSize> availableSizes(QIcon::Mode mode = QIcon::Normal,
+                                              QIcon::State state = QIcon::Off) override;
 
     /**
      * @brief Returns the icon name if available

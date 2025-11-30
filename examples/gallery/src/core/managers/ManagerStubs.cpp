@@ -9,17 +9,15 @@
 
 namespace gallery {
 
-ImageMetadataManager::ImageMetadataManager(QObject *parent)
-    : QObject(parent) {
-}
+ImageMetadataManager::ImageMetadataManager(QObject* parent) : QObject(parent) {}
 
-bool ImageMetadataManager::initialize(const QString &path) {
+bool ImageMetadataManager::initialize(const QString& path) {
     // Stub implementation
     qDebug() << "ImageMetadataManager::initialize() called with path:" << path;
     return true;
 }
 
-QString ImageMetadataManager::getImageMetadata(const QString &imageName) const {
+QString ImageMetadataManager::getImageMetadata(const QString& imageName) const {
     // Stub implementation
     qDebug() << "ImageMetadataManager::getImageMetadata() called for:" << imageName;
     return QString();
@@ -30,4 +28,4 @@ QStringList ImageMetadataManager::getImages() const {
     return m_images;
 }
 
-}  // namespace gallery
+} // namespace gallery

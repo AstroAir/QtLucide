@@ -12,9 +12,9 @@
 #ifndef CATEGORY_FILTER_WIDGET_H
 #define CATEGORY_FILTER_WIDGET_H
 
-#include <QWidget>
 #include <QString>
 #include <QStringList>
+#include <QWidget>
 
 class QComboBox;
 class QCheckBox;
@@ -30,8 +30,8 @@ namespace gallery {
  * @brief Enumeration of available filter modes
  */
 enum class FilterMode {
-    Dropdown,   ///< Use a dropdown/combo box for category selection
-    List        ///< Use a list widget for category selection
+    Dropdown, ///< Use a dropdown/combo box for category selection
+    List      ///< Use a list widget for category selection
 };
 
 /**
@@ -57,8 +57,7 @@ struct CategoryFilterSettings {
      * @return true if settings are equal
      */
     bool operator==(const CategoryFilterSettings& other) const noexcept {
-        return selectedCategory == other.selectedCategory &&
-               favoritesOnly == other.favoritesOnly;
+        return selectedCategory == other.selectedCategory && favoritesOnly == other.favoritesOnly;
     }
 
     /**
@@ -99,7 +98,8 @@ public:
      * @param mode The filter mode (Dropdown or List)
      * @param parent The parent widget
      */
-    explicit CategoryFilterWidget(FilterMode mode = FilterMode::Dropdown, QWidget* parent = nullptr);
+    explicit CategoryFilterWidget(FilterMode mode = FilterMode::Dropdown,
+                                  QWidget* parent = nullptr);
 
     /**
      * @brief Destructor
@@ -229,22 +229,22 @@ private:
     QWidget* createListLayout();
 
     // State
-    FilterMode m_mode;                           ///< Current filter mode
-    QStringList m_categories;                    ///< Available categories
-    QString m_selectedCategory;                  ///< Currently selected category
-    bool m_favoritesOnly;                        ///< Favorites-only flag
+    FilterMode m_mode;          ///< Current filter mode
+    QStringList m_categories;   ///< Available categories
+    QString m_selectedCategory; ///< Currently selected category
+    bool m_favoritesOnly;       ///< Favorites-only flag
 
     // UI Components - Shared
-    QCheckBox* m_favoritesCheckBox;              ///< Favorites-only checkbox
+    QCheckBox* m_favoritesCheckBox; ///< Favorites-only checkbox
 
     // UI Components - Dropdown mode
-    QComboBox* m_categoryComboBox;               ///< Category selection dropdown
+    QComboBox* m_categoryComboBox; ///< Category selection dropdown
 
     // UI Components - List mode
-    QListWidget* m_categoryListWidget;           ///< Category selection list
+    QListWidget* m_categoryListWidget; ///< Category selection list
 
     // Main container
-    QVBoxLayout* m_mainLayout;                   ///< Main vertical layout
+    QVBoxLayout* m_mainLayout; ///< Main vertical layout
 };
 
 } // namespace gallery

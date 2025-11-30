@@ -10,35 +10,32 @@
 
 namespace gallery {
 
-ContentManager::ContentManager(QObject *parent)
-    : QObject(parent),
-      m_iconMetadata(std::make_unique<IconMetadataManager>(this)),
-      m_favorites(std::make_unique<FavoritesManager>(this)),
-      m_showFavoritesOnly(false) {
-}
+ContentManager::ContentManager(QObject* parent)
+    : QObject(parent), m_iconMetadata(std::make_unique<IconMetadataManager>(this)),
+      m_favorites(std::make_unique<FavoritesManager>(this)), m_showFavoritesOnly(false) {}
 
 ContentManager::~ContentManager() = default;
 
-bool ContentManager::initialize(const QString &categoriesPath, const QString &iconsPath) {
+bool ContentManager::initialize(const QString& categoriesPath, const QString& iconsPath) {
     if (!m_iconMetadata->loadMetadata(categoriesPath, iconsPath)) {
         qWarning() << "Failed to initialize ContentManager: unable to load metadata";
         return false;
     }
 
-    qInfo() << "ContentManager initialized successfully with"
-            << m_iconMetadata->getTotalIconCount() << "icons";
+    qInfo() << "ContentManager initialized successfully with" << m_iconMetadata->getTotalIconCount()
+            << "icons";
     return true;
 }
 
-IconMetadataManager *ContentManager::iconMetadata() const {
+IconMetadataManager* ContentManager::iconMetadata() const {
     return m_iconMetadata.get();
 }
 
-FavoritesManager *ContentManager::favorites() const {
+FavoritesManager* ContentManager::favorites() const {
     return m_favorites.get();
 }
 
-void ContentManager::setSearchText(const QString &searchText) {
+void ContentManager::setSearchText(const QString& searchText) {
     if (m_searchText != searchText) {
         m_searchText = searchText;
         emit searchTextChanged(searchText);
@@ -50,7 +47,7 @@ QString ContentManager::getSearchText() const {
     return m_searchText;
 }
 
-void ContentManager::setCategory(const QString &category) {
+void ContentManager::setCategory(const QString& category) {
     if (m_currentCategory != category) {
         m_currentCategory = category;
         emit categoryChanged(category);
@@ -74,7 +71,7 @@ bool ContentManager::getShowFavoritesOnly() const {
     return m_showFavoritesOnly;
 }
 
-void ContentManager::selectIcon(const QString &iconName) {
+void ContentManager::selectIcon(const QString& iconName) {
     if (m_selectedIcon != iconName) {
         m_selectedIcon = iconName;
         emit iconSelected(iconName);
@@ -95,7 +92,7 @@ QStringList ContentManager::applyFilters() const {
         result = m_iconMetadata->getIconsByCategory(m_currentCategory);
     } else {
         // Get all icons
-        for (const QString &category : m_iconMetadata->getCategories()) {
+        for (const QString& category : m_iconMetadata->getCategories()) {
             result.append(m_iconMetadata->getIconsByCategory(category));
         }
     }
@@ -103,11 +100,10 @@ QStringList ContentManager::applyFilters() const {
     // Filter by favorites if enabled
     if (m_showFavoritesOnly) {
         QStringList favorites = m_favorites->favorites();
-        result.erase(std::remove_if(result.begin(), result.end(),
-                                     [&favorites](const QString &icon) {
-                                         return !favorites.contains(icon);
-                                     }),
-                     result.end());
+        result.erase(
+            std::remove_if(result.begin(), result.end(),
+                           [&favorites](const QString& icon) { return !favorites.contains(icon); }),
+            result.end());
     }
 
     return result;
@@ -130,4 +126,4 @@ void ContentManager::resetFilters() {
     updateFilters();
 }
 
-}  // namespace gallery
+} // namespace gallery

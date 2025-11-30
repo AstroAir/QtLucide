@@ -48,15 +48,14 @@ void TestGalleryIconLoading::initTestCase() {
 
     // Initialize QtLucide
     bool initialized = m_lucide->initLucide();
-    QVERIFY2(initialized,
-             "QtLucide initialization failed - check resource availability");
+    QVERIFY2(initialized, "QtLucide initialization failed - check resource availability");
 
     // Verify icon count
     QStringList availableIcons = m_lucide->availableIcons();
     qDebug() << "QtLucide initialized with" << availableIcons.size() << "icons";
-    QVERIFY2(availableIcons.size() >= 1634,
-             qPrintable(QString("Expected at least 1634 icons, got %1")
-                           .arg(availableIcons.size())));
+    QVERIFY2(
+        availableIcons.size() >= 1634,
+        qPrintable(QString("Expected at least 1634 icons, got %1").arg(availableIcons.size())));
 }
 
 void TestGalleryIconLoading::cleanupTestCase() {
@@ -100,25 +99,21 @@ void TestGalleryIconLoading::testMetadataLoadingSuccess() {
     QVERIFY2(m_metadataManager != nullptr, "MetadataManager should be initialized");
 
     // Test loading from embedded resources
-    bool loaded = m_metadataManager->loadMetadata(
-        ":/lucide/metadata/categories.json",
-        ":/lucide/metadata/icons.json");
+    bool loaded = m_metadataManager->loadMetadata(":/lucide/metadata/categories.json",
+                                                  ":/lucide/metadata/icons.json");
 
-    QVERIFY2(loaded,
-             "Metadata should load successfully from embedded resources");
+    QVERIFY2(loaded, "Metadata should load successfully from embedded resources");
 
     // Verify categories were loaded
     QStringList categories = m_metadataManager->getCategories();
-    QVERIFY2(!categories.isEmpty(),
-             "Should have loaded at least one category");
+    QVERIFY2(!categories.isEmpty(), "Should have loaded at least one category");
 
     qDebug() << "Loaded" << categories.size() << "categories";
 
     // Verify icons were loaded
     int totalIcons = m_metadataManager->getTotalIconCount();
     QVERIFY2(totalIcons >= 1634,
-             qPrintable(QString("Should have at least 1634 icons, got %1")
-                           .arg(totalIcons)));
+             qPrintable(QString("Should have at least 1634 icons, got %1").arg(totalIcons)));
 
     qDebug() << "Loaded" << totalIcons << "icons from metadata";
 }
@@ -137,27 +132,23 @@ void TestGalleryIconLoading::testQtLucideIconRendering() {
     QVERIFY2(!availableIcons.isEmpty(), "Available icons list should not be empty");
 
     // Test rendering essential icons
-    QStringList essentialIcons = {
-        "house", "user", "settings", "search", "heart",
-        "star", "check", "x", "plus", "menu"
-    };
+    QStringList essentialIcons = {"house", "user",  "settings", "search", "heart",
+                                  "star",  "check", "x",        "plus",   "menu"};
 
     for (const QString& iconName : essentialIcons) {
         if (!availableIcons.contains(iconName)) {
             qWarning() << "Essential icon not found:" << iconName;
-            continue;  // Skip if not available
+            continue; // Skip if not available
         }
 
         QIcon icon = m_lucide->icon(iconName);
         QVERIFY2(!icon.isNull(),
-                 qPrintable(QString("Icon '%1' should render successfully")
-                               .arg(iconName)));
+                 qPrintable(QString("Icon '%1' should render successfully").arg(iconName)));
 
         // Verify pixmap can be generated
         QPixmap pixmap = icon.pixmap(64, 64);
         QVERIFY2(!pixmap.isNull(),
-                 qPrintable(QString("Pixmap for '%1' should not be null")
-                               .arg(iconName)));
+                 qPrintable(QString("Pixmap for '%1' should not be null").arg(iconName)));
     }
 
     qDebug() << "Successfully rendered essential icons";
@@ -171,9 +162,8 @@ void TestGalleryIconLoading::testIconContentFlow() {
     qDebug() << "TEST: Icon propagation through ContentManager";
 
     // Initialize ContentManager
-    bool initialized = m_contentManager->initialize(
-        ":/lucide/metadata/categories.json",
-        ":/lucide/metadata/icons.json");
+    bool initialized = m_contentManager->initialize(":/lucide/metadata/categories.json",
+                                                    ":/lucide/metadata/icons.json");
 
     QVERIFY2(initialized, "ContentManager should initialize successfully");
 
@@ -191,14 +181,12 @@ void TestGalleryIconLoading::testIconContentFlow() {
         // Verify icon exists in metadata
         IconMetadata metadata = m_contentManager->iconMetadata()->getIconMetadata(iconName);
         QVERIFY2(metadata.name == iconName,
-                 qPrintable(QString("Icon '%1' should have metadata")
-                               .arg(iconName)));
+                 qPrintable(QString("Icon '%1' should have metadata").arg(iconName)));
 
         // Verify icon can be created
         QIcon icon = m_lucide->icon(iconName);
         QVERIFY2(!icon.isNull(),
-                 qPrintable(QString("Icon '%1' should be renderable")
-                               .arg(iconName)));
+                 qPrintable(QString("Icon '%1' should be renderable").arg(iconName)));
     }
 
     qDebug() << "Verified content flow for" << sampleCount << "sample icons";
@@ -212,9 +200,8 @@ void TestGalleryIconLoading::testCategoryFilteringAccuracy() {
     qDebug() << "TEST: Category filtering accuracy";
 
     // Initialize managers
-    bool loaded = m_metadataManager->loadMetadata(
-        ":/lucide/metadata/categories.json",
-        ":/lucide/metadata/icons.json");
+    bool loaded = m_metadataManager->loadMetadata(":/lucide/metadata/categories.json",
+                                                  ":/lucide/metadata/icons.json");
     QVERIFY2(loaded, "Metadata should load");
 
     QStringList categories = m_metadataManager->getCategories();
@@ -226,12 +213,10 @@ void TestGalleryIconLoading::testCategoryFilteringAccuracy() {
     // Test each category
     for (const QString& category : categories) {
         // Get icons for this category from metadata
-        QStringList categoryIcons =
-            m_metadataManager->getIconsByCategory(category);
+        QStringList categoryIcons = m_metadataManager->getIconsByCategory(category);
 
         QVERIFY2(!categoryIcons.isEmpty(),
-                 qPrintable(QString("Category '%1' should have icons")
-                               .arg(category)));
+                 qPrintable(QString("Category '%1' should have icons").arg(category)));
 
         // Verify icon count matches metadata
         int categoryCount = m_metadataManager->getCategoryIconCount(category);
@@ -240,14 +225,15 @@ void TestGalleryIconLoading::testCategoryFilteringAccuracy() {
         // Verify icons are reasonable count
         QVERIFY2(categoryIcons.size() > 0 && categoryIcons.size() < 500,
                  qPrintable(QString("Category '%1' has %2 icons (suspicious size)")
-                               .arg(category).arg(categoryIcons.size())));
+                                .arg(category)
+                                .arg(categoryIcons.size())));
 
         totalIconsAcrossCategories += categoryIcons.size();
         testedCategories++;
     }
 
-    qDebug() << "Tested" << testedCategories << "categories with"
-             << totalIconsAcrossCategories << "total icons";
+    qDebug() << "Tested" << testedCategories << "categories with" << totalIconsAcrossCategories
+             << "total icons";
     QVERIFY2(testedCategories > 0, "Should have tested at least one category");
 }
 
@@ -259,15 +245,12 @@ void TestGalleryIconLoading::testSearchFilteringAccuracy() {
     qDebug() << "TEST: Search filtering accuracy";
 
     // Initialize metadata manager
-    bool loaded = m_metadataManager->loadMetadata(
-        ":/lucide/metadata/categories.json",
-        ":/lucide/metadata/icons.json");
+    bool loaded = m_metadataManager->loadMetadata(":/lucide/metadata/categories.json",
+                                                  ":/lucide/metadata/icons.json");
     QVERIFY2(loaded, "Metadata should load");
 
     // Test search for specific icons
-    QStringList searchQueries = {
-        "heart", "star", "user", "settings", "search"
-    };
+    QStringList searchQueries = {"heart", "star", "user", "settings", "search"};
 
     for (const QString& query : searchQueries) {
         QStringList results = m_metadataManager->searchIcons(query);
@@ -299,9 +282,8 @@ void TestGalleryIconLoading::testAllIconsLoadable() {
     qDebug() << "TEST: All 1634+ icons are loadable";
 
     // Initialize metadata
-    bool loaded = m_metadataManager->loadMetadata(
-        ":/lucide/metadata/categories.json",
-        ":/lucide/metadata/icons.json");
+    bool loaded = m_metadataManager->loadMetadata(":/lucide/metadata/categories.json",
+                                                  ":/lucide/metadata/icons.json");
     QVERIFY2(loaded, "Metadata should load");
 
     QStringList allIcons = m_metadataManager->getCategories();
@@ -313,8 +295,7 @@ void TestGalleryIconLoading::testAllIconsLoadable() {
     // Collect all unique icon names
     QStringList allIconNames;
     for (const QString& category : allIcons) {
-        QStringList categoryIcons =
-            m_metadataManager->getIconsByCategory(category);
+        QStringList categoryIcons = m_metadataManager->getIconsByCategory(category);
         for (const QString& icon : categoryIcons) {
             if (!allIconNames.contains(icon)) {
                 allIconNames.append(icon);
@@ -363,7 +344,7 @@ void TestGalleryIconLoading::testAllIconsLoadable() {
     qDebug() << "Successfully loaded" << successCount << "of" << sampleSize << "sampled icons";
     QVERIFY2(successCount >= (sampleSize * 95) / 100,
              qPrintable(QString("Should load at least 95%% of sampled icons, got %1%%")
-                           .arg((successCount * 100) / sampleSize)));
+                            .arg((successCount * 100) / sampleSize)));
 }
 
 // ============================================================================
@@ -374,9 +355,8 @@ void TestGalleryIconLoading::testIconRenderingPerformance() {
     qDebug() << "TEST: Icon rendering performance (< 5 seconds for all icons)";
 
     // Initialize metadata
-    bool loaded = m_metadataManager->loadMetadata(
-        ":/lucide/metadata/categories.json",
-        ":/lucide/metadata/icons.json");
+    bool loaded = m_metadataManager->loadMetadata(":/lucide/metadata/categories.json",
+                                                  ":/lucide/metadata/icons.json");
     QVERIFY2(loaded, "Metadata should load");
 
     QStringList allIcons = m_metadataManager->getCategories();
@@ -385,8 +365,7 @@ void TestGalleryIconLoading::testIconRenderingPerformance() {
     // Collect all unique icon names
     QStringList allIconNames;
     for (const QString& category : allIcons) {
-        QStringList categoryIcons =
-            m_metadataManager->getIconsByCategory(category);
+        QStringList categoryIcons = m_metadataManager->getIconsByCategory(category);
         for (const QString& icon : categoryIcons) {
             if (!allIconNames.contains(icon)) {
                 allIconNames.append(icon);
@@ -413,9 +392,9 @@ void TestGalleryIconLoading::testIconRenderingPerformance() {
     qDebug() << "Loaded" << loadedCount << "icons in" << totalTime << "ms";
 
     // Performance assertion: Should load all 1634+ icons in under 5 seconds
-    QVERIFY2(totalTime < 5000,
-             qPrintable(QString("Loading %1 icons took %2ms (should be < 5000ms)")
-                           .arg(allIconNames.size()).arg(totalTime)));
+    QVERIFY2(totalTime < 5000, qPrintable(QString("Loading %1 icons took %2ms (should be < 5000ms)")
+                                              .arg(allIconNames.size())
+                                              .arg(totalTime)));
 
     // Calculate and log performance metrics
     double iconsPerSecond = (loadedCount * 1000.0) / totalTime;
@@ -444,15 +423,15 @@ void TestGalleryIconLoading::testPixelContentVerification() {
         }
 
         QIcon icon = m_lucide->icon(iconName);
-        QVERIFY2(!icon.isNull(),
-                 qPrintable(QString("Icon '%1' should load").arg(iconName)));
+        QVERIFY2(!icon.isNull(), qPrintable(QString("Icon '%1' should load").arg(iconName)));
 
         // Test each size
         for (const QSize& size : sizes) {
             QPixmap pixmap = icon.pixmap(size);
             QVERIFY2(!pixmap.isNull(),
                      qPrintable(QString("Pixmap for '%1' at %2x%2 should not be null")
-                                   .arg(iconName).arg(size.width())));
+                                    .arg(iconName)
+                                    .arg(size.width())));
 
             // Verify pixmap has actual content (non-blank)
             bool hasContent = false;
@@ -472,7 +451,8 @@ void TestGalleryIconLoading::testPixelContentVerification() {
 
             QVERIFY2(hasContent,
                      qPrintable(QString("Icon '%1' should have visible content at %2x%2")
-                                   .arg(iconName).arg(size.width())));
+                                    .arg(iconName)
+                                    .arg(size.width())));
 
             pixelsVerified++;
         }
@@ -491,8 +471,7 @@ void TestGalleryIconLoading::testMetadataResourceValidation() {
     // Verify categories.json exists and is valid
     QFile categoriesFile(":/lucide/metadata/categories.json");
     QVERIFY2(categoriesFile.exists(), "categories.json resource must exist");
-    QVERIFY2(categoriesFile.open(QIODevice::ReadOnly),
-             "categories.json must be readable");
+    QVERIFY2(categoriesFile.open(QIODevice::ReadOnly), "categories.json must be readable");
 
     QJsonDocument categoriesDoc = QJsonDocument::fromJson(categoriesFile.readAll());
     categoriesFile.close();
@@ -504,15 +483,13 @@ void TestGalleryIconLoading::testMetadataResourceValidation() {
     // Verify icons.json exists and is valid
     QFile iconsFile(":/lucide/metadata/icons.json");
     QVERIFY2(iconsFile.exists(), "icons.json resource must exist");
-    QVERIFY2(iconsFile.open(QIODevice::ReadOnly),
-             "icons.json must be readable");
+    QVERIFY2(iconsFile.open(QIODevice::ReadOnly), "icons.json must be readable");
 
     QJsonDocument iconsDoc = QJsonDocument::fromJson(iconsFile.readAll());
     iconsFile.close();
 
     QVERIFY2(!iconsDoc.isNull(), "icons.json must be valid JSON");
-    QVERIFY2(iconsDoc.isObject() || iconsDoc.isArray(),
-             "icons.json must contain object or array");
+    QVERIFY2(iconsDoc.isObject() || iconsDoc.isArray(), "icons.json must contain object or array");
 
     qDebug() << "Both metadata files are valid and accessible";
 }
@@ -525,18 +502,15 @@ void TestGalleryIconLoading::testContentManagerSignals() {
     qDebug() << "TEST: ContentManager emits filter change signals";
 
     // Initialize ContentManager
-    bool initialized = m_contentManager->initialize(
-        ":/lucide/metadata/categories.json",
-        ":/lucide/metadata/icons.json");
+    bool initialized = m_contentManager->initialize(":/lucide/metadata/categories.json",
+                                                    ":/lucide/metadata/icons.json");
     QVERIFY2(initialized, "ContentManager should initialize");
 
     // Create signal spy for iconFilterChanged
-    QSignalSpy filterSpy(m_contentManager.get(),
-                         SIGNAL(iconFilterChanged(const QStringList&)));
+    QSignalSpy filterSpy(m_contentManager.get(), SIGNAL(iconFilterChanged(const QStringList&)));
 
     // Create signal spy for categoryChanged
-    QSignalSpy categorySpy(m_contentManager.get(),
-                           SIGNAL(categoryChanged(const QString&)));
+    QSignalSpy categorySpy(m_contentManager.get(), SIGNAL(categoryChanged(const QString&)));
 
     // Get available categories
     QStringList categories = m_contentManager->iconMetadata()->getCategories();
@@ -547,8 +521,7 @@ void TestGalleryIconLoading::testContentManagerSignals() {
     m_contentManager->setCategory(testCategory);
 
     // Verify signals were emitted
-    QVERIFY2(categorySpy.count() >= 1,
-             "categoryChanged signal should be emitted");
+    QVERIFY2(categorySpy.count() >= 1, "categoryChanged signal should be emitted");
 
     qDebug() << "Signal emission verified for category change";
 }

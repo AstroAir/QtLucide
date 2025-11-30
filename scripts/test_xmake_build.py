@@ -3,11 +3,8 @@
 Test script to verify XMake build system functionality for QtLucide
 """
 
-import os
-import sys
 import subprocess
-import shutil
-import tempfile
+import sys
 from pathlib import Path
 
 
@@ -15,8 +12,9 @@ def run_command(cmd, cwd=None, check=True):
     """Run a command and return the result"""
     print(f"Running: {' '.join(cmd)}")
     try:
-        result = subprocess.run(cmd, cwd=cwd, check=check,
-                                capture_output=True, text=True)
+        result = subprocess.run(
+            cmd, cwd=cwd, check=check, capture_output=True, text=True
+        )
         if result.stdout:
             print(f"STDOUT: {result.stdout}")
         if result.stderr:
@@ -44,10 +42,9 @@ def check_qt6_available():
     """Check if Qt6 is available"""
     try:
         # Try to find Qt6 using xmake
-        result = run_command(
-            ["xmake", "require", "--info", "qt6base"], check=False)
+        result = run_command(["xmake", "require", "--info", "qt6base"], check=False)
         return result.returncode == 0
-    except:
+    except Exception:
         return False
 
 

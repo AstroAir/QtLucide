@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - GitHub Actions CI/CD pipeline for automated testing
 - Contributing guidelines and development documentation
 - Code of conduct for community participation
@@ -17,11 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Custom painter name tracking in icon options for debugging
 
 ### Changed
+
 - Improved project structure and documentation
 - Enhanced `QtLucideIconEngine::isNull()` to properly handle custom painters
 - Custom painters no longer require an `iconId` to be considered valid
 
 ### Fixed
+
 - Fixed custom painter icons incorrectly returning `isNull() == true`
 - Fixed thread safety tests failing due to custom painter null check issue
 - Fixed boundary condition tests for custom painters
@@ -32,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2025-01-XX
 
 ### Added
+
 - Initial release of QtLucide
 - Complete Lucide icon set (1634+ icons) with SVG-based rendering
 - QtAwesome-compatible API for easy migration
@@ -45,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CMake package configuration for easy integration
 
 ### Features
+
 - **Icon Management**: Access to 1634+ Lucide icons by name or enum
 - **Color Customization**: Runtime color changes with support for different states
 - **Scalable Rendering**: Perfect quality at any size using SVG
@@ -54,6 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Developer Tools**: Python scripts for resource generation and management
 
 ### API Highlights
+
 - `QtLucide::icon(const QString& name)` - Create icon by name
 - `QtLucide::icon(Icons iconId)` - Create icon by enum value
 - `QtLucide::setDefaultOption()` - Set global default options
@@ -62,6 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Scale factor support with `scale-factor` option (0.1 to 2.0)
 
 ### Build System
+
 - Modern CMake 3.16+ with Qt6 integration
 - Optional examples and tests building
 - Proper installation and packaging support
@@ -69,6 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Python-based resource generation pipeline
 
 ### Documentation
+
 - Comprehensive README with quick start guide
 - API reference documentation
 - Migration guide from QtAwesome
@@ -76,6 +84,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example code and usage patterns
 
 ### Testing
+
 - Unit tests for core functionality
 - Integration tests for Qt integration
 - SVG rendering tests
@@ -89,21 +98,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### [Version] - Date
 
 #### Added
+
 - New features and capabilities
 
 #### Changed
+
 - Changes in existing functionality
 
 #### Deprecated
+
 - Soon-to-be removed features
 
 #### Removed
+
 - Now removed features
 
 #### Fixed
+
 - Bug fixes
 
 #### Security
+
 - Security vulnerability fixes
 
 ---

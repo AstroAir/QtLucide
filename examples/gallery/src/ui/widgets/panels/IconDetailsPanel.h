@@ -12,8 +12,8 @@
 #ifndef ICONDETAILSPANEL_H
 #define ICONDETAILSPANEL_H
 
-#include "IconThumbnailGridWidget.h"
 #include "IconMetadataManager.h"
+#include "IconThumbnailGridWidget.h"
 
 #include <QFrame>
 #include <QString>

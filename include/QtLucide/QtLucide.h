@@ -271,7 +271,8 @@ public:
      * @see QtLucideIconPainter, give()
      * @since 1.0
      */
-    [[nodiscard]] QIcon icon(QtLucideIconPainter* painter, const QVariantMap& options = QVariantMap());
+    [[nodiscard]] QIcon icon(QtLucideIconPainter* painter,
+                             const QVariantMap& options = QVariantMap());
 
     /**
      * @brief Register a custom icon painter with a name
@@ -441,12 +442,12 @@ private:
      */
     [[nodiscard]] QString iconIdToString(Icons iconId) const;
 
-    QHash<QString, Icons> m_nameToIconMap;              ///< @brief Maps icon names to enum values
-    QHash<Icons, QString> m_iconToNameMap;              ///< @brief Maps enum values to icon names
+    QHash<QString, Icons> m_nameToIconMap; ///< @brief Maps icon names to enum values
+    QHash<Icons, QString> m_iconToNameMap; ///< @brief Maps enum values to icon names
     QHash<QString, QtLucideIconPainter*> m_customPainters; ///< @brief Custom registered painters
     QVariantMap m_defaultOptions;                          ///< @brief Default rendering options
-    QtLucideIconPainter* m_svgIconPainter{nullptr};       ///< @brief Default SVG icon painter
-    bool m_initialized{false};                             ///< @brief Whether initLucide() has been called
+    QtLucideIconPainter* m_svgIconPainter{nullptr};        ///< @brief Default SVG icon painter
+    bool m_initialized{false}; ///< @brief Whether initLucide() has been called
 };
 
 } // namespace lucide

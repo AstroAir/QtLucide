@@ -5,19 +5,18 @@
  */
 
 #include "BatchExportManager.h"
+#include "ExportUtils.h"
+
+#include <QtLucide/QtLucide.h>
 
 #include <QDebug>
 #include <QDir>
 #include <QFile>
-#include <QImage>
-#include <QPainter>
-#include <QSvgGenerator>
-#include <QThread>
+#include <QTimer>
 
 namespace gallery {
 
-ExportProgressWidget::ExportProgressWidget(QObject* parent)
-    : QObject(parent), m_cancelled(false) {}
+ExportProgressWidget::ExportProgressWidget(QObject* parent) : QObject(parent), m_cancelled(false) {}
 
 void ExportProgressWidget::show(int total) {
     m_cancelled = false;
@@ -38,125 +37,9 @@ bool ExportProgressWidget::isCancelled() const {
 
 // ============================================================================
 
-class BatchExportWorker : public QObject {
-    Q_OBJECT
-
-public:
-    explicit BatchExportWorker(QObject* parent = nullptr)
-        : QObject(parent), m_shouldCancel(false) {}
-
-    void setExportParams(const QStringList& iconNames, ExportFormat format, int size,
-                         const QString& outputDir) {
-        m_iconNames = iconNames;
-        m_format = format;
-        m_size = size;
-        m_outputDir = outputDir;
-    }
-
-    void setShouldCancel(bool cancel) {
-        m_shouldCancel = cancel;
-    }
-
-public Q_SLOTS:
-    void doExport() {
-        int exported = 0;
-        int failed = 0;
-
-        // Create output directory if it doesn't exist
-        QDir outputDir(m_outputDir);
-        if (!outputDir.exists() && !outputDir.mkpath(".")) {
-            emit exportFinished(false, 0, m_iconNames.size(),
-                                "Failed to create output directory");
-            return;
-        }
-
-        // Export each icon
-        for (int i = 0; i < m_iconNames.size(); ++i) {
-            if (m_shouldCancel) {
-                emit exportFinished(false, exported, m_iconNames.size() - exported,
-                                    "Export cancelled by user");
-                return;
-            }
-
-            const QString& iconName = m_iconNames[i];
-            bool success = false;
-
-            switch (m_format) {
-                case ExportFormat::SVG:
-                    success = exportAsSvg(iconName, outputDir);
-                    break;
-                case ExportFormat::PNG:
-                    success = exportAsPng(iconName, outputDir);
-                    break;
-            }
-
-            if (success) {
-                exported++;
-            } else {
-                failed++;
-            }
-
-            emit progressChanged(i, m_iconNames.size());
-        }
-
-        emit exportFinished(failed == 0, exported, failed,
-                            failed > 0 ? QString("Failed to export %1 icons").arg(failed) : "");
-    }
-
-Q_SIGNALS:
-    void progressChanged(int current, int total);
-    void exportFinished(bool success, int exported, int failed, const QString& errorMessage);
-
-private:
-    bool exportAsSvg(const QString& iconName, const QDir& outputDir) {
-        // Create SVG file
-        QString filename = outputDir.filePath(iconName + ".svg");
-        QSvgGenerator generator;
-        generator.setFileName(filename);
-        generator.setSize(QSize(m_size, m_size));
-        generator.setViewBox(QRect(0, 0, m_size, m_size));
-        generator.setTitle(QString("Lucide Icon: %1").arg(iconName));
-        generator.setDescription(QString("Exported from QtLucide Gallery"));
-
-        // Paint placeholder SVG content
-        // In a real implementation, this would render the actual icon
-        QPainter painter(&generator);
-        painter.fillRect(0, 0, m_size, m_size, Qt::white);
-        painter.drawText(QRect(0, 0, m_size, m_size), Qt::AlignCenter,
-                         QString("Icon: %1").arg(iconName));
-        painter.end();
-
-        return QFile::exists(filename);
-    }
-
-    bool exportAsPng(const QString& iconName, const QDir& outputDir) {
-        // Create PNG file
-        QString filename = outputDir.filePath(iconName + ".png");
-        QImage image(m_size, m_size, QImage::Format_ARGB32);
-        image.fill(Qt::transparent);
-
-        // Paint placeholder PNG content
-        // In a real implementation, this would render the actual icon
-        QPainter painter(&image);
-        painter.fillRect(0, 0, m_size, m_size, QColor(200, 200, 200));
-        painter.drawText(QRect(0, 0, m_size, m_size), Qt::AlignCenter,
-                         QString("%1").arg(iconName));
-        painter.end();
-
-        return image.save(filename, "PNG");
-    }
-
-    QStringList m_iconNames;
-    ExportFormat m_format;
-    int m_size;
-    QString m_outputDir;
-    bool m_shouldCancel;
-};
-
-// ============================================================================
-
 BatchExportManager::BatchExportManager(QObject* parent)
-    : QObject(parent), m_exporting(false), m_shouldCancel(false) {}
+    : QObject(parent), m_lucide(nullptr), m_exporting(false), m_shouldCancel(false),
+      m_exportFormat(ExportFormat::PNG), m_exportSize(48), m_exportedCount(0), m_failedCount(0) {}
 
 BatchExportManager::~BatchExportManager() {
     if (m_workerThread && m_workerThread->isRunning()) {
@@ -165,8 +48,12 @@ BatchExportManager::~BatchExportManager() {
     }
 }
 
-bool BatchExportManager::exportIcons(const QStringList& iconNames, ExportFormat format,
-                                     int size, const QString& outputDir) {
+void BatchExportManager::setLucideInstance(lucide::QtLucide* lucide) {
+    m_lucide = lucide;
+}
+
+bool BatchExportManager::exportIcons(const QStringList& iconNames, ExportFormat format, int size,
+                                     const QString& outputDir) {
     // Prevent concurrent exports
     if (m_exporting) {
         qWarning() << "Export already in progress";
@@ -184,33 +71,80 @@ bool BatchExportManager::exportIcons(const QStringList& iconNames, ExportFormat 
         return false;
     }
 
+    // Create output directory if it doesn't exist
+    QDir dir(outputDir);
+    if (!dir.exists() && !dir.mkpath(".")) {
+        emit exportFinished(false, 0, static_cast<int>(iconNames.size()),
+                            "Failed to create output directory");
+        return false;
+    }
+
     m_exporting = true;
     m_shouldCancel = false;
+    m_pendingIcons = iconNames;
+    m_exportFormat = format;
+    m_exportSize = size;
+    m_outputDir = outputDir;
+    m_exportedCount = 0;
+    m_failedCount = 0;
 
-    // Create and start worker thread
-    m_workerThread = std::make_unique<QThread>();
-    auto worker = new BatchExportWorker();
-    worker->moveToThread(m_workerThread.get());
-
-    // Setup worker parameters
-    worker->setExportParams(iconNames, format, size, outputDir);
-
-    // Connect signals
-    connect(m_workerThread.get(), &QThread::started, worker, &BatchExportWorker::doExport);
-    connect(worker, &BatchExportWorker::progressChanged, this,
-            &BatchExportManager::progressChanged);
-    connect(worker, &BatchExportWorker::exportFinished, this,
-            [this](bool success, int exported, int failed, const QString& errorMessage) {
-                m_exporting = false;
-                m_workerThread->quit();
-                emit exportFinished(success, exported, failed, errorMessage);
-            });
-    connect(worker, &BatchExportWorker::exportFinished, worker, &QObject::deleteLater);
-
-    // Note: Cancel flag is checked directly in worker via m_shouldCancel atomic
-
-    m_workerThread->start();
+    // Start export using timer for non-blocking operation
+    QTimer::singleShot(0, this, &BatchExportManager::doExportStep);
     return true;
+}
+
+void BatchExportManager::doExportStep() {
+    if (m_shouldCancel) {
+        m_exporting = false;
+        emit exportFinished(false, m_exportedCount, static_cast<int>(m_pendingIcons.size()),
+                            "Export cancelled by user");
+        m_pendingIcons.clear();
+        return;
+    }
+
+    if (m_pendingIcons.isEmpty()) {
+        m_exporting = false;
+        QString errorMsg =
+            m_failedCount > 0 ? QString("Failed to export %1 icons").arg(m_failedCount) : QString();
+        emit exportFinished(m_failedCount == 0, m_exportedCount, m_failedCount, errorMsg);
+        return;
+    }
+
+    // Export one icon
+    QString iconName = m_pendingIcons.takeFirst();
+    int totalIcons = m_exportedCount + m_failedCount + static_cast<int>(m_pendingIcons.size()) + 1;
+    int currentIndex = m_exportedCount + m_failedCount;
+
+    bool success = false;
+    QString filePath;
+
+    switch (m_exportFormat) {
+        case ExportFormat::SVG:
+            filePath = m_outputDir + "/" + iconName + ".svg";
+            success = ExportUtils::saveAsSvg(m_lucide, iconName, filePath);
+            break;
+        case ExportFormat::PNG:
+            filePath = m_outputDir + "/" + iconName + ".png";
+            success = ExportUtils::saveAsPng(m_lucide, iconName, filePath, m_exportSize);
+            break;
+        case ExportFormat::ICO:
+        case ExportFormat::ICNS:
+            filePath = m_outputDir + "/" + iconName + ".ico";
+            success = ExportUtils::saveAsIco(m_lucide, iconName, filePath, m_exportSize);
+            break;
+    }
+
+    if (success) {
+        m_exportedCount++;
+    } else {
+        m_failedCount++;
+        qWarning() << "Failed to export icon:" << iconName;
+    }
+
+    emit progressChanged(currentIndex + 1, totalIcons);
+
+    // Schedule next step
+    QTimer::singleShot(0, this, &BatchExportManager::doExportStep);
 }
 
 bool BatchExportManager::isExporting() const {
@@ -223,32 +157,17 @@ void BatchExportManager::cancel() {
     }
 }
 
-void BatchExportManager::doExport(const QStringList& iconNames, ExportFormat format,
-                                  int size, const QString& outputDir) {
-    // This is called via the worker thread
-    int exported = 0;
-    int failed = 0;
+void BatchExportManager::setExportFormat(ExportFormat format) {
+    m_exportFormat = format;
+}
 
-    QDir outputDirObj(outputDir);
-    if (!outputDirObj.exists() && !outputDirObj.mkpath(".")) {
-        emit exportFinished(false, 0, iconNames.size(),
-                            "Failed to create output directory");
-        return;
-    }
+void BatchExportManager::addTask(const ExportTask& task) {
+    Q_UNUSED(task);
+    // Placeholder for task-based API compatibility
+}
 
-    for (int i = 0; i < iconNames.size(); ++i) {
-        if (m_shouldCancel) {
-            emit exportFinished(false, exported, iconNames.size() - exported,
-                                "Export cancelled by user");
-            return;
-        }
-
-        emit progressChanged(i, iconNames.size());
-    }
-
-    emit exportFinished(failed == 0, exported, failed, "");
+void BatchExportManager::startExport() {
+    // Placeholder for task-based API compatibility
 }
 
 } // namespace gallery
-
-#include "BatchExportManager.moc"

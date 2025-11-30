@@ -42,11 +42,11 @@ void TestQtLucide::testIconCreation() {
     // The actual size may be scaled by device pixel ratio, so just verify it's reasonable
     QVERIFY(pixmap.width() >= 16 && pixmap.width() <= 128);
     QVERIFY(pixmap.height() >= 16 && pixmap.height() <= 128);
-    
+
     // Test multiple sizes
     QPixmap pixmap64 = icon.pixmap(QSize(64, 64));
     QVERIFY(!pixmap64.isNull());
-    
+
     QPixmap pixmap128 = icon.pixmap(QSize(128, 128));
     QVERIFY(!pixmap128.isNull());
 }
@@ -128,7 +128,7 @@ void TestQtLucide::testInvalidIcon() {
     // Test SVG data for invalid icon
     QByteArray svgData = m_lucide->svgData("non-existent-icon");
     QVERIFY(svgData.isEmpty());
-    
+
     // Test with empty name
     QByteArray emptySvg = m_lucide->svgData("");
     QVERIFY(emptySvg.isEmpty());

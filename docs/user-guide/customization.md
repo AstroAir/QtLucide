@@ -167,7 +167,7 @@ public:
         lucide.setDefaultOption("color", QColor(64, 64, 64));
         lucide.setDefaultOption("color-disabled", QColor(156, 163, 175));
     }
-    
+
     static void applyDarkTheme(lucide::QtLucide& lucide) {
         lucide.setDefaultOption("color", QColor(229, 231, 235));
         lucide.setDefaultOption("color-disabled", QColor(107, 114, 128));
@@ -188,7 +188,7 @@ Apply different styles based on context:
 QVariantMap getIconOptions(const QString& context, bool isEnabled = true)
 {
     QVariantMap options;
-    
+
     if (context == "toolbar") {
         options["scale-factor"] = 0.85;
         options["color"] = isEnabled ? QColor(Qt::black) : QColor(Qt::gray);
@@ -199,7 +199,7 @@ QVariantMap getIconOptions(const QString& context, bool isEnabled = true)
         options["scale-factor"] = 0.7;
         options["opacity"] = 0.8;
     }
-    
+
     return options;
 }
 
@@ -241,7 +241,7 @@ class CustomIconCache
 {
 private:
     static QHash<QString, QIcon> cache;
-    
+
 public:
     static QIcon getIcon(const QString& name, const QVariantMap& options) {
         QString key = generateKey(name, options);
@@ -250,7 +250,7 @@ public:
         }
         return cache[key];
     }
-    
+
 private:
     static QString generateKey(const QString& name, const QVariantMap& options) {
         QStringList parts;
@@ -274,14 +274,14 @@ namespace IconStyles {
         options["scale-factor"] = 1.0;
         return options;
     }
-    
+
     QVariantMap secondary() {
         QVariantMap options;
         options["color"] = QColor(107, 114, 128);
         options["scale-factor"] = 0.9;
         return options;
     }
-    
+
     QVariantMap danger() {
         QVariantMap options;
         options["color"] = QColor(239, 68, 68);
@@ -301,7 +301,7 @@ QIcon deleteIcon = lucide.icon("trash", IconStyles::danger());
 // Ensure sufficient contrast
 QVariantMap getAccessibleOptions(const QColor& backgroundColor) {
     QVariantMap options;
-    
+
     // Calculate contrast ratio and adjust color
     double luminance = calculateLuminance(backgroundColor);
     if (luminance > 0.5) {
@@ -311,7 +311,7 @@ QVariantMap getAccessibleOptions(const QColor& backgroundColor) {
         // Dark background - use light icon
         options["color"] = QColor(Qt::white);
     }
-    
+
     return options;
 }
 

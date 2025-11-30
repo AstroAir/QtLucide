@@ -201,11 +201,11 @@ public:
         if (s_cache.size() > MAX_CACHE_SIZE) {
             s_cache.clear(); // Simple cleanup strategy
         }
-        
+
         if (!s_cache.contains(name)) {
             s_cache[name] = lucide.icon(name);
         }
-        
+
         return s_cache[name];
     }
 };
@@ -290,14 +290,14 @@ public:
     {
         QElapsedTimer timer;
         timer.start();
-        
+
         QVector<QIcon> icons;
         icons.reserve(count);
-        
+
         for (int i = 0; i < count; ++i) {
             icons.append(lucide.icon(lucide::Icons::heart));
         }
-        
+
         qint64 elapsed = timer.elapsed();
         qDebug() << "Created" << count << "icons in" << elapsed << "ms";
         qDebug() << "Average:" << (double)elapsed / count << "ms per icon";
@@ -383,9 +383,9 @@ private slots:
     {
         if (m_iconCreationCount > 0) {
             double avgTime = (double)m_totalIconCreationTime / m_iconCreationCount;
-            qDebug() << "Icons created:" << m_iconCreationCount 
+            qDebug() << "Icons created:" << m_iconCreationCount
                      << "Avg time:" << avgTime << "ms";
-            
+
             // Reset counters
             m_iconCreationCount = 0;
             m_totalIconCreationTime = 0;
@@ -410,7 +410,7 @@ public:
     {
         const qint64 WARNING_THRESHOLD = 10; // 10ms
         const qint64 ERROR_THRESHOLD = 50;   // 50ms
-        
+
         if (elapsed > ERROR_THRESHOLD) {
             qCritical() << "Slow icon creation:" << elapsed << "ms";
         } else if (elapsed > WARNING_THRESHOLD) {

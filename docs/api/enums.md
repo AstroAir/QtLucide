@@ -238,7 +238,7 @@ bool isValidIcon(const QString& name) {
 
 // Check if enum value is valid
 bool isValidIcon(Icons iconId) {
-    return static_cast<int>(iconId) >= 0 && 
+    return static_cast<int>(iconId) >= 0 &&
            static_cast<int>(iconId) < ICON_COUNT;
 }
 ```
@@ -261,13 +261,13 @@ QStringList arrowIcons = findIcons(".*arrow.*");
 ```cpp
 // Get icons by category (example implementation)
 QStringList getNavigationIcons() {
-    return QStringList() << "home" << "arrow-left" << "arrow-right" 
+    return QStringList() << "home" << "arrow-left" << "arrow-right"
                          << "arrow-up" << "arrow-down" << "chevron-left"
                          << "chevron-right" << "menu";
 }
 
 QStringList getFileIcons() {
-    return QStringList() << "file" << "file-plus" << "folder" 
+    return QStringList() << "file" << "file-plus" << "folder"
                          << "folder-open" << "save" << "download";
 }
 ```

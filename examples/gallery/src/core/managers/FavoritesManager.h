@@ -13,9 +13,9 @@
 #define FAVORITES_MANAGER_H
 
 #include <QObject>
+#include <QSettings>
 #include <QString>
 #include <QStringList>
-#include <QSettings>
 #include <memory>
 
 namespace gallery {
@@ -34,7 +34,7 @@ public:
      * @brief Construct FavoritesManager
      * @param parent The parent QObject
      */
-    explicit FavoritesManager(QObject *parent = nullptr);
+    explicit FavoritesManager(QObject* parent = nullptr);
 
     /**
      * @brief Destructor
@@ -46,21 +46,21 @@ public:
      * @param iconName The icon name to check
      * @return true if icon is in favorites, false otherwise
      */
-    bool isFavorite(const QString &iconName) const;
+    bool isFavorite(const QString& iconName) const;
 
     /**
      * @brief Add an icon to favorites
      * @param iconName The icon name to add
      * @return true if icon was added or already in favorites, false if invalid
      */
-    bool addFavorite(const QString &iconName);
+    bool addFavorite(const QString& iconName);
 
     /**
      * @brief Remove an icon from favorites
      * @param iconName The icon name to remove
      * @return true if icon was removed or not in favorites, false if invalid
      */
-    bool removeFavorite(const QString &iconName);
+    bool removeFavorite(const QString& iconName);
 
     /**
      * @brief Get all favorite icons
@@ -84,20 +84,20 @@ public:
      * @param iconName The icon name
      * @return true if icon is now a favorite, false if removed from favorites
      */
-    bool toggleFavorite(const QString &iconName);
+    bool toggleFavorite(const QString& iconName);
 
 signals:
     /**
      * @brief Signal emitted when an icon is added to favorites
      * @param iconName The name of the icon added
      */
-    void favoriteAdded(const QString &iconName);
+    void favoriteAdded(const QString& iconName);
 
     /**
      * @brief Signal emitted when an icon is removed from favorites
      * @param iconName The name of the icon removed
      */
-    void favoriteRemoved(const QString &iconName);
+    void favoriteRemoved(const QString& iconName);
 
     /**
      * @brief Signal emitted when all favorites are cleared
@@ -123,10 +123,10 @@ private:
     // Member variables
     std::unique_ptr<QSettings> m_settings;
     QStringList m_favorites;
-    static constexpr const char *SETTINGS_GROUP = "Favorites";
-    static constexpr const char *FAVORITES_KEY = "FavoriteIcons";
+    static constexpr const char* SETTINGS_GROUP = "Favorites";
+    static constexpr const char* FAVORITES_KEY = "FavoriteIcons";
 };
 
-}  // namespace gallery
+} // namespace gallery
 
-#endif  // FAVORITES_MANAGER_H
+#endif // FAVORITES_MANAGER_H

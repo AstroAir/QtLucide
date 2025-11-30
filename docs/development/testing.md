@@ -49,7 +49,7 @@ private slots:
     void cleanupTestCase(); // Cleanup after all tests
     void init();           // Setup before each test
     void cleanup();        // Cleanup after each test
-    
+
     // Test methods
     void testInitialization();
     void testIconCreation();
@@ -163,7 +163,7 @@ void TestSvgRendering::testColorReplacement()
     // Render to pixmap and check color
     QPixmap pixmap = redIcon.pixmap(32, 32);
     QVERIFY(!pixmap.isNull());
-    
+
     // Basic color validation (red should be present)
     QImage image = pixmap.toImage();
     bool hasRed = false;
@@ -198,11 +198,11 @@ void TestThreadSafety::testConcurrentIconCreation()
         QThread* thread = new QThread();
         IconCreationWorker* worker = new IconCreationWorker(m_lucide, iconsPerThread);
         worker->moveToThread(thread);
-        
+
         connect(thread, &QThread::started, worker, &IconCreationWorker::createIcons);
         connect(worker, &IconCreationWorker::finished, thread, &QThread::quit);
         connect(thread, &QThread::finished, thread, &QThread::deleteLater);
-        
+
         threads.append(thread);
         workers.append(worker);
     }
@@ -249,16 +249,16 @@ void TestMemoryManagement::testMemoryLeaks()
 
     // Check memory usage
     size_t peakMemory = getCurrentMemoryUsage();
-    
+
     // Clear icons
     icons.clear();
-    
+
     // Force garbage collection
     QCoreApplication::processEvents();
-    
+
     // Check final memory usage
     size_t finalMemory = getCurrentMemoryUsage();
-    
+
     // Memory should not have grown significantly
     size_t memoryGrowth = finalMemory - baselineMemory;
     QVERIFY(memoryGrowth < 1024 * 1024); // Less than 1MB growth
@@ -334,7 +334,7 @@ void TestErrorHandling::testInvalidIconNames()
     for (const QString& name : invalidNames) {
         QIcon icon = m_lucide->icon(name);
         QVERIFY(icon.isNull());
-        
+
         QByteArray svgData = m_lucide->svgData(name);
         QVERIFY(svgData.isEmpty());
     }
@@ -351,7 +351,7 @@ void TestErrorHandling::testResourceExhaustion()
     // Try to create an excessive number of icons
     QVector<QIcon> icons;
     const int maxIcons = 10000;
-    
+
     for (int i = 0; i < maxIcons; ++i) {
         QIcon icon = m_lucide->icon("heart");
         if (icon.isNull()) {

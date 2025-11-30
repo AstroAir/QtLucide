@@ -8,21 +8,26 @@ assignees: ''
 ---
 
 ## Feature Summary
+
 A clear and concise description of the feature you'd like to see added.
 
 ## Problem Statement
+
 Is your feature request related to a problem? Please describe.
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
 ## Proposed Solution
+
 Describe the solution you'd like to see implemented.
 A clear and concise description of what you want to happen.
 
 ## Alternative Solutions
+
 Describe any alternative solutions or features you've considered.
 A clear and concise description of any alternative solutions or features you've considered.
 
 ## Use Cases
+
 Describe specific use cases where this feature would be beneficial:
 
 1. **Use Case 1**: Description of how this feature would be used
@@ -30,6 +35,7 @@ Describe specific use cases where this feature would be beneficial:
 3. **Use Case 3**: Additional use case if applicable
 
 ## Proposed API (if applicable)
+
 If this feature involves API changes, please provide a proposed interface:
 
 ```cpp
@@ -38,13 +44,14 @@ class QtLucide {
 public:
     // New method or modification
     QIcon newFeatureMethod(const QString& parameter);
-    
+
     // Or modification to existing method
     QIcon icon(const QString& name, const NewOptions& options = {});
 };
 ```
 
 ## Implementation Considerations
+
 Are there any technical considerations or constraints we should be aware of?
 
 - Performance implications
@@ -54,12 +61,14 @@ Are there any technical considerations or constraints we should be aware of?
 - Memory usage considerations
 
 ## Examples from Other Libraries
+
 Are there similar features in other icon libraries or Qt components that could serve as inspiration?
 
 - Library/Component name: Description of similar feature
 - How it works and why it's useful
 
 ## Priority and Impact
+
 How important is this feature to you and your use case?
 
 - [ ] Critical - Blocking my project
@@ -68,9 +77,11 @@ How important is this feature to you and your use case?
 - [ ] Low - Minor enhancement
 
 ## Additional Context
+
 Add any other context, mockups, or screenshots about the feature request here.
 
 ## Checklist
+
 - [ ] I have searched existing issues to ensure this is not a duplicate
 - [ ] I have provided clear use cases for this feature
 - [ ] I have considered backward compatibility implications

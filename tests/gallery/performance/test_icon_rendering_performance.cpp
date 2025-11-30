@@ -6,13 +6,13 @@
 
 #include "test_icon_rendering_performance.h"
 
+#include <QCoreApplication>
+#include <QDebug>
 #include <QDir>
 #include <QElapsedTimer>
-#include <QStandardPaths>
-#include <QPixmap>
 #include <QIcon>
-#include <QDebug>
-#include <QCoreApplication>
+#include <QPixmap>
+#include <QStandardPaths>
 #include <memory>
 
 #include "QtLucide/QtLucide.h"
@@ -20,16 +20,16 @@
 #include "managers/IconMetadataManager.h"
 
 // Helper function to locate metadata files
-static QString findMetadataFile(const QString &filename) {
+static QString findMetadataFile(const QString& filename) {
     // Try multiple possible locations
     QStringList searchPaths = {
         QCoreApplication::applicationDirPath(),
         QCoreApplication::applicationDirPath() + "/resources",
         QCoreApplication::applicationDirPath() + "/../share/QtLucide",
-        QTLUCIDE_RESOURCES_PATH,  // May be defined during build
+        QTLUCIDE_RESOURCES_PATH, // May be defined during build
     };
 
-    for (const QString &basePath : searchPaths) {
+    for (const QString& basePath : searchPaths) {
         QString filePath = basePath + "/" + filename;
         if (QFile::exists(filePath)) {
             return filePath;
@@ -84,17 +84,21 @@ QString TestIconRenderingPerformance::getTestDataPath() const {
 
 QString TestIconRenderingPerformance::getIconName(int index) const {
     // Return common icon names
-    const QStringList commonIcons = {
-        "home", "search", "settings", "user", "heart", "star", "bell",
-        "calendar", "camera", "clock", "code", "database", "download",
-        "edit", "file", "filter", "flag", "folder", "gift", "globe",
-        "help", "info", "key", "link", "lock", "mail", "map", "menu",
-        "message", "minus", "mobile", "more-horizontal", "music", "plus",
-        "power", "print", "refresh", "save", "share", "shield", "shopping-cart",
-        "slack", "square", "start", "stop", "sun", "target", "trash",
-        "trending-up", "twitter", "upload", "user-plus", "video", "volume",
-        "watch", "wifi", "window", "x", "youtube", "zap"
-    };
+    const QStringList commonIcons = {"home",          "search",  "settings", "user",
+                                     "heart",         "star",    "bell",     "calendar",
+                                     "camera",        "clock",   "code",     "database",
+                                     "download",      "edit",    "file",     "filter",
+                                     "flag",          "folder",  "gift",     "globe",
+                                     "help",          "info",    "key",      "link",
+                                     "lock",          "mail",    "map",      "menu",
+                                     "message",       "minus",   "mobile",   "more-horizontal",
+                                     "music",         "plus",    "power",    "print",
+                                     "refresh",       "save",    "share",    "shield",
+                                     "shopping-cart", "slack",   "square",   "start",
+                                     "stop",          "sun",     "target",   "trash",
+                                     "trending-up",   "twitter", "upload",   "user-plus",
+                                     "video",         "volume",  "watch",    "wifi",
+                                     "window",        "x",       "youtube",  "zap"};
 
     return commonIcons[index % commonIcons.size()];
 }
@@ -277,7 +281,7 @@ void TestIconRenderingPerformance::testBatch100IconsRenderingPerformance() {
     timer.start();
 
     int successCount = 0;
-    for (const QString &iconName : icons) {
+    for (const QString& iconName : icons) {
         QIcon icon = m_lucide->icon(iconName);
         if (!icon.isNull()) {
             QPixmap pixmap = icon.pixmap(size, size);
@@ -298,9 +302,10 @@ void TestIconRenderingPerformance::testBatch100IconsRenderingPerformance() {
                             .arg(BATCH_100_MAX_TIME)));
 
     // At least 90% of icons should render successfully
-    QVERIFY2(successCount >= 90,
-             qPrintable(QString("Only %1/100 icons rendered successfully, expected >= 90")
-                            .arg(successCount)));
+    QVERIFY2(
+        successCount >= 90,
+        qPrintable(
+            QString("Only %1/100 icons rendered successfully, expected >= 90").arg(successCount)));
 }
 
 void TestIconRenderingPerformance::testBatch1000IconsRenderingPerformance() {
@@ -313,7 +318,7 @@ void TestIconRenderingPerformance::testBatch1000IconsRenderingPerformance() {
     timer.start();
 
     int successCount = 0;
-    for (const QString &iconName : icons) {
+    for (const QString& iconName : icons) {
         QIcon icon = m_lucide->icon(iconName);
         if (!icon.isNull()) {
             QPixmap pixmap = icon.pixmap(size, size);
@@ -358,7 +363,7 @@ void TestIconRenderingPerformance::testBatchAllIconsRenderingPerformance() {
     timer.start();
 
     int successCount = 0;
-    for (const QString &iconName : allIcons) {
+    for (const QString& iconName : allIcons) {
         QIcon icon = m_lucide->icon(iconName);
         if (!icon.isNull()) {
             QPixmap pixmap = icon.pixmap(size, size);
@@ -398,7 +403,7 @@ void TestIconRenderingPerformance::testCacheFirstLoadVsCachedLoad() {
     int size = 64;
 
     // First load (uncached)
-    m_lucide->icon(iconName);  // Create icon to warm up
+    m_lucide->icon(iconName); // Create icon to warm up
 
     QElapsedTimer timer1;
     timer1.start();
@@ -424,7 +429,8 @@ void TestIconRenderingPerformance::testCacheFirstLoadVsCachedLoad() {
     QVERIFY(!pixmap2.isNull());
 
     // Cached load should be faster (log the difference)
-    qDebug() << "Cache speedup ratio:" << (firstLoadTime > 0 ? (double)cachedLoadTime / firstLoadTime : 0);
+    qDebug() << "Cache speedup ratio:"
+             << (firstLoadTime > 0 ? (double)cachedLoadTime / firstLoadTime : 0);
 }
 
 void TestIconRenderingPerformance::testCachePerformanceImprovement() {
@@ -438,7 +444,7 @@ void TestIconRenderingPerformance::testCachePerformanceImprovement() {
     timer1.start();
 
     int success1 = 0;
-    for (const QString &iconName : icons) {
+    for (const QString& iconName : icons) {
         QIcon icon = m_lucide->icon(iconName);
         if (!icon.isNull()) {
             QPixmap pixmap = icon.pixmap(size, size);
@@ -455,7 +461,7 @@ void TestIconRenderingPerformance::testCachePerformanceImprovement() {
     timer2.start();
 
     int success2 = 0;
-    for (const QString &iconName : icons) {
+    for (const QString& iconName : icons) {
         QIcon icon = m_lucide->icon(iconName);
         if (!icon.isNull()) {
             QPixmap pixmap = icon.pixmap(size, size);
@@ -477,7 +483,7 @@ void TestIconRenderingPerformance::testCachePerformanceImprovement() {
 
     // Cached batch should show some performance improvement
     // Allow for variability in timing
-    if (firstBatchTime > 100) {  // Only check if timing is significant
+    if (firstBatchTime > 100) { // Only check if timing is significant
         QVERIFY2(improvementRatio < (1.0 - CACHE_IMPROVEMENT_MIN_RATIO),
                  qPrintable(QString("Cache improvement ratio %1 is not >= %2x faster")
                                 .arg(1.0 / improvementRatio)
@@ -503,7 +509,7 @@ void TestIconRenderingPerformance::testMemoryStabilityLargeLoad() {
     QList<QPixmap> loadedPixmaps;
 
     int successCount = 0;
-    for (const QString &iconName : icons) {
+    for (const QString& iconName : icons) {
         QIcon icon = m_lucide->icon(iconName);
         if (!icon.isNull()) {
             QPixmap pixmap = icon.pixmap(size, size);
@@ -526,7 +532,7 @@ void TestIconRenderingPerformance::testMemoryStabilityLargeLoad() {
     loadedIcons.clear();
     loadedPixmaps.clear();
 
-    QVERIFY(true);  // If we got here, memory cleanup worked
+    QVERIFY(true); // If we got here, memory cleanup worked
 }
 
 void TestIconRenderingPerformance::testCacheCleanupFunctionality() {
@@ -536,7 +542,7 @@ void TestIconRenderingPerformance::testCacheCleanupFunctionality() {
     QStringList icons = getIconNames(100);
     int size = 32;
 
-    for (const QString &iconName : icons) {
+    for (const QString& iconName : icons) {
         QIcon icon = m_lucide->icon(iconName);
         if (!icon.isNull()) {
             QPixmap pixmap = icon.pixmap(size, size);

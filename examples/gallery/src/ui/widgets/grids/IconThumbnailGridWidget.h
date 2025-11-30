@@ -13,8 +13,8 @@
 #ifndef ICONTHUMBNAILGRIDWIDGET_H
 #define ICONTHUMBNAILGRIDWIDGET_H
 
-#include <QWidget>
 #include <QList>
+#include <QWidget>
 
 namespace lucide {
 class QtLucide;

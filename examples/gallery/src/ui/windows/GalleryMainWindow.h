@@ -12,11 +12,12 @@
 #ifndef GALLERY_MAIN_WINDOW_H
 #define GALLERY_MAIN_WINDOW_H
 
-#include <QMainWindow>
-#include <QSplitter>
 #include <QAction>
-#include <QMenu>
 #include <QLabel>
+#include <QMainWindow>
+#include <QMenu>
+#include <QScrollArea>
+#include <QSplitter>
 #include <memory>
 
 // Forward declarations
@@ -33,7 +34,7 @@ class CategorySidebarWidget;
 class IconGridWidget;
 class IconDetailsPanel;
 struct IconOptions;
-}
+} // namespace gallery
 
 namespace gallery {
 
@@ -61,7 +62,7 @@ public:
      * @brief Construct GalleryMainWindow
      * @param parent The parent QWidget
      */
-    explicit GalleryMainWindow(QWidget *parent = nullptr);
+    explicit GalleryMainWindow(QWidget* parent = nullptr);
 
     /**
      * @brief Destructor
@@ -73,7 +74,7 @@ protected:
      * @brief Handle close events
      * @param event The close event
      */
-    void closeEvent(QCloseEvent *event) override;
+    void closeEvent(QCloseEvent* event) override;
 
 private slots:
     /**
@@ -105,13 +106,13 @@ private slots:
      * @brief Handle icon selection change
      * @param iconName The newly selected icon name
      */
-    void onIconSelected(const QString &iconName);
+    void onIconSelected(const QString& iconName);
 
     /**
      * @brief Update status bar with current icon count
      * @param icons The list of currently displayed icons
      */
-    void onIconsFiltered(const QStringList &icons);
+    void onIconsFiltered(const QStringList& icons);
 
     /**
      * @brief Handle theme change notification
@@ -123,7 +124,7 @@ private slots:
      * @brief Handle icon options change from sidebar
      * @param options The new icon options
      */
-    void onOptionsChanged(const IconOptions &options);
+    void onOptionsChanged(const IconOptions& options);
 
 private:
     /**
@@ -177,36 +178,37 @@ private:
     void updateCategoryList();
 
     // UI Components
-    QSplitter *m_mainSplitter = nullptr;                    ///< Main horizontal splitter
-    CategorySidebarWidget *m_categoryPanel = nullptr;       ///< Left category sidebar
-    IconGridWidget *m_iconGrid = nullptr;                   ///< Center icon grid
-    IconDetailsPanel *m_detailsPanel = nullptr;             ///< Right details panel
+    QSplitter* m_mainSplitter = nullptr;              ///< Main horizontal splitter
+    CategorySidebarWidget* m_categoryPanel = nullptr; ///< Left category sidebar
+    QScrollArea* m_iconGridScrollArea = nullptr;      ///< Scroll area for icon grid
+    IconGridWidget* m_iconGrid = nullptr;             ///< Center icon grid
+    IconDetailsPanel* m_detailsPanel = nullptr;       ///< Right details panel
 
     // Status bar labels
-    QLabel *m_statusLabel = nullptr;                        ///< Status bar label
+    QLabel* m_statusLabel = nullptr; ///< Status bar label
 
     // Managers
-    std::unique_ptr<lucide::QtLucide> m_lucide;             ///< QtLucide instance for icon rendering
-    std::unique_ptr<ContentManager> m_contentManager;       ///< Content manager instance
-    std::unique_ptr<ThemeManager> m_themeManager;           ///< Theme manager instance
+    std::unique_ptr<lucide::QtLucide> m_lucide;       ///< QtLucide instance for icon rendering
+    std::unique_ptr<ContentManager> m_contentManager; ///< Content manager instance
+    std::unique_ptr<ThemeManager> m_themeManager;     ///< Theme manager instance
 
     // Menu actions
-    QAction *m_exportAction = nullptr;                      ///< Export action
-    QAction *m_quitAction = nullptr;                        ///< Quit action
-    QAction *m_preferencesAction = nullptr;                 ///< Preferences action
-    QAction *m_toggleDetailsPanelAction = nullptr;          ///< Toggle details panel action
-    QAction *m_aboutAction = nullptr;                       ///< About action
-    QAction *m_aboutQtAction = nullptr;                     ///< About Qt action
+    QAction* m_exportAction = nullptr;             ///< Export action
+    QAction* m_quitAction = nullptr;               ///< Quit action
+    QAction* m_preferencesAction = nullptr;        ///< Preferences action
+    QAction* m_toggleDetailsPanelAction = nullptr; ///< Toggle details panel action
+    QAction* m_aboutAction = nullptr;              ///< About action
+    QAction* m_aboutQtAction = nullptr;            ///< About Qt action
 
     // Menus
-    QMenu *m_fileMenu = nullptr;                            ///< File menu
-    QMenu *m_editMenu = nullptr;                            ///< Edit menu
-    QMenu *m_viewMenu = nullptr;                            ///< View menu
-    QMenu *m_helpMenu = nullptr;                            ///< Help menu
+    QMenu* m_fileMenu = nullptr; ///< File menu
+    QMenu* m_editMenu = nullptr; ///< Edit menu
+    QMenu* m_viewMenu = nullptr; ///< View menu
+    QMenu* m_helpMenu = nullptr; ///< Help menu
 
-    bool m_detailsPanelVisible = true;                      ///< Track details panel visibility
+    bool m_detailsPanelVisible = true; ///< Track details panel visibility
 };
 
-}  // namespace gallery
+} // namespace gallery
 
-#endif  // GALLERY_MAIN_WINDOW_H
+#endif // GALLERY_MAIN_WINDOW_H

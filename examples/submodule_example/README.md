@@ -100,7 +100,7 @@ In a real project, you would:
 
    ```cpp
    #include <QtLucide/QtLucide.h>
-   
+
    QAction *action = new QAction("Save", this);
    action->setIcon(QtLucide::icon(QtLucide::Save));
    ```

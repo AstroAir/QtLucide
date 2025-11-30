@@ -33,7 +33,7 @@ public:
      * @brief Construct ImageMetadataManager
      * @param parent The parent QObject
      */
-    explicit ImageMetadataManager(QObject *parent = nullptr);
+    explicit ImageMetadataManager(QObject* parent = nullptr);
 
     /**
      * @brief Destructor
@@ -45,14 +45,14 @@ public:
      * @param path The path to image metadata
      * @return true if initialization was successful, false otherwise
      */
-    bool initialize(const QString &path);
+    bool initialize(const QString& path);
 
     /**
      * @brief Get metadata for an image
      * @param imageName The image name
      * @return Image metadata as a string, empty if not found
      */
-    QString getImageMetadata(const QString &imageName) const;
+    QString getImageMetadata(const QString& imageName) const;
 
     /**
      * @brief Get list of all images
@@ -65,6 +65,6 @@ private:
     QStringList m_images;
 };
 
-}  // namespace gallery
+} // namespace gallery
 
-#endif  // MANAGER_STUBS_H
+#endif // MANAGER_STUBS_H

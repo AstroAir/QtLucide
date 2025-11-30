@@ -8,24 +8,20 @@
 
 #include "SearchWidget.h"
 
+#include <QFont>
+#include <QHBoxLayout>
+#include <QIcon>
+#include <QKeyEvent>
+#include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QHBoxLayout>
-#include <QLabel>
 #include <QTimer>
-#include <QKeyEvent>
-#include <QFont>
-#include <QIcon>
 
 namespace gallery {
 
 SearchWidget::SearchWidget(QWidget* parent)
-    : QWidget(parent),
-      m_searchInput(nullptr),
-      m_clearButton(nullptr),
-      m_searchIconLabel(nullptr),
-      m_shortcutLabel(nullptr),
-      m_debounceTimer(std::make_unique<QTimer>(this)),
+    : QWidget(parent), m_searchInput(nullptr), m_clearButton(nullptr), m_searchIconLabel(nullptr),
+      m_shortcutLabel(nullptr), m_debounceTimer(std::make_unique<QTimer>(this)),
       m_debounceTime(300) {
     setupUI();
     setMaximumHeight(40);
@@ -47,20 +43,18 @@ void SearchWidget::setupUI() {
     m_searchInput = new QLineEdit(this);
     m_searchInput->setPlaceholderText("Search 1634 icons...");
     m_searchInput->setMinimumHeight(28);
-    m_searchInput->setStyleSheet(
-        "QLineEdit {"
-        "  border: 1px solid #555;"
-        "  border-radius: 4px;"
-        "  padding: 4px 8px;"
-        "  background-color: #2a2a2a;"
-        "  color: white;"
-        "  font-size: 11pt;"
-        "}"
-        "QLineEdit:focus {"
-        "  border: 2px solid #0066CC;"
-        "  outline: none;"
-        "}"
-    );
+    m_searchInput->setStyleSheet("QLineEdit {"
+                                 "  border: 1px solid #555;"
+                                 "  border-radius: 4px;"
+                                 "  padding: 4px 8px;"
+                                 "  background-color: #2a2a2a;"
+                                 "  color: white;"
+                                 "  font-size: 11pt;"
+                                 "}"
+                                 "QLineEdit:focus {"
+                                 "  border: 2px solid #0066CC;"
+                                 "  outline: none;"
+                                 "}");
     connect(m_searchInput, &QLineEdit::textChanged, this, &SearchWidget::onSearchTextChanged);
 
     // Clear button
@@ -68,27 +62,23 @@ void SearchWidget::setupUI() {
     m_clearButton->setText("✕");
     m_clearButton->setFixedSize(24, 24);
     m_clearButton->setToolTip("Clear search");
-    m_clearButton->setStyleSheet(
-        "QPushButton {"
-        "  border: none;"
-        "  background-color: transparent;"
-        "  color: #888;"
-        "  font-weight: bold;"
-        "  padding: 0px;"
-        "}"
-        "QPushButton:hover {"
-        "  color: #ccc;"
-        "}"
-    );
+    m_clearButton->setStyleSheet("QPushButton {"
+                                 "  border: none;"
+                                 "  background-color: transparent;"
+                                 "  color: #888;"
+                                 "  font-weight: bold;"
+                                 "  padding: 0px;"
+                                 "}"
+                                 "QPushButton:hover {"
+                                 "  color: #ccc;"
+                                 "}");
     m_clearButton->setVisible(false);
     connect(m_clearButton, &QPushButton::clicked, this, &SearchWidget::onClearClicked);
 
     // Shortcut hint
     m_shortcutLabel = new QLabel("Ctrl+K", this);
-    m_shortcutLabel->setStyleSheet(
-        "color: #888;"
-        "font-size: 9pt;"
-    );
+    m_shortcutLabel->setStyleSheet("color: #888;"
+                                   "font-size: 9pt;");
     m_shortcutLabel->setMaximumWidth(50);
     m_shortcutLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 

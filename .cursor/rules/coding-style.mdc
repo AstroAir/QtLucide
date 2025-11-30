@@ -13,4 +13,3 @@ description: QtLucide C++ style, naming, and API docs guidance
 - Document public APIs with Doxygen comments (see docs in [`docs/api`](mdc:docs/api)).
 
 Do not edit generated headers: [`include/QtLucide/QtLucideEnums.h`](mdc:include/QtLucide/QtLucideEnums.h), [`include/QtLucide/QtLucideStrings.h`](mdc:include/QtLucide/QtLucideStrings.h). Regenerate via tools when needed.
-

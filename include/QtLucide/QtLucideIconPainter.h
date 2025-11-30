@@ -241,7 +241,8 @@ private:
      * @param state Icon state
      * @return List of option keys to try in priority order
      */
-    [[nodiscard]] QStringList optionKeysForModeAndState(const QString& key, QIcon::Mode mode, QIcon::State state);
+    [[nodiscard]] QStringList optionKeysForModeAndState(const QString& key, QIcon::Mode mode,
+                                                        QIcon::State state);
 
     /**
      * @brief Get the best option value for the given mode and state
@@ -252,7 +253,8 @@ private:
      * @return Best matching option value, or invalid QVariant if not found
      */
     [[nodiscard]] QVariant optionValueForModeAndState(const QString& baseKey, QIcon::Mode mode,
-                                                      QIcon::State state, const QVariantMap& options);
+                                                      QIcon::State state,
+                                                      const QVariantMap& options);
 
     /**
      * @brief Process SVG data to replace colors

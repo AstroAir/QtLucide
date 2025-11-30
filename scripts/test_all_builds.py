@@ -3,10 +3,8 @@
 Test script to verify all QtLucide build systems are working
 """
 
-import os
-import sys
 import subprocess
-import shutil
+import sys
 from pathlib import Path
 
 
@@ -14,8 +12,9 @@ def run_command(cmd, cwd=None, check=True):
     """Run a command and return the result"""
     print(f"Running: {' '.join(cmd)}")
     try:
-        result = subprocess.run(cmd, cwd=cwd, check=check,
-                                capture_output=True, text=True)
+        result = subprocess.run(
+            cmd, cwd=cwd, check=check, capture_output=True, text=True
+        )
         if result.stdout:
             print(f"STDOUT: {result.stdout}")
         if result.stderr:
@@ -36,9 +35,9 @@ def run_command(cmd, cwd=None, check=True):
 def check_build_system(system):
     """Check if a build system is available"""
     commands = {
-        'cmake': ['cmake', '--version'],
-        'meson': ['meson', '--version'],
-        'xmake': ['xmake', '--version']
+        "cmake": ["cmake", "--version"],
+        "meson": ["meson", "--version"],
+        "xmake": ["xmake", "--version"],
     }
 
     if system not in commands:
@@ -58,11 +57,9 @@ def test_build_script(script_path, system_name):
 
     try:
         # Test help option
-        result = run_command(
-            ['python3', str(script_path), '--help'], check=False)
+        result = run_command(["python3", str(script_path), "--help"], check=False)
         if result is None:
-            result = run_command(
-                ['python', str(script_path), '--help'], check=False)
+            result = run_command(["python", str(script_path), "--help"], check=False)
 
         if result and result.returncode == 0:
             print(f"[+] {system_name} script help works")
@@ -77,7 +74,7 @@ def test_build_script(script_path, system_name):
 
 def test_unified_script(script_path):
     """Test the unified build script"""
-    print(f"\n=== Testing Unified Build Script ===")
+    print("\n=== Testing Unified Build Script ===")
 
     if not script_path.exists():
         print(f"[-] Unified script not found: {script_path}")
@@ -86,29 +83,31 @@ def test_unified_script(script_path):
     try:
         # Test list systems option
         result = run_command(
-            ['python3', str(script_path), '--list-systems'], check=False)
+            ["python3", str(script_path), "--list-systems"], check=False
+        )
         if result is None:
             result = run_command(
-                ['python', str(script_path), '--list-systems'], check=False)
+                ["python", str(script_path), "--list-systems"], check=False
+            )
 
         if result and result.returncode == 0:
-            print(f"[+] Unified script --list-systems works")
+            print("[+] Unified script --list-systems works")
 
             # Test help option
-            result = run_command(
-                ['python3', str(script_path), '--help'], check=False)
+            result = run_command(["python3", str(script_path), "--help"], check=False)
             if result is None:
                 result = run_command(
-                    ['python', str(script_path), '--help'], check=False)
+                    ["python", str(script_path), "--help"], check=False
+                )
 
             if result and result.returncode == 0:
-                print(f"[+] Unified script help works")
+                print("[+] Unified script help works")
                 return True
             else:
-                print(f"[-] Unified script help failed")
+                print("[-] Unified script help failed")
                 return False
         else:
-            print(f"[-] Unified script --list-systems failed")
+            print("[-] Unified script --list-systems failed")
             return False
     except Exception as e:
         print(f"[-] Unified script test failed: {e}")
@@ -129,7 +128,7 @@ def main():
     # Check available build systems
     print("\n=== Checking Build Systems ===")
     available_systems = []
-    for system in ['cmake', 'meson', 'xmake']:
+    for system in ["cmake", "meson", "xmake"]:
         if check_build_system(system):
             print(f"[+] {system.upper()} is available")
             available_systems.append(system)
@@ -143,9 +142,9 @@ def main():
     # Test individual build scripts
     print("\n=== Testing Individual Build Scripts ===")
     scripts_to_test = [
-        (script_dir / 'build_cmake.py', 'CMake'),
-        (script_dir / 'build_meson.py', 'Meson'),
-        (script_dir / 'build_xmake.py', 'XMake')
+        (script_dir / "build_cmake.py", "CMake"),
+        (script_dir / "build_meson.py", "Meson"),
+        (script_dir / "build_xmake.py", "XMake"),
     ]
 
     script_results = []
@@ -154,16 +153,11 @@ def main():
         script_results.append((system_name, result))
 
     # Test unified build script
-    unified_result = test_unified_script(script_dir / 'build.py')
+    unified_result = test_unified_script(script_dir / "build.py")
 
     # Test batch files exist (Windows)
     print("\n=== Checking Batch Files ===")
-    batch_files = [
-        'build.bat',
-        'build_cmake.bat',
-        'build_meson.bat',
-        'build_xmake.bat'
-    ]
+    batch_files = ["build.bat", "build_cmake.bat", "build_meson.bat", "build_xmake.bat"]
 
     batch_results = []
     for batch_file in batch_files:
@@ -176,12 +170,12 @@ def main():
             batch_results.append(False)
 
     # Check README exists
-    readme_path = script_dir / 'README.md'
+    readme_path = script_dir / "README.md"
     readme_exists = readme_path.exists()
     if readme_exists:
-        print(f"[+] README.md exists")
+        print("[+] README.md exists")
     else:
-        print(f"[-] README.md missing")
+        print("[-] README.md missing")
 
     # Summary
     print("\n" + "=" * 40)
@@ -193,7 +187,8 @@ def main():
         print(f"  [+] {system.upper()}")
 
     print(
-        f"\nBuild scripts: {sum(1 for _, result in script_results if result)}/{len(script_results)}")
+        f"\nBuild scripts: {sum(1 for _, result in script_results if result)}/{len(script_results)}"
+    )
     for system_name, result in script_results:
         status = "[+]" if result else "[-]"
         print(f"  {status} {system_name}")
@@ -211,7 +206,13 @@ def main():
     all_scripts_ok = all(result for _, result in script_results)
     all_batch_ok = all(batch_results)
 
-    if available_systems and all_scripts_ok and unified_result and all_batch_ok and readme_exists:
+    if (
+        available_systems
+        and all_scripts_ok
+        and unified_result
+        and all_batch_ok
+        and readme_exists
+    ):
         print("\n[SUCCESS] ALL TESTS PASSED!")
         print("QtLucide build scripts are ready to use.")
         return 0

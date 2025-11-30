@@ -15,8 +15,7 @@
 
 namespace gallery {
 
-ErrorHandler::ErrorHandler(QObject* parent)
-    : QObject(parent) {
+ErrorHandler::ErrorHandler(QObject* parent) : QObject(parent) {
     GalleryLogger::debug("error_handler", "ErrorHandler instance created");
 }
 
@@ -41,7 +40,7 @@ void ErrorHandler::reportError(const ErrorInfo& error) {
 }
 
 void ErrorHandler::reportError(ErrorType type, const QString& userMessage,
-                              const QString& technicalMessage) {
+                               const QString& technicalMessage) {
     ErrorInfo error;
     error.type = type;
     error.userMessage = userMessage;
@@ -54,7 +53,7 @@ void ErrorHandler::reportError(ErrorType type, const QString& userMessage,
 }
 
 void ErrorHandler::reportFileError(ErrorType type, const QString& filePath,
-                                  const QString& details) {
+                                   const QString& details) {
     ErrorInfo error;
     error.type = type;
     error.context = filePath;
@@ -70,8 +69,7 @@ void ErrorHandler::reportFileError(ErrorType type, const QString& filePath,
 
         case ErrorType::FileReadError:
             error.userMessage = "Cannot read file";
-            error.technicalMessage =
-                QString("Failed to read file '%1': %2").arg(filePath, details);
+            error.technicalMessage = QString("Failed to read file '%1': %2").arg(filePath, details);
             error.suggestedAction = "Check file permissions and try again";
             break;
 
@@ -84,15 +82,14 @@ void ErrorHandler::reportFileError(ErrorType type, const QString& filePath,
 
         case ErrorType::PermissionDenied:
             error.userMessage = "Permission denied";
-            error.technicalMessage =
-                QString("Permission denied accessing '%1'").arg(filePath);
+            error.technicalMessage = QString("Permission denied accessing '%1'").arg(filePath);
             error.suggestedAction = "Check file permissions and try again";
             break;
 
         default:
             error.userMessage = QString("File operation failed: %1").arg(typeStr);
-            error.technicalMessage = QString("File operation failed for '%1': %2")
-                                         .arg(filePath, details);
+            error.technicalMessage =
+                QString("File operation failed for '%1': %2").arg(filePath, details);
             break;
     }
 

@@ -5,14 +5,14 @@
 
 #include "FavoritesManager.h"
 
-#include <QStandardPaths>
 #include <QDebug>
+#include <QMetaType>
+#include <QStandardPaths>
 #include <algorithm>
 
 namespace gallery {
 
-FavoritesManager::FavoritesManager(QObject *parent)
-    : QObject(parent) {
+FavoritesManager::FavoritesManager(QObject* parent) : QObject(parent) {
     initializeSettings();
     loadFavorites();
 }
@@ -31,13 +31,15 @@ void FavoritesManager::loadFavorites() {
     QVariant favVar = m_settings->value(FAVORITES_KEY, QStringList());
     m_settings->endGroup();
 
-    if (favVar.type() == QVariant::StringList) {
+    const int favTypeId = favVar.metaType().id();
+
+    if (favTypeId == QMetaType::QStringList) {
         m_favorites = favVar.toStringList();
-    } else if (favVar.type() == QVariant::List) {
+    } else if (favTypeId == QMetaType::QVariantList) {
         // Handle legacy format if needed
         QVariantList varList = favVar.toList();
-        for (const QVariant &var : varList) {
-            if (var.type() == QVariant::String) {
+        for (const QVariant& var : varList) {
+            if (var.metaType().id() == QMetaType::QString) {
                 m_favorites.append(var.toString());
             }
         }
@@ -53,21 +55,21 @@ void FavoritesManager::saveFavorites() const {
     m_settings->sync();
 }
 
-bool FavoritesManager::isFavorite(const QString &iconName) const {
+bool FavoritesManager::isFavorite(const QString& iconName) const {
     if (iconName.isEmpty()) {
         return false;
     }
     return m_favorites.contains(iconName);
 }
 
-bool FavoritesManager::addFavorite(const QString &iconName) {
+bool FavoritesManager::addFavorite(const QString& iconName) {
     if (iconName.isEmpty()) {
         qWarning() << "Cannot add empty icon name to favorites";
         return false;
     }
 
     if (isFavorite(iconName)) {
-        return true;  // Already in favorites
+        return true; // Already in favorites
     }
 
     m_favorites.append(iconName);
@@ -78,14 +80,14 @@ bool FavoritesManager::addFavorite(const QString &iconName) {
     return true;
 }
 
-bool FavoritesManager::removeFavorite(const QString &iconName) {
+bool FavoritesManager::removeFavorite(const QString& iconName) {
     if (iconName.isEmpty()) {
         qWarning() << "Cannot remove empty icon name from favorites";
         return false;
     }
 
     if (!isFavorite(iconName)) {
-        return true;  // Already not in favorites
+        return true; // Already not in favorites
     }
 
     m_favorites.removeAll(iconName);
@@ -101,7 +103,7 @@ QStringList FavoritesManager::favorites() const {
 }
 
 int FavoritesManager::favoritesCount() const {
-    return m_favorites.size();
+    return static_cast<int>(m_favorites.size());
 }
 
 void FavoritesManager::clearFavorites() {
@@ -112,7 +114,7 @@ void FavoritesManager::clearFavorites() {
     qDebug() << "Cleared all favorites";
 }
 
-bool FavoritesManager::toggleFavorite(const QString &iconName) {
+bool FavoritesManager::toggleFavorite(const QString& iconName) {
     if (isFavorite(iconName)) {
         removeFavorite(iconName);
         return false;
@@ -122,4 +124,4 @@ bool FavoritesManager::toggleFavorite(const QString &iconName) {
     }
 }
 
-}  // namespace gallery
+} // namespace gallery

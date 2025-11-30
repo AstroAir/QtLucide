@@ -22,9 +22,9 @@ namespace gallery {
  * @brief Enumeration of available theme modes
  */
 enum class ThemeMode {
-    Dark,   ///< Dark theme
-    Light,  ///< Light theme
-    System  ///< Follow system theme preference
+    Dark,  ///< Dark theme
+    Light, ///< Light theme
+    System ///< Follow system theme preference
 };
 
 /**
@@ -116,6 +116,7 @@ private:
     [[nodiscard]] ThemeMode detectSystemTheme() const;
 
     ThemeMode m_currentTheme{ThemeMode::Dark}; ///< Currently active theme
+    bool m_initialized{false};                 ///< Whether theme has been applied at least once
 };
 
 } // namespace gallery

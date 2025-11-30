@@ -13,4 +13,3 @@ description: Ensure feature parity between CMake and Meson builds
   - CMake: add to the appropriate `add_library`/`target_sources` in [`src/CMakeLists.txt`](mdc:src/CMakeLists.txt) or example/test `CMakeLists.txt`.
   - Meson: add to the `sources`/`headers` arrays in [`src/meson.build`](mdc:src/meson.build) and corresponding `meson.build` files.
 - Keep compile definitions, include directories, and Qt dependencies aligned across both systems.
-

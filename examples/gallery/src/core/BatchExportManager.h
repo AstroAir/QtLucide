@@ -20,9 +20,25 @@
 
 #include "GalleryTypes.h"
 
+namespace lucide {
+class QtLucide;
+}
+
 namespace gallery {
 
 // ExportFormat is defined in GalleryTypes.h
+
+/**
+ * @struct ExportTask
+ * @brief Single export task for batch operations
+ */
+struct ExportTask {
+    QString iconName;    ///< Icon name to export
+    QString outputPath;  ///< Output file path
+    ExportFormat format; ///< Export format
+    int size;            ///< Export size
+    QColor color;        ///< Color override (optional)
+};
 
 /**
  * @class ExportProgressWidget
@@ -119,6 +135,12 @@ public:
     ~BatchExportManager() override;
 
     /**
+     * @brief Set the QtLucide instance for icon rendering
+     * @param lucide QtLucide instance (must remain valid during export)
+     */
+    void setLucideInstance(lucide::QtLucide* lucide);
+
+    /**
      * @brief Export multiple icons in the specified format
      * @param iconNames List of icon names to export
      * @param format Export format (SVG or PNG)
@@ -179,20 +201,41 @@ public Q_SLOTS:
      */
     void cancel();
 
+    /**
+     * @brief Set the export format
+     * @param format Export format to use
+     */
+    void setExportFormat(ExportFormat format);
+
+    /**
+     * @brief Add a task to the export queue (for task-based API)
+     * @param task Export task to add
+     */
+    void addTask(const ExportTask& task);
+
+    /**
+     * @brief Start export (for task-based API)
+     */
+    void startExport();
+
 private:
     /**
-     * @brief Perform the actual export work (runs in worker thread)
-     * @param iconNames List of icon names to export
-     * @param format Export format
-     * @param size Icon size
-     * @param outputDir Output directory
+     * @brief Perform export synchronously (called from timer for responsiveness)
      */
-    void doExport(const QStringList& iconNames, ExportFormat format, int size,
-                  const QString& outputDir);
+    void doExportStep();
 
-    bool m_exporting{false}; ///< Whether an export is currently in progress
-    bool m_shouldCancel{false}; ///< Flag to request cancellation
+    lucide::QtLucide* m_lucide{nullptr};     ///< QtLucide instance for rendering
+    bool m_exporting{false};                 ///< Whether an export is currently in progress
+    bool m_shouldCancel{false};              ///< Flag to request cancellation
     std::unique_ptr<QThread> m_workerThread; ///< Worker thread for background export
+
+    // Export state
+    QStringList m_pendingIcons;  ///< Icons remaining to export
+    ExportFormat m_exportFormat; ///< Current export format
+    int m_exportSize{48};        ///< Current export size
+    QString m_outputDir;         ///< Current output directory
+    int m_exportedCount{0};      ///< Number of successfully exported icons
+    int m_failedCount{0};        ///< Number of failed exports
 };
 
 } // namespace gallery

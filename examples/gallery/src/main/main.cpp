@@ -10,11 +10,11 @@
  */
 
 #include <QApplication>
-#include <QStyleFactory>
-#include <QSurfaceFormat>
+#include <QDir>
 #include <QSettings>
 #include <QStandardPaths>
-#include <QDir>
+#include <QStyleFactory>
+#include <QSurfaceFormat>
 #include <iostream>
 
 // Include the main window
@@ -28,8 +28,7 @@ using namespace gallery;
  * @param argv Argument values
  * @return true if smoke test flag is present, false otherwise
  */
-bool parseSmokeTestFlag(int argc, char *argv[])
-{
+bool parseSmokeTestFlag(int argc, char* argv[]) {
     for (int i = 1; i < argc; ++i) {
         if (QString(argv[i]) == QStringLiteral("--smoke")) {
             return true;
@@ -42,8 +41,7 @@ bool parseSmokeTestFlag(int argc, char *argv[])
  * @brief Configure Qt application settings
  * @param app The QApplication instance
  */
-void configureApplication(QApplication &app)
-{
+void configureApplication(QApplication& app) {
     // Set application metadata
     app.setApplicationName(QStringLiteral("QtLucide Gallery"));
     app.setApplicationVersion(QStringLiteral("1.0.0"));
@@ -57,7 +55,7 @@ void configureApplication(QApplication &app)
 
     // Configure graphics backend
     QSurfaceFormat format;
-    format.setVersion(4, 3);  // OpenGL 4.3 if available
+    format.setVersion(4, 3); // OpenGL 4.3 if available
     format.setProfile(QSurfaceFormat::CoreProfile);
     format.setRenderableType(QSurfaceFormat::OpenGL);
     QSurfaceFormat::setDefaultFormat(format);
@@ -102,8 +100,7 @@ void configureApplication(QApplication &app)
  * @param argv Argument values
  * @return Exit code
  */
-int main(int argc, char *argv[])
-{
+int main(int argc, char* argv[]) {
     // Create QApplication
     QApplication app(argc, argv);
 
@@ -125,7 +122,7 @@ int main(int argc, char *argv[])
         QApplication::processEvents();
 
         std::cout << "Smoke test passed: window initialized successfully" << std::endl;
-        return 0;  // Exit immediately after smoke test
+        return 0; // Exit immediately after smoke test
     }
 
     // Normal mode: create and show main window

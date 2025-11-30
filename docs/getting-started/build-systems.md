@@ -220,7 +220,7 @@ target("MyApp")
     set_kind("binary")
     add_files("main.cpp")
     add_packages("qt6base", "qtlucide")
-    
+
     -- Install rules
     after_install(function (target)
         os.cp("README.md", path.join(target:installdir(), "share/doc"))

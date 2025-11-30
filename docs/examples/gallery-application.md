@@ -28,11 +28,11 @@ class IconGridWidget : public QWidget
 
 public:
     explicit IconGridWidget(QWidget* parent = nullptr);
-    
+
     void setIcons(const QStringList& iconNames);
     void setIconSize(int size);
     void setColumnsPerRow(int columns);
-    
+
 signals:
     void iconSelected(const QString& iconName);
     void iconDoubleClicked(const QString& iconName);
@@ -51,9 +51,9 @@ class SearchWidget : public QWidget
 
 public:
     explicit SearchWidget(QWidget* parent = nullptr);
-    
+
     void setSearchPlaceholder(const QString& placeholder);
-    
+
 signals:
     void searchTextChanged(const QString& text);
     void searchCleared();
@@ -72,10 +72,10 @@ class CategoryFilterWidget : public QWidget
 
 public:
     explicit CategoryFilterWidget(QWidget* parent = nullptr);
-    
+
     void setCategories(const QStringList& categories);
     void setSelectedCategory(const QString& category);
-    
+
 signals:
     void categorySelected(const QString& category);
     void allCategoriesSelected();
@@ -94,11 +94,11 @@ class IconDetailsPanel : public QWidget
 
 public:
     explicit IconDetailsPanel(QWidget* parent = nullptr);
-    
+
     void setSelectedIcon(const QString& iconName);
     void showIconPreview(const QIcon& icon);
     void showSvgData(const QByteArray& svgData);
-    
+
 signals:
     void copyIconName();
     void copyCodeSnippet();
@@ -160,12 +160,12 @@ void GalleryMainWindow::setupIconGrid()
 
     // Get all available icons
     QStringList allIcons = m_lucide->availableIcons();
-    
+
     // Setup the icon grid
     m_iconGrid = new IconGridWidget(this);
     m_iconGrid->setIcons(allIcons);
     m_iconGrid->setIconSize(48);
-    
+
     // Connect signals
     connect(m_iconGrid, &IconGridWidget::iconSelected,
             this, &GalleryMainWindow::onIconSelected);
@@ -183,7 +183,7 @@ void GalleryMainWindow::onSearchTextChanged(const QString& searchText)
         m_iconGrid->setIcons(m_allIcons);
         return;
     }
-    
+
     // Filter icons based on search text
     QStringList filteredIcons;
     for (const QString& iconName : m_allIcons) {
@@ -191,7 +191,7 @@ void GalleryMainWindow::onSearchTextChanged(const QString& searchText)
             filteredIcons.append(iconName);
         }
     }
-    
+
     m_iconGrid->setIcons(filteredIcons);
     updateStatusBar(filteredIcons.size());
 }
@@ -207,15 +207,15 @@ void GalleryMainWindow::exportSelectedIcon()
     if (m_selectedIcon.isEmpty()) {
         return;
     }
-    
+
     QString fileName = QFileDialog::getSaveFileName(
         this, "Export Icon", m_selectedIcon + ".svg",
         "SVG Files (*.svg);;PNG Files (*.png);;All Files (*)");
-    
+
     if (fileName.isEmpty()) {
         return;
     }
-    
+
     if (fileName.endsWith(".svg")) {
         // Export as SVG
         QByteArray svgData = m_lucide->svgData(m_selectedIcon);
@@ -244,12 +244,12 @@ Icons are loaded on-demand to reduce startup time:
 void IconGridWidget::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
-    
+
     // Only render visible icons
     QRect visibleRect = event->rect();
     int startRow = visibleRect.top() / m_itemHeight;
     int endRow = (visibleRect.bottom() + m_itemHeight - 1) / m_itemHeight;
-    
+
     for (int row = startRow; row <= endRow && row < m_rowCount; ++row) {
         renderRow(painter, row);
     }
@@ -264,16 +264,16 @@ Frequently used icons are cached for better performance:
 QIcon IconGridWidget::getCachedIcon(const QString& iconName)
 {
     static QHash<QString, QIcon> iconCache;
-    
+
     if (!iconCache.contains(iconName)) {
         iconCache[iconName] = m_lucide->icon(iconName);
-        
+
         // Limit cache size
         if (iconCache.size() > 500) {
             iconCache.clear();
         }
     }
-    
+
     return iconCache[iconName];
 }
 ```
@@ -290,17 +290,17 @@ Add your own icon categories:
 void GalleryMainWindow::setupCustomCategories()
 {
     QHash<QString, QStringList> customCategories;
-    
+
     customCategories["UI Controls"] = {
         "button", "slider", "toggle-left", "toggle-right",
         "checkbox", "radio", "input"
     };
-    
+
     customCategories["Data Visualization"] = {
         "bar-chart", "line-chart", "pie-chart", "trending-up",
         "trending-down", "activity"
     };
-    
+
     m_categoryFilter->setCustomCategories(customCategories);
 }
 ```
@@ -321,7 +321,7 @@ void GalleryMainWindow::applyTheme(const QString& themeName)
         m_lucide->setDefaultOption("color", QColor(64, 64, 64));
         m_lucide->setDefaultOption("color-disabled", QColor(180, 180, 180));
     }
-    
+
     // Refresh the icon grid
     m_iconGrid->refreshIcons();
 }

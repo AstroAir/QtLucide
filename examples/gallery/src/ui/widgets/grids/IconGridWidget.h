@@ -13,11 +13,11 @@
 #ifndef ICONGRIDWIDGET_H
 #define ICONGRIDWIDGET_H
 
-#include <QWidget>
-#include <QStringList>
 #include <QMap>
 #include <QPixmap>
 #include <QScrollArea>
+#include <QStringList>
+#include <QWidget>
 #include <memory>
 
 namespace lucide {

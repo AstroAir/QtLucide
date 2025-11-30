@@ -17,8 +17,8 @@
 #include <QStringList>
 #include <memory>
 
-#include "IconMetadataManager.h"
 #include "FavoritesManager.h"
+#include "IconMetadataManager.h"
 
 namespace gallery {
 
@@ -37,7 +37,7 @@ public:
      * @brief Construct ContentManager
      * @param parent The parent QObject
      */
-    explicit ContentManager(QObject *parent = nullptr);
+    explicit ContentManager(QObject* parent = nullptr);
 
     /**
      * @brief Destructor
@@ -50,19 +50,19 @@ public:
      * @param iconsPath Path to icons.json file
      * @return true if initialization was successful, false otherwise
      */
-    bool initialize(const QString &categoriesPath, const QString &iconsPath);
+    bool initialize(const QString& categoriesPath, const QString& iconsPath);
 
     /**
      * @brief Get the icon metadata manager
      * @return Pointer to IconMetadataManager instance
      */
-    IconMetadataManager *iconMetadata() const;
+    IconMetadataManager* iconMetadata() const;
 
     /**
      * @brief Get the favorites manager
      * @return Pointer to FavoritesManager instance
      */
-    FavoritesManager *favorites() const;
+    FavoritesManager* favorites() const;
 
     /**
      * @brief Get filtered icons based on current search and category
@@ -74,7 +74,7 @@ public:
      * @brief Set the current search text for filtering
      * @param searchText The search text to filter by
      */
-    void setSearchText(const QString &searchText);
+    void setSearchText(const QString& searchText);
 
     /**
      * @brief Get the current search text
@@ -86,7 +86,7 @@ public:
      * @brief Set the current category filter
      * @param category The category to filter by, empty string for all categories
      */
-    void setCategory(const QString &category);
+    void setCategory(const QString& category);
 
     /**
      * @brief Get the current category filter
@@ -110,7 +110,7 @@ public:
      * @brief Set the selected icon
      * @param iconName The name of the selected icon
      */
-    void selectIcon(const QString &iconName);
+    void selectIcon(const QString& iconName);
 
     /**
      * @brief Get the currently selected icon
@@ -134,25 +134,25 @@ signals:
      * @brief Signal emitted when icon filtering changes
      * @param icons The new list of filtered icons
      */
-    void iconFilterChanged(const QStringList &icons);
+    void iconFilterChanged(const QStringList& icons);
 
     /**
      * @brief Signal emitted when an icon is selected
      * @param iconName The name of the selected icon
      */
-    void iconSelected(const QString &iconName);
+    void iconSelected(const QString& iconName);
 
     /**
      * @brief Signal emitted when search text changes
      * @param searchText The new search text
      */
-    void searchTextChanged(const QString &searchText);
+    void searchTextChanged(const QString& searchText);
 
     /**
      * @brief Signal emitted when category filter changes
      * @param category The new category filter
      */
-    void categoryChanged(const QString &category);
+    void categoryChanged(const QString& category);
 
     /**
      * @brief Signal emitted when favorites-only filter changes
@@ -176,6 +176,6 @@ private:
     QString m_selectedIcon;
 };
 
-}  // namespace gallery
+} // namespace gallery
 
-#endif  // CONTENT_MANAGER_H
+#endif // CONTENT_MANAGER_H

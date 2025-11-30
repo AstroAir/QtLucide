@@ -15,8 +15,7 @@
 
 namespace gallery {
 
-ExportProgressDialog::ExportProgressDialog(QWidget* parent)
-    : QDialog(parent) {
+ExportProgressDialog::ExportProgressDialog(QWidget* parent) : QDialog(parent) {
     setWindowTitle("Exporting Icons");
     setModal(true);
     setMinimumWidth(400);

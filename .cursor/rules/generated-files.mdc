@@ -13,4 +13,3 @@ description: Policies for generated headers and icon resources
 - Icon sources live under [`resources/icons/svg`](mdc:resources/icons/svg) with metadata in [`resources/icons/metadata`](mdc:resources/icons/metadata) and compiled QRC at [`resources/icons/lucide_icons.qrc`](mdc:resources/icons/lucide_icons.qrc).
 
 Windows helpers: [`build_resources.bat`](mdc:build_resources.bat) and build scripts in [`scripts/`](mdc:scripts).
-

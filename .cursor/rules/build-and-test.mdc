@@ -25,4 +25,3 @@ Unified helper scripts:
 - Cross-platform Python: [`scripts/build.py`](mdc:scripts/build.py) (e.g., `python3 scripts/build.py --test`)
 
 Resources regeneration is handled automatically in CMake builds via [`build_all_resources.py`](mdc:build_all_resources.py). You can run it manually when modifying icons or metadata.
-

@@ -11,27 +11,27 @@ package("qtlucide")
     add_versions("1.0.0", "placeholder_sha256_hash")
 
     add_deps("qt6base", "qt6svg")
-    
+
     if is_plat("linux") then
         add_syslinks("pthread")
     end
 
     on_install("windows", "linux", "macosx", function (package)
         local configs = {}
-        
+
         -- Configure build options
         if package:config("examples") then
             table.insert(configs, "--examples=true")
         else
             table.insert(configs, "--examples=false")
         end
-        
+
         if package:config("tests") then
             table.insert(configs, "--tests=true")
         else
             table.insert(configs, "--tests=false")
         end
-        
+
         -- Import and build
         import("package.tools.xmake").install(package, configs)
     end)

@@ -1,6 +1,6 @@
 /**
  * QtLucide - use Lucide icons in your Qt Application
- * 
+ *
  * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
  * Generated from Lucide icon metadata
  *
@@ -1654,8 +1654,7 @@ static const QHash<Icons, QString> ICON_TO_STRING_MAP = {
     {Icons::zap, "zap"},
     {Icons::zap_off, "zap-off"},
     {Icons::zoom_in, "zoom-in"},
-    {Icons::zoom_out, "zoom-out"}
-};
+    {Icons::zoom_out, "zoom-out"}};
 
 /**
  * @brief Mapping from string name to icon enum

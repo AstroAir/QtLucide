@@ -49,7 +49,7 @@ public:
      * @brief Construct ResponsiveLayoutManager
      * @param parent The parent QObject
      */
-    explicit ResponsiveLayoutManager(QObject *parent = nullptr);
+    explicit ResponsiveLayoutManager(QObject* parent = nullptr);
 
     /**
      * @brief Set the viewport/container size
@@ -182,24 +182,24 @@ private:
     void emitLayoutChangedIfNeeded(int previousColumns, int newColumns);
 
     // Viewport configuration
-    int m_viewportWidth = 1200;                 ///< Current viewport width
-    int m_viewportHeight = 800;                 ///< Current viewport height
+    int m_viewportWidth = 1200; ///< Current viewport width
+    int m_viewportHeight = 800; ///< Current viewport height
 
     // Icon configuration
-    int m_iconSize = 48;                        ///< Current icon size
-    int m_spacing = 12;                         ///< Spacing between icons
-    int m_minimumIconWidth = 24;                ///< Minimum icon width
+    int m_iconSize = 48;         ///< Current icon size
+    int m_spacing = 12;          ///< Spacing between icons
+    int m_minimumIconWidth = 24; ///< Minimum icon width
 
     // Padding configuration
-    int m_paddingLeft = 8;                      ///< Left padding
-    int m_paddingTop = 8;                       ///< Top padding
-    int m_paddingRight = 8;                     ///< Right padding
-    int m_paddingBottom = 8;                    ///< Bottom padding
+    int m_paddingLeft = 8;   ///< Left padding
+    int m_paddingTop = 8;    ///< Top padding
+    int m_paddingRight = 8;  ///< Right padding
+    int m_paddingBottom = 8; ///< Bottom padding
 
     // Cached values
-    mutable int m_cachedColumnCount = 0;        ///< Cached column count
+    mutable int m_cachedColumnCount = 0; ///< Cached column count
 };
 
-}  // namespace gallery
+} // namespace gallery
 
-#endif  // RESPONSIVE_LAYOUT_MANAGER_H
+#endif // RESPONSIVE_LAYOUT_MANAGER_H

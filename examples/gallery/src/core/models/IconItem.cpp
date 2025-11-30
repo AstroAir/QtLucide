@@ -15,21 +15,14 @@
 namespace gallery {
 
 IconItem::IconItem()
-    : m_createdAt(QDateTime::currentDateTime()),
-      m_modifiedAt(QDateTime::currentDateTime()) {
-}
+    : m_createdAt(QDateTime::currentDateTime()), m_modifiedAt(QDateTime::currentDateTime()) {}
 
 IconItem::IconItem(const QString& name)
-    : m_name(name),
-      m_createdAt(QDateTime::currentDateTime()),
-      m_modifiedAt(QDateTime::currentDateTime()) {
-}
+    : m_name(name), m_createdAt(QDateTime::currentDateTime()),
+      m_modifiedAt(QDateTime::currentDateTime()) {}
 
 IconItem::IconItem(const QString& name, const QString& category, const QStringList& tags)
-    : m_name(name),
-      m_category(category),
-      m_tags(tags),
-      m_createdAt(QDateTime::currentDateTime()),
+    : m_name(name), m_category(category), m_tags(tags), m_createdAt(QDateTime::currentDateTime()),
       m_modifiedAt(QDateTime::currentDateTime()) {
     if (!category.isEmpty()) {
         m_categories << category;
@@ -198,10 +191,7 @@ bool IconItem::isValid() const {
 
 QString IconItem::toString() const {
     return QString("IconItem(name=%1, category=%2, tags=%3, favorite=%4, usage=%5)")
-        .arg(m_name,
-             m_category,
-             m_tags.join(","),
-             m_isFavorite ? "true" : "false",
+        .arg(m_name, m_category, m_tags.join(","), m_isFavorite ? "true" : "false",
              QString::number(m_usageCount));
 }
 

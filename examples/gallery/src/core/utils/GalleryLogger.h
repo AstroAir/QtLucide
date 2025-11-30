@@ -12,8 +12,8 @@
 #ifndef GALLERY_LOGGER_H
 #define GALLERY_LOGGER_H
 
-#include <QString>
 #include <QMessageLogger>
+#include <QString>
 
 namespace gallery {
 
@@ -22,11 +22,11 @@ namespace gallery {
  * @details Defines different levels of logging severity
  */
 enum class LogLevel {
-    Debug = 0,      ///< Debug information for developers
-    Info = 1,       ///< General information messages
-    Warning = 2,    ///< Warning messages about potential issues
-    Error = 3,      ///< Error messages indicating failures
-    Critical = 4    ///< Critical errors requiring immediate attention
+    Debug = 0,   ///< Debug information for developers
+    Info = 1,    ///< General information messages
+    Warning = 2, ///< Warning messages about potential issues
+    Error = 3,   ///< Error messages indicating failures
+    Critical = 4 ///< Critical errors requiring immediate attention
 };
 
 /**
@@ -223,8 +223,8 @@ private:
      */
     static void logInternal(LogLevel level, const QString& category, const QString& message);
 
-    static bool s_enabled;              ///< Whether logging is enabled
-    static LogLevel s_minimumLevel;     ///< Minimum log level to display
+    static bool s_enabled;          ///< Whether logging is enabled
+    static LogLevel s_minimumLevel; ///< Minimum log level to display
 };
 
 } // namespace gallery

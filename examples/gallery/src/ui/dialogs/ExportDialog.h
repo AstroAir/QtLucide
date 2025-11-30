@@ -30,6 +30,10 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGroupBox;
 
+namespace lucide {
+class QtLucide;
+}
+
 namespace gallery {
 
 enum class ExportFormat;
@@ -40,13 +44,13 @@ class BatchExportManager;
  * @brief Settings for batch export operation
  */
 struct BatchExportSettings {
-    QStringList iconNames;          ///< Icons to export (empty = all)
-    ExportFormat format;            ///< Export format (SVG, PNG, ICO)
-    int size;                       ///< Export size in pixels
-    QString outputDirectory;        ///< Output directory path
-    QString filePattern;            ///< File naming pattern ({name}, {category}, {ext})
-    bool groupByCategory;           ///< Whether to create subdirectories by category
-    bool overwriteExisting;         ///< Whether to overwrite existing files
+    QStringList iconNames;   ///< Icons to export (empty = all)
+    ExportFormat format;     ///< Export format (SVG, PNG, ICO)
+    int size;                ///< Export size in pixels
+    QString outputDirectory; ///< Output directory path
+    QString filePattern;     ///< File naming pattern ({name}, {category}, {ext})
+    bool groupByCategory;    ///< Whether to create subdirectories by category
+    bool overwriteExisting;  ///< Whether to overwrite existing files
 };
 
 /**
@@ -92,6 +96,12 @@ public:
      * @param iconNames List of all available icon names
      */
     void setAvailableIcons(const QStringList& iconNames);
+
+    /**
+     * @brief Set the QtLucide instance for icon rendering
+     * @param lucide QtLucide instance (must remain valid during dialog lifetime)
+     */
+    void setLucideInstance(lucide::QtLucide* lucide);
 
     /**
      * @brief Get the current batch export settings
@@ -204,23 +214,24 @@ private:
     void setExportingState(bool exporting);
 
     // UI Components
-    QCheckBox* m_exportAllCheckBox;      ///< Export all icons checkbox
-    QListWidget* m_iconListWidget;       ///< List of selected icons
-    QComboBox* m_formatComboBox;         ///< Format selection (SVG, PNG, ICO)
-    QComboBox* m_sizeComboBox;           ///< Preset size selection
-    QLineEdit* m_outputDirEdit;          ///< Output directory path
-    QPushButton* m_browseButton;         ///< Browse for output directory
+    QCheckBox* m_exportAllCheckBox;       ///< Export all icons checkbox
+    QListWidget* m_iconListWidget;        ///< List of selected icons
+    QComboBox* m_formatComboBox;          ///< Format selection (SVG, PNG, ICO)
+    QComboBox* m_sizeComboBox;            ///< Preset size selection
+    QLineEdit* m_outputDirEdit;           ///< Output directory path
+    QPushButton* m_browseButton;          ///< Browse for output directory
     QCheckBox* m_groupByCategoryCheckBox; ///< Group by category checkbox
-    QLineEdit* m_filePatternEdit;        ///< File naming pattern
-    QProgressBar* m_progressBar;         ///< Export progress bar
-    QLabel* m_statusLabel;               ///< Status message label
-    QPushButton* m_exportButton;         ///< Export button
-    QPushButton* m_cancelButton;         ///< Cancel button
+    QLineEdit* m_filePatternEdit;         ///< File naming pattern
+    QProgressBar* m_progressBar;          ///< Export progress bar
+    QLabel* m_statusLabel;                ///< Status message label
+    QPushButton* m_exportButton;          ///< Export button
+    QPushButton* m_cancelButton;          ///< Cancel button
 
     // State
-    QStringList m_availableIcons;        ///< All available icons
+    QStringList m_availableIcons;                        ///< All available icons
     std::unique_ptr<BatchExportManager> m_exportManager; ///< Export manager
-    bool m_isExporting;                  ///< Whether export is in progress
+    bool m_isExporting;                                  ///< Whether export is in progress
+    lucide::QtLucide* m_lucide{nullptr};                 ///< QtLucide instance for rendering
 };
 
 } // namespace gallery

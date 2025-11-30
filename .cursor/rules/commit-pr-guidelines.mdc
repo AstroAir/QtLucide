@@ -10,4 +10,3 @@ description: Conventional Commits and PR requirements
   - Update [`CHANGELOG.md`](mdc:CHANGELOG.md) and docs when applicable.
   - Include a clear description, link related issues, and attach screenshots for UI/icon changes.
 - Security/configuration tips: ensure Qt6 (Core/Gui/Widgets/Svg) and Python 3 are installed; Windows users can use [`scripts/*.bat`](mdc:scripts).
-

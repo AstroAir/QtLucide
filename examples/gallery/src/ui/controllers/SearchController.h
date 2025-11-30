@@ -61,7 +61,7 @@ public:
      * @param contentManager The content manager to search within
      * @param parent The parent QObject
      */
-    explicit SearchController(ContentManager *contentManager, QObject *parent = nullptr);
+    explicit SearchController(ContentManager* contentManager, QObject* parent = nullptr);
 
     /**
      * @brief Destructor
@@ -99,7 +99,7 @@ public:
      * This method is debounced - the actual search will be delayed by the
      * configured delay period. Calling this multiple times will reset the timer.
      */
-    void search(const QString &searchText);
+    void search(const QString& searchText);
 
     /**
      * @brief Perform immediate search without debouncing
@@ -108,7 +108,7 @@ public:
      *
      * This method performs the search immediately without any delay.
      */
-    QStringList searchImmediate(const QString &searchText);
+    QStringList searchImmediate(const QString& searchText);
 
     /**
      * @brief Clear the search and reset to all icons
@@ -137,7 +137,7 @@ public:
      * @brief Get the count of search results
      * @return Number of icons in the last results
      */
-    [[nodiscard]] int getResultCount() const { return m_lastResults.count(); }
+    [[nodiscard]] int getResultCount() const { return static_cast<int>(m_lastResults.size()); }
 
     /**
      * @brief Get highlight information for a search result
@@ -147,7 +147,7 @@ public:
      *
      * This can be used by UI to highlight matching portions of icon names/tags.
      */
-    [[nodiscard]] QPair<int, QList<int>> getHighlightInfo(const QString &iconName) const;
+    [[nodiscard]] QPair<int, QList<int>> getHighlightInfo(const QString& iconName) const;
 
 signals:
     /**
@@ -157,52 +157,51 @@ signals:
      *
      * This signal is emitted after the debounce delay when a new search is performed.
      */
-    void searchResultsReady(const QStringList &results, const QString &searchText);
+    void searchResultsReady(const QStringList& results, const QString& searchText);
 
     /**
      * @brief Emitted when search text changes
      * @param searchText The new search text
      */
-    void searchTextChanged(const QString &searchText);
+    void searchTextChanged(const QString& searchText);
 
     /**
      * @brief Emitted when search is cleared
      */
     void searchCleared();
 
-private slots:
+private:
     /**
      * @brief Perform the actual search after debounce delay
      */
-    void performSearch();
+    Q_SLOT void performSearch();
 
-private:
     /**
      * @brief Perform case-sensitive icon name matching
      * @param searchText The search text
      * @param iconNames The icon names to search through
      * @return Matching icon names
      */
-    [[nodiscard]] QStringList matchIconNames(const QString &searchText,
-                                             const QStringList &iconNames) const;
+    [[nodiscard]] QStringList matchIconNames(const QString& searchText,
+                                             const QStringList& iconNames) const;
 
     /**
      * @brief Perform case-sensitive tag matching
      * @param searchText The search text
      * @return Icon names with matching tags
      */
-    [[nodiscard]] QStringList matchIconTags(const QString &searchText) const;
+    [[nodiscard]] QStringList matchIconTags(const QString& searchText) const;
 
     // Member variables
-    ContentManager *m_contentManager = nullptr;         ///< Content manager reference
-    std::unique_ptr<QTimer> m_searchTimer;              ///< Debounce timer
-    QString m_currentSearchText;                        ///< Current search query
-    QString m_pendingSearchText;                        ///< Pending search query
-    QStringList m_lastResults;                          ///< Last search results
-    int m_searchDelay = 300;                            ///< Debounce delay in ms
-    bool m_caseSensitive = false;                       ///< Case sensitivity flag
+    ContentManager* m_contentManager = nullptr; ///< Content manager reference
+    std::unique_ptr<QTimer> m_searchTimer;      ///< Debounce timer
+    QString m_currentSearchText;                ///< Current search query
+    QString m_pendingSearchText;                ///< Pending search query
+    QStringList m_lastResults;                  ///< Last search results
+    int m_searchDelay = 300;                    ///< Debounce delay in ms
+    bool m_caseSensitive = false;               ///< Case sensitivity flag
 };
 
-}  // namespace gallery
+} // namespace gallery
 
-#endif  // SEARCH_CONTROLLER_H
+#endif // SEARCH_CONTROLLER_H

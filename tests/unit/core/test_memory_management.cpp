@@ -23,13 +23,9 @@ public:
     TestPainter() { instanceCount++; }
     ~TestPainter() override { instanceCount--; }
 
-    [[nodiscard]] lucide::QtLucideIconPainter* clone() const override {
-        return new TestPainter();
-    }
+    [[nodiscard]] lucide::QtLucideIconPainter* clone() const override { return new TestPainter(); }
 
-    [[nodiscard]] QString iconText() const override {
-        return QStringLiteral("test-painter");
-    }
+    [[nodiscard]] QString iconText() const override { return QStringLiteral("test-painter"); }
 
     void paint(lucide::QtLucide* lucide, QPainter* painter, const QRect& rect, QIcon::Mode mode,
                QIcon::State state, const QVariantMap& options) override {

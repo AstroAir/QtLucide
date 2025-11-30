@@ -12,8 +12,8 @@
 #ifndef SEARCH_WIDGET_H
 #define SEARCH_WIDGET_H
 
-#include <QWidget>
 #include <QString>
+#include <QWidget>
 #include <memory>
 
 class QLineEdit;
@@ -150,14 +150,14 @@ private:
     void updateClearButtonVisibility();
 
     // UI Components
-    QLineEdit* m_searchInput;                    ///< Main search input field
-    QPushButton* m_clearButton;                  ///< Clear button
-    QLabel* m_searchIconLabel;                   ///< Magnifying glass icon label
-    QLabel* m_shortcutLabel;                     ///< Ctrl+K hint label
+    QLineEdit* m_searchInput;   ///< Main search input field
+    QPushButton* m_clearButton; ///< Clear button
+    QLabel* m_searchIconLabel;  ///< Magnifying glass icon label
+    QLabel* m_shortcutLabel;    ///< Ctrl+K hint label
 
     // Debouncing
-    std::unique_ptr<QTimer> m_debounceTimer;     ///< Timer for debouncing
-    int m_debounceTime;                          ///< Debounce time in milliseconds
+    std::unique_ptr<QTimer> m_debounceTimer; ///< Timer for debouncing
+    int m_debounceTime;                      ///< Debounce time in milliseconds
 };
 
 } // namespace gallery

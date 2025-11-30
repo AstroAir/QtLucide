@@ -12,10 +12,10 @@
 #ifndef IMAGE_VIEWER_WIDGET_H
 #define IMAGE_VIEWER_WIDGET_H
 
-#include <QWidget>
-#include <QString>
-#include <QPixmap>
 #include <QColor>
+#include <QPixmap>
+#include <QString>
+#include <QWidget>
 
 class QLabel;
 class QPushButton;
@@ -31,9 +31,9 @@ namespace gallery {
  * @brief Background display mode for the viewer
  */
 enum class BackgroundMode {
-    Transparent = 0,  ///< Transparent background (checkered pattern)
-    White = 1,        ///< White background
-    Black = 2         ///< Black background
+    Transparent = 0, ///< Transparent background (checkered pattern)
+    White = 1,       ///< White background
+    Black = 2        ///< Black background
 };
 
 /**
@@ -171,19 +171,19 @@ private:
     [[nodiscard]] QPixmap applyBackground(const QPixmap& source, const QColor& bg) const;
 
     // UI Components
-    QLabel* m_imageLabel;               ///< Label displaying the image
-    QLabel* m_infoLabel;                ///< Information label
-    QPushButton* m_zoomInButton;        ///< Zoom in button
-    QPushButton* m_zoomOutButton;       ///< Zoom out button
-    QPushButton* m_zoomResetButton;     ///< Reset zoom button
-    QSlider* m_zoomSlider;              ///< Zoom level slider
-    QLabel* m_zoomLabel;                ///< Zoom percentage label
-    QComboBox* m_backgroundCombo;       ///< Background mode selection
+    QLabel* m_imageLabel;           ///< Label displaying the image
+    QLabel* m_infoLabel;            ///< Information label
+    QPushButton* m_zoomInButton;    ///< Zoom in button
+    QPushButton* m_zoomOutButton;   ///< Zoom out button
+    QPushButton* m_zoomResetButton; ///< Reset zoom button
+    QSlider* m_zoomSlider;          ///< Zoom level slider
+    QLabel* m_zoomLabel;            ///< Zoom percentage label
+    QComboBox* m_backgroundCombo;   ///< Background mode selection
 
     // State
-    QPixmap m_originalPixmap;           ///< Original image
-    int m_zoomLevel;                    ///< Current zoom level (%)
-    BackgroundMode m_backgroundMode;    ///< Current background mode
+    QPixmap m_originalPixmap;        ///< Original image
+    int m_zoomLevel;                 ///< Current zoom level (%)
+    BackgroundMode m_backgroundMode; ///< Current background mode
 };
 
 } // namespace gallery

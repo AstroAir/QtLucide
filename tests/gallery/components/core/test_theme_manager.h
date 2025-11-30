@@ -187,8 +187,8 @@ private slots:
 
 private:
     gallery::ThemeManager* m_themeManager; ///< ThemeManager instance for testing
-    QTemporaryDir* m_tempDir;     ///< Temporary directory for test files
-    QString m_testThemeDir;       ///< Test theme directory path
+    QTemporaryDir* m_tempDir;              ///< Temporary directory for test files
+    QString m_testThemeDir;                ///< Test theme directory path
 
     // Helper methods
     /**

@@ -231,8 +231,8 @@ private slots:
     void testIntegration_FullWorkflow();
 
 private:
-    ContentManager* m_contentManager;  ///< ContentManager instance under test
-    QString m_tempDir;                 ///< Temporary directory for test data
+    ContentManager* m_contentManager; ///< ContentManager instance under test
+    QString m_tempDir;                ///< Temporary directory for test data
 
     // Helper methods
     /**
@@ -279,9 +279,8 @@ void TestContentManager::init() {
     m_contentManager = new ContentManager();
 
     // Initialize with real resource paths
-    bool initialized = m_contentManager->initialize(
-        ":/lucide/metadata/categories.json",
-        ":/lucide/metadata/icons.json");
+    bool initialized = m_contentManager->initialize(":/lucide/metadata/categories.json",
+                                                    ":/lucide/metadata/icons.json");
 
     if (!initialized) {
         QSKIP("Failed to initialize ContentManager with resources");
@@ -365,15 +364,14 @@ void TestContentManager::testContentManager_Initialize() {
     QStringList categories = m_contentManager->iconMetadata()->getCategories();
     QVERIFY(!categories.isEmpty());
 
-    qDebug() << "ContentManager initialized with" << totalIcons << "icons in"
-             << categories.size() << "categories";
+    qDebug() << "ContentManager initialized with" << totalIcons << "icons in" << categories.size()
+             << "categories";
 }
 
 void TestContentManager::testContentManager_InitializeWithInvalidPaths() {
     ContentManager* manager = new ContentManager();
-    bool result = manager->initialize(
-        ":/nonexistent/path/categories.json",
-        ":/nonexistent/path/icons.json");
+    bool result =
+        manager->initialize(":/nonexistent/path/categories.json", ":/nonexistent/path/icons.json");
 
     QVERIFY(!result);
     delete manager;
@@ -398,7 +396,7 @@ void TestContentManager::testSearchText_SetAndGet() {
 void TestContentManager::testSearchText_NoDuplicateSignals() {
     QVERIFY(m_contentManager != nullptr);
 
-    QSignalSpy spy(m_contentManager, SIGNAL(searchTextChanged(const QString &)));
+    QSignalSpy spy(m_contentManager, SIGNAL(searchTextChanged(const QString&)));
 
     // Set search text
     m_contentManager->setSearchText("test");
@@ -417,7 +415,7 @@ void TestContentManager::testSearchText_NoDuplicateSignals() {
 void TestContentManager::testSearchText_EmptySearch() {
     QVERIFY(m_contentManager != nullptr);
 
-    QSignalSpy spy(m_contentManager, SIGNAL(searchTextChanged(const QString &)));
+    QSignalSpy spy(m_contentManager, SIGNAL(searchTextChanged(const QString&)));
 
     // Set search text
     m_contentManager->setSearchText("test");
@@ -458,7 +456,7 @@ void TestContentManager::testCategory_NoDuplicateSignals() {
         QSKIP("No categories available");
     }
 
-    QSignalSpy spy(m_contentManager, SIGNAL(categoryChanged(const QString &)));
+    QSignalSpy spy(m_contentManager, SIGNAL(categoryChanged(const QString&)));
 
     // Set category
     m_contentManager->setCategory(category);
@@ -481,7 +479,7 @@ void TestContentManager::testCategory_NoDuplicateSignals() {
 void TestContentManager::testCategory_EmptyCategory() {
     QVERIFY(m_contentManager != nullptr);
 
-    QSignalSpy spy(m_contentManager, SIGNAL(categoryChanged(const QString &)));
+    QSignalSpy spy(m_contentManager, SIGNAL(categoryChanged(const QString&)));
 
     // Set empty category
     m_contentManager->setCategory("");
@@ -557,7 +555,7 @@ void TestContentManager::testIconSelection_NoDuplicateSignals() {
         QSKIP("No icons available");
     }
 
-    QSignalSpy spy(m_contentManager, SIGNAL(iconSelected(const QString &)));
+    QSignalSpy spy(m_contentManager, SIGNAL(iconSelected(const QString&)));
 
     // Select icon
     m_contentManager->selectIcon(availableIcons.first());
@@ -578,7 +576,7 @@ void TestContentManager::testIconSelection_NoDuplicateSignals() {
 void TestContentManager::testIconSelection_EmptySelection() {
     QVERIFY(m_contentManager != nullptr);
 
-    QSignalSpy spy(m_contentManager, SIGNAL(iconSelected(const QString &)));
+    QSignalSpy spy(m_contentManager, SIGNAL(iconSelected(const QString&)));
 
     // Clear selection
     m_contentManager->selectIcon("");
@@ -655,7 +653,7 @@ void TestContentManager::testApplyFilters_WithFavoritesOnly() {
 
     // Should get only favorite icons
     QVERIFY(filteredIcons.size() > 0);
-    QVERIFY(filteredIcons.size() <= 2);  // We added max 2 favorites
+    QVERIFY(filteredIcons.size() <= 2); // We added max 2 favorites
     QVERIFY(filteredIcons.contains(allIcons.first()));
 
     // Clean up
@@ -704,7 +702,7 @@ void TestContentManager::testGetFilteredIcons() {
 void TestContentManager::testSignal_IconFilterChanged() {
     QVERIFY(m_contentManager != nullptr);
 
-    QSignalSpy spy(m_contentManager, SIGNAL(iconFilterChanged(const QStringList &)));
+    QSignalSpy spy(m_contentManager, SIGNAL(iconFilterChanged(const QStringList&)));
 
     // Change search text - should trigger filter change
     m_contentManager->setSearchText("test");
@@ -715,7 +713,7 @@ void TestContentManager::testSignal_IconFilterChanged() {
     QList<QVariant> args = spy.first();
     QCOMPARE(args.count(), 1);
     QStringList icons = args.at(0).toStringList();
-    QVERIFY(icons.isEmpty() || !icons.isEmpty());  // Valid list either way
+    QVERIFY(icons.isEmpty() || !icons.isEmpty()); // Valid list either way
 }
 
 void TestContentManager::testSignal_IconSelected() {
@@ -726,7 +724,7 @@ void TestContentManager::testSignal_IconSelected() {
         QSKIP("No icons available");
     }
 
-    QSignalSpy spy(m_contentManager, SIGNAL(iconSelected(const QString &)));
+    QSignalSpy spy(m_contentManager, SIGNAL(iconSelected(const QString&)));
 
     // Select an icon
     QString testIcon = availableIcons.first();
@@ -741,7 +739,7 @@ void TestContentManager::testSignal_IconSelected() {
 void TestContentManager::testSignal_SearchTextChanged() {
     QVERIFY(m_contentManager != nullptr);
 
-    QSignalSpy spy(m_contentManager, SIGNAL(searchTextChanged(const QString &)));
+    QSignalSpy spy(m_contentManager, SIGNAL(searchTextChanged(const QString&)));
 
     QString testText = "search";
     m_contentManager->setSearchText(testText);
@@ -760,7 +758,7 @@ void TestContentManager::testSignal_CategoryChanged() {
         QSKIP("No categories available");
     }
 
-    QSignalSpy spy(m_contentManager, SIGNAL(categoryChanged(const QString &)));
+    QSignalSpy spy(m_contentManager, SIGNAL(categoryChanged(const QString&)));
 
     m_contentManager->setCategory(category);
 
@@ -786,9 +784,9 @@ void TestContentManager::testSignal_FavoritesOnlyChanged() {
 void TestContentManager::testSignal_MultipleSignalsSequence() {
     QVERIFY(m_contentManager != nullptr);
 
-    QSignalSpy searchSpy(m_contentManager, SIGNAL(searchTextChanged(const QString &)));
-    QSignalSpy categorySpy(m_contentManager, SIGNAL(categoryChanged(const QString &)));
-    QSignalSpy filterSpy(m_contentManager, SIGNAL(iconFilterChanged(const QStringList &)));
+    QSignalSpy searchSpy(m_contentManager, SIGNAL(searchTextChanged(const QString&)));
+    QSignalSpy categorySpy(m_contentManager, SIGNAL(categoryChanged(const QString&)));
+    QSignalSpy filterSpy(m_contentManager, SIGNAL(iconFilterChanged(const QStringList&)));
 
     // Perform multiple operations
     m_contentManager->setSearchText("test");
@@ -843,10 +841,10 @@ void TestContentManager::testResetFilters_EmitsSignals() {
     m_contentManager->setSearchText("test");
     m_contentManager->setShowFavoritesOnly(true);
 
-    QSignalSpy searchSpy(m_contentManager, SIGNAL(searchTextChanged(const QString &)));
-    QSignalSpy categorySpy(m_contentManager, SIGNAL(categoryChanged(const QString &)));
+    QSignalSpy searchSpy(m_contentManager, SIGNAL(searchTextChanged(const QString&)));
+    QSignalSpy categorySpy(m_contentManager, SIGNAL(categoryChanged(const QString&)));
     QSignalSpy favoritesSpy(m_contentManager, SIGNAL(favoritesOnlyChanged(bool)));
-    QSignalSpy filterSpy(m_contentManager, SIGNAL(iconFilterChanged(const QStringList &)));
+    QSignalSpy filterSpy(m_contentManager, SIGNAL(iconFilterChanged(const QStringList&)));
 
     // Reset filters
     m_contentManager->resetFilters();
@@ -881,7 +879,7 @@ void TestContentManager::testManagerAccess_Favorites() {
 
     // Verify favorites manager is functional
     int count = favorites->favoritesCount();
-    QCOMPARE(count, 0);  // Should start empty
+    QCOMPARE(count, 0); // Should start empty
 
     // Add a favorite
     QStringList allIcons = m_contentManager->getFilteredIcons();

@@ -54,7 +54,7 @@ private:
     void setupUI();
 
     // UI Components
-    QLabel* m_placeholderLabel;  ///< Placeholder message label
+    QLabel* m_placeholderLabel; ///< Placeholder message label
 };
 
 } // namespace gallery

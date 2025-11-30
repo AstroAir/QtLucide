@@ -14,9 +14,8 @@
 
 namespace gallery {
 
-ThemeManager::ThemeManager(QObject* parent)
-    : QObject(parent), m_currentTheme(ThemeMode::Dark) {
-    // Initialize with dark theme by default
+ThemeManager::ThemeManager(QObject* parent) : QObject(parent) {
+    // m_currentTheme and m_initialized use default member initializers
 }
 
 ThemeManager::~ThemeManager() = default;
@@ -28,14 +27,16 @@ void ThemeManager::setTheme(ThemeMode mode) {
         themeToApply = detectSystemTheme();
     }
 
-    // Only apply if different from current
-    if (m_currentTheme == themeToApply && mode != ThemeMode::System) {
+    // Only skip if already initialized and same theme
+    if (m_initialized && m_currentTheme == themeToApply && mode != ThemeMode::System) {
         return;
     }
 
     // Apply the stylesheet
     if (applyStylesheet(mode)) {
         m_currentTheme = themeToApply;
+        m_initialized = true;
+        qDebug() << "Theme applied successfully:" << (mode == ThemeMode::Dark ? "Dark" : "Light");
         emit themeChanged(mode);
     }
 }
@@ -49,16 +50,16 @@ bool ThemeManager::applyStylesheet(ThemeMode mode) {
 
     switch (mode) {
         case ThemeMode::Dark:
-            resourcePath = ":/styles/dark-theme.qss";
+            resourcePath = ":/gallery/styles/dark-theme.qss";
             break;
         case ThemeMode::Light:
-            resourcePath = ":/styles/light-theme.qss";
+            resourcePath = ":/gallery/styles/light-theme.qss";
             break;
         case ThemeMode::System:
             // For system mode, detect and apply accordingly
             resourcePath = detectSystemTheme() == ThemeMode::Dark
-                               ? ":/styles/dark-theme.qss"
-                               : ":/styles/light-theme.qss";
+                               ? ":/gallery/styles/dark-theme.qss"
+                               : ":/gallery/styles/light-theme.qss";
             break;
     }
 

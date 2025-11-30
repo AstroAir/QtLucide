@@ -11,6 +11,7 @@ QtLucide is a Qt library that provides access to 1634+ Lucide icons with SVG-bas
 QtLucide supports three build systems:
 
 ### CMake (Traditional)
+
 ```bash
 # Configure with examples and tests
 cmake -DQTLUCIDE_BUILD_EXAMPLES=ON -DQTLUCIDE_BUILD_TESTS=ON ..
@@ -27,6 +28,7 @@ ctest
 ```
 
 ### XMake (Modern)
+
 ```bash
 # Configure with examples and tests
 xmake config --examples=true --tests=true
@@ -46,6 +48,7 @@ xmake run QtLucideGallery
 ```
 
 ### Meson (Modern)
+
 ```bash
 # Setup and build
 meson setup builddir -Dexamples=true -Dtests=true
@@ -62,6 +65,7 @@ meson test -C builddir
 ## Resource Generation
 
 Before building, ensure icon resources are generated:
+
 ```bash
 # For CMake/Meson (automatic if Python3 found)
 python3 tools/build_resources.py .
@@ -92,6 +96,7 @@ xmake generate-resources
 ### Gallery Application
 
 The gallery example (`examples/gallery/`) demonstrates advanced QtLucide usage:
+
 - **IconMetadataManager**: Loads and manages icon metadata
 - **ThemeManager**: Handles dark/light theme switching
 - **ResponsiveLayoutManager**: Adaptive UI layouts
@@ -100,6 +105,7 @@ The gallery example (`examples/gallery/`) demonstrates advanced QtLucide usage:
 ### Testing Structure
 
 Tests are organized by category:
+
 - `tests/unit/core/`: Core functionality tests
 - `tests/unit/components/`: Gallery component tests
 - `tests/integration/`: Integration tests
@@ -117,11 +123,13 @@ Tests are organized by category:
 ## Common Development Tasks
 
 ### Adding New Icons
+
 1. Add SVG files to `resources/icons/svg/`
 2. Run `python3 tools/build_resources.py .` to regenerate resources
 3. Icons will be automatically available in the API
 
 ### Testing Single Components
+
 ```bash
 # CMake
 ctest -R "test_icon_loading"
@@ -134,7 +142,9 @@ meson test -C builddir --suite="icon loading"
 ```
 
 ### Building as Submodule
+
 QtLucide automatically detects submodule usage and disables examples/tests by default:
+
 ```cmake
 add_subdirectory(third-party/QtLucide)
 target_link_libraries(your_target PRIVATE QtLucide::QtLucide)
@@ -149,14 +159,17 @@ target_link_libraries(your_target PRIVATE QtLucide::QtLucide)
 ## Platform-Specific Notes
 
 ### Windows
+
 - Qt6 packages often include SVG support in qt6base
 - MSYS2 paths are hardcoded in xmake.lua for convenience
 
 ### macOS
+
 - Uses frameworks for Qt6 integration
 - Proper rpath settings for deployment
 
 ### Linux
+
 - pkg-config integration available
 - Standard Qt6 package installation
 

@@ -14,24 +14,14 @@
 
 namespace gallery {
 
-ResponsiveLayoutManager::ResponsiveLayoutManager(QObject *parent)
-    : QObject(parent)
-    , m_viewportWidth(1200)
-    , m_viewportHeight(800)
-    , m_iconSize(48)
-    , m_spacing(12)
-    , m_minimumIconWidth(24)
-    , m_paddingLeft(8)
-    , m_paddingTop(8)
-    , m_paddingRight(8)
-    , m_paddingBottom(8)
-    , m_cachedColumnCount(0)
-{
+ResponsiveLayoutManager::ResponsiveLayoutManager(QObject* parent)
+    : QObject(parent), m_viewportWidth(1200), m_viewportHeight(800), m_iconSize(48), m_spacing(12),
+      m_minimumIconWidth(24), m_paddingLeft(8), m_paddingTop(8), m_paddingRight(8),
+      m_paddingBottom(8), m_cachedColumnCount(0) {
     m_cachedColumnCount = calculateColumnCount();
 }
 
-void ResponsiveLayoutManager::setViewportSize(int width, int height)
-{
+void ResponsiveLayoutManager::setViewportSize(int width, int height) {
     if (m_viewportWidth == width && m_viewportHeight == height) {
         return;
     }
@@ -46,8 +36,7 @@ void ResponsiveLayoutManager::setViewportSize(int width, int height)
     emitLayoutChangedIfNeeded(previousColumns, newColumns);
 }
 
-void ResponsiveLayoutManager::setIconSize(int size)
-{
+void ResponsiveLayoutManager::setIconSize(int size) {
     if (m_iconSize == size) {
         return;
     }
@@ -61,8 +50,7 @@ void ResponsiveLayoutManager::setIconSize(int size)
     emitLayoutChangedIfNeeded(previousColumns, newColumns);
 }
 
-void ResponsiveLayoutManager::setSpacing(int spacing)
-{
+void ResponsiveLayoutManager::setSpacing(int spacing) {
     if (m_spacing == spacing) {
         return;
     }
@@ -74,8 +62,7 @@ void ResponsiveLayoutManager::setSpacing(int spacing)
     emitLayoutChangedIfNeeded(previousColumns, newColumns);
 }
 
-void ResponsiveLayoutManager::setMinimumIconWidth(int minWidth)
-{
+void ResponsiveLayoutManager::setMinimumIconWidth(int minWidth) {
     if (m_minimumIconWidth == minWidth) {
         return;
     }
@@ -88,10 +75,9 @@ void ResponsiveLayoutManager::setMinimumIconWidth(int minWidth)
     }
 }
 
-void ResponsiveLayoutManager::setPadding(int left, int top, int right, int bottom)
-{
-    if (m_paddingLeft == left && m_paddingTop == top &&
-        m_paddingRight == right && m_paddingBottom == bottom) {
+void ResponsiveLayoutManager::setPadding(int left, int top, int right, int bottom) {
+    if (m_paddingLeft == left && m_paddingTop == top && m_paddingRight == right &&
+        m_paddingBottom == bottom) {
         return;
     }
 
@@ -105,18 +91,15 @@ void ResponsiveLayoutManager::setPadding(int left, int top, int right, int botto
     emitLayoutChangedIfNeeded(previousColumns, newColumns);
 }
 
-int ResponsiveLayoutManager::getColumnCount() const
-{
+int ResponsiveLayoutManager::getColumnCount() const {
     return m_cachedColumnCount;
 }
 
-int ResponsiveLayoutManager::getAvailableWidth() const
-{
+int ResponsiveLayoutManager::getAvailableWidth() const {
     return m_viewportWidth - m_paddingLeft - m_paddingRight;
 }
 
-int ResponsiveLayoutManager::getRowCount(int totalItems) const
-{
+int ResponsiveLayoutManager::getRowCount(int totalItems) const {
     if (m_cachedColumnCount <= 0 || totalItems <= 0) {
         return 0;
     }
@@ -124,8 +107,7 @@ int ResponsiveLayoutManager::getRowCount(int totalItems) const
     return (totalItems + m_cachedColumnCount - 1) / m_cachedColumnCount;
 }
 
-bool ResponsiveLayoutManager::needsUpdate(int newWidth, int newHeight) const
-{
+bool ResponsiveLayoutManager::needsUpdate(int newWidth, int newHeight) const {
     if (newWidth == m_viewportWidth && newHeight == m_viewportHeight) {
         return false;
     }
@@ -142,8 +124,7 @@ bool ResponsiveLayoutManager::needsUpdate(int newWidth, int newHeight) const
     return newColumnCount != m_cachedColumnCount;
 }
 
-int ResponsiveLayoutManager::getWidthForColumns(int columns) const
-{
+int ResponsiveLayoutManager::getWidthForColumns(int columns) const {
     if (columns <= 0) {
         return 0;
     }
@@ -153,8 +134,7 @@ int ResponsiveLayoutManager::getWidthForColumns(int columns) const
     return requiredWidth + m_paddingLeft + m_paddingRight;
 }
 
-int ResponsiveLayoutManager::calculateColumnCount() const
-{
+int ResponsiveLayoutManager::calculateColumnCount() const {
     int availableWidth = getAvailableWidth();
 
     // Ensure we have at least 1 column
@@ -173,8 +153,7 @@ int ResponsiveLayoutManager::calculateColumnCount() const
     return std::max(1, columnCount);
 }
 
-void ResponsiveLayoutManager::emitLayoutChangedIfNeeded(int previousColumns, int newColumns)
-{
+void ResponsiveLayoutManager::emitLayoutChangedIfNeeded(int previousColumns, int newColumns) {
     m_cachedColumnCount = newColumns;
 
     if (previousColumns != newColumns) {
@@ -182,4 +161,4 @@ void ResponsiveLayoutManager::emitLayoutChangedIfNeeded(int previousColumns, int
     }
 }
 
-}  // namespace gallery
+} // namespace gallery

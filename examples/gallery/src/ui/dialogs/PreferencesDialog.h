@@ -33,10 +33,10 @@ enum class ThemeMode;
  * @brief Application preferences structure
  */
 struct PreferencesSettings {
-    int themeMode;              ///< Theme mode (0=Dark, 1=Light, 2=System)
-    int defaultIconSize;        ///< Default icon size in pixels
-    double defaultStrokeWidth;  ///< Default stroke width
-    bool showTooltips;          ///< Whether to show tooltips
+    int themeMode;             ///< Theme mode (0=Dark, 1=Light, 2=System)
+    int defaultIconSize;       ///< Default icon size in pixels
+    double defaultStrokeWidth; ///< Default stroke width
+    bool showTooltips;         ///< Whether to show tooltips
 };
 
 /**
@@ -159,16 +159,16 @@ private:
     void resetToDefaults();
 
     // UI Components
-    QComboBox* m_themeComboBox;          ///< Theme selection combo box
-    QSpinBox* m_defaultSizeSpinBox;      ///< Default icon size
+    QComboBox* m_themeComboBox;             ///< Theme selection combo box
+    QSpinBox* m_defaultSizeSpinBox;         ///< Default icon size
     QDoubleSpinBox* m_defaultStrokeSpinBox; ///< Default stroke width
-    QCheckBox* m_showTooltipsCheckBox;   ///< Show tooltips checkbox
-    QPushButton* m_resetButton;          ///< Reset to defaults button
-    QPushButton* m_okButton;             ///< OK button
-    QPushButton* m_cancelButton;         ///< Cancel button
+    QCheckBox* m_showTooltipsCheckBox;      ///< Show tooltips checkbox
+    QPushButton* m_resetButton;             ///< Reset to defaults button
+    QPushButton* m_okButton;                ///< OK button
+    QPushButton* m_cancelButton;            ///< Cancel button
 
     // State
-    PreferencesSettings m_currentSettings;  ///< Current settings
+    PreferencesSettings m_currentSettings;   ///< Current settings
     PreferencesSettings m_lastSavedSettings; ///< Last saved settings
 };
 

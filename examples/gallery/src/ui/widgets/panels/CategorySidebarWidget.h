@@ -13,9 +13,9 @@
 #ifndef CATEGORY_SIDEBAR_WIDGET_H
 #define CATEGORY_SIDEBAR_WIDGET_H
 
-#include <QWidget>
-#include <QString>
 #include <QColor>
+#include <QString>
+#include <QWidget>
 #include <memory>
 
 #include "GalleryTypes.h"
@@ -198,30 +198,31 @@ private:
     void updateSizeDisplay();
 
     // UI Components - Header
-    QPushButton* m_resetButton;                  ///< Reset all options to default
+    QPushButton* m_resetButton; ///< Reset all options to default
 
     // UI Components - Color section
-    QLabel* m_colorLabel;                        ///< "Color" label
-    QPushButton* m_colorButton;                  ///< Color preview button
+    QLabel* m_colorLabel;       ///< "Color" label
+    QPushButton* m_colorButton; ///< Color preview button
 
     // UI Components - Stroke width section
-    QLabel* m_strokeWidthLabel;                  ///< "Stroke width" label
-    QLabel* m_strokeWidthValueLabel;             ///< Stroke width value display (e.g., "2px")
-    QSlider* m_strokeWidthSlider;                ///< Stroke width slider (0.5-4.0)
+    QLabel* m_strokeWidthLabel;      ///< "Stroke width" label
+    QLabel* m_strokeWidthValueLabel; ///< Stroke width value display (e.g., "2px")
+    QSlider* m_strokeWidthSlider;    ///< Stroke width slider (0.5-4.0)
 
     // UI Components - Size section
-    QLabel* m_sizeLabel;                         ///< "Size" label
-    QLabel* m_sizeValueLabel;                    ///< Size value display (e.g., "24px")
-    QSlider* m_sizeSlider;                       ///< Size slider (16-256)
+    QLabel* m_sizeLabel;      ///< "Size" label
+    QLabel* m_sizeValueLabel; ///< Size value display (e.g., "24px")
+    QSlider* m_sizeSlider;    ///< Size slider (16-256)
 
     // UI Components - Category section
-    QListWidget* m_categoryListWidget;           ///< Category list with counts
-    QMap<QString, int> m_categoryIconCounts;     ///< Cache of category icon counts
+    QListWidget* m_allListWidget;            ///< "All" list widget
+    QListWidget* m_categoryListWidget;       ///< Category list with counts
+    QMap<QString, int> m_categoryIconCounts; ///< Cache of category icon counts
 
     // Current state
-    IconOptions m_currentOptions;                ///< Current customization options
-    bool m_isDarkTheme;                          ///< Whether dark theme is active
-    QColor m_defaultColor;                       ///< Default color based on theme
+    IconOptions m_currentOptions; ///< Current customization options
+    bool m_isDarkTheme;           ///< Whether dark theme is active
+    QColor m_defaultColor;        ///< Default color based on theme
 };
 
 } // namespace gallery

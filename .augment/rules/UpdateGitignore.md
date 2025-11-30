@@ -2,7 +2,7 @@
 type: "manual"
 ---
 
-Please update the .gitignore file located at `.gitignore` to prevent unnecessary files from being tracked by Git. 
+Please update the .gitignore file located at `.gitignore` to prevent unnecessary files from being tracked by Git.
 
 Specifically, analyze the current project structure and existing .gitignore content, then enhance it by:
 

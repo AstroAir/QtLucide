@@ -74,8 +74,8 @@ void QtLucideSvgIconPainter::paint(QtLucide* lucide, QPainter* painter, const QR
 
     // Process SVG to apply stroke width
     double strokeWidth = options.value("stroke-width", 2.0).toDouble();
-    strokeWidth = qBound(0.5, strokeWidth, 4.0);  // Clamp to valid range
-    if (strokeWidth != 2.0) {  // Only process if different from default
+    strokeWidth = qBound(0.5, strokeWidth, 4.0); // Clamp to valid range
+    if (strokeWidth != 2.0) {                    // Only process if different from default
         svgData = processStrokeWidth(svgData, strokeWidth);
     }
 
@@ -188,7 +188,7 @@ QByteArray QtLucideSvgIconPainter::processColorizedSvg(const QByteArray& svgData
 }
 
 QByteArray QtLucideSvgIconPainter::processStrokeWidth(const QByteArray& svgData,
-                                                       double strokeWidth) {
+                                                      double strokeWidth) {
     QString svgString = QString::fromUtf8(svgData);
 
     // Replace stroke-width attribute value

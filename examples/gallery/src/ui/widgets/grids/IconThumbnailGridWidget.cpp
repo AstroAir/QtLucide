@@ -8,21 +8,15 @@
 
 #include <QtLucide/QtLucide.h>
 
-#include <QPainter>
 #include <QDebug>
+#include <QPainter>
 #include <algorithm>
 
 namespace gallery {
 
 IconThumbnailGridWidget::IconThumbnailGridWidget(QWidget* parent)
-    : QWidget(parent)
-    , m_lucide(nullptr)
-    , m_iconName()
-    , m_previewSizes{{24, 48, 96, 192}}
-    , m_spacing(8)
-    , m_columns(2)
-    , m_preferredWidth(200)
-    , m_preferredHeight(200) {
+    : QWidget(parent), m_lucide(nullptr), m_iconName(), m_previewSizes{{24, 48, 96, 192}},
+      m_spacing(8), m_columns(2), m_preferredWidth(200), m_preferredHeight(200) {
     setAttribute(Qt::WA_OpaquePaintEvent, false);
     setStyleSheet("QWidget { background-color: transparent; }");
     recalculateLayout();

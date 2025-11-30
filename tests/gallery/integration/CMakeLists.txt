@@ -1,5 +1,5 @@
-# QtLucide Gallery Integration Tests
-# Tests for end-to-end gallery functionality and component integration
+# QtLucide Gallery Integration Tests Tests for end-to-end gallery functionality
+# and component integration
 
 # Integration test sources
 set(INTEGRATION_TEST_SOURCES
@@ -34,8 +34,7 @@ set(INTEGRATION_TEST_SOURCES
     ../../../examples/gallery/src/ui/dialogs/ImportDialog.cpp
     ../../../examples/gallery/src/ui/dialogs/IconExportDialog.cpp
     ../../../examples/gallery/src/ui/dialogs/PreferencesDialog.cpp
-    ../../../examples/gallery/src/ui/windows/GalleryMainWindow.cpp
-)
+    ../../../examples/gallery/src/ui/windows/GalleryMainWindow.cpp)
 
 # Integration test headers
 set(INTEGRATION_TEST_HEADERS
@@ -47,13 +46,15 @@ set(INTEGRATION_TEST_HEADERS
     ../../../examples/gallery/src/core/managers/IconMetadataManager.h
     ../../../examples/gallery/src/core/BatchExportManager.h
     ../../../examples/gallery/src/core/utils/GalleryLogger.h
-    ../../../examples/gallery/src/core/utils/ErrorHandler.h
-)
+    ../../../examples/gallery/src/core/utils/ErrorHandler.h)
 
 # Create integration tests executable
-create_gallery_test_executable(QtLucideGalleryIntegrationTests "${INTEGRATION_TEST_SOURCES}" "${INTEGRATION_TEST_HEADERS}")
+create_gallery_test_executable(
+  QtLucideGalleryIntegrationTests "${INTEGRATION_TEST_SOURCES}"
+  "${INTEGRATION_TEST_HEADERS}")
 
 # Set test properties for integration tests
-set_tests_properties(QtLucideGalleryIntegrationTests PROPERTIES LABELS "gallery;integration")
+set_tests_properties(QtLucideGalleryIntegrationTests
+                     PROPERTIES LABELS "gallery;integration")
 
 message(STATUS "QtLucide Gallery Integration Tests configured")

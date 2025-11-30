@@ -5,7 +5,7 @@ Generate Qt resource file (.qrc) for embedding Lucide SVG icons.
 
 import json
 from pathlib import Path
-from typing import List
+
 
 class QrcGenerator:
     def __init__(self, metadata_dir: str, svg_dir: str, output_file: str):
@@ -17,9 +17,9 @@ class QrcGenerator:
     def load_metadata(self):
         """Load icon metadata"""
         icons_file = self.metadata_dir / "icons.json"
-        with open(icons_file, 'r', encoding='utf-8') as f:
+        with open(icons_file, "r", encoding="utf-8") as f:
             data = json.load(f)
-            self.icons_data = data['icons']
+            self.icons_data = data["icons"]
 
     def generate_qrc(self):
         """Generate the .qrc file"""
@@ -39,7 +39,7 @@ class QrcGenerator:
         metadata_files = [
             ("metadata/icons.json", "metadata/icons.json"),
             ("metadata/categories.json", "metadata/categories.json"),
-            ("metadata/tags.json", "metadata/tags.json")
+            ("metadata/tags.json", "metadata/tags.json"),
         ]
 
         print(f"Adding {len(metadata_files)} metadata files...")
@@ -54,15 +54,18 @@ class QrcGenerator:
         files_content = "\n".join(file_entries)
         qrc_content = qrc_content.replace("{{FILE_ENTRIES}}", files_content)
 
-        self.output_file.write_text(qrc_content, encoding='utf-8')
-        print(f"Generated {self.output_file} with {len(self.icons_data)} icon files and metadata")
+        self.output_file.write_text(qrc_content, encoding="utf-8")
+        print(
+            f"Generated {self.output_file} with {len(self.icons_data)} icon files and metadata"
+        )
 
     def _get_qrc_template(self) -> str:
-        return '''<RCC>
+        return """<RCC>
     <qresource prefix="/lucide">
 {{FILE_ENTRIES}}
     </qresource>
-</RCC>'''
+</RCC>"""
+
 
 def main():
     import sys
@@ -78,6 +81,7 @@ def main():
     generator = QrcGenerator(metadata_dir, svg_dir, output_file)
     generator.load_metadata()
     generator.generate_qrc()
+
 
 if __name__ == "__main__":
     main()

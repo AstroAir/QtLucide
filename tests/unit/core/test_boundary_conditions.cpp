@@ -658,9 +658,7 @@ void TestBoundaryConditions::testPainterPerformanceLimits() {
             return new SlowPainter();
         }
 
-        [[nodiscard]] QString iconText() const override {
-            return QStringLiteral("slow-painter");
-        }
+        [[nodiscard]] QString iconText() const override { return QStringLiteral("slow-painter"); }
 
         void paint(lucide::QtLucide* lucide, QPainter* painter, const QRect& rect, QIcon::Mode mode,
                    QIcon::State state, const QVariantMap& options) override {

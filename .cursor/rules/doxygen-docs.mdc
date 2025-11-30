@@ -10,4 +10,3 @@ description: Doxygen documentation guidance for public headers
 - Do not document generated headers directly; instead document the generators and usage:
   - Generated: [`include/QtLucide/QtLucideEnums.h`](mdc:include/QtLucide/QtLucideEnums.h), [`include/QtLucide/QtLucideStrings.h`](mdc:include/QtLucide/QtLucideStrings.h)
   - Generators: [`tools/generate_headers.py`](mdc:tools/generate_headers.py)
-

@@ -15,7 +15,7 @@ namespace lucide {
 class QtLucide;
 class QtLucideIconEngine;
 class QtLucideIconPainter;
-}  // namespace lucide
+} // namespace lucide
 
 /**
  * @brief Test class for QtLucideIconEngine
@@ -89,4 +89,4 @@ private:
     lucide::QtLucide* m_lucide = nullptr;
 };
 
-#endif  // TEST_ICON_ENGINE_H
+#endif // TEST_ICON_ENGINE_H

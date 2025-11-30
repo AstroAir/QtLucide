@@ -12,8 +12,8 @@
 #ifndef GALLERY_TYPES_H
 #define GALLERY_TYPES_H
 
-#include <QString>
 #include <QColor>
+#include <QString>
 
 namespace gallery {
 
@@ -22,10 +22,10 @@ namespace gallery {
  * @details Defines the supported formats for exporting icons from the gallery
  */
 enum class ExportFormat {
-    SVG = 0,    ///< Scalable Vector Graphics format
-    PNG = 1,    ///< Portable Network Graphics format
-    ICO = 2,    ///< Windows Icon format
-    ICNS = 3    ///< macOS Icon format
+    SVG = 0, ///< Scalable Vector Graphics format
+    PNG = 1, ///< Portable Network Graphics format
+    ICO = 2, ///< Windows Icon format
+    ICNS = 3 ///< macOS Icon format
 };
 
 /**
@@ -33,9 +33,9 @@ enum class ExportFormat {
  * @details Defines different presentation modes for icon display
  */
 enum class ViewMode {
-    Grid = 0,       ///< Grid view with multiple columns
-    List = 1,       ///< List view with icon details
-    Thumbnail = 2   ///< Thumbnail/gallery view with large previews
+    Grid = 0,     ///< Grid view with multiple columns
+    List = 1,     ///< List view with icon details
+    Thumbnail = 2 ///< Thumbnail/gallery view with large previews
 };
 
 /**
@@ -43,12 +43,12 @@ enum class ViewMode {
  * @details Defines different sorting options for icon lists
  */
 enum class SortOrder {
-    NameAscending = 0,      ///< Alphabetical ascending (A-Z)
-    NameDescending = 1,     ///< Alphabetical descending (Z-A)
-    DateAdded = 2,          ///< By date icon was added
-    Category = 3,           ///< By category name
-    Favorites = 4,          ///< Favorites first, then alphabetical
-    MostUsed = 5            ///< By usage frequency
+    NameAscending = 0,  ///< Alphabetical ascending (A-Z)
+    NameDescending = 1, ///< Alphabetical descending (Z-A)
+    DateAdded = 2,      ///< By date icon was added
+    Category = 3,       ///< By category name
+    Favorites = 4,      ///< Favorites first, then alphabetical
+    MostUsed = 5        ///< By usage frequency
 };
 
 /**
@@ -56,9 +56,9 @@ enum class SortOrder {
  * @details Defines preset color schemes for rendering icons
  */
 enum class ColorScheme {
-    Monochrome = 0,     ///< Single color
-    Duotone = 1,        ///< Two colors
-    Multicolor = 2      ///< Multiple colors
+    Monochrome = 0, ///< Single color
+    Duotone = 1,    ///< Two colors
+    Multicolor = 2  ///< Multiple colors
 };
 
 /**
@@ -107,7 +107,7 @@ struct IconOptions {
      * @details Color of the icon background (if used)
      * @default Transparent white
      */
-    QColor backgroundColor{255, 255, 255, 0};  // Transparent white
+    QColor backgroundColor{255, 255, 255, 0}; // Transparent white
 
     /**
      * @brief Enable drop shadow effect
@@ -155,17 +155,11 @@ struct IconOptions {
      * @return true if all properties are equal, false otherwise
      */
     bool operator==(const IconOptions& other) const noexcept {
-        return color == other.color &&
-               strokeWidth == other.strokeWidth &&
-               size == other.size &&
-               opacity == other.opacity &&
-               scaleFactor == other.scaleFactor &&
-               backgroundColor == other.backgroundColor &&
-               enableShadow == other.enableShadow &&
-               shadowColor == other.shadowColor &&
-               rotation == other.rotation &&
-               flipHorizontal == other.flipHorizontal &&
-               flipVertical == other.flipVertical;
+        return color == other.color && strokeWidth == other.strokeWidth && size == other.size &&
+               opacity == other.opacity && scaleFactor == other.scaleFactor &&
+               backgroundColor == other.backgroundColor && enableShadow == other.enableShadow &&
+               shadowColor == other.shadowColor && rotation == other.rotation &&
+               flipHorizontal == other.flipHorizontal && flipVertical == other.flipVertical;
     }
 
     /**
@@ -173,9 +167,7 @@ struct IconOptions {
      * @param other The other IconOptions to compare with
      * @return true if any property differs, false otherwise
      */
-    bool operator!=(const IconOptions& other) const noexcept {
-        return !(*this == other);
-    }
+    bool operator!=(const IconOptions& other) const noexcept { return !(*this == other); }
 };
 
 /**
@@ -241,13 +233,10 @@ struct ExportOptions {
      * @return true if all properties are equal, false otherwise
      */
     bool operator==(const ExportOptions& other) const noexcept {
-        return format == other.format &&
-               exportSize == other.exportSize &&
-               exportPath == other.exportPath &&
-               filePattern == other.filePattern &&
+        return format == other.format && exportSize == other.exportSize &&
+               exportPath == other.exportPath && filePattern == other.filePattern &&
                groupByCategory == other.groupByCategory &&
-               overwriteExisting == other.overwriteExisting &&
-               jpegQuality == other.jpegQuality &&
+               overwriteExisting == other.overwriteExisting && jpegQuality == other.jpegQuality &&
                includeTransparency == other.includeTransparency;
     }
 
@@ -256,9 +245,7 @@ struct ExportOptions {
      * @param other The other ExportOptions to compare with
      * @return true if any property differs, false otherwise
      */
-    bool operator!=(const ExportOptions& other) const noexcept {
-        return !(*this == other);
-    }
+    bool operator!=(const ExportOptions& other) const noexcept { return !(*this == other); }
 };
 
 /**
@@ -314,13 +301,9 @@ struct SearchFilter {
      * @return true if all properties are equal, false otherwise
      */
     bool operator==(const SearchFilter& other) const noexcept {
-        return query == other.query &&
-               categories == other.categories &&
-               tags == other.tags &&
-               favoritesOnly == other.favoritesOnly &&
-               sortBy == other.sortBy &&
-               caseSensitive == other.caseSensitive &&
-               searchInTags == other.searchInTags;
+        return query == other.query && categories == other.categories && tags == other.tags &&
+               favoritesOnly == other.favoritesOnly && sortBy == other.sortBy &&
+               caseSensitive == other.caseSensitive && searchInTags == other.searchInTags;
     }
 
     /**
@@ -328,9 +311,7 @@ struct SearchFilter {
      * @param other The other SearchFilter to compare with
      * @return true if any property differs, false otherwise
      */
-    bool operator!=(const SearchFilter& other) const noexcept {
-        return !(*this == other);
-    }
+    bool operator!=(const SearchFilter& other) const noexcept { return !(*this == other); }
 };
 
 } // namespace gallery

@@ -13,9 +13,9 @@
 #ifndef ICON_SEARCH_WIDGET_H
 #define ICON_SEARCH_WIDGET_H
 
-#include <QWidget>
 #include <QString>
 #include <QStringList>
+#include <QWidget>
 #include <memory>
 
 #include "SearchWidget.h"
@@ -163,9 +163,9 @@ private:
     void setupUI();
 
     // UI Components
-    std::unique_ptr<SearchWidget> m_searchWidget;   ///< Main search input
-    QComboBox* m_categoryComboBox;                  ///< Category filter dropdown
-    QCheckBox* m_favoritesCheckBox;                 ///< Favorites-only checkbox
+    std::unique_ptr<SearchWidget> m_searchWidget; ///< Main search input
+    QComboBox* m_categoryComboBox;                ///< Category filter dropdown
+    QCheckBox* m_favoritesCheckBox;               ///< Favorites-only checkbox
 };
 
 } // namespace gallery
