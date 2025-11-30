@@ -157,7 +157,7 @@ jobs:
 
     - name: Upload build artifacts
       if: failure()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: build-logs-${{ matrix.os }}-qt${{ matrix.qt-version }}-${{ matrix.build-type }}
         path: |
@@ -370,7 +370,7 @@ jobs:
         output-file: sbom.spdx.json
 
     - name: Upload SBOM
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: sbom
         path: sbom.spdx.json
