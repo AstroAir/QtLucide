@@ -182,14 +182,14 @@ public:
      * @return Icon name string or empty string
      * @since 1.0
      */
-    [[nodiscard]] QString iconName() override;
+    [[nodiscard]] QString iconName() const override;
 
     /**
      * @brief Check if this icon engine is null (has no valid icon)
      * @return true if the engine has no valid icon data
      * @since 1.0
      */
-    [[nodiscard]] bool isNull() override;
+    [[nodiscard]] bool isNull() const override;
 
 private:
     /**

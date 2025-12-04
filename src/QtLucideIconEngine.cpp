@@ -79,20 +79,33 @@ QList<QSize> QtLucideIconEngine::availableSizes(QIcon::Mode /*mode*/, QIcon::Sta
     return {};
 }
 
-QString QtLucideIconEngine::iconName() {
-    // Return the icon name from options if available
-    int iconId = m_options.value("iconId", -1).toInt();
-    if (iconId >= 0 && m_lucide != nullptr) {
-        // Get icon name from lucide instance
-        QStringList icons = m_lucide->availableIcons();
-        // The iconId is the enum value, we need to find the corresponding name
-        // For now, return a generic identifier
-        return QString("lucide-%1").arg(iconId);
+QString QtLucideIconEngine::iconName() const {
+    // Custom painters should report their registered name when available
+    if (m_options.value("customPainter").toBool()) {
+        const QString customName = m_options.value("customPainterName").toString();
+        if (!customName.isEmpty()) {
+            return customName;
+        }
+        return QStringLiteral("lucide-custom");
     }
-    return QString();
+
+    if (m_lucide == nullptr) {
+        return {};
+    }
+
+    const int iconId = m_options.value("iconId", -1).toInt();
+    if (iconId < 0) {
+        return {};
+    }
+
+    const Icons iconEnum = static_cast<Icons>(iconId);
+    const QString name = m_lucide->iconIdToString(iconEnum);
+
+    // Fallback to the numeric identifier if the mapping is unavailable
+    return name.isEmpty() ? QString("lucide-%1").arg(iconId) : name;
 }
 
-bool QtLucideIconEngine::isNull() {
+bool QtLucideIconEngine::isNull() const {
     // Check if we have valid painter and lucide instance
     if (m_painter == nullptr || m_lucide == nullptr) {
         return true;
